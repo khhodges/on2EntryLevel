@@ -1,7 +1,7 @@
 {
   "ProjectGuid": "003f5d01-c32e-4f2f-8a44-f2e7b1f00008",
   "ProjectTypeGuids": "{070BCB52-5A75-4F8C-A973-144AF0EAFCC9}",
-  "AppIdentifier": "com.telerik.platformfriendshybrid",
+  "AppIdentifier": "com.friends.on25platform",
   "ProjectName": "my-friends-app",
   "AndroidPermissions": [
     "android.permission.ACCESS_COARSE_LOCATION",
@@ -63,8 +63,8 @@
   "iOSBackgroundMode": [],
   "AndroidVersionCode": "1",
   "DisplayName": "Friends",
-  "Author": "",
-  "Description": "platform-friends-hybrid",
+  "Author": "kjhh",
+  "Description": "my-friends-app",
   "WP8TileTitle": "",
   "WP8ProductID": "{003f5d01-c32e-4f2f-8a44-f2e7b1f00008}",
   "WP8PublisherID": "{b6e0580a-d18c-47b9-b482-6e009726ed8c}",
