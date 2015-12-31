@@ -34,7 +34,7 @@ app.Signup = (function () {
 			}
 			
 			dataSource.BirthDate = birthDate;
-			dataSource.Picture = "204f9c00-a9ae-11e5-bccb-8db8d990cdfd";
+			dataSource.Picture = "";
 
 			Everlive.$.Users.register(
 					dataSource.Username,
@@ -103,7 +103,7 @@ app.Signup = (function () {
 			sel.style.color = (selected === 0) ? '#b6c5c6' : '#34495e';
 		};
 
-		var everlive = new Everlive("wewpzbnzheaxgay7");
+		var everlive = new Everlive(appSettings.everlive.appId);
 		// Called when a photo is successfully retrieved
 		//
 		var resetImage = function () {
