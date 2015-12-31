@@ -5,17 +5,17 @@
 var appSettings = {
 
     everlive: {
-        appId: '$TELERIK_APP_ID$', // Put your Backend Services API key here
+        appId: '3t5oa8il0d0y02eq', // Put your Backend Services API key here
         scheme: 'http'
     },
 
     eqatec: {
-        productKey: '$EQATEC_PROJECT_KEY$',  // Put your Tekerik Analytics project key here
+        productKey: '3d777b61e0be40f5b61964bb1b05cbbb',  // Put your Tekerik Analytics project key here
         version: '1.0.0.0' // Put your application version here
     },
     
     feedback: {
-        apiKey: '$APPFEEDBACK_API_KEY$'  // Put your AppFeedback API key here
+        apiKey: '3t5oa8il0d0y02eq'  // Put your AppFeedback API key here
     },
 
     facebook: {
