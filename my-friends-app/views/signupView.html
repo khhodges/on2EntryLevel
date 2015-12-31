@@ -1,40 +1,87 @@
 <div data-role="view" id="signup" data-layout="default" class="signup-view" data-model="app.Signup" data-init="app.Signup.init" data-show="app.Signup.show" data-hide="app.Signup.hide">
-    <div data-role="header">
-        <div data-role="navbar">
-            Friends
-            <a class="nav-button nav-button-icon nav-button-back-d hide-text" data-align="left" data-role="backbutton" href="#welcome">Back</a>
-        </div>
-    </div>
-    <form id="signUp">
-        <ul id="signup-form" data-role="listview" data-style="inset">
-            <li>
-                <input type="text" id="signupName" data-bind="value: DisplayName" placeholder="name" required>
-            </li>
-            <li>
-                <input type="email" id="signupEmail" data-bind="value: Email" placeholder="email">
-            </li>
-            <li>
-                <input type="text" id="signupUsername" data-bind="value: Username" placeholder="username" required>
-            </li>
-            <li>
-                <input type="password" id="signupPassword" data-bind="value: Password" placeholder="password" required>
-            </li>
-            <li>
-                <input type="date" id="signupBirthDatePicker" data-bind="value: BirthDate">
-            </li>
-            <li class="select-wrp">
-                <select id="signupGenderPicker" data-bind="value: Gender" onchange="app.Signup.onSelectChange(this)">
-                    <option value="0" selected>gender</option>
-                    <option value="1">Male</option>
-                    <option value="2">Female</option>
-                </select>
-            </li>
-            <li class="txtarea-wrp">
-                <textarea id="signupInfo" data-bind="value: About" placeholder="about">User account created from the hybrid app.</textarea>
-            </li>
-        </ul>
-    </form>
-    <div id="signupBtnWrp" class="signup-btn-wrp disabled">
-        <a class="btn btn-signup" data-role="button" data-bind="click: signup">Register</a>
-    </div>
+	<div data-role="header">
+		<div data-role="navbar">
+			Register
+			<a class="nav-button nav-button-icon nav-button-back-d hide-text" data-align="left" data-role="backbutton" href="#welcome">Back</a>
+		</div>
+	</div>
+	<script>
+		//$("#zoom_mw").elevateZoom({zoomWindowPosition: 7, cursor: "crosshair"});
+	</script>
+	<form id="signUp">
+		<ul id="signup-form" data-role="listview" data-style="inset">
+			<li>
+				<input type="text" id="signupName" data-bind="value: DisplayName" placeholder="Full Name" required>
+			</li>
+			<li>
+				<input type="email" id="signupEmail" data-bind="value: Email" placeholder="email">
+			</li>
+			<li>
+				<input type="text" id="signupUsername" data-bind="value: Username" placeholder="username" required>
+			</li>
+			<li>
+				<input type="password" id="signupPassword" data-bind="value: Password" placeholder="password" required>
+			</li>
+		</ul>
+		<input style="visibility:hidden" type="date" id="signupBirthDatePicker" data-bind="value: BirthDate">
+		<select style="visibility:hidden" id="signupGenderPicker" data-bind="value: Gender" onchange="app.Signup.onSelectChange(this)">
+			<option value="0" selected>gender</option>
+			<option value="1">Male</option>
+			<option value="2">Female</option>
+		</select>
+		<textarea id="signupInfo" style="visibility:hidden" data-bind="value: About"></textarea>
+	</form>
+	<style>
+		.round
+		{
+			display: flex;
+			justify-content: center;
+			border-radius: 50%;
+			overflow: hidden;
+			width: 100px;
+			height: 100px;
+		}
+		.round img
+		{
+			width: 100px; height: auto;
+		}
+		.round landscape
+		{
+			width: auto; height: 100px;
+		}
+		.cover
+		{
+			width: 100px;
+			height: 100px;
+			border-radius: 50px;
+			overflow: hidden;
+		}
+		.video-thumbnail
+		{
+			height: 100%;
+			background-size: cover;
+			-moz-background-size: cover;
+			-webkit-background-size: cover;
+			background-position: center;
+		}
+	</style>
+	<div style="padding:25px; margin: -110px 0px 0px 0px">
+		<table>
+			<tr>
+				<td span="2">
+					<div class="cover">
+						<div id="avatarImage" style="background-image: url(styles/images/logo2.jpg); " class="video-thumbnail"></div>
+					</div>
+				</td>
+				<td>
+					<a class="btn" data-align="right" data-role="button" data-bind="click: pickImage" style="margin: 20px;">
+						Take a Selfie!
+					</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="signupBtnWrp" class="signup-btn-wrp disabled">
+		<a class="btn btn-signup" data-role="button" data-bind="click: signup">Register</a>
+	</div>
 </div>
