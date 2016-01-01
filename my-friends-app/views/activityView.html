@@ -12,7 +12,8 @@
             <img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}" width="100%">
             <div class="user-info">
                 <div class="user-avatar">
-                    <img data-bind="attr:{src: User().PictureUrl}" alt="#: User().DisplayName #">
+					<div data-bind="style:{backgroundImage: User().urlPictureUrl}" ></div>
+					<!--                    <img data-bind="attr:{src: User().PictureUrl}" alt="#: User().DisplayName #" style="text-align:center; float: left;">-->
                 </div>
                 <h2 id="personName" class="person-name" data-bind='text: User().DisplayName'></h2>
                 <span id="activityDate" class="time-span" data-bind="text: CreatedAtFormatted"></span>
@@ -33,7 +34,8 @@
 <!-- Comments Template -->
 <script type="text/x-kendo-template" id="commentsTemplate">
     <div class="user-avatar">
-        <img src="#: User().PictureUrl #" alt="#: User().DisplayName #">
+		<div data-bind="style:{backgroundImage: User().urlPictureUrl}" ></div>
+		<!--img src="#: User().PictureUrl #" alt="#: User().DisplayName #"-->
     </div>
     <div class="comment-content">
         <h2 class="person-name">#: User().DisplayName #</h2>
