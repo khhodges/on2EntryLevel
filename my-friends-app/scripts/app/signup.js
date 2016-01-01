@@ -34,7 +34,7 @@ app.Signup = (function () {
 			}
 			
 			dataSource.BirthDate = birthDate;
-			dataSource.Picture = "";
+			dataSource.Picture = selected;
 
 			Everlive.$.Users.register(
 					dataSource.Username,
@@ -45,7 +45,7 @@ app.Signup = (function () {
 						app.mobileApp.navigate('#welcome');
 					},
 					function (err) {
-						app.showError(err.message);
+						app.showError(err.message + ". You need to validate your email address first.");
 					});
 		};
 

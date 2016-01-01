@@ -5,129 +5,139 @@
 var app = app || {};
 
 app.Activities = (function () {
-    'use strict'
+	'use strict'
+	
+	var show = function on_show_view(e) {
+		if (User().DisplayName)
+			e.view.options.title = User().DisplayName;
+		else
+			e.view.options.title = "Friends"
+	}
 
-    // Activities model
-    var activitiesModel = (function () {
+	// Activities model
+	var activitiesModel = (function () {
 
-        var activityModel = {
+		var activityModel = {
 
-            id: 'Id',
-            fields: {
-                Text: {
-                    field: 'Text',
-                    defaultValue: ''
-                },
-                CreatedAt: {
-                    field: 'CreatedAt',
-                    defaultValue: new Date()
-                },
-                Picture: {
-                    fields: 'Picture',
-                    defaultValue: null
-                },
-                UserId: {
-                    field: 'UserId',
-                    defaultValue: null
-                },
-                Likes: {
-                    field: 'Likes',
-                    defaultValue: []
-                }
-            },
-            CreatedAtFormatted: function () {
+			id: 'Id',
+			fields: {
+				Text: {
+					field: 'Text',
+					defaultValue: ''
+				},
+				CreatedAt: {
+					field: 'CreatedAt',
+					defaultValue: new Date()
+				},
+				Picture: {
+					fields: 'Picture',
+					defaultValue: null
+				},
+				UserId: {
+					field: 'UserId',
+					defaultValue: null
+				},
+				Likes: {
+					field: 'Likes',
+					defaultValue: []
+				}
+			},
+			CreatedAtFormatted: function () {
 
-                return app.helper.formatDate(this.get('CreatedAt'));
-            },
-            PictureUrl: function () {
+				return app.helper.formatDate(this.get('CreatedAt'));
+			},
+			PictureUrl: function () {
 
-                return app.helper.resolvePictureUrl(this.get('Picture'));
-            },
-            User: function () {
+				return app.helper.resolvePictureUrl(this.get('Picture'));
+			},
+			User: function () {
 
-                var userId = this.get('UserId');
+				var userId = this.get('UserId');
 
-                var user = $.grep(app.Users.users(), function (e) {
-                    return e.Id === userId;
-                })[0];
+				var user = $.grep(app.Users.users(), function (e) {
+					return e.Id === userId;
+				})[0];
 
-                return user ? {
-                    DisplayName: user.DisplayName,
-                    PictureUrl: app.helper.resolveProfilePictureUrl(user.Picture)
-                } : {
-                    DisplayName: 'Anonymous',
-                    PictureUrl: app.helper.resolveProfilePictureUrl()
-                };
-            },
-            isVisible: function () {
-                var currentUserId = app.Users.currentUser.data.Id;
-                var userId = this.get('UserId');
+				return user ? {
+					DisplayName: user.DisplayName,
+					PictureUrl: app.helper.resolveProfilePictureUrl(user.Picture)
+				} : {
+					DisplayName: 'Anonymous',
+					PictureUrl: app.helper.resolveProfilePictureUrl()
+				};
+			},
+			isVisible: function () {
+				var currentUserId = app.Users.currentUser.data.Id;
+				var userId = this.get('UserId');
 
-                return currentUserId === userId;
-            }
-        };
+				return currentUserId === userId;
+			}
+		};
 
-        // Activities data source. The Backend Services dialect of the Kendo UI DataSource component
-        // supports filtering, sorting, paging, and CRUD operations.
-        var activitiesDataSource = new kendo.data.DataSource({
-            type: 'everlive',
-            schema: {
-                model: activityModel
-            },
-            transport: {
-                // Required by Backend Services
-                typeName: 'Activities'
-            },
-            change: function (e) {
+		// Activities data source. The Backend Services dialect of the Kendo UI DataSource component
+		// supports filtering, sorting, paging, and CRUD operations.
+		var activitiesDataSource = new kendo.data.DataSource({
+			type: 'everlive',
+			schema: {
+				model: activityModel
+			},
+			transport: {
+				// Required by Backend Services
+				typeName: 'Activities'
+			},
+			change: function (e) {
 
-                if (e.items && e.items.length > 0) {
-                    $('#no-activities-span').hide();
-                } else {
-                    $('#no-activities-span').show();
-                }
-            },
-            sort: { field: 'CreatedAt', dir: 'desc' }
-        });
+				if (e.items && e.items.length > 0) {
+					$('#no-activities-span').hide();
+				} else {
+					$('#no-activities-span').show();
+				}
+			},
+			sort: {
+				field: 'CreatedAt',
+				dir: 'desc'
+			}
+		});
 
-        return {
-            activities: activitiesDataSource
-        };
+		return {
+			activities: activitiesDataSource
+		};
 
-    }());
+	}());
 
-    // Activities view model
-    var activitiesViewModel = (function () {
+	// Activities view model
+	var activitiesViewModel = (function () {
 
-        // Navigate to activityView When some activity is selected
-        var activitySelected = function (e) {
+		// Navigate to activityView When some activity is selected
+		var activitySelected = function (e) {
 
-            app.mobileApp.navigate('views/activityView.html?uid=' + e.data.uid);
-        };
+			app.mobileApp.navigate('views/activityView.html?uid=' + e.data.uid);
+		};
 
-        // Navigate to app home
-        var navigateHome = function () {
+		// Navigate to app home
+		var navigateHome = function () {
 
-            app.mobileApp.navigate('#welcome');
-        };
+			app.mobileApp.navigate('#welcome');
+		};
 
-        // Logout user
-        var logout = function () {
+		// Logout user
+		var logout = function () {
 
-            app.helper.logout()
-            .then(navigateHome, function (err) {
-                app.showError(err.message);
-                navigateHome();
-            });
-        };
+			app.helper.logout()
+				.then(navigateHome, function (err) {
+					app.showError(err.message);
+					navigateHome();
+				});
+		};
 
-        return {
-            activities: activitiesModel.activities,
-            activitySelected: activitySelected,
-            logout: logout
-        };
+		return {
+			activities: activitiesModel.activities,
+			activitySelected: activitySelected,
+			logout: logout
+		};
 
-    }());
+	}());
 
-    return activitiesViewModel;
+	return activitiesViewModel;
 
 }());
