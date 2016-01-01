@@ -96,7 +96,10 @@ app.Activities = (function () {
 			sort: {
 				field: 'CreatedAt',
 				dir: 'desc'
-			}
+			},
+			filter:{
+				field: "UserId", operator: "neq", value: "undefined"				
+            }
 		});
 
 		return {
