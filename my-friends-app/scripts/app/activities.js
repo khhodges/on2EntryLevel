@@ -7,13 +7,11 @@ var app = app || {};
 app.Activities = (function () {
 	'use strict'
 	
-	var show = function on_show_view(e) {
-		if (User().DisplayName)
-			e.view.options.title = User().DisplayName;
-		else
-			e.view.options.title = "Friends"
-	}
-
+	var showTitle = function(){
+		var title = document.getElementById("navbarTitle").InnerTEXT;
+		title = activities.User().DisplayName;
+    }
+	
 	// Activities model
 	var activitiesModel = (function () {
 
@@ -57,6 +55,8 @@ app.Activities = (function () {
 				var user = $.grep(app.Users.users(), function (e) {
 					return e.Id === userId;
 				})[0];
+				
+				
 
 				return user ? {
 					DisplayName: user.DisplayName,
@@ -133,7 +133,8 @@ app.Activities = (function () {
 		return {
 			activities: activitiesModel.activities,
 			activitySelected: activitySelected,
-			logout: logout
+			logout: logout,
+			show: showTitle
 		};
 
 	}());
