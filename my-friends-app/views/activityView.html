@@ -9,7 +9,7 @@
         </div>
 
         <div class="picture-wrp">
-            <img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}">
+            <img id="picture" class="picture" data-bind="style:{backgroundImage: User().BackgroundPictureUrl()}">
             <div class="user-info">
                 <div class="user-avatar">
                     <img data-bind="attr:{src: User().PictureUrl}" alt="#: User().DisplayName #">
