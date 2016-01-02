@@ -60,7 +60,8 @@ app.Activities = (function () {
 
 				return user ? {
 					DisplayName: user.DisplayName,
-					PictureUrl: app.helper.resolveProfilePictureUrl(user.Picture)
+					PictureUrl: app.helper.resolveProfilePictureUrl(user.Picture),
+					urlPictureUrl: app.helper.resolveBackgroundPictureUrl(user.Picture)
 				} : {
 					DisplayName: 'Anonymous',
 					PictureUrl: app.helper.resolveProfilePictureUrl()

@@ -40,7 +40,7 @@ app.Comments = (function () {
                 return user ? { 
                     DisplayName: user.DisplayName, 
                     PictureUrl: app.helper.resolveProfilePictureUrl(user.Picture),
-					BackbroundPictureUrl: app.helper.resolveBackgroundPictureUrl(user.Picture)
+					UrlPictureUrl: app.helper.resolveBackgroundPictureUrl(user.Picture)
                 } : { 
                     DisplayName: 'Anonymous', 
                     PictureUrl: app.helper.resolveProfilePictureUrl() 
