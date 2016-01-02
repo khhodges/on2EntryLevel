@@ -23,6 +23,7 @@ app.Signup = (function () {
 		var imageObj;
 		var lastMove;
 		var selected = "styles/images/avator.png";
+		var imageId;
 
 		// Register user after required fields (username and password) are validated in Backend Services
 		var signup = function () {
@@ -34,7 +35,7 @@ app.Signup = (function () {
 			}
 			
 			dataSource.BirthDate = birthDate;
-			dataSource.Picture = selected;
+			dataSource.Picture = imageId;
 
 			Everlive.$.Users.register(
 					dataSource.Username,
@@ -45,7 +46,7 @@ app.Signup = (function () {
 						app.mobileApp.navigate('#welcome');
 					},
 					function (err) {
-						app.showError(err.message + ". You need to validate your email address first.");
+						app.showError(err.message);
 					});
 		};
 
@@ -137,6 +138,7 @@ app.Signup = (function () {
 					})
 					.then(function (promise) {
 						selected = promise.result.Uri;
+						imageId = promise.result.Id;
 						avatarImage.style.backgroundImage = "url(" + selected + ")";
 						app.mobileApp.hideLoading();
 					})
@@ -230,7 +232,7 @@ app.Signup = (function () {
 			onSelectChange: onSelectChange,
 			signup: signup,
 			addImage: addImage,
-			pickImage: pickImage,
+			pickImage: addImage,
 			resetImage: resetImage
 		};
 	}());
