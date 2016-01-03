@@ -89,7 +89,8 @@ app.addActivity = (function () {
 			var lat = 26.3179912;
 			var lon = -80.1340489;
 			///@26.317991,-80.134049,16z?hl=en-US
-            if (validator.validate()) {
+			if(selected === undefined){app.showAlert("First take a photo with your camera and then add a message to match!","Informational");}
+            if (validator.validate() && (selected !== undefined)) {
 				app.mobileApp.showLoading();
                 // Save image as base64 to everlive
                 app.helper.convertToDataURL(selected, function (base64Img) {
@@ -118,7 +119,6 @@ app.addActivity = (function () {
 						})
                 },"image/jpeg");
             }
-			app.mobileApp.hideLoading();
         };
 
         return {
