@@ -14,6 +14,8 @@
     "org.apache.cordova.camera",
     "org.apache.cordova.device",
     "org.apache.cordova.device-orientation",
+    "org.apache.cordova.dialogs",
+    "org.apache.cordova.geolocation",
     "org.apache.cordova.keyboard",
     "org.apache.cordova.splashscreen"
   ],
@@ -22,7 +24,7 @@
     "Landscape"
   ],
   "iOSStatusBarStyle": "Default",
-  "AndroidHardwareAcceleration": "True",
+  "AndroidHardwareAcceleration": "true",
   "FrameworkVersion": "3.7.0",
   "BundleVersion": "1.0",
   "iOSDisplayName": "",
@@ -52,15 +54,11 @@
   "WP8PackageIdentityName": "1234Telerik.com.telerik.everlivefriendshybrid",
   "WPSdk": "8.1",
   "CordovaPluginVariables": {
-    "com.telerik.plugin.telerikanalytics": {
-      "AUTO_TRACK_EXCEPTIONS": "True",
-      "AUTO_TRACK_KENDO_EVENTS": "True",
-      "PRODUCT_ID": "3d777b61e0be40f5b61964bb1b05cbbb"
-    },
     "com.telerik.feedback": {
       "API_KEY": "3t5oa8il0d0y02eq",
       "API_URL": "https://platform.telerik.com/feedback/api/v1",
       "ENABLE_SHAKE": "True"
     }
-  }
+  },
+  "iOSDeploymentTarget": "6.0"
 }

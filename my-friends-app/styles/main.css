@@ -464,17 +464,18 @@ input[type='week']
 {
 	display: inline-block;
 	float: left;
-	margin: 1em;
+	margin: 1.65em 0 0 -2em;
+	min-width: 80px;
+	font-size: .85em;
 }
 #friendsApp .activity-view .user-info .time-span
 {
 	display: inline-block;
 	float: right;
 	min-width: 80px;
-	margin: 1.65em 0 0 0;
-	font-size: .85em;
+	margin: 1.75em 0 0 0;
+	font-size: .8em;
 	text-align: right;
-	text-transform: uppercase;
 }
 #friendsApp .activities-view .km-list > li,
 #friendsApp .activity-view .km-list > li
