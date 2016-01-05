@@ -164,40 +164,45 @@ app.Activities = (function () {
 			} else {
 				$enterEvent.style.display = 'block';
 				document.getElementById('addButton').innerText = "Cancel";
-				addImage = function () {
-					var success = function (data) {
-						everlive.Files.create({
-												  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
-												  ContentType: "image/jpeg",
-												  base64: data
-											  })
-							.then(function (promise) {
-								selected = promise.result.Uri;
-								imageId = promise.result.Id;
-								document.getElementById('addPicture').src = "url(" + selected + ")";
-								app.mobileApp.hideLoading();
-							})
-					};
-					var error = function () {
-						app.mobileApp.hideLoading();
-						navigator.notification.alert("Unfortunately we could not add the image");
-					};
-					var config = {
-						destinationType: Camera.DestinationType.DATA_URL,
-						quality: 50
-					};
-					app.mobileApp.showLoading();
-					navigator.camera.getPicture(success, error, config);
-				};
 			}
 		};
+		
+		function success(imageURI) {
+			selected = imageURI;
+			var picture = document.getElementById("addPicture");
+			picture.src = selected;				
+			app.helper.convertToDataURL(selected, function (base64Img) {
+				baseImage = base64Img;
+			}, "image/jpeg");
+			app.mobileApp.hideLoading();
+		}
 
+		var error = function () {
+			app.mobileApp.hideLoading();
+			navigator.notification.alert("No selection was detected.");
+		};
+		
+		var pickImage = function () {
+			$enterEvent = document.getElementById('enterEvent');
+			if ($enterEvent.style.display === 'block') {
+				$enterEvent.style.display = 'none';
+				validator.hideMessages();
+				document.getElementById('addButton').innerText = "Add Event";
+				document.getElementById('newEventText').value = "";
+				document.getElementById('picture').src = "styles/images/default-image.jpg";
+			} else {
+				$enterEvent.style.display = 'block';
+				document.getElementById('addButton').innerText = "Cancel";
+				navigator.camera.getPicture(success, error, {destinationType: Camera.DestinationType.FILE_URI, quality: 50});
+			}
+		};
+		
 		return {
 			init: init,
 			activities: activitiesModel.activities,
 			activitySelected: activitySelected,
 			logout: logout,
-			addActivity: addActivity,
+			addActivity: pickImage,
 			saveActivity: saveActivity,
 			show: showTitle
 		};
