@@ -6,12 +6,14 @@ var app = app || {};
 
 app.Activities = (function () {
 	'use strict'
-	var $enterEvent, $newEventText, validator;
+	var $enterEvent, $newEventText, validator, selected, imageId, addImage;
 	
 	var init = function () {
-		validator = $('#enterEventText').kendoValidator().data('kendoValidator');
-		$newEventText = $('#newEventText');	
+		validator = $('#enterEvent').kendoValidator().data('kendoValidator');
+		$enterEvent = $('#enterEvent');	
+		$newEventText = $('#newEventText');
 		$newEventText.on('keydown', app.helper.autoSizeTextarea);
+		validator.hideMessages();
 	};
 	
 	var showTitle = function() {
@@ -54,6 +56,10 @@ app.Activities = (function () {
 			},
 			User: function () {
 				var userId = this.get('UserId');
+				if (userId === undefined) {
+					showHelp("userID is null");
+					userId = app.Users.currentUser.data.Id;
+				}
 
 				var user = $.grep(app.Users.users(), function (e) {
 					return e.Id === userId;
@@ -64,8 +70,9 @@ app.Activities = (function () {
 					PictureUrl: app.helper.resolveProfilePictureUrl(user.Picture),
 					urlPictureUrl: app.helper.resolveBackgroundPictureUrl(user.Picture)
 				} : {
-					DisplayName: 'Anonymous',
-					PictureUrl: app.helper.resolveProfilePictureUrl()
+					DisplayName: app.Users.currentUser.data.DisplayName,
+					PictureUrl: app.helper.resolveProfilePictureUrl(app.Users.currentUser.data.Picture),
+					urlPictureUrl: app.helper.resolveBackgroundPictureUrl(app.Users.currentUser.data.Picture)
 				};
 			},
 			isVisible: function () {
@@ -136,11 +143,13 @@ app.Activities = (function () {
 				// Adding new comment to Comments model
 				var activities = app.Activities.activities;
 				var activity = activities.add();                
-				activity.Comment = $newEventText.val();
-				activity.UserId = app.Users.currentUser.get('data').Id;
-				activity.ActivityId = app.Activity.activity().Id;                
-				activity.sync();
+				activity.Text = $newEventText.val();
 				$newEventText.Val = "";
+				activity.UserId = app.Users.currentUser.get('data').Id; 				
+				document.getElementById('addButton').innerText = "Add Event";
+				app.mobileApp.showLoading();
+				activities.sync();
+				app.mobileApp.hideLoading();
 			}
 		};
 		
@@ -148,10 +157,40 @@ app.Activities = (function () {
 			$enterEvent = document.getElementById('enterEvent');
 			if ($enterEvent.style.display === 'block') {
 				$enterEvent.style.display = 'none';
+				validator.hideMessages();
+				document.getElementById('addButton').innerText = "Add Event";
+				document.getElementById('newEventText').value = "";
+				document.getElementById('picture').src = "styles/images/default-image.jpg";
 			} else {
 				$enterEvent.style.display = 'block';
+				document.getElementById('addButton').innerText = "Cancel";
+				addImage = function () {
+					var success = function (data) {
+						everlive.Files.create({
+												  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+												  ContentType: "image/jpeg",
+												  base64: data
+											  })
+							.then(function (promise) {
+								selected = promise.result.Uri;
+								imageId = promise.result.Id;
+								document.getElementById('addPicture').src = "url(" + selected + ")";
+								app.mobileApp.hideLoading();
+							})
+					};
+					var error = function () {
+						app.mobileApp.hideLoading();
+						navigator.notification.alert("Unfortunately we could not add the image");
+					};
+					var config = {
+						destinationType: Camera.DestinationType.DATA_URL,
+						quality: 50
+					};
+					app.mobileApp.showLoading();
+					navigator.camera.getPicture(success, error, config);
+				};
 			}
-		};        
+		};
 
 		return {
 			init: init,

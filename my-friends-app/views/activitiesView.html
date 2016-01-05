@@ -3,7 +3,7 @@
 		<div data-role="navbar" id="navbarTitle">
 			Friends
 			<a class="nav-button" data-align="left" data-role="backbutton" data-click="app.Activities.logout">Logout</a>
-			<a class="nav-button" data-align="right" data-role="button" data-click="app.Activities.addActivity">Add Event</a>
+			<a id="addButton" class="nav-button" data-align="right" data-role="button" data-click="app.Activities.addActivity">Add Event</a>
 		</div>
 
 	</div>
@@ -15,8 +15,8 @@
 				</div>
 				<div class="cf">
 					<div class="user-share">
-						<textarea id="newEventText" style="background-color: azure;font-style: italic;" placeholder="What's your event?" required validationMessage="Comment text is required!"></textarea>
-						<a class="nav-button" data-align="right" data-role="button" data-click="app.Activity.saveComment">Save this Event</a>
+						<textarea id="newEventText" style="background-color: azure;font-style: italic;" placeholder="What's the event?" required validationMessage="Comment text is required to describe your contribution!"></textarea>
+						<a class="btn" data-align="right" data-role="button" data-bind="click: saveActivity" style="margin: 20px; padding:10px">Save this Event</a>
 					</div>
 				</div>
 			</div>

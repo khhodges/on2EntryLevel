@@ -139,6 +139,7 @@ var app = (function (win) {
 		autoSizeTextarea: function () {
 			var rows = $(this).val().split('\n');
 			$(this).prop('rows', rows.length + 1);
+			
 		},
 		
 		convertToDataURL: function convertToDataURLviaCanvas(url, callback, outputFormat) {

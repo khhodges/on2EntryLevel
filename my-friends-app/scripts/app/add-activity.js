@@ -129,7 +129,7 @@ app.addActivity = (function () {
             show: show,
             remove: removeActivity,
             me: app.Users.currentUser,
-            saveIt: saveActivity,
+            saveNewComment: saveActivity,
             takeAnImage: pickImage,
             activity: function () {
                 return activity;

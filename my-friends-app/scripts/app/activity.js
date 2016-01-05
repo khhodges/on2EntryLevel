@@ -26,6 +26,7 @@ app.Activity = (function () {
 			$newComment = $('#newComment');
 
 			$newComment.on('keydown', app.helper.autoSizeTextarea);
+			$newComment.on('keydown', validator.hideMessages());
 		};
         
 		var show = function (e) {
@@ -93,8 +94,10 @@ app.Activity = (function () {
 			$enterComment = document.getElementById('enterComment');
 			if ($enterComment.style.display === 'block') {
 				$enterComment.style.display = 'none';
+				validator.hideMessages();
 			} else {
 				$enterComment.style.display = 'block';
+				document.getElementById('newComment').value="";
 			}
 			/*	var activities = app.Activities.activities;
 			var activity = activities.getByUid(activityUid);
