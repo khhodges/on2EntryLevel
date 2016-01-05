@@ -17,6 +17,7 @@
     "org.apache.cordova.dialogs",
     "org.apache.cordova.geolocation",
     "org.apache.cordova.keyboard",
+    "org.apache.cordova.media-capture",
     "org.apache.cordova.splashscreen"
   ],
   "DeviceOrientations": [
