@@ -40,13 +40,13 @@ app.Activity = (function () {
 			// Get current activity (based on item uid) from Activities model
 			activity = app.Activities.activities.getByUid(activityUid);
 			$activityPicture[0].style.display = activity.Picture ? 'block' : 'none';
-            
+            app.mobileApp.showLoading();
 			app.Comments.comments.filter({
 											 field: 'ActivityId',
 											 operator: 'eq',
 											 value: activity.Id
 										 });
-            
+            app.mobileApp.hideLoading();
 			kendo.bind(e.view.element, activity, kendo.mobile.ui);
 		};
         

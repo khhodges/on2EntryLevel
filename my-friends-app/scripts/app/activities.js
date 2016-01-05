@@ -6,7 +6,7 @@ var app = app || {};
 
 app.Activities = (function () {
 	'use strict'
-	var $enterEvent, $newEventText, validator, selected, imageId, addImage;
+	var $enterEvent, $newEventText, validator, selected, imageId, addImage, $baseImage;
 	
 	var init = function () {
 		validator = $('#enterEvent').kendoValidator().data('kendoValidator');
@@ -153,6 +153,38 @@ app.Activities = (function () {
 			}
 		};
 		
+		var saveImageActivity = function () {
+			// Validating of the required fields
+			if (selected === undefined || !$baseImage) {
+				app.showAlert("First take a photo with your camera and then add a message to match!", "Informational");
+			}
+			if (validator.validate() && (selected !== undefined)) {
+				app.mobileApp.showLoading();
+				// Save image as base64 to everlive
+				app.everlive.Files.create({
+											  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+											  ContentType: "image/jpeg",
+											  base64: $baseImage
+										  })
+					.then(function (promise) {
+						selected = promise.result.Id;
+
+						// Adding new activity to Activities model
+						var activities = app.Activities.activities;
+						var activity = activities.add();
+						activity.Text = document.getElementById('newEventText').value;
+						activity.UserId = app.Users.currentUser.get('data').Id;
+						activity.Picture = selected;
+						activities.sync();						
+						$enterEvent.style.display = 'none';
+						validator.hideMessages();
+						document.getElementById('addButton').innerText = "Add Event";
+						document.getElementById('newEventText').value = "";
+						document.getElementById('picture').src = "styles/images/default-image.jpg";
+						app.mobileApp.hideLoading();
+					})
+			}
+		};
 		var addActivity = function () {
 			$enterEvent = document.getElementById('enterEvent');
 			if ($enterEvent.style.display === 'block') {
@@ -167,12 +199,12 @@ app.Activities = (function () {
 			}
 		};
 		
-		function success(imageURI) {
+		var success = function (imageURI) {
 			selected = imageURI;
-			var picture = document.getElementById("addPicture");
+			var picture = document.getElementById("picture");
 			picture.src = selected;				
 			app.helper.convertToDataURL(selected, function (base64Img) {
-				baseImage = base64Img;
+				$baseImage = base64Img;
 			}, "image/jpeg");
 			app.mobileApp.hideLoading();
 		}
@@ -203,7 +235,7 @@ app.Activities = (function () {
 			activitySelected: activitySelected,
 			logout: logout,
 			addActivity: pickImage,
-			saveActivity: saveActivity,
+			saveActivity: saveImageActivity,
 			show: showTitle
 		};
 	}());
