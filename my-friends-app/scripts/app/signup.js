@@ -91,7 +91,7 @@ app.Signup = (function () {
 				BirthDate: new Date()
 			});
 			kendo.bind($('#signup-form'), dataSource, kendo.mobile.ui);
-			window.plugins.toast.showLongBottom("Enter all field and then add your own Avatar by using your camera to upload a selfie...");
+			//windows.plugins.toast.showLongBottom("Enter all field and then add your own Avatar by using your camera to upload a selfie...");
 		};
 
 		// Executed after hide of the Signup view
@@ -132,7 +132,7 @@ app.Signup = (function () {
 
 		var addImage = function () {
 			var success = function (data) {
-				window.plugins.toast.showShortTop("Uploading image ...");
+				//windows.plugins.toast.showShortTop("Uploading image ...");
 				everlive.Files.create({
 						Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
 						ContentType: "image/jpeg",

@@ -40,7 +40,7 @@ app.Activity = (function () {
 			// Get current activity (based on item uid) from Activities model
 			activity = app.Activities.activities.getByUid(activityUid);
 			$activityPicture[0].style.display = activity.Picture ? 'block' : 'none';			
-			window.plugins.toast.showShortTop("Downloading ...");
+			//windows.plugins.toast.showShortTop("Downloading ...");
             app.mobileApp.showLoading();
 			app.Comments.comments.filter({
 											 field: 'ActivityId',
@@ -83,7 +83,7 @@ app.Activity = (function () {
 				comment.UserId = app.Users.currentUser.get('data').Id;
 				comment.ActivityId = app.Activity.activity().Id;
                 
-				window.plugins.toast.showShortTop("Updating Comments ...");
+				//windows.plugins.toast.showShortTop("Updating Comments ...");
 				comments.sync();
 				$newComment.Val ="";
 			}

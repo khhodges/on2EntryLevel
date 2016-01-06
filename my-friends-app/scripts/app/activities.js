@@ -159,7 +159,7 @@ app.Activities = (function () {
 				app.showAlert("First take a photo with your camera and then add a message to match!", "Informational");
 			}
 			if (validator.validate() && (selected !== undefined)) {				
-				window.plugins.toast.showShortTop("Uploading image ...");
+				//windows.plugins.toast.showShortTop("Uploading image ...");
 				app.mobileApp.showLoading();
 				// Save image as base64 to everlive
 				app.everlive.Files.create({
