@@ -1,3 +1,4 @@
+
 <div data-role="view" id="single-activity" data-layout="default" data-zoom="true" class="activity-view" data-init="app.Activity.init" data-show="app.Activity.show">
 	<div data-role="header"></div>
 
@@ -26,6 +27,7 @@
 					<div class="cf">
 						<div class="user-share">
 							<textarea id="newComment" style="background-color: azure;font-style: italic;border: 1;" placeholder="What's your opinion?" required validationMessage="Comment text is required!"></textarea>
+							<input id="input-21e" value="0" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs">
 							<a class="btn" data-role="button" data-click="app.Activity.saveComment" style="margin: 20px; padding:10px">Save this Comment</a>
 						</div>
 					</div>
@@ -52,6 +54,7 @@
 					<a class="user-share-txt" style="margin: 0 0 0 -2em">
 						<i> #: Comment # </i>....<b> #: User().DisplayName # </b>
 					</a>
+					
 				</div>
 			</td>
 
