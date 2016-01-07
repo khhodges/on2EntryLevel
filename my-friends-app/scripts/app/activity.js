@@ -11,7 +11,7 @@ app.Activity = (function () {
 		$enterComment,
 		listScroller, 
 		$newComment,
-		showComment,
+		//showComment,
 		validator;
     
 	var activityViewModel = (function () {
@@ -32,7 +32,7 @@ app.Activity = (function () {
 		var show = function (e) {
 			$commentsContainer.empty();
 			validator.hideMessages();
-			showComment = false;
+			//showComment = false;
 			listScroller = e.view.scroller;
 			listScroller.reset();
             

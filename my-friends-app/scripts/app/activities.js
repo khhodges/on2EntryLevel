@@ -226,7 +226,7 @@ app.Activities = (function () {
 			} else {
 				$enterEvent.style.display = 'block';
 				document.getElementById('addButton').innerText = "Cancel";
-				navigator.camera.getPicture(success, error, {destinationType: Camera.DestinationType.FILE_URI, quality: 50});
+				navigator.camera.getPicture(success, error, {destinationType: Camera.DestinationType.FILE_URI, quality: 50, targetWidth: 300, targetHeight:250 });
 			}
 		};
 		
