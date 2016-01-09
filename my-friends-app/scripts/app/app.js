@@ -63,8 +63,8 @@ var app = (function (win) {
 		// Handle "backbutton" event
 		document.addEventListener('backbutton', onBackKeyDown, false);
 
-/*		document.addEventListener('deviceready', function () {
-			feedback.initialize('wewpzbnzheaxgay7');
+		/*		document.addEventListener('deviceready', function () {
+		feedback.initialize('wewpzbnzheaxgay7');
 		});*/
 
 		navigator.splashscreen.hide();
@@ -98,6 +98,21 @@ var app = (function (win) {
 	var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
 	var AppHelper = {
+		
+		ResponsiveImageUrl: function(id) {
+			el.Files.getById(id)
+				.then(function(data) {
+					// get url from data
+					var url = data.url;
+					//navigator.notification.alert(url);
+					// convert to responsive url
+
+					return responsiveUrl;
+				},
+					  function(error) {
+						  navigator.notification.alert(JSON.stringify(error));
+					  });
+		},
 		
 		// Return absolute user profile picture url
 		resolveBackgroundPictureUrl: function (id) {
@@ -139,7 +154,6 @@ var app = (function (win) {
 		autoSizeTextarea: function () {
 			var rows = $(this).val().split('\n');
 			$(this).prop('rows', rows.length + 1);
-			
 		},
 		
 		convertToDataURL: function convertToDataURLviaCanvas(url, callback, outputFormat) {

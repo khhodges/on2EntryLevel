@@ -605,7 +605,7 @@ input[type='week']
 {
 	position: relative;
 	height: 258px;
-	margin: auto;
+	margin: 0 auto;
 	text-align: center;
 	background: transparent url(images/default-image.jpg) no-repeat 50% 50%;
 	background-size: 100% 258px;
@@ -625,21 +625,6 @@ input[type='week']
 	height: 258px;
 	background: transparent url(images/background-picture.png) repeat-x 0 0;
 }
-
-#friendsApp .activity-view .picture-wrp img 
-{
-  display: block;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-	/*
-	position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -100px;
-    margin-top: -100px;*/
-}
-
 #friendsApp .activity-view .picture
 {
 	position: relative;

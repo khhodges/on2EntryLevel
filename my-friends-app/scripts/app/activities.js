@@ -159,7 +159,7 @@ app.Activities = (function () {
 				app.showAlert("First take a photo with your camera and then add a message to match!", "Informational");
 			}
 			if (validator.validate() && (selected !== undefined)) {				
-				//windows.plugins.toast.showShortTop("Uploading image ...");
+				//window.plugins.toast.showShortTop("Uploading image ...");
 				app.mobileApp.showLoading();
 				// Save image as base64 to everlive
 				app.everlive.Files.create({
@@ -226,7 +226,7 @@ app.Activities = (function () {
 			} else {
 				$enterEvent.style.display = 'block';
 				document.getElementById('addButton').innerText = "Cancel";
-				navigator.camera.getPicture(success, error, {destinationType: Camera.DestinationType.FILE_URI, quality: 50, targetWidth: 300, targetHeight:250 });
+				navigator.camera.getPicture(success, error, {destinationType: Camera.DestinationType.FILE_URI, quality: 50});
 			}
 		};
 		
