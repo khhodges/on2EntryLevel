@@ -11,9 +11,9 @@ var app = (function (win) {
 		showAlert(message, 'Error occured');
 	};
 	
-	window.onerror = function (message, file, line) {
-		alert("Error: " + message + ", File: " + file + ", Line: " + line);
-	}
+	/*	window.onerror = function (message, file, line) {
+	alert("Error: " + message + ", File: " + file + ", Line: " + line);
+	}*/
 
 	win.addEventListener('error', function (e) {
 		e.preventDefault();
@@ -103,15 +103,17 @@ var app = (function (win) {
 			el.Files.getById(id)
 				.then(function(data) {
 					// get url from data
-					var url = data.url;
+					var url = data.result.Uri;
+					var size = "/resize=w:200,h:200,fill:cover/";
+					var base = "https://bs1.cdn.telerik.com/image/v1/";
 					//navigator.notification.alert(url);
 					// convert to responsive url
-
-					return responsiveUrl;
-				},
-					  function(error) {
-						  navigator.notification.alert(JSON.stringify(error));
-					  });
+					url = base + appSettings.everlive.appId + size + url;
+					return url;
+				}),
+			function(error) {
+				navigator.notification.alert(JSON.stringify(error));
+			};
 		},
 		
 		// Return absolute user profile picture url
