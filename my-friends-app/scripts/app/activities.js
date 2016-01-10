@@ -54,6 +54,10 @@ app.Activities = (function () {
 			PictureUrl: function () {
 				return app.helper.resolvePictureUrl(this.get('Picture'));
 			},
+			ResponsivePictureUrl: function () {
+				var result = app.helper.ResponsiveImageUrl(this.get('Picture'));
+				return result;
+			},
 			User: function () {
 				var userId = this.get('UserId');
 				if (userId === undefined) {
