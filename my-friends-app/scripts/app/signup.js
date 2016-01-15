@@ -27,28 +27,43 @@ app.Signup = (function () {
 
 		// Register user after required fields (username and password) are validated in Backend Services
 		var signup = function () {
-			dataSource.Gender = parseInt(dataSource.Gender);
-			var birthDate = new Date(dataSource.BirthDate);
-
-			if (birthDate.toJSON() === null) {
-				birthDate = new Date();
-			}
-			
-			dataSource.BirthDate = birthDate;
-			dataSource.Picture = imageId;
-
-			Everlive.$.Users.register(
-					dataSource.Username,
-					dataSource.Password,
-					dataSource)
-				.then(function () {
-						app.showAlert("Congratulations! You are now registered!", "The Loyalty Club");
-						app.mobileApp.navigate('#welcome');
-					},
-					function (err) {
-						app.showError(err.message);
-					});
 		};
+		
+		var defaultAvatar = function () {
+			var picture = document.getElementById("avatarImage");
+			app.helper.convertToDataURL("styles/images/logo1.jpg", function (base64Img) {
+				everlive.Files.create({
+										  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+										  ContentType: "image/jpeg",
+										  base64: base64Img
+									  }).then(function (promise) {
+										  imageId = promise.result.Id;
+										  
+										  dataSource.Gender = parseInt(dataSource.Gender);
+										  var birthDate = new Date(dataSource.BirthDate);
+
+										  if (birthDate.toJSON() === null) {
+											  birthDate = new Date();
+										  }
+			
+										  dataSource.BirthDate = birthDate;
+			
+										  dataSource.Picture = imageId;
+
+										  Everlive.$.Users.register(
+											  dataSource.Username,
+											  dataSource.Password,
+											  dataSource)
+											  .then(function () {
+												  app.showAlert("Congratulations! You are now registered!", "The Loyalty Club");
+												  app.mobileApp.navigate('#welcome');
+											  },
+													function (err) {
+														app.showError(err.message);
+													});
+									  })
+			}, "image/jpeg");
+		}
 
 		// Executed after Signup view initialization
 		// init form validator
@@ -63,8 +78,8 @@ app.Signup = (function () {
 			$signupInfo = $('#signupInfo');
 			$signupBtnWrp = $('#signupBtnWrp');
 			validator = $signUpForm.kendoValidator({
-				validateOnBlur: false
-			}).data('kendoValidator');
+													   validateOnBlur: false
+												   }).data('kendoValidator');
 
 			$formFields.on('keyup keypress blur change input', function () {
 				if (validator.validate()) {
@@ -81,15 +96,15 @@ app.Signup = (function () {
 		var show = function () {
 			$signupInfo.prop('rows', 1);
 			dataSource = kendo.observable({
-				Username: '',
-				Password: '',
-				DisplayName: '',
-				Email: '',
-				Gender: '0',
-				About: 'styles/images/avatar.png',
-				Friends: [],
-				BirthDate: new Date()
-			});
+											  Username: '',
+											  Password: '',
+											  DisplayName: '',
+											  Email: '',
+											  Gender: '0',
+											  About: 'styles/images/avatar.png',
+											  Friends: [],
+											  BirthDate: new Date()
+										  });
 			kendo.bind($('#signup-form'), dataSource, kendo.mobile.ui);
 			//window.plugins.toast.showLongBottom("Enter all field and then add your own Avatar by using your camera to upload a selfie...");
 		};
@@ -125,7 +140,7 @@ app.Signup = (function () {
 			};
 			var config = {
 				destinationType: Camera.DestinationType.FILE_URI,
-				quality: 50
+				quality: 25
 			};
 			navigator.camera.getPicture(success, error, config);
 		};
@@ -134,10 +149,10 @@ app.Signup = (function () {
 			var success = function (data) {
 				//window.plugins.toast.showShortTop("Uploading image ...");
 				everlive.Files.create({
-						Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
-						ContentType: "image/jpeg",
-						base64: data
-					})
+										  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+										  ContentType: "image/jpeg",
+										  base64: data
+									  })
 					.then(function (promise) {
 						selected = promise.result.Uri;
 						imageId = promise.result.Id;
@@ -151,9 +166,9 @@ app.Signup = (function () {
 			};
 			var config = {
 				destinationType: Camera.DestinationType.DATA_URL,
-				quality: 50
+				quality: 25
 			};
-			app.mobileApp.showLoading();
+			//app.mobileApp.showLoading();
 			navigator.camera.getPicture(success, error, config);
 		};
 
@@ -167,9 +182,9 @@ app.Signup = (function () {
 						var image = data.result[i];
 						files.push(image.Uri);
 						$("#images").kendoMobileListView({
-							dataSource: files,
-							template: "<ui><div class='adiv' ><img class='crop' src='#: data #' /></ui>"
-						});
+															 dataSource: files,
+															 template: "<ui><div class='adiv' ><img class='crop' src='#: data #' /></ui>"
+														 });
 					}
 				})
 			} else {
@@ -232,7 +247,7 @@ app.Signup = (function () {
 			show: show,
 			hide: hide,
 			onSelectChange: onSelectChange,
-			signup: signup,
+			signup: defaultAvatar,
 			addImage: addImage,
 			pickImage: addImage,
 			resetImage: resetImage

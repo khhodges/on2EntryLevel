@@ -54,10 +54,30 @@ app.Activities = (function () {
 			PictureUrl: function () {
 				return app.helper.resolvePictureUrl(this.get('Picture'));
 			},
+			/*			ResponsivePictureUrl: function () {
+			var result = app.helper.ResponsiveImageUrl(this.get('Picture'));
+			return result;
+			},*/
+			
 			ResponsivePictureUrl: function () {
-				var result = app.helper.ResponsiveImageUrl(this.get('Picture'));
-				return result;
+				var id = this.get('Picture');
+				var el = new Everlive(appSettings.everlive.appId);
+				el.Files.getById(id).then
+				(function(data) {
+					// get url from data
+					var url = data.result.Uri;
+					var size = "/resize=w:200,h:200,fill:cover/";
+					var base = "https://bs1.cdn.telerik.com/image/v1/";
+					//navigator.notification.alert(url);
+					// convert to responsive url
+					url = base + appSettings.everlive.appId + size + url;
+					return url;
+				}),
+				function(error) {
+					navigator.notification.alert(JSON.stringify(error));
+				}
 			},
+			
 			User: function () {
 				var userId = this.get('UserId');
 				if (userId === undefined) {
@@ -86,7 +106,6 @@ app.Activities = (function () {
 				return currentUserId === userId;
 			}
 		};
-
 		// Activities data source. The Backend Services dialect of the Kendo UI DataSource component
 		// supports filtering, sorting, paging, and CRUD operations.
 		var activitiesDataSource = new kendo.data.DataSource({
@@ -139,7 +158,31 @@ app.Activities = (function () {
 					navigateHome();
 				});
 		};
-		
+
+		function crop() {
+			var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
+			var starter = document.getElementById("picture");
+			var canvas = document.getElementById("canvas");
+			if (starter.naturalWidth > starter.naturalHeight) {
+				sx = (starter.naturalWidth - starter.naturalHeight) / 2;
+				starterWidth = starter.naturalHeight;
+				starterHeight = starter.naturalHeight;
+				sy = 0;
+			} else {
+				sy = (- starter.naturalWidth + starter.naturalHeight) / 2;
+				starterWidth = starter.naturalWidth;
+				starterHeight = starter.naturalWidth;
+				sx = 0;
+			}
+			dx = 0;
+			dy = 0;
+			canvasWidth = canvas.width;
+			canvasHeight = canvas.height;
+			var ctx = canvas.getContext("2d");
+			ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+			$baseImage = canvas.toDataURL("image/png", 0.5).substring("data:image/png;base64,".length);
+			//$baseImage = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+		}
 		var saveActivity = function () {
 			// Validating of the required fields
 			if (validator.validate()) {
@@ -167,8 +210,8 @@ app.Activities = (function () {
 				app.mobileApp.showLoading();
 				// Save image as base64 to everlive
 				app.everlive.Files.create({
-											  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
-											  ContentType: "image/jpeg",
+											  Filename: Math.random().toString(36).substring(2, 15) + ".png",
+											  ContentType: "image/png",
 											  base64: $baseImage
 										  })
 					.then(function (promise) {
@@ -208,9 +251,7 @@ app.Activities = (function () {
 			selected = imageURI;
 			var picture = document.getElementById("picture");
 			picture.src = selected;				
-			app.helper.convertToDataURL(selected, function (base64Img) {
-				$baseImage = base64Img;
-			}, "image/jpeg");
+			//app.helper.convertToDataURL(selected, function (base64Img) {$baseImage = base64Img;}, "image/jpeg");
 			app.mobileApp.hideLoading();
 		}
 
@@ -241,7 +282,8 @@ app.Activities = (function () {
 			logout: logout,
 			addActivity: pickImage,
 			saveActivity: saveImageActivity,
-			show: showTitle
+			show: showTitle,
+			crop: crop
 		};
 	}());
 
