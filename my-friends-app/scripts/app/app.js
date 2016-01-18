@@ -98,6 +98,17 @@ var app = (function (win) {
 	var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
 	var AppHelper = {
+		checkSimulator: function() {
+			if (window.navigator.simulator === true) {
+				//alert('This plugin is not available in the simulator.');
+				return true;
+			} else if (window.plugins === undefined || window.plugins.toast === undefined) {
+				//alert('Plugin not found. Maybe you are running in AppBuilder Companion app which currently does not support this plugin.');
+				return true;
+			} else {
+				return false;
+			}
+		},
 		
 		ResponsiveImageUrl: function(id) {
 			el.Files.getById(id)
@@ -146,6 +157,15 @@ var app = (function (win) {
 		// Date formatter. Return date in d.m.yyyy format
 		formatDate: function (dateString) {
 			return kendo.toString(new Date(dateString), 'MMM d, yyyy');
+		},
+		
+		// Date formatter. Return likes count format
+		formatLikes: function (likesArray, text) {
+			if (likesArray !== undefined) {
+				return kendo.toString('Total Viewers: ' + likesArray.length);
+			} else {
+				return kendo.toString('Total Viewers: 0');
+			}
 		},
 
 		// Current user logout

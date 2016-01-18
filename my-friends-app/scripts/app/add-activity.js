@@ -61,8 +61,10 @@ app.addActivity = (function () {
 				navigator.notification.alert("No selection was detected.");
 			};
 			var config = {
-				destinationType: Camera.DestinationType.FILE_URI,
-				quality: 50
+				quality: 30, 
+				destinationType: destinationType.FILE_URI,
+				sourceType: source,
+				correctOrientation: true
 			};
 			//navigator.notification.alert("PickImage detected.");
 			navigator.camera.getPicture(success, error, config);

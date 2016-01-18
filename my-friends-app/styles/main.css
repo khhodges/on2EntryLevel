@@ -1,3 +1,11 @@
+ .km-drawer-button:after,
+ .km-drawer-button:before {
+    content: '\e077';
+}
+
+ .km-drawer .km-content {
+    background-color: #fcfcfc;
+ }
 .round
 {
 	display: flex;
@@ -604,11 +612,11 @@ input[type='week']
 #friendsApp .activity-view .picture-wrp
 {
 	position: relative;
-	height: 258px;
+	height: 257px;
 	margin: 0 auto;
 	text-align: center;
 	background: transparent url(images/default-image.jpg) no-repeat 50% 50%;
-	background-size: 100% 258px;
+	background-size: cover;
 	overflow: hidden;
 }
 #friendsApp .activity-view .picture-wrp::before
@@ -621,8 +629,8 @@ input[type='week']
 	left: 0;
 	z-index: 1;
 	display: block;
-	width: 100%;
-	height: 258px;
+	width: auto;
+	height: 300px;
 	background: transparent url(images/background-picture.png) repeat-x 0 0;
 }
 #friendsApp .activity-view .picture

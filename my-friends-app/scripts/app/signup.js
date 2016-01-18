@@ -139,8 +139,10 @@ app.Signup = (function () {
 				navigator.notification.alert("No selection was detected.");
 			};
 			var config = {
-				destinationType: Camera.DestinationType.FILE_URI,
-				quality: 25
+				quality: 30, 
+				destinationType: destinationType.FILE_URI,
+				sourceType: source,
+				correctOrientation: true
 			};
 			navigator.camera.getPicture(success, error, config);
 		};
@@ -165,8 +167,11 @@ app.Signup = (function () {
 				navigator.notification.alert("Unfortunately we could not add the image");
 			};
 			var config = {
-				destinationType: Camera.DestinationType.DATA_URL,
-				quality: 25
+				//destinationType: Camera.DestinationType.DATA_URL,
+				quality: 30, 
+				destinationType: destinationType.FILE_URI,
+				sourceType: source,
+				correctOrientation: true
 			};
 			//app.mobileApp.showLoading();
 			navigator.camera.getPicture(success, error, config);

@@ -2,17 +2,17 @@
 	<div data-role="header">
 		<div data-role="navbar" id="navbarTitle">
 			Friends
-			<a class="nav-button" data-align="left" data-role="backbutton" data-click="app.Activities.logout">Logout</a>
+			
+                <a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button"></a>
+			<!--a class="nav-button" data-align="left" data-role="backbutton" data-click="app.Activities.logout">Logout</a -->
 			<a id="addButton" class="nav-button" data-align="right" data-role="button" data-click="app.Activities.addActivity">Add Event</a>
 		</div>
 	</div>
 	<div hidden>
-		<p>
-			<button onclick="app.Activities.crop()">Try it</button>
-		</p>
 		<p>Image to use:</p>
 		<img id="picture" src="styles/images/default-image.jpg" width="100%" onload="app.Activities.crop()">
 	</div>
+	<br/>
 	<div id="enterEvent" class="share-form-wrp" data-role="listview" data-style="inset" style="display: none">
 		<div class="cf">
 			<div class="activity-content">
@@ -36,19 +36,24 @@
 		<br>Tap on the ADD button and share what's on your mind.
 	</p>
 </div>
+
 <!-- Activities ListView Template -->
 <script type="text/x-kendo-template" id="activityTemplate">
-	<div data-role="touch" data-bind="events: { tap: activitySelected }" class="cf">
-		<div class="user-avatar">
-			<div data-bind="style:{backgroundImage: User().urlPictureUrl}"></div>
+	<div class="user-avatar" data-role="touch" data-bind="events: { tap: addActivity }">
+		<div data-bind="style:{backgroundImage: User().urlPictureUrl}"></div>
+	</div>
+	<div class="activity-content">
+		<h2 class="person-name">#: User().DisplayName #</h2>
+		<div  class="cf">
+			<a data-role="touch" data-bind="events: { tap: activitySelected }">
+				<div data-bind="visible: Picture">
+					<img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}" width="80%">
+				</div>
+			</a>
+			<span class="time-span">#: CreatedAtFormatted() # </span>
+			<a class="user-share-txt">#: Text # </a>
 		</div>
-		<div class="activity-content">
-			<h2 class="person-name">#: User().DisplayName #</h2>
-			<div data-bind="visible: Picture">
-				<img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}" width="80%">
-			</div>
-			<a class="user-share-txt">#: Text #</a>
-			<span class="time-span">#: CreatedAtFormatted() #</span>
-		</div>
+	
+		<span class="time-span"><b>#: LikesCount() #</b></span>
 	</div>
 </script>

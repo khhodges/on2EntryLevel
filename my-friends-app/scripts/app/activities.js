@@ -14,9 +14,12 @@ app.Activities = (function () {
 		$newEventText = $('#newEventText');
 		$newEventText.on('keydown', app.helper.autoSizeTextarea);
 		validator.hideMessages();
+
 	};
 	
 	var showTitle = function() {
+		
+		
 		var title = document.getElementById("navbarTitle").InnerTEXT;
 		title = activities.User().DisplayName;
 	}
@@ -51,15 +54,21 @@ app.Activities = (function () {
 			CreatedAtFormatted: function () {
 				return app.helper.formatDate(this.get('CreatedAt'));
 			},
-			PictureUrl: function () {
+
+			LikesCount: function () {
+				return app.helper.formatLikes(this.get('Likes'), this.get('Text'));
+			},
+			PictureUrl
+			: function () {
 				return app.helper.resolvePictureUrl(this.get('Picture'));
 			},
-			/*			ResponsivePictureUrl: function () {
+			/*ResponsivePictureUrl: function () {
 			var result = app.helper.ResponsiveImageUrl(this.get('Picture'));
 			return result;
 			},*/
 			
-			ResponsivePictureUrl: function () {
+			ResponsivePictureUrl
+			: function () {
 				var id = this.get('Picture');
 				var el = new Everlive(appSettings.everlive.appId);
 				el.Files.getById(id).then
@@ -78,7 +87,8 @@ app.Activities = (function () {
 				}
 			},
 			
-			User: function () {
+			User
+			: function () {
 				var userId = this.get('UserId');
 				if (userId === undefined) {
 					showHelp("userID is null");
@@ -99,7 +109,8 @@ app.Activities = (function () {
 					urlPictureUrl: app.helper.resolveBackgroundPictureUrl(app.Users.currentUser.data.Picture)
 				};
 			},
-			isVisible: function () {
+			isVisible
+			: function () {
 				var currentUserId = app.Users.currentUser.data.Id;
 				var userId = this.get('UserId');
 
@@ -180,7 +191,7 @@ app.Activities = (function () {
 			canvasHeight = canvas.height;
 			var ctx = canvas.getContext("2d");
 			ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-			$baseImage = canvas.toDataURL("image/png", 0.5).substring("data:image/png;base64,".length);
+			$baseImage = canvas.toDataURL("image/jpeg", 0.5).substring("data:image/jpeg;base64,".length);
 			//$baseImage = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
 		}
 		var saveActivity = function () {
@@ -210,8 +221,8 @@ app.Activities = (function () {
 				app.mobileApp.showLoading();
 				// Save image as base64 to everlive
 				app.everlive.Files.create({
-											  Filename: Math.random().toString(36).substring(2, 15) + ".png",
-											  ContentType: "image/png",
+											  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+											  ContentType: "image/jpeg",
 											  base64: $baseImage
 										  })
 					.then(function (promise) {
@@ -271,7 +282,14 @@ app.Activities = (function () {
 			} else {
 				$enterEvent.style.display = 'block';
 				document.getElementById('addButton').innerText = "Cancel";
-				navigator.camera.getPicture(success, error, {destinationType: Camera.DestinationType.FILE_URI, quality: 50});
+				navigator.camera.getPicture(success, error, {
+												//kjhh best result including iphone rotation
+												quality: 100, 
+												destinationType: navigator.camera.DestinationType.FILE_URI,
+												sourceType: navigator.camera.PictureSourceType.CAMERA,
+												encodingType: navigator.camera.EncodingType.JPEG,
+												correctOrientation: true
+											});
 			}
 		};
 		
