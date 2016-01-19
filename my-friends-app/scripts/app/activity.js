@@ -40,14 +40,14 @@ app.Activity = (function () {
 			// Get current activity (based on item uid) from Activities model
 			activity = app.Activities.activities.getByUid(activityUid);
 			$activityPicture[0].style.display = activity.Picture ? 'block' : 'none';			
-			if(app.helper.CheckSimulator){window.plugins.toast.showShortTop("Downloading ...");}
+				if(!app.helper.checkSimulator){window.plugins.toast.showShortTop("Downloading ...")};
             //app.mobileApp.showLoading();
 			app.Comments.comments.filter({
 											 field: 'ActivityId',
 											 operator: 'eq',
 											 value: activity.Id
 										 });
-            //app.mobileApp.hideLoading();
+            app.mobileApp.hideLoading();
 			kendo.bind(e.view.element, activity, kendo.mobile.ui);
 		};
         
@@ -83,7 +83,7 @@ app.Activity = (function () {
 				comment.UserId = app.Users.currentUser.get('data').Id;
 				comment.ActivityId = app.Activity.activity().Id;
                 
-				//window.plugins.toast.showShortTop("Updating Comments ...");
+				window.plugins.toast.showShortTop("Updating Comments ...");
 				comments.sync();
 				$newComment.Val ="";
 			}
