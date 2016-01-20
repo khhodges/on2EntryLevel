@@ -3,12 +3,12 @@
  */
 var app = app || {}; // reuse the existing app or create a new, empty app container
 
-app.Signup = (function () {
+app.userSettings = (function () {
 	'use strict'; //This JavaScript 1.8.5 (ECMAScript version 5) is a literal expression, 
 	//ignored by earlier versions to throw silent errors, fixes mistakes and add optimizations: 
 	//strict mode code may run faster and prevents syntax needed for later versions of ECMAScript.
 
-	var singupViewModel = (function () {
+	var userSettingsViewModel = (function () {
 		// View model components see HTML ids
 		var $signUpForm;
 		var $formFields;
@@ -254,5 +254,5 @@ app.Signup = (function () {
 		};
 	}());
 
-	return singupViewModel;
+	return userSettingsViewModel;
 }());

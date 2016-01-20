@@ -14,12 +14,9 @@ app.Activities = (function () {
 		$newEventText = $('#newEventText');
 		$newEventText.on('keydown', app.helper.autoSizeTextarea);
 		validator.hideMessages();
-
 	};
 	
 	var showTitle = function() {
-		
-		
 		var title = document.getElementById("navbarTitle").InnerTEXT;
 		title = activities.User().DisplayName;
 	}
@@ -54,21 +51,20 @@ app.Activities = (function () {
 			CreatedAtFormatted: function () {
 				return app.helper.formatDate(this.get('CreatedAt'));
 			},
-
+			
 			LikesCount: function () {
 				return app.helper.formatLikes(this.get('Likes'), this.get('Text'));
 			},
-			PictureUrl
-			: function () {
+			
+			PictureUrl: function () {
 				return app.helper.resolvePictureUrl(this.get('Picture'));
 			},
-			/*ResponsivePictureUrl: function () {
+			/*			ResponsivePictureUrl: function () {
 			var result = app.helper.ResponsiveImageUrl(this.get('Picture'));
 			return result;
 			},*/
 			
-			ResponsivePictureUrl
-			: function () {
+			ResponsivePictureUrl: function () {
 				var id = this.get('Picture');
 				var el = new Everlive(appSettings.everlive.appId);
 				el.Files.getById(id).then
@@ -87,8 +83,7 @@ app.Activities = (function () {
 				}
 			},
 			
-			User
-			: function () {
+			User: function () {
 				var userId = this.get('UserId');
 				if (userId === undefined) {
 					showHelp("userID is null");
@@ -109,8 +104,7 @@ app.Activities = (function () {
 					urlPictureUrl: app.helper.resolveBackgroundPictureUrl(app.Users.currentUser.data.Picture)
 				};
 			},
-			isVisible
-			: function () {
+			isVisible: function () {
 				var currentUserId = app.Users.currentUser.data.Id;
 				var userId = this.get('UserId');
 
@@ -217,7 +211,7 @@ app.Activities = (function () {
 				app.showAlert("First take a photo with your camera and then add a message to match!", "Informational");
 			}
 			if (validator.validate() && (selected !== undefined)) {				
-				//window.plugins.toast.showShortTop("Uploading image ...");
+				if(!app.helper.checkSimulator){window.plugins.toast.showShortTop("Uploading image ...")};
 				app.mobileApp.showLoading();
 				// Save image as base64 to everlive
 				app.everlive.Files.create({

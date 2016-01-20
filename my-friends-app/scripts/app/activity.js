@@ -83,7 +83,7 @@ app.Activity = (function () {
 				comment.UserId = app.Users.currentUser.get('data').Id;
 				comment.ActivityId = app.Activity.activity().Id;
                 
-				window.plugins.toast.showShortTop("Updating Comments ...");
+				if(!app.helper.checkSimulator){window.plugins.toast.showShortTop("Updating Comments ...")};
 				comments.sync();
 				$newComment.Val ="";
 			}
