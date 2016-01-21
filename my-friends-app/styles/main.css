@@ -227,6 +227,7 @@ input[type='week']
 	background-color: #e91e63;
 }
 #friendsApp .signup-view .btn-signup,
+#friendsApp .update-view .btn-update,
 #friendsApp .btn-delete
 {
 	display: block;
@@ -381,12 +382,14 @@ input[type='week']
 	background-image: url(images/logo-adfs.png);
 }
 #friendsApp .welcome-scrn .group-wrp .oauth .btn span,
-#friendsApp .welcome-scrn .group-wrp .btn-signup span
+#friendsApp .welcome-scrn .group-wrp .btn-signup span,
+#friendsApp .welcome-scrn .group-wrp .btn-update span
 {
 	font-weight: 500;
 	font-size: 1rem;
 }
-#friendsApp .welcome-scrn .group-wrp .btn-signup
+#friendsApp .welcome-scrn .group-wrp .btn-signup,
+#friendsApp .welcome-scrn .group-wrp .btn-update
 {
 	border: 0 none;
 	background-color: transparent;
@@ -419,15 +422,18 @@ input[type='week']
 	margin: 0;
 	resize: none;
 }
-#friendsApp .signup-view .signup-btn-wrp
+#friendsApp .signup-view .signup-btn-wrp,
+#friendsApp .update-view .update-btn-wrp
 {
 	margin: 0 2em;
 }
-#friendsApp .signup-view .select-wrp select
+#friendsApp .signup-view .select-wrp select,
+#friendsApp .update-view .select-wrp select
 {
 	color: #4d4d4d;
 }
-#friendsApp .signup-view .select-wrp option:first-child
+#friendsApp .signup-view .select-wrp option:first-child,
+#friendsApp .update-view .select-wrp option:first-child
 {
 	color: #b6c5c6;
 }

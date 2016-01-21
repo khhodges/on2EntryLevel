@@ -13,13 +13,14 @@
 	<script src="scripts/app/app.js"></script>
 	<script src="scripts/app/analytics-monitor.js"></script>
 	<script src="scripts/app/users.js"></script>
+	<script src="scripts/app/update.js"></script>
 	<script src="scripts/app/login.js"></script>
 	<script src="scripts/app/signup.js"></script>
 	<script src="scripts/app/activities.js"></script>
 	<script src="scripts/app/activity.js"></script>
-	<script src="scripts/app/comments.js"></script>
+	<script src="scripts/app/comments.js"></script><!--
 	<script src="scripts/app/add-activity.js"></script>
-	<script src="scripts/app/add-comment.js"></script>
+	<script src="scripts/app/add-comment.js"></script>-->
 	<link href="http://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
 	<link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet">
 	<link href="styles/main.css" rel="stylesheet">
@@ -74,11 +75,11 @@
 			<li>
 				<a href="http://muddywatersrestaurant.com" target="_blank">Switch to our Web Site</a>
 			</li><br/>
-			<span>OFA version 1.1 - 1/15/2015</span>
+			<span>OFA version 1.2.1 - 1/20/2015</span>
 		</ol>
 	</div>
 	
-	    <div id="appDrawer" data-role="drawer" data-title="Navigation">
+	    <div id="appDrawer" data-role="drawer" data-title="Menu">
         <header data-role="header">
             <div data-role="navbar">
                 <span data-role="view-title"></span>
@@ -86,12 +87,8 @@
             </div>
         </header>
         <ul id="navigation-container" data-role="listview">
-            <li><a href="views/activitiesView.html" data-icon="home">Activities</a></li><!--
-            <li><a href="views/activityView.html" data-icon="settings">Locations</a></li>
-            <li><a href="views/addCommentView.html" data-icon="contacts">Comments</a></li>
-            <li><a href="views/addActivityView.html" data-icon="contacts">Diary</a></li>
-            <li><a href="views/activitiesView.html" data-icon="details">History</a></li>-->
-            <li><a href="views/settingsView.html" data-icon="details">Settings</a></li>
+            <li><a href="views/activitiesView.html" data-icon="home">Activities</a></li>
+            <li><a href="views/updateView.html" data-icon="settings">Locations</a></li>
         </ul>
     </div>
 </body>
