@@ -27,12 +27,10 @@ app.update = (function () {
 
             dataSource.BirthDate = birthDate;
 
-            Everlive.$.Users.register(
-                dataSource.Username,
-                dataSource.Password,
+            Everlive.$.Users.update(
                 dataSource)
             .then(function () {
-                app.showAlert("Registration successful");
+                app.showAlert("Update successful");
                 app.mobileApp.navigate('#welcome');
             },
             function (err) {
