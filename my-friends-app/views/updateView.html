@@ -8,7 +8,7 @@
     <form id="update">
         <ul id="update-form" data-role="listview" data-style="inset">
             <li>
-                <input type="text" id="updateName" data-bind="value: DisplayName" placeholder="name" required>
+                <input type="text" id="updateName" data-bind="value: DisplayName" placeholder="# app.Users.currentUser.data.DisplayName #" enabled="false" required>
             </li>
             <li>
                 <input type="email" id="updateEmail" data-bind="value: Email" placeholder="email">
@@ -24,17 +24,17 @@
             </li>
             <li class="select-wrp">
                 <select id="updateGenderPicker" data-bind="value: Gender" onchange="app.update.onSelectChange(this)">
-                    <option value="0" selected>gender</option>
+                    <option value="0" selected>Include your gender</option>
                     <option value="1">Male</option>
                     <option value="2">Female</option>
                 </select>
             </li>
             <li class="txtarea-wrp">
-                <textarea id="updateInfo" data-bind="value: About" placeholder="about">User account created from the hybrid app.</textarea>
+                <textarea id="updateInfo" data-bind="value: About" placeholder="Add your own note."></textarea>
             </li>
         </ul>
     </form>
     <div id="updateBtnWrp" class="update-btn-wrp disabled">
-        <a class="btn btn-update" data-role="button" data-bind="click: update">Register</a>
+        <a class="btn btn-update" data-role="button" data-bind="click: update">Save to Update</a>
     </div>
 </div>

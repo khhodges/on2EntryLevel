@@ -66,14 +66,14 @@ app.update = (function () {
             $updateInfo.prop('rows', 1);
 
             dataSource = kendo.observable({
-                Username: '',
+                Username: app.Users.currentUser.data.Username,
                 Password: '',
-                DisplayName: '',
-                Email: '',
-                Gender: '0',
-                About: '',
-                Friends: [],
-                BirthDate: new Date()
+                DisplayName: app.Users.currentUser.data.DisplayName,
+                Email: app.Users.currentUser.data.Email,
+                Gender: app.Users.currentUser.data.Gender,
+                About: app.Users.currentUser.data.About,
+                Friends: app.Users.currentUser.data.Friends,
+                BirthDate: app.Users.currentUser.data.BirthDate
             });
             kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);
         };
