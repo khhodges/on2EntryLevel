@@ -32,17 +32,38 @@ app.avatar = (function () {
 											 },
 			
 											 function(data) {
-												 app.showAlert(JSON.stringify(data));
+												 app.showAlert("Update saved, it can take 24 hours to show up when you log back in!");
 											 },
 			
 											 function(error) {
-												 app.showError(JSON.stringify(error));
+												 app.showAlert("Update was not saved, please try again later!");
 											 }
 					)
 			}
 										, "image/jpeg")
 		}
 
+		var newAvatar = function () {
+			var everlive = new Everlive(appSettings.everlive.appId);
+			app.helper.convertToDataURL(selected, function (base64Img) {
+				everlive.Files.updateContent(app.Users.currentUser.data.Picture, {
+												 Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+												 ContentType: "image/jpeg",
+												 base64: base64Img
+											 },
+			
+											 function(data) {
+												 updateUser(data);
+												 app.showAlert("Update saved, it can take 24 hours to show up when you log back in!");
+											 },
+			
+											 function(error) {
+												 app.showAlert("Update was not saved, please try again later!");
+											 }
+					)
+			}
+										, "image/jpeg")
+		}
 		// Executed after Signup view initialization
 		// init form validator
 		var init = function () {
@@ -83,7 +104,6 @@ app.avatar = (function () {
 											  Picture: app.Users.currentUser.data.Picture
 										  });
 			kendo.bind($('#signup-form'), dataSource, kendo.mobile.ui);
-			//window.plugins.toast.showLongBottom("Enter all field and then add your own Avatar by using your camera to upload a selfie...");
 		};
 
 		var pickImage = function () {
