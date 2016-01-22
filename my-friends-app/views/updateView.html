@@ -1,31 +1,43 @@
 <div data-role="view" id="update" data-layout="default" class="update-view" data-model="app.update" data-init="app.update.init" data-show="app.update.show" data-hide="app.update.hide">
-    <div data-role="header">
-        <div data-role="navbar">
-            Account
-            <a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button" data-badge="2"></a>
-        </div>
-    </div>
-    <form id="update">
-        <ul id="update-form" data-role="listview" data-style="inset">
-            <li>
-                <input type="text" id="updateName" data-bind="value: DisplayName" placeholder="# app.Users.currentUser.data.DisplayName #" enabled="false" required>
-            </li>
-            <li>
-                <input type="date" id="updateBirthDatePicker" data-bind="value: BirthDate">
-            </li>
-            <li class="select-wrp">
-                <select id="updateGenderPicker" data-bind="value: Gender" onchange="app.update.onSelectChange(this)">
-                    <option value="0" selected>Include your gender</option>
-                    <option value="1">Male</option>
-                    <option value="2">Female</option>
-                </select>
-            </li>
-            <li class="txtarea-wrp">
-                <textarea id="updateInfo" data-bind="value: About" placeholder="Add your own note."></textarea>
-            </li>
-        </ul>
-    </form>
-    <div id="updateBtnWrp" class="update-btn-wrp disabled">
-        <a class="btn btn-update" data-role="button" data-bind="click: update">Save to Update</a>
-    </div>
+	<div data-role="header">
+		<div data-role="navbar">
+			Account
+			<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button" data-badge="2"></a>
+		</div>
+	</div>
+	<form id="update">
+		<ul id="update-form" data-role="listview" data-style="inset">
+			<li>
+				<label>
+					Name:
+					<input type="text" id="updateName" data-bind="value: DisplayName" placeholder="# app.Users.currentUser.data.DisplayName #" enabled="false" required>
+				</label>
+			</li>
+			<li>
+				<label>
+					Joined:
+					<input type="date" id="updateBirthDatePicker" data-bind="value: BirthDate">
+				</label>
+			</li>
+			<li class="select-wrp">
+				<label>
+					Gender:
+					<select id="updateGenderPicker" data-bind="value: Gender" onchange="app.update.onSelectChange(this)">
+						<option value="0" selected>Include your gender</option>
+						<option value="1">Male</option>
+						<option value="2">Female</option>
+					</select>
+				</label>
+			</li>
+			<label>
+				Notes:
+				<li class="txtarea-wrp">
+					<textarea id="updateInfo" data-bind="value: About" placeholder="Add your own note."></textarea>
+				</li>
+			</label>
+		</ul>
+	</form>
+	<div id="updateBtnWrp" class="update-btn-wrp disabled">
+		<a class="btn btn-update" data-role="button" data-bind="click: update">Save to Update</a>
+	</div>
 </div>

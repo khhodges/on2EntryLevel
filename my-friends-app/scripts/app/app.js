@@ -178,7 +178,7 @@ var app = (function (win) {
 			$(this).prop('rows', rows.length + 1);
 		},
 		
-		convertToDataURLx: function convertToDataURLviaCanvas(url, callback, outputFormat) {
+		convertToDataURL: function convertToDataURLviaCanvas(url, callback, outputFormat) {
 			var img = new Image();
 			img.crossOrigin = 'Anonymous';
 			img.onload = function() {

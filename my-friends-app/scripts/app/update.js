@@ -15,7 +15,7 @@ app.update = (function () {
         var $updateBtnWrp;
         var validator;
 
-        // Register user after required fields (username and password) are validated in Backend Services
+        // Update user after required fields (NOT username, email and password) in Backend Services
         var update = function () {
 
             dataSource.Gender = parseInt(dataSource.Gender);
