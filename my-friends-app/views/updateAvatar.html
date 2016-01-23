@@ -1,4 +1,4 @@
-<div data-role="view" id="avatar" data-layout="default" class="update-view" data-model="app.avatar" data-init="app.avatar.init" data-show="app.avatar.show" data-hide="app.avatar.hide">
+<div data-role="view" id="updateAvatar" data-layout="default" class="update-view" data-model="app.avatar" data-init="app.avatar.init" data-show="app.avatar.show" data-hide="app.avatar.hide">
 	<div data-role="header">
 		<div data-role="navbar">
 			Avatar
@@ -7,12 +7,18 @@
 	</div>
 
 	<div style="padding:15px; margin: 10px">
-		<table>
+		<table id="updateAvatar-form">
+			<thead>
+				<input type="text" id="updateAvatarName" data-bind="value: DisplayName">
+			</thead>
 			<tr>
 				<td span="2">
+					<!--
 					<div class="cover">
-						<div id="avatarImage" style="background-image: url(styles/images/logo2.jpg); " class="video-thumbnail"></div>
-					</div>
+					<div id="avatarImage" data-bind="style:{backgroundImage: PictureUrl}" class="video-thumbnail"></div>
+					</div>-->
+
+					<img id="updateAvatarImage" data-bind="attr: { src: aPictureUrl}" width="100px" >
 				</td>
 				<td >
 					<a class="btn" data-align="right" data-role="button" data-bind="click: showImage" style="margin: 20px; padding:10px">

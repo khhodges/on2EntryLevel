@@ -10,10 +10,10 @@ app.avatar = (function () {
 
 	var avatarViewModel = (function () {
 		// View model components see HTML ids
-		var $signUpForm;
+		var $updateAvatarForm;
 		var $formFields;
-		var $signupInfo;
-		var $signupBtnWrp;
+		var $updateAvatarInfo;
+		var $updateAvatarBtnWrp;
 
 		// functional components
 		var dataSource;
@@ -46,7 +46,7 @@ app.avatar = (function () {
 		var newAvatar = function () {
 			var everlive = new Everlive(appSettings.everlive.appId);
 			app.helper.convertToDataURL(selected, function (base64Img) {
-				everlive.Files.updateContent(app.Users.currentUser.data.Picture, {
+				everlive.Files.create(app.Users.currentUser.data.Picture, {
 												 Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
 												 ContentType: "image/jpeg",
 												 base64: base64Img
@@ -64,33 +64,46 @@ app.avatar = (function () {
 			}
 										, "image/jpeg")
 		}
-		// Executed after Signup view initialization
+		
+		var updateUser = function (data) {
+			var el = new Everlive(appSettings.everlive.appId);
+			var data = el.data('Users');
+			data.updateSingle({ Id: 'item-id-here', 'Picture': data },
+							  function(data) {
+								  app.showAlert("User image updated and user data saved successfully!");
+							  },
+							  function(error) {
+								  app.showAlert("Update was NOT saved!!");
+							  });
+		}
+		
+		// Executed after updateAvatar view initialization
 		// init form validator
 		var init = function () {
 			// Get a reference to our sensitive element
 			avatarImage = document.getElementById("avatarImage");
-			$signUpForm = $('#signUp');
-			$formFields = $signUpForm.find('input, textarea, select');
-			$signupInfo = $('#signupInfo');
-			$signupBtnWrp = $('#signupBtnWrp');
-			validator = $signUpForm.kendoValidator({
+			$updateAvatarForm = $('#updateAvatar');
+			$formFields = $updateAvatarForm.find('input, textarea, select');
+			$updateAvatarInfo = $('#updateAvatarInfo');
+			$updateAvatarBtnWrp = $('#updateAvatarBtnWrp');
+			validator = $updateAvatarForm.kendoValidator({
 													   validateOnBlur: false
 												   }).data('kendoValidator');
 
 			$formFields.on('keyup keypress blur change input', function () {
 				if (validator.validate()) {
-					$signupBtnWrp.removeClass('disabled');
+					$updateAvatarBtnWrp.removeClass('disabled');
 				} else {
-					$signupBtnWrp.addClass('disabled');
+					$updateAvatarBtnWrp.addClass('disabled');
 				}
 			});
 
-			$signupInfo.on('keydown', app.helper.autoSizeTextarea);
+			$updateAvatarInfo.on('keydown', app.helper.autoSizeTextarea);
 		}
 
-		// Executed after show of the Signup view
+		// Executed after show of the updateAvatar view
 		var show = function () {
-			$signupInfo.prop('rows', 1);
+			$updateAvatarInfo.prop('rows', 1);
 			dataSource = kendo.observable({
 											  
 											  Username: app.Users.currentUser.data.Username,
@@ -101,10 +114,16 @@ app.avatar = (function () {
 											  About: app.Users.currentUser.data.About,
 											  Friends: app.Users.currentUser.data.Friends,
 											  BirthDate: app.Users.currentUser.data.BirthDate,
-											  Picture: app.Users.currentUser.data.Picture
+											  Picture: app.Users.currentUser.data.Picture,
+											  PictureUrl: "url('"+app.Users.currentUser.data.PictureUrl+"');",
+											  aPictureUrl: app.Users.currentUser.data.PictureUrl
 										  });
-			kendo.bind($('#signup-form'), dataSource, kendo.mobile.ui);
+			kendo.bind($('#updateAvatar-form'), dataSource, kendo.mobile.ui);
 		};
+		
+		var userAvatar = function(){
+			app.Users.currentUser.data.PictureUrl;
+        }
 
 		var pickImage = function () {
 			function success(imageURI) {
@@ -131,8 +150,9 @@ app.avatar = (function () {
 		return {
 			init: init,
 			show: show,
-			update: updateAvatar,
-			showImage: pickImage
+			update: newAvatar,
+			showImage: pickImage,
+			userAvatar: userAvatar
 		};
 	}()
 	);

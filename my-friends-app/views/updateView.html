@@ -10,7 +10,7 @@
 			<li>
 				<label>
 					Name:
-					<input type="text" id="updateName" data-bind="value: DisplayName" placeholder="# app.Users.currentUser.data.DisplayName #" enabled="false" required>
+					<input type="text" id="updateName" data-bind="value: DisplayName" enabled="false" required>
 				</label>
 			</li>
 			<li>
@@ -29,12 +29,32 @@
 					</select>
 				</label>
 			</li>
-			<label>
-				Notes:
-				<li class="txtarea-wrp">
-					<textarea id="updateInfo" data-bind="value: About" placeholder="Add your own note."></textarea>
-				</li>
-			</label>
+			<li class="txtarea-wrp">
+				<label>
+					Notes: <textarea id="updateInfo" data-bind="value: About" placeholder="Add your own note."></textarea>
+				</label>
+			</li>
+
+			<li class="txtarea-wrp">
+
+				<table id="signup-form">
+					<thead>
+						<input type="text" id="updateName" data-bind="value: DisplayName" enabled="false" required>
+					</thead>
+					<tr>
+						<td span="2">
+							<img data-bind="attr: { src: aPictureUrl}" width="100px" >
+						</td>
+						<td >
+							<a class="btn" data-align="right" data-role="button" data-bind="click: showImage" style="margin: 20px; padding:10px">
+								Change the Avatar!
+							</a>
+
+						</td>
+					</tr>
+				</table>
+			</li>
+
 		</ul>
 	</form>
 	<div id="updateBtnWrp" class="update-btn-wrp disabled">

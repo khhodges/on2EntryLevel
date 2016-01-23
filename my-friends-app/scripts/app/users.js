@@ -11,6 +11,7 @@ app.Users = (function () {
 
         var currentUser = kendo.observable({ data: null });
         var usersData;
+		var currentUserData;
 
         // Retrieve current user and all users data from Backend Services
         var loadUsers = function () {
@@ -19,7 +20,7 @@ app.Users = (function () {
             return app.everlive.Users.currentUser()
             .then(function (data) {
 
-                var currentUserData = data.result;
+                currentUserData = data.result;
                 currentUserData.PictureUrl = app.helper.resolveProfilePictureUrl(currentUserData.Picture);
                 currentUser.set('data', currentUserData);
 
