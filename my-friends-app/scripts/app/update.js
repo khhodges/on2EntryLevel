@@ -92,7 +92,7 @@ app.update = (function () {
 		
 		var pickImage = function () {
 			function success(imageURI) {
-				selected = imageURI;
+				var selected = imageURI;
 				avatarImage.src = selected;				
 				$saveButton = $('#saveButton');
 				$saveButton.removeClass('disabled');
@@ -110,6 +110,10 @@ app.update = (function () {
 			}
 			navigator.camera.getPicture(success, error, config);
 		}
+		
+		var alert = function () {
+			app.showAlert("Yes!");
+        }
 
 		return {
 			init: init,

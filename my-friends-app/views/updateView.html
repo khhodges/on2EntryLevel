@@ -42,11 +42,11 @@
 				<table>
 					<tr>
 						<td >
-							<img data-bind="attr: { src: aPictureUrl}" width="100px" >
+							<img id="avatarImage" data-bind="attr: { src: aPictureUrl}" width="100px" >
 						</td>
 						<td >
 							<span type="text" id="updateName" data-bind="text: DisplayName"></span>
-							<a class="btn" data-align="right" data-role="button" data-bind="click: showImage" style="margin: 20px; padding:10px">
+							<a class="btn" data-role="button" data-click="app.update.showImage" style="margin: 20px; padding:10px">
 								Change your Avatar!
 							</a>
 
