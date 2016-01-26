@@ -186,8 +186,7 @@ app.Activities = (function () {
 			canvasHeight = canvas.height;
 			var ctx = canvas.getContext("2d");
 			ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-			$baseImage = canvas.toDataURL("image/jpeg", 0.5).substring("data:image/jpeg;base64,".length);
-			//$baseImage = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+			$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
 		}
 		var saveActivity = function () {
 			// Validating of the required fields
@@ -256,8 +255,7 @@ app.Activities = (function () {
 		var success = function (imageURI) {
 			selected = imageURI;
 			var picture = document.getElementById("picture");
-			picture.src = selected;				
-			//app.helper.convertToDataURL(selected, function (base64Img) {$baseImage = base64Img;}, "image/jpeg");
+			picture.src = selected;
 			app.mobileApp.hideLoading();
 		}
 

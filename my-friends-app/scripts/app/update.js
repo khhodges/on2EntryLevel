@@ -26,12 +26,11 @@ app.update = (function () {
 			}
 
 			dataSource.BirthDate = birthDate;
-
-			Everlive.$.Users.update(
-				dataSource)
-				.then(function () {
+			//Update Avatar Image??
+			Everlive.$.Users.update(dataSource)
+				.then(function () {				
+                	analytics.TrackFeature('Update.User');
 					app.showAlert("Update successful");
-					app.mobileApp.navigate('#welcome');
 				},
 					  function (err) {
 						  app.showError(err.message);
@@ -62,6 +61,7 @@ app.update = (function () {
 
 		// Executed after show of the update view
 		var show = function () {
+            analytics.TrackFeature('Update.Show');
 			$updateInfo.prop('rows', 1);
 
 			dataSource = kendo.observable({
@@ -78,26 +78,18 @@ app.update = (function () {
 										  });
 			kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);
 		};
-
-		// Executed after hide of the update view
-		// disable update button
-		var hide = function () {
-			$saveButton.addClass('disabled');
-		};
-
-		var onSelectChange = function (sel) {
-			var selected = sel.options[sel.selectedIndex].value;
-			sel.style.color = (selected === 0) ? '#b6c5c6' : '#34495e';
-		}
 		
 		var pickImage = function () {
-			function success(imageURI) {
+			function success(imageURI) {				
+                analytics.TrackFeature('Avatar.Success');
+				//TO DO: crop Image to a Square
 				var selected = imageURI;
 				avatarImage.src = selected;				
 				$saveButton = $('#saveButton');
 				$saveButton.removeClass('disabled');
 			}
-			var error = function () {
+			var error = function () {								
+                analytics.TrackFeature('Avatar.Error');
 				app.showError("No selection was detected.");
 			}
 			var config = {
@@ -110,15 +102,10 @@ app.update = (function () {
 			}
 			navigator.camera.getPicture(success, error, config);
 		}
-		
-		var alert = function () {
-			app.showAlert("Yes!");
-        }
 
 		return {
 			init: init,
 			show: show,
-			hide: hide,
 			onSelectChange: onSelectChange,
 			update: update,
 			showImage: pickImage
