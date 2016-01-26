@@ -63,10 +63,6 @@ var app = (function (win) {
 		// Handle "backbutton" event
 		document.addEventListener('backbutton', onBackKeyDown, false);
 
-		/*		document.addEventListener('deviceready', function () {
-		feedback.initialize('wewpzbnzheaxgay7');
-		});*/
-
 		navigator.splashscreen.hide();
 
 		if (analytics.isAnalytics()) {
