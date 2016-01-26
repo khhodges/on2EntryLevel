@@ -82,7 +82,7 @@ app.avatar = (function () {
 		var init = function () {
 			// Get a reference to our sensitive element
 			avatarImage = document.getElementById("avatarImage");
-			$updateAvatarForm = $('#updateAvatar');
+			$updateAvatarForm = $('#updateAvatar-form');
 			$formFields = $updateAvatarForm.find('input, textarea, select');
 			$updateAvatarInfo = $('#updateAvatarInfo');
 			$updateAvatarBtnWrp = $('#updateAvatarBtnWrp');

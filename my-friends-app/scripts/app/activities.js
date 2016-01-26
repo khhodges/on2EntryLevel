@@ -1,6 +1,7 @@
 /**
  * Activities view model
  */
+'use strict'
 
 var app = app || {};
 
@@ -164,7 +165,7 @@ app.Activities = (function () {
 				});
 		};
 
-		function crop() {
+		var crop = function () {
 			var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
 			var starter = document.getElementById("picture");
 			var canvas = document.getElementById("canvas");

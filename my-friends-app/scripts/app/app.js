@@ -110,6 +110,7 @@ var app = (function (win) {
 			}
 		},
 		
+		// Return url for responsive bandwidth
 		ResponsiveImageUrl: function(id) {
 			el.Files.getById(id)
 				.then(function(data) {
@@ -236,7 +237,113 @@ var app = (function (win) {
 													 statusBarStyle: statusBarStyle,
 													 skin: 'flat'
 												 });
+	var cropImage = function(image) {
+		if (!app.helper.checkSimulator) {
+			window.plugins.toast.showShortTop("Croping image ...");
+		}
+		var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
+		var starter = document.getElementById(image);
+		var canvas = document.getElementById("canvas");
+		if (starter.naturalWidth > starter.naturalHeight) {
+			sx = (starter.naturalWidth - starter.naturalHeight) / 2;
+			starterWidth = starter.naturalHeight;
+			starterHeight = starter.naturalHeight;
+			sy = 0;
+		} else {
+			sy = (- starter.naturalWidth + starter.naturalHeight) / 2;
+			starterWidth = starter.naturalWidth;
+			starterHeight = starter.naturalWidth;
+			sx = 0;
+		}
+		dx = 0;
+		dy = 0;
+		canvasWidth = canvas.width;
+		canvasHeight = canvas.height;
+		var ctx = canvas.getContext("2d");
+		ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+		$baseImage = canvas.toDataURL("image/jpeg", 0.5).substring("data:image/jpeg;base64,".length);
+	}
+	
+	var createImage = function (baseImage) {				
+		if (!app.helper.checkSimulator) {
+			window.plugins.toast.showShortTop("Uploading image ...");
+		}
+		app.everlive.Files.create({
+									  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+									  ContentType: "image/jpeg",
+									  base64: baseImage
+								  })
+			.then(function (promise) {
+				return promise;
+			})
+	}
+	
+	var takePicture = function () {
+		takePicture2(console.log("Callback"));
+	}
+	var takePicture2 = function (callback) {
+		if (!app.helper.checkSimulator) {
+			window.plugins.toast.showShortTop("Using camera ...");
+		}
+		navigator.camera.getPicture(function (imageURI) {
+			callback(imageURI);
+		}, function () {
+			navigator.notification.alert("No selection was detected.");
+		}, {
+										//kjhh best result including iphone rotation
+										quality: 100, 
+										destinationType: navigator.camera.DestinationType.FILE_URI,
+										sourceType: navigator.camera.PictureSourceType.CAMERA,
+										encodingType: navigator.camera.EncodingType.JPEG,
+										correctOrientation: true
+									});		
+	}
+	
+	var simplify = function(object) {
+		var simpleObject = {};
+		for (var prop in object) {
+			if (!object.hasOwnProperty(prop)) {
+				continue;
+			}
+			if (typeof(object[prop]) === 'object') {
+				continue;
+			}
+			if (typeof(object[prop]) === 'function') {
+				continue;
+			}
+			simpleObject[prop] = object[prop];
+		}
+		return JSON.stringify(simpleObject); // returns cleaned up JSON
+	}
+	
+/*	var simpleList = function (censor) {
+			var i = 0;
 
+			return function(key, value) {
+				if (i !== 0 && typeof(censor) === 'object' && typeof(value) === 'object' && censor === value) 
+					return '[Circular]'; 
+
+				if (i >= 29) // seems to be a harded maximum of 30 serialized objects?
+					return '[Unknown]';
+
+				++i; // so we know we aren't using the original object anymore
+
+				return value;  
+			}
+		}
+		
+	var printList = function(censor){
+		
+		simpleList(censor);
+		var b = {foo: {bar: null}};
+
+		b.foo.bar = b;
+
+		console.log("Censoring: ", b);
+
+		console.log("Result: ", JSON.stringify(b, censor(b)));
+	}
+*/	
 	return {
 		showAlert: showAlert,
 		showError: showError,
@@ -244,6 +351,12 @@ var app = (function (win) {
 		isKeySet: isKeySet,
 		mobileApp: mobileApp,
 		helper: AppHelper,
-		everlive: el
+		everlive: el,
+		cropImage: cropImage,
+		fileHelp: fileHelper,
+		takePicture: takePicture,
+		saveImage: createImage,
+		simplify: simplify/*,
+		printList: printList*/
 	};
 }(window));

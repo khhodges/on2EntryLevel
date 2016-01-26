@@ -13,6 +13,8 @@ app.update = (function () {
 		var $updateInfo;
 		var $updateBtnWrp;
 		var validator;
+		var avatarImage;
+		var $saveButton;
 
 		// Update user after required fields (NOT username, email and password) in Backend Services
 		var update = function () {
@@ -39,17 +41,19 @@ app.update = (function () {
 		// Executed after update view initialization
 		// init form validator
 		var init = function () {
+			// Get a reference to our sensitive element
+			avatarImage = document.getElementById("avatarImage");
 			$updateForm = $('#update');
 			$formFields = $updateForm.find('input, textarea, select');
 			$updateInfo = $('#updateInfo');
-			$updateBtnWrp = $('#updateBtnWrp');
+			var $saveButton = $('#saveButton');
 			validator = $updateForm.kendoValidator({ validateOnBlur: false }).data('kendoValidator');
 
 			$formFields.on('keyup keypress blur change input', function () {
 				if (validator.validate()) {
-					$updateBtnWrp.removeClass('disabled');
+					$saveButton.removeClass('disabled');
 				} else {
-					$updateBtnWrp.addClass('disabled');
+					$saveButton.addClass('disabled');
 				}
 			});
 
@@ -78,12 +82,33 @@ app.update = (function () {
 		// Executed after hide of the update view
 		// disable update button
 		var hide = function () {
-			$updateBtnWrp.addClass('disabled');
+			$saveButton.addClass('disabled');
 		};
 
 		var onSelectChange = function (sel) {
 			var selected = sel.options[sel.selectedIndex].value;
 			sel.style.color = (selected === 0) ? '#b6c5c6' : '#34495e';
+		}
+		
+		var pickImage = function () {
+			function success(imageURI) {
+				selected = imageURI;
+				avatarImage.src = selected;				
+				$saveButton = $('#saveButton');
+				$saveButton.removeClass('disabled');
+			}
+			var error = function () {
+				app.showError("No selection was detected.");
+			}
+			var config = {
+				//kjhh best result including iphone rotation
+				quality: 100, 
+				destinationType: navigator.camera.DestinationType.FILE_URI,
+				sourceType: navigator.camera.PictureSourceType.CAMERA,
+				encodingType: navigator.camera.EncodingType.JPEG,
+				correctOrientation: true
+			}
+			navigator.camera.getPicture(success, error, config);
 		}
 
 		return {
@@ -91,9 +116,11 @@ app.update = (function () {
 			show: show,
 			hide: hide,
 			onSelectChange: onSelectChange,
-			update: update
+			update: update,
+			showImage: pickImage
 		};
-	}());
+	}()
+	);
 
 	return updateViewModel;
 }());
