@@ -261,7 +261,7 @@ var app = (function (win) {
 		canvasHeight = canvas.height;
 		var ctx = canvas.getContext("2d");
 		ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-		$baseImage = canvas.toDataURL("image/jpeg", 0.5).substring("data:image/jpeg;base64,".length);
+		$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
 	}
 	
 	var createImage = function (baseImage) {				
