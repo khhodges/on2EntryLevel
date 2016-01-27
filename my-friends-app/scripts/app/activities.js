@@ -211,10 +211,7 @@ app.Activities = (function () {
 				app.showAlert("First take a photo with your camera and then add a message to match!", "Informational");
 			}
 			if (validator.validate() && (selected !== undefined)) {				
-				if (!app.helper.checkSimulator) {
-					window.plugins.toast.showShortTop("Uploading image ...")
-				}
-				;
+				if(!app.helper.checkSimulator){window.plugins.toast.showShortTop("Uploading image ...")};
 				app.mobileApp.showLoading();
 				// Save image as base64 to everlive
 				app.everlive.Files.create({
@@ -242,6 +239,7 @@ app.Activities = (function () {
 			}
 		};
 		var addActivity = function () {
+			$enterEvent = document.getElementById('enterEvent');
 			if ($enterEvent.style.display === 'block') {
 				$enterEvent.style.display = 'none';
 				validator.hideMessages();
