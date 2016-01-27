@@ -78,6 +78,17 @@ app.update = (function () {
 										  });
 			kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);
 		};
+
+		// Executed after hide of the update view
+		// disable update button
+		var hide = function () {
+			$saveButton.addClass('disabled');
+		};
+
+		var onSelectChange = function (sel) {
+			var selected = sel.options[sel.selectedIndex].value;
+			sel.style.color = (selected === 0) ? '#b6c5c6' : '#34495e';
+		}
 		
 		var pickImage = function () {
 			function success(imageURI) {				
