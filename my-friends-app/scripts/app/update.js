@@ -3,7 +3,7 @@
  */
 var app = app || {};
 
-app.update = (function () {
+app.Update = (function () {
 	'use strict';
 
 	var updateViewModel = (function () {
@@ -11,10 +11,11 @@ app.update = (function () {
 		var $updateForm;
 		var $formFields;
 		var $updateInfo;
-		var $updateBtnWrp;
 		var validator;
-		var avatarImage;
+		var updateImage;
+		var picture;
 		var $saveButton;
+		var $baseImage;
 
 		// Update user after required fields (NOT username, email and password) in Backend Services
 		var update = function () {
@@ -27,21 +28,43 @@ app.update = (function () {
 
 			dataSource.BirthDate = birthDate;
 			//Update Avatar Image??
+			updateAvatar();
 			Everlive.$.Users.update(dataSource)
 				.then(function () {				
-                	analytics.TrackFeature('Update.User');
+					analytics.TrackFeature('Update.User');
 					app.showAlert("Update successful");
 				},
 					  function (err) {
 						  app.showError(err.message);
 					  });
 		};
+		
+		var updateAvatar = function () {
+			var everlive = new Everlive(appSettings.everlive.appId);
+			
+			everlive.Files.updateContent(app.Users.currentUser.data.Picture, {
+											 Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+											 ContentType: "image/jpeg",
+											 base64: $baseImage
+										 },
+			
+										 function(data) {
+											 app.showAlert("Update saved, it can take 24 hours to show up when you log back in!");
+										 },
+			
+										 function(error) {
+											 app.showAlert("Update was not saved, please try again later!");
+										 }
+				)
+			
+		}
 
 		// Executed after update view initialization
 		// init form validator
 		var init = function () {
 			// Get a reference to our sensitive element
-			avatarImage = document.getElementById("avatarImage");
+			updateImage = document.getElementById("updateImage");
+			picture = document.getElementById("picture");
 			$updateForm = $('#update');
 			$formFields = $updateForm.find('input, textarea, select');
 			$updateInfo = $('#updateInfo');
@@ -61,7 +84,7 @@ app.update = (function () {
 
 		// Executed after show of the update view
 		var show = function () {
-            analytics.TrackFeature('Update.Show');
+			analytics.TrackFeature('Update.Show');
 			$updateInfo.prop('rows', 1);
 
 			dataSource = kendo.observable({
@@ -90,17 +113,41 @@ app.update = (function () {
 			sel.style.color = (selected === 0) ? '#b6c5c6' : '#34495e';
 		}
 		
+		var crop = function () {
+			var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
+			var starter = document.getElementById("updateImage");
+			var canvas = document.getElementById("updateCanvas");
+			if (starter.naturalWidth > starter.naturalHeight) {
+				sx = (starter.naturalWidth - starter.naturalHeight) / 2;
+				starterWidth = starter.naturalHeight;
+				starterHeight = starter.naturalHeight;
+				sy = 0;
+			} else {
+				sy = (- starter.naturalWidth + starter.naturalHeight) / 2;
+				starterWidth = starter.naturalWidth;
+				starterHeight = starter.naturalWidth;
+				sx = 0;
+			}
+			dx = 0;
+			dy = 0;
+			canvasWidth = canvas.width;
+			canvasHeight = canvas.height;
+			var ctx = canvas.getContext("2d");
+			ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+			$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+		}
 		var pickImage = function () {
 			function success(imageURI) {				
-                analytics.TrackFeature('Avatar.Success');
+				analytics.TrackFeature('Avatar.Success');
 				//TO DO: crop Image to a Square
 				var selected = imageURI;
-				avatarImage.src = selected;				
+				updateImage.src = selected;
+				picture.src = selected;				
 				$saveButton = $('#saveButton');
 				$saveButton.removeClass('disabled');
 			}
 			var error = function () {								
-                analytics.TrackFeature('Avatar.Error');
+				analytics.TrackFeature('Avatar.Error');
 				app.showError("No selection was detected.");
 			}
 			var config = {
@@ -119,7 +166,8 @@ app.update = (function () {
 			show: show,
 			onSelectChange: onSelectChange,
 			update: update,
-			showImage: pickImage
+			showImage: pickImage,
+			crop: crop
 		};
 	}()
 	);
