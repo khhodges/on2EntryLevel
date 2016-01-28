@@ -618,7 +618,7 @@ input[type='week']
 #friendsApp .activity-view .picture-wrp
 {
 	position: relative;
-	height: 257px;
+	height: 300px;
 	margin: 0 auto;
 	text-align: center;
 	background: transparent url(images/default-image.jpg) no-repeat 50% 50%;
@@ -638,6 +638,11 @@ input[type='week']
 	width: auto;
 	height: 300px;
 	background: transparent url(images/background-picture.png) repeat-x 0 0;
+	height: 100%;
+	background-size: cover;
+	-moz-background-size: cover;
+	-webkit-background-size: cover;
+	background-position: center;
 }
 #friendsApp .activity-view .picture
 {
