@@ -49,11 +49,11 @@ app.Update = (function () {
 										 },
 			
 										 function(data) {
-											 app.showAlert("Update saved, it can take 24 hours to show up when you log back in!");
+											 app.showAlert("Update saved, it can take several hours to cache the new image across the Internet!");
 										 },
 			
 										 function(error) {
-											 app.showAlert("Update was not saved, please try again later!");
+											 app.showAlert("No Image changes were needed!");
 										 }
 				)
 			

@@ -1,24 +1,21 @@
 <div data-role="view" id="single-activity" data-layout="default" data-zoom="true" class="activity-view" data-init="app.Activity.init" data-show="app.Activity.show">
 	<div data-role="header"></div>
-
 	<div id="status-container" class="user-status-wrp cf">
 		<div data-role="navbar">
 			<a class="nav-button nav-button-icon nav-button-back hide-text" data-align="left" data-role="backbutton">Back</a>
 			<a class="nav-button nav-button-icon nav-button-comment hide-text" data-align="right" data-role="button" data-click="app.Activity.addComment">Comment</a>
 			<a class="nav-button nav-button-icon nav-button-delete hide-text" data-align="right" data-role="button" data-bind="visible: isVisible" data-click="app.Activity.remove">Delete</a>
 		</div>
-
 		<div class="picture-wrp">
 			<img id="picture" data-bind="attr:{src: PictureUrl()}" width="100%">
 			<div class="user-info">
 				<div class="user-avatar">
-					<div data-bind="style:{backgroundImage: User().urlPictureUrl}" ></div>
+					<div data-bind="style:{backgroundImage: User().urlPictureUrl}"></div>
 				</div>
 				<h2 id="personName" class="person-name" data-bind='text: User().DisplayName'></h2>
 				<span id="activityDate" class="time-span" data-bind="text: CreatedAtFormatted"></span>
 			</div>
 		</div>
-
 		<div class="content">
 			<div class="activity-content">
 				<span id="activityText" data-bind="text: Text" class="user-share-txt"></span>
@@ -30,6 +27,21 @@
 						</div>
 					</div>
 				</div>
+				<ul class="star-rating" data-bind="value: rating">
+					<li data-value="1" title="One"></li>
+					<li data-value="2" title="Two"></li>
+					<li data-value="3" title="Three"></li>
+					<li data-value="4" title="Four"></li>
+					<li data-value="5" title="Five"></li>
+				</ul>
+				<span class="star-hover"></span>
+				<div class="paragraph">
+					<label>Current rating:</label>
+					<input type="number" data-bind="value: rating" />
+				</div>
+				<div data-role="layout" data-id="default">
+					<!--View content will render here-->
+				</div>
 				<div class="comments-wrp">
 					<ul id="comments-listview"></ul>
 				</div>
@@ -37,14 +49,13 @@
 		</div>
 	</div>
 </div>
-
 <!-- Comments Template -->
 <script type="text/x-kendo-template" id="commentsTemplate">
 	<table>
 		<tr>
 			<td>
 				<div class="user-avatar">
-					<div style ="background-Image: url('#: User().PictureUrl #');" ></div>
+					<div style="background-Image: url('#: User().PictureUrl #');"></div>
 				</div>
 			</td>
 			<td>
@@ -54,8 +65,6 @@
 					</a>
 				</div>
 			</td>
-
 		</tr>
 	</table>
-
 </script>

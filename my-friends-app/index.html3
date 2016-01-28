@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="styles/kendo.default.min.css" />
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/kendo.all.min.js"></script>
+</head>
+<body>
+<div id="example">
+    <div class="demo-section k-content">
+         <h4>Balance</h4>
+         <input id="slider" class="balSlider" value="0" />
+         <h4 style="padding-top: 2em;">Equalizer</h4>
+         <div id="equalizer">
+             <input class="eqSlider" value="10" />
+             <input class="eqSlider" value="5" />
+             <input class="eqSlider" value="0" />
+             <input class="eqSlider" value="10" />
+             <input class="eqSlider" value="15" />
+         </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var slider = $("#slider").kendoSlider({
+                increaseButtonTitle: "Right",
+                decreaseButtonTitle: "Left",
+                min: -10,
+                max: 10,
+                smallStep: 2,
+                largeStep: 1
+            }).data("kendoSlider");
+
+            $(".eqSlider").kendoSlider({
+                orientation: "vertical",
+                min: -20,
+                max: 20,
+                smallStep: 1,
+                largeStep: 20,
+                showButtons: false
+            });
+        });
+    </script>
+
+    <style>
+        .demo-section {
+            text-align: center;
+        }
+
+        #equalizer {
+            padding-right: 15px;
+        }
+
+        div.balSlider {
+            width: 100%;
+        }
+
+        div.balSlider .k-slider-selection {
+            display: none;
+        }
+
+        div.eqSlider {
+            display: inline-block;
+            margin: 1em;
+            height: 122px;
+            vertical-align: top;
+        }
+    </style>
+</div>
+
+
+</body>
+</html>

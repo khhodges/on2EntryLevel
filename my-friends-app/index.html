@@ -3,93 +3,85 @@
 
 <head>
 	<title></title>
-	<meta charset="utf-8" />
-	<script src="cordova.js"></script>
-	<script src="kendo/js/jquery.min.js"></script>
-	<script src="kendo/js/kendo.mobile.min.js"></script>
-	<script src="bower_components/everlive/min/everlive.all.min.js"></script>
-	<script src="scripts/app/identity-provider.js"></script>
-	<script src="scripts/app/settings.js"></script>
-	<script src="scripts/app/app.js"></script>
-	<script src="scripts/app/analytics-monitor.js"></script>
-	<script src="scripts/app/users.js"></script>
-	<script src="scripts/app/update.js"></script>
-	<script src="scripts/app/login.js"></script>
-	<script src="scripts/app/signup.js"></script>
-	<script src="scripts/app/activities.js"></script>
-	<script src="scripts/app/activity.js"></script>
-	<script src="scripts/app/avatar.js"></script>
-	<script src="scripts/app/comments.js"></script>
-	<link href="http://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
-	<link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet">
-	<link href="styles/main.css" rel="stylesheet">
+	<style>
+		body {
+			font-family: "Arial"
+		}
+		.str-off {
+			color: rgba(150, 150, 150, .5);
+			font-size: 30px;
+			text-decoration: none;
+		}
+		.str-hover {
+			color: rgba(244, 199, 77, 1);
+			font-size: 30px;
+			text-decoration: none;
+		}
+		.str-on {
+			color: rgba(244, 199, 77, .5);
+			font-size: 30px;
+			text-decoration: none;
+		}
+		.str-off:before {
+			content: "\2606";
+		}
+		.str-hover:before {
+			content: "\2605";
+		}
+		.str-on:before {
+			content: "\2605";
+		}
+	</style>
+	<script>
+		one.onmouseover = function () {
+			this.className = 'str-hover';
+			two.className = 'str-off';
+			three.className = 'str-off';
+			four.className = 'str-off';
+			five.className = 'str-off';
+		}
+
+		two.onmouseover = function () {
+			this.className = 'str-hover';
+			one.className = 'str-on';
+			three.className = 'str-off';
+			four.className = 'str-off';
+			five.className = 'str-off';
+		}
+
+		three.onmouseover = function () {
+			this.className = 'str-hover';
+			one.className = 'str-on';
+			two.className = 'str-on';
+			four.className = 'str-off';
+			five.className = 'str-off';
+		}
+
+		four.onmouseover = function () {
+			this.className = 'str-hover';
+			one.className = 'str-on';
+			two.className = 'str-on';
+			three.className = 'str-on';
+			five.className = 'str-off';
+		}
+
+
+		five.onmouseover = function () {
+			this.className = 'str-hover';
+			one.className = 'str-on';
+			two.className = 'str-on';
+			three.className = 'str-on';
+			four.className = 'str-on';
+		}
+	</script>
 </head>
 
-<body id="friendsApp">
-	
-    
-	<div data-role="layout" data-id="default">
-		<!--View content will render here-->
-	</div>
-	<!--WELCOME VIEW -->
-	<div data-role="view" id="welcome" data-layout="default" class="welcome-scrn form-view" data-model="app.Login" data-init="app.Login.init" data-show="app.Login.show">
-		<div data-role="header"></div>
-		<h2 class="app-name">
-				Friends <small>Loyality Application</small>
-			</h2>
-		<form id="login-form">
-			<ul data-role="listview" data-style="inset">
-				<li class="username">
-					<input type="text" id="loginUsername" placeholder="username" required validationMessage="Username is required!">
-				</li>
-				<li class="password">
-					<input type="password" id="loginPassword" placeholder="password" required validationMessage="Password is required!">
-				</li>
-			</ul>
-		</form>
-		<ol class="group-wrp">
-			<li>
-				<span id="login" data-role="touch" data-bind="events: { tap: login }">
-						<a data-role="button" class="btn btn-login">Loyalty Club Members</a>
-					</span>
-			</li>
-			<li class="oauth cf" hidden>
-				<span id="loginWithFacebook" class="oauth-item" data-role="touch" data-bind="events: { tap: loginWithFacebook }">
-						<a data-role="button" class="btn btn-facebook hide-text">Facebook</a>
-					</span>
-				<span id="loginWithGoogle" class="oauth-item" data-role="touch" data-bind="events: { tap: loginWithGoogle }">
-						<a data-role="button" class="btn btn-google hide-text">Google</a>
-					</span>
-				<span id="loginWithLiveID" class="oauth-item" data-role="touch" data-bind="events: { tap: loginWithLiveID }">
-						<a data-role="button" class="btn btn-windows hide-text">LiveID</a>
-					</span>
-				<span id="loginWithADSF" class="oauth-item" data-role="touch" data-bind="events: { tap: loginWithADSF }">
-						<a data-role="button" class="btn btn-adfs hide-text">ADFS</a>
-					</span>
-			</li>
-			<li class="signup">
-				<p>Get your own account below</p>
-				<a data-role="button" href="views/signupView.html" class="btn">Register for savings</a>
-			</li>
-			<li>
-				<a href="http://muddywatersrestaurant.com" target="_blank">Switch to our Web Site</a>
-			</li><br/>
-			<span>OFA version 1.2.3 - 1/26/2015</span>
-		</ol>
-	</div>
-	
-	    <div id="appDrawer" data-role="drawer" data-title="Menu">
-        <header data-role="header">
-            <div data-role="navbar">
-                <span data-role="view-title"></span>
-				<a class="nav-button" data-align="left" data-role="backbutton" data-click="app.Activities.logout">Logout</a>
-            </div>
-        </header>
-        <ul id="navigation-container" data-role="listview">
-            <li><a href="views/activitiesView.html" data-icon="home">Activities</a></li>
-            <li><a href="views/updateView.html" data-icon="settings" style="color: red">Account Settings</a></li>
-        </ul>
-    </div>
+<body>
+	<a id="one" class="str-off" href="#"></a>
+	<a id="two" class="str-off" href="#"></a>
+	<a id="three" class="str-off" href="#"></a>
+	<a id="four" class="str-off" href="#"></a>
+	<a id="five" class="str-off" href="#"></a>
 </body>
 
 </html>

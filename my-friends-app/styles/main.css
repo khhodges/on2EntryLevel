@@ -1,4 +1,32 @@
- .km-drawer-button:after,
+.reply-rating {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  cursor: default;
+  display: inline-block;
+}
+
+.reply-rating li {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.reply-rating li.reply-rating-star-full:after {
+    content: '\2605';
+    font-family: Arial;
+    font-size: 36px;
+    color: orange;
+}
+
+.reply-rating li.reply-rating-star-empty:after {
+    content: '\e048';
+    font-size: 36px;
+    color: gray;
+}
+
+.km-drawer-button:after,
  .km-drawer-button:before {
     content: '\e077';
 }
