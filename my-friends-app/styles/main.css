@@ -25,10 +25,23 @@
 {
 	content: "\2605";
 }
+
 .str-on:before
 {
 	content: "\2605";
-}.reply-rating
+}
+.share-icon
+{
+	color: White;
+	font-size: 16px;
+	text-decoration: none;
+}
+.share-icon:before,
+.share-icon:after
+{
+	content: "\e0df";
+}
+.reply-rating
 {
 	margin: 0;
 	padding: 0;
