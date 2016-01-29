@@ -12,6 +12,7 @@ app.Activity = (function () {
 		listScroller, 
 		$newComment,
 		showComment,
+		stars,
 		validator;
     
 	var activityViewModel = (function () {
@@ -40,14 +41,17 @@ app.Activity = (function () {
 			// Get current activity (based on item uid) from Activities model
 			activity = app.Activities.activities.getByUid(activityUid);
 			$activityPicture[0].style.display = activity.Picture ? 'block' : 'none';			
-				if(!app.helper.checkSimulator){window.plugins.toast.showShortTop("Downloading ...")};
-            //app.mobileApp.showLoading();
+			if (!app.helper.checkSimulator) {
+				window.plugins.toast.showShortTop("Downloading ...")
+			}
+			;
+			//app.mobileApp.showLoading();
 			app.Comments.comments.filter({
 											 field: 'ActivityId',
 											 operator: 'eq',
 											 value: activity.Id
 										 });
-            app.mobileApp.hideLoading();
+			app.mobileApp.hideLoading();
 			kendo.bind(e.view.element, activity, kendo.mobile.ui);
 		};
         
@@ -79,13 +83,22 @@ app.Activity = (function () {
 				var comments = app.Comments.comments;
 				var comment = comments.add();
                 
-				comment.Comment = $newComment.val();
+				comment.Comment = $newComment.val() + " Stars: "+ stars;
+
 				comment.UserId = app.Users.currentUser.get('data').Id;
 				comment.ActivityId = app.Activity.activity().Id;
                 
-				if(!app.helper.checkSimulator){window.plugins.toast.showShortTop("Updating Comments ...")};
+				if (!app.helper.checkSimulator) {
+					window.plugins.toast.showShortTop("Updating Comments ...")
+				}
 				comments.sync();
-				$newComment.Val ="";
+				$newComment.Val = "";
+				
+				document.getElementById("one").style.visibility = "hidden";
+				document.getElementById("two").style.visibility = "hidden";				
+				document.getElementById("three").style.visibility = "hidden";
+				document.getElementById("four").style.visibility = "hidden";
+				document.getElementById("five").style.visibility = "hidden";
 			}
 		};
 		var addComment = function () {
@@ -95,9 +108,43 @@ app.Activity = (function () {
 				validator.hideMessages();
 			} else {
 				$enterComment.style.display = 'block';
-				document.getElementById('newComment').value="";
+				document.getElementById('newComment').value = "";
 			}
-		};        
+		};  
+		
+		var addStar = function() {
+			if (document.getElementById("one").style.visibility === "hidden") {
+				document.getElementById("one").style.visibility = "visible";
+				stars = 1;
+			}else {
+				if (document.getElementById("two").style.visibility === "hidden") {
+					document.getElementById("two").style.visibility = "visible";
+					stars = 2;
+				}else {
+					if (document.getElementById("three").style.visibility === "hidden") {
+						document.getElementById("three").style.visibility = "visible";
+						stars = 3;
+					}else {
+						if (document.getElementById("four").style.visibility === "hidden") {
+							document.getElementById("four").style.visibility = "visible";
+							stars = 4;
+						}else {
+							if (document.getElementById("five").style.visibility === "hidden") {
+								document.getElementById("five").style.visibility = "visible";
+								stars = 5;
+							}else {
+								document.getElementById("one").style.visibility = "hidden";
+								document.getElementById("two").style.visibility = "hidden";				
+								document.getElementById("three").style.visibility = "hidden";
+								document.getElementById("four").style.visibility = "hidden";
+								document.getElementById("five").style.visibility = "hidden";
+								stars = 0;
+							}
+						}
+					}
+				}
+			}
+		}
 		return {
 			init: init,
 			show: show,
@@ -106,9 +153,11 @@ app.Activity = (function () {
 			saveComment: saveComment,
 			activity: function () {
 				return activity;
-			}
+			},
+			addStar: addStar
 		};
-	}());
+	}()
+	);
     
 	return activityViewModel;
 }());

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title></title>
+		<script src="kendo/js/jquery.min.js"></script>
+		<script src="kendo/js/kendo.mobile.min.js"></script>
+		<script src="bower_components/everlive/min/everlive.all.min.js"></script>
+		<script src="scripts/app/identity-provider.js"></script>
+		<script src="scripts/app/settings.js"></script>
+		<script src="scripts/app/app.js"></script>
+		<script src="scripts/app/analytics-monitor.js"></script>
+		<script src="scripts/app/users.js"></script>
+		<script src="scripts/app/update.js"></script>
+		<script src="scripts/app/login.js"></script>
+		<script src="scripts/app/signup.js"></script>
+		<script src="scripts/app/activities.js"></script>
+		<script src="scripts/app/activity.js"></script>
+		<script src="scripts/app/comments.js"></script>
+		<link href="http://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+		<link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet">
+		<link href="styles/main.css" rel="stylesheet">
+		<style>
+			body
+			{
+				font-family: "Arial"
+			}
+			.str-off
+			{
+				color: rgba(150, 150, 150, .5);
+				font-size: 30px;
+				text-decoration: none;
+			}
+			.str-hover
+			{
+				color: rgba(244, 199, 77, 1);
+				font-size: 30px;
+				text-decoration: none;
+			}
+			.str-on
+			{
+				color: rgba(244, 199, 77, .5);
+				font-size: 30px;
+				text-decoration: none;
+			}
+			.str-off:before
+			{
+				content: "\2606";
+			}
+			.str-hover:before
+			{
+				content: "\2605";
+			}
+			.str-on:before
+			{
+				content: "\2605";
+			}
+			.str-up:before
+			{
+				content: "\e032";
+			}
+			.str-down:before
+			{
+				content: "\e033";
+			}
+		</style>
+		<script>
+			oneclick = function(e) {
+				if (document.getElementById('one').className === "str-off") {
+					document.getElementById('one').className = 'str-hover';
+					document.getElementById('two').className = 'str-off';
+					document.getElementById('three').className = 'str-off';
+					document.getElementById('four').className = 'str-off';
+					document.getElementById('five').className = 'str-hover';
+				} else {
+					document.getElementById('one').className = 'str-off';
+					document.getElementById('two').className = 'str-off';
+					document.getElementById('three').className = 'str-off';
+					document.getElementById('four').className = 'str-off';
+					document.getElementById('five').className = 'str-off';
+				}
+			}
+			twoclick = function(e) {
+				if (document.getElementById('two').className === "str-off") {
+					document.getElementById('one').className = 'str-hover';
+					document.getElementById('two').className = 'str-hover';
+					document.getElementById('three').className = 'str-off';
+					document.getElementById('four').className = 'str-off';
+					document.getElementById('five').className = 'str-off';
+				} else {
+					document.getElementById('one').className = 'str-hover';
+					document.getElementById('two').className = 'str-off';
+					document.getElementById('three').className = 'str-off';
+					document.getElementById('four').className = 'str-off';
+					document.getElementById('five').className = 'str-off';
+				}
+			}
+		
+		</script>
+	</head>
+
+	<body>
+		<span>
+			<a id="one" class="str-off" href="#" data-click="alert('one');"></a>
+		</span>
+		<a id="down" class="str-down" href="#" data-click="upclick"></a>
+		<a id="two" class="str-off" href="#" ></a>
+		<a id="three" class="str-off" href="#"></a>
+		<a id="four" class="str-off" href="#"></a>
+		<a id="five" class="str-off" href="#"></a>
+		<a id="up" class="str-up" href="#" data-click="downclick"></a>
+
+		<!--div id="home" data-role="view">
+			<div id="collapsible" data-role="collapsible" data-collapse-icon="arrow-up" data-expand-icon="arrow-down" data-inset="true">
+				<h2>Stars</h2>
+				<p>
+					Pick your rating
+				</p>
+				<p data-click="one">
+					<a id="one" class="str-hover" href="#" ></a>
+					<a id="two" class="str-off" href="#" ></a>
+					<a id="three" class="str-off" href="#"></a>
+					<a id="four" class="str-off" href="#"></a>
+					<a id="five" class="str-off" href="#"></a>
+				</p>
+				<p>
+					<a id="one" class="str-hover" href="#" ></a>
+					<a id="two" class="str-hover" href="#" ></a>
+					<a id="three" class="str-off" href="#"></a>
+					<a id="four" class="str-off" href="#"></a>
+					<a id="five" class="str-off" href="#"></a>
+				</p>
+				<p>
+					<a id="one" class="str-hover" href="#" ></a>
+					<a id="two" class="str-hover" href="#" ></a>
+					<a id="three" class="str-hover" href="#"></a>
+					<a id="four" class="str-off" href="#"></a>
+					<a id="five" class="str-off" href="#"></a>
+				</p>
+				<p>
+					<a id="one" class="str-hover" href="#" ></a>
+					<a id="two" class="str-hover" href="#" ></a>
+					<a id="three" class="str-hover" href="#"></a>
+					<a id="four" class="str-hover" href="#"></a>
+					<a id="five" class="str-off" href="#"></a>
+				</p>
+				<p>
+					<a id="one" class="str-hover" href="#" ></a>
+					<a id="two" class="str-hover" href="#" ></a>
+					<a id="three" class="str-hover" href="#"></a>
+					<a id="four" class="str-hover" href="#"></a>
+					<a id="five" class="str-hover" href="#"></a>
+				</p>
+			</div>
+		</div-->
+		<input id="slider" style="width: 100px" />
+		<script>
+			$("#slider").kendoSlider({
+										 precision: 4,
+										 smallStep:0.0001,
+										 largeStep:0.0001,
+										 min:0,
+										 max:0.0004,
+										 value: 0.0002,
+										 tooltip: {
+					format: "{0:#,#.####}"
+				}
+									 });
+		</script>
+		<script>
+			var app = new kendo.mobile.Application();
+			//var one = function() {$("#collapsible").data("kendoMobileCollapsible").collapse();}
+		</script>
+
+		<style>
+			/*
+			define custom icon names, full list of available icons can be found at:
+			http://docs.telerik.com/kendo-ui/mobile/icons
+			*/
+			.km-arrow-up:after,
+			.km-arrow-up:before
+			{
+				content: "\e011";
+			}
+			
+			.km-arrow-down:after,
+			.km-arrow-down:before
+			{
+				content: "\e012";
+			}
+		</style>
+	</body>
+</html>

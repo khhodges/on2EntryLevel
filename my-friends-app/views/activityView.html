@@ -23,22 +23,19 @@
 					<div class="cf">
 						<div class="user-share">
 							<textarea id="newComment" style="background-color: azure;font-style: italic;border: 1;" placeholder="What's your opinion?" required validationMessage="Comment text is required!"></textarea>
+							<div>
+								<a id="cycle" class="str-on" data-role="button" data-click="app.Activity.addStar">Stars</a>
+								<a style="visibility: hidden" id="one" class="str-hover" ></a>
+								<a style="visibility: hidden" id="two" class="str-hover" ></a>
+								<a style="visibility: hidden" id="three" class="str-hover" ></a>
+								<a style="visibility: hidden" id="four" class="str-hover"  ></a>
+								<a style="visibility: hidden" id="five" class="str-hover"  ></a>
+							</div>
 							<a class="btn" data-role="button" data-click="app.Activity.saveComment" style="margin: 20px; padding:10px">Save this Comment</a>
 						</div>
 					</div>
 				</div>
-				<ul class="star-rating" data-bind="value: rating">
-					<li data-value="1" title="One"></li>
-					<li data-value="2" title="Two"></li>
-					<li data-value="3" title="Three"></li>
-					<li data-value="4" title="Four"></li>
-					<li data-value="5" title="Five"></li>
-				</ul>
-				<span class="star-hover"></span>
-				<div class="paragraph">
-					<label>Current rating:</label>
-					<input type="number" data-bind="value: rating" />
-				</div>
+
 				<div data-role="layout" data-id="default">
 					<!--View content will render here-->
 				</div>

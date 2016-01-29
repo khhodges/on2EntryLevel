@@ -27,7 +27,11 @@ app.Comments = (function () {
                 UserId: {
                     field: 'UserId',
                     defaultValue: null
-                }
+                }/*,
+                Stars: {
+                    field: 'Stars',
+                    defaultValue: 0
+                }*/
             },
             User: function () {
                 
