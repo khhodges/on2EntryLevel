@@ -341,6 +341,10 @@ input[type='week']
 {
 	background-image: url(images/icon-comment.png);
 }
+#friendsApp .nav-button-chat
+{
+	background-image: url(images/btn-next-static.png);
+}
 #friendsApp .nav-button-delete
 {
 	background-image: url(images/icon-delete.png);
@@ -797,6 +801,10 @@ input[type='week']
 	#friendsApp .nav-button-comment
 	{
 		background-image: url(images/icon-comment@2x.png);
+	}
+	#friendsApp .nav-button-chat
+	{
+		background-image: url(images/btn-next-static.png);
 	}
 	#friendsApp .nav-button-delete
 	{

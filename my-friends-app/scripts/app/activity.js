@@ -83,7 +83,7 @@ app.Activity = (function () {
 				var comments = app.Comments.comments;
 				var comment = comments.add();
                 
-				comment.Comment = $newComment.val() + " Stars: "+ stars;
+				comment.Comment = $newComment.val() + " Stars: " + stars;
 
 				comment.UserId = app.Users.currentUser.get('data').Id;
 				comment.ActivityId = app.Activity.activity().Id;
@@ -145,6 +145,20 @@ app.Activity = (function () {
 				}
 			}
 		}
+		
+		var share = function () {
+			var activities = app.Activities.activities;
+			var activity = activities.getByUid(activityUid);
+			var message = activity.Text;
+			var title = app.Users.currentUser.data.DisplayName;
+			var link = activity.PictureUrl();
+			if (!app.helper.checkSimulator) {
+				window.plugins.toast.showLongBottom("Share options now being loaded, please wait...");
+				app.showAlert(message, title, link);
+				window.plugins.socialsharing.share(message, title, link);
+			}
+		}
+		
 		return {
 			init: init,
 			show: show,
@@ -154,7 +168,8 @@ app.Activity = (function () {
 			activity: function () {
 				return activity;
 			},
-			addStar: addStar
+			addStar: addStar,
+			share: share
 		};
 	}()
 	);
