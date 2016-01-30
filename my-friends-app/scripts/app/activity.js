@@ -152,11 +152,9 @@ app.Activity = (function () {
 			var message = activity.Text;
 			var title = app.Users.currentUser.data.DisplayName;
 			var link = activity.PictureUrl();
-			if (!app.helper.checkSimulator) {
-				window.plugins.toast.showLongBottom("Share options now being loaded, please wait...");
-				app.showAlert(message, title, link);
-				window.plugins.socialsharing.share(message, title, link);
-			}
+			window.plugins.toast.showLongBottom("Share options now being loaded, please wait...");
+			app.showAlert(message, title, link);
+			window.plugins.socialsharing.share(message, title, link);
 		}
 		
 		return {
