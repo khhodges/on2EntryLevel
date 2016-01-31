@@ -125,9 +125,13 @@ var app = (function (win) {
 		},
 		
 		// Return absolute user profile picture url
-		resolveBackgroundPictureUrl: function (id) {
+		resolveBackgroundPictureUrl: function (id, option) {
 			if (id && id !== emptyGuid) {
-				return 'url(' + el.Files.getDownloadUrl(id) + ')';
+				if (option==='bg') {
+					return 'url(' + el.Files.getDownloadUrl(id) + ')';
+				} else {
+					return el.Files.getDownloadUrl(id);
+				}
 			} else {
 				return 'styles/images/avatar.png';
 			}
@@ -312,34 +316,34 @@ var app = (function (win) {
 		return JSON.stringify(simpleObject); // returns cleaned up JSON
 	}
 	
-/*	var simpleList = function (censor) {
-			var i = 0;
+	/*	var simpleList = function (censor) {
+	var i = 0;
 
-			return function(key, value) {
-				if (i !== 0 && typeof(censor) === 'object' && typeof(value) === 'object' && censor === value) 
-					return '[Circular]'; 
+	return function(key, value) {
+	if (i !== 0 && typeof(censor) === 'object' && typeof(value) === 'object' && censor === value) 
+	return '[Circular]'; 
 
-				if (i >= 29) // seems to be a harded maximum of 30 serialized objects?
-					return '[Unknown]';
+	if (i >= 29) // seems to be a harded maximum of 30 serialized objects?
+	return '[Unknown]';
 
-				++i; // so we know we aren't using the original object anymore
+	++i; // so we know we aren't using the original object anymore
 
-				return value;  
-			}
-		}
+	return value;  
+	}
+	}
 		
 	var printList = function(censor){
 		
-		simpleList(censor);
-		var b = {foo: {bar: null}};
+	simpleList(censor);
+	var b = {foo: {bar: null}};
 
-		b.foo.bar = b;
+	b.foo.bar = b;
 
-		console.log("Censoring: ", b);
+	console.log("Censoring: ", b);
 
-		console.log("Result: ", JSON.stringify(b, censor(b)));
+	console.log("Result: ", JSON.stringify(b, censor(b)));
 	}
-*/	
+	*/	
 	return {
 		showAlert: showAlert,
 		showError: showError,

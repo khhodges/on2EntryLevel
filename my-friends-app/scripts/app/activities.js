@@ -98,11 +98,11 @@ app.Activities = (function () {
 				return user ? {
 					DisplayName: user.DisplayName,
 					PictureUrl: app.helper.resolveProfilePictureUrl(user.Picture),
-					urlPictureUrl: app.helper.resolveBackgroundPictureUrl(user.Picture)
+					urlPictureUrl: app.helper.resolveBackgroundPictureUrl(user.Picture,'bg')
 				} : {
 					DisplayName: app.Users.currentUser.data.DisplayName,
 					PictureUrl: app.helper.resolveProfilePictureUrl(app.Users.currentUser.data.Picture),
-					urlPictureUrl: app.helper.resolveBackgroundPictureUrl(app.Users.currentUser.data.Picture)
+					urlPictureUrl: app.helper.resolveBackgroundPictureUrl(app.Users.currentUser.data.Picture,'bg')
 				};
 			},
 			isVisible: function () {

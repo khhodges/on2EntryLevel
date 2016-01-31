@@ -13,6 +13,7 @@ app.Activity = (function () {
 		$newComment,
 		showComment,
 		stars,
+		thePictureUrl,
 		validator;
     
 	var activityViewModel = (function () {
@@ -36,15 +37,22 @@ app.Activity = (function () {
 			showComment = false;
 			listScroller = e.view.scroller;
 			listScroller.reset();
-            
 			activityUid = e.view.params.uid;
 			// Get current activity (based on item uid) from Activities model
 			activity = app.Activities.activities.getByUid(activityUid);
+			app.everlive.Files.getById(activity.Picture).then(
+				function(data) {
+					//alert(JSON.stringify(data));
+					thePictureUrl = data.result.Uri
+				}, 
+				function(error) {
+					app.showAlert("Picture File not found. Please try again.");
+				});
+			
 			$activityPicture[0].style.display = activity.Picture ? 'block' : 'none';			
 			if (!app.helper.checkSimulator) {
 				window.plugins.toast.showShortTop("Downloading ...")
 			}
-			;
 			//app.mobileApp.showLoading();
 			app.Comments.comments.filter({
 											 field: 'ActivityId',
@@ -149,12 +157,14 @@ app.Activity = (function () {
 		var share = function () {
 			var activities = app.Activities.activities;
 			var activity = activities.getByUid(activityUid);
-			var message = activity.Text;
+			var comments;
+			comments = "\n COMMENTS: \n" ;
+			app.Comments.comments.data().forEach(function(entry) {comments = comments + entry.CreatedAt+": "+ entry.Comment +"... " + entry.User.DisplayName+"\n";});
+			var message = activity.Text + comments;
 			var title = app.Users.currentUser.data.DisplayName;
-			var link = activity.PictureUrl();
-			window.plugins.toast.showLongBottom("Share options now being loaded, please wait...");
-			app.showAlert(message, title, link);
-			window.plugins.socialsharing.share(message, title, link);
+			var link = thePictureUrl;
+			window.plugins.toast.showLongBottom("Share options now being loaded for, " + message + ", " + title + ", " + link + ", please wait...");
+			window.plugins.socialsharing.share("The following posting is shared by " + title + ": " + message + ", " + link + "...", title, link);
 		}
 		
 		return {
