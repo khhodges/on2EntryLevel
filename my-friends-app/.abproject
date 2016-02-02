@@ -9,7 +9,6 @@
   ],
   "CorePlugins": [
     "com.telerik.feedback@2.0.0",
-    "com.telerik.mobiletesting",
     "com.telerik.plugin.eqatecanalytics",
     "com.telerik.plugin.telerikanalytics@3.3.2",
     "nl.x-services.plugins.socialsharing@5.0.6",
