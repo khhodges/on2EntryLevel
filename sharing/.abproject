@@ -1,8 +1,8 @@
 {
   "ProjectGuid": "003f5d01-c32e-4f2f-8a44-f2e7b1f00008",
   "ProjectTypeGuids": "{070BCB52-5A75-4F8C-A973-144AF0EAFCC9}",
-  "AppIdentifier": "com.friends.on25platform",
-  "ProjectName": "my-friends-app",
+  "AppIdentifier": "com.friends.on2tplatform",
+  "ProjectName": "sharing",
   "AndroidPermissions": [
     "android.permission.CAMERA",
     "android.permission.INTERNET"
@@ -36,9 +36,9 @@
   ],
   "iOSBackgroundMode": [],
   "AndroidVersionCode": "1",
-  "DisplayName": "Loyal Friends",
+  "DisplayName": "Defender",
   "Author": "kjhh",
-  "Description": "my-friends-app",
+  "Description": "Provide basic services for safe sharing",
   "WP8TileTitle": "",
   "WP8ProductID": "{003f5d01-c32e-4f2f-8a44-f2e7b1f00008}",
   "WP8PublisherID": "{b6e0580a-d18c-47b9-b482-6e009726ed8c}",
