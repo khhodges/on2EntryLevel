@@ -1,3 +1,7 @@
+function onPushNotificationReceived(e) {
+	alert(JSON.stringify(e));
+};
+
 var app = (function (win) {
 	'use strict';
 
@@ -81,6 +85,13 @@ var app = (function (win) {
 			console.log('Telerik AppFeedback API key is not set. You cannot use feedback service.');
 		}
 		
+		//register for device notifications
+		el.push.register(devicePushSettings, function() {
+			alert("Successful registration in Telerik Platform. You are ready to receive push notifications.");
+		}, function(err) {
+			alert("Error: " + err.message);
+		})
+		
 		//for notifications
 		if (cordova.plugins) {
 			// set some global defaults for all local notifications
@@ -120,6 +131,23 @@ var app = (function (win) {
 						  });
 
 	var emptyGuid = '00000000-0000-0000-0000-000000000000';
+	
+	var devicePushSettings = {
+		iOS: {
+			badge: 'true',
+			sound: 'true',
+			alert: 'true'
+		},
+		android: {
+			projectNumber: '419311347951'
+		},
+		wp8: {
+			channelName: 'EverlivePushChannel'
+		},
+		notificationCallbackIOS: onPushNotificationReceived,
+		notificationCallbackAndroid: onPushNotificationReceived,
+		notificationCallbackWP8: onPushNotificationReceived
+	};
 
 	var AppHelper = {
 		checkSimulator: function() {
