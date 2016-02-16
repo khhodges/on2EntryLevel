@@ -18,8 +18,8 @@ app.Activities = (function () {
 	};
 	
 	var showTitle = function() {
-		var title = document.getElementById("navbarTitle").InnerTEXT;
-		title = activities.User().DisplayName;
+		//var title = document.getElementById("navbarTitle").InnerTEXT;
+		//title = activities.User().DisplayName;
 	}
 	
 	// Activities model

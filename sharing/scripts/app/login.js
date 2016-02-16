@@ -72,6 +72,7 @@ app.Login = (function () {
                 }
                 
                 app.mobileApp.hideLoading();
+				app.demoService.viewModel.prepareInterstitial();
                 return app.Users.load();
             })
             .then(function () {
