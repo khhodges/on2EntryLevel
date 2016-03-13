@@ -13,8 +13,8 @@
     analytics.Start = function() {
 
         // Handy shortcuts to the analytics api
-        var factory = win.plugins.EqatecAnalytics.Factory;
-        var monitor = win.plugins.EqatecAnalytics.Monitor;
+        var factory = win.plugins.telerikanalytics.Factory;
+        var monitor = win.plugins.telerikanalytics.Monitor;
 
         // Create the monitor instance using the unique product key for platform-friends-hybrid
         var productId = appSettings.eqatec.productKey;
@@ -37,17 +37,17 @@
     };
 
     analytics.Stop = function() {
-        var monitor = win.plugins.EqatecAnalytics.Monitor;
+        var monitor = win.plugins.telerikanalytics.Monitor;
         monitor.Stop();
     };
 
     analytics.TrackFeature = function (feature) {
-        var monitor = win.plugins.EqatecAnalytics.Monitor;
+        var monitor = win.plugins.telerikanalytics.Monitor;
         monitor.TrackFeature(feature);
     };
 
     analytics.Monitor = function() {
-        return win.plugins.EqatecAnalytics.Monitor;
+        return win.plugins.telerikanalytics.Monitor;
     };
 
 }(window));
