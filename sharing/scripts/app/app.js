@@ -1,23 +1,24 @@
 function onPushNotificationReceived(e) {
-	alert(JSON.stringify(e));
+	showAlert(e.message, "On2T Notification");
 };
 
 var app = (function (win) {
 	'use strict';
 
 	// Global error handling
-	var showAlert = function(message, title, callback) {
-		navigator.notification.alert(message, callback || function () {
-		}, title, 'OK');
+	var showAlert = function (message, title, callback) {
+		navigator.notification.alert(message, callback || function () {}, title, 'OK');
 	};
 
-	var showError = function(message) {
+	var showError = function (message) {
 		showAlert(message, 'Error occured');
 	};
-	
+
 	/*	window.onerror = function (message, file, line) {
 	alert("Error: " + message + ", File: " + file + ", Line: " + line);
 	}*/
+
+
 
 	win.addEventListener('error', function (e) {
 		e.preventDefault();
@@ -30,9 +31,8 @@ var app = (function (win) {
 	});
 
 	// Global confirm dialog
-	var showConfirm = function(message, title, callback) {
-		navigator.notification.confirm(message, callback || function () {
-		}, title, ['OK', 'Cancel']);
+	var showConfirm = function (message, title, callback) {
+		navigator.notification.confirm(message, callback || function () {}, title, ['OK', 'Cancel']);
 	};
 
 	var isNullOrEmpty = function (value) {
@@ -45,7 +45,7 @@ var app = (function (win) {
 	};
 
 	// Handle device back button tap
-	var onBackKeyDown = function(e) {
+	var onBackKeyDown = function (e) {
 		e.preventDefault();
 
 		navigator.notification.confirm('Do you really want to exit?', function (confirmed) {
@@ -63,7 +63,7 @@ var app = (function (win) {
 		}, 'Exit', ['OK', 'Cancel']);
 	};
 
-	var onDeviceReady = function() {
+	var onDeviceReady = function () {
 		// Handle "backbutton" event
 		document.addEventListener('backbutton', onBackKeyDown, false);
 
@@ -72,7 +72,7 @@ var app = (function (win) {
 		if (analytics.isAnalytics()) {
 			analytics.Start();
 		}
-        
+
 		// Initialize AppFeedback
 		if (app.isKeySet(appSettings.feedback.apiKey)) {
 			try {
@@ -84,21 +84,21 @@ var app = (function (win) {
 		} else {
 			console.log('Telerik AppFeedback API key is not set. You cannot use feedback service.');
 		}
-		
+
 		//register for device notifications
-		el.push.register(devicePushSettings, function() {
+		el.push.register(devicePushSettings, function () {
 			alert("Successful registration in Telerik Platform. You are ready to receive push notifications.");
-		}, function(err) {
+		}, function (err) {
 			alert("Error: " + err.message);
 		})
-		
+
 		//for notifications
 		if (cordova.plugins) {
 			// set some global defaults for all local notifications
 			cordova.plugins.notification.local.setDefaults({
-															   ongoing: false, // see http://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setOngoing(boolean)
-															   autoClear: true
-														   });
+				ongoing: false, // see http://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setOngoing(boolean)
+				autoClear: true
+			});
 
 			cordova.plugins.notification.local.on("click", function (notification) {
 				navigator.notification.alert(JSON.stringify(notification), null, 'Notification background click', 'Close');
@@ -123,15 +123,15 @@ var app = (function (win) {
 
 	// Handle "deviceready" event
 	document.addEventListener('deviceready', onDeviceReady, false);
- 
+
 	// Initialize Everlive SDK
 	var el = new Everlive({
-							  appId: appSettings.everlive.appId,
-							  scheme: appSettings.everlive.scheme
-						  });
+		appId: appSettings.everlive.appId,
+		scheme: appSettings.everlive.scheme
+	});
 
 	var emptyGuid = '00000000-0000-0000-0000-000000000000';
-	
+
 	var devicePushSettings = {
 		iOS: {
 			badge: 'true',
@@ -150,9 +150,8 @@ var app = (function (win) {
 	};
 
 	var AppHelper = {
-		checkSimulator: function() {
+		checkSimulator: function () {
 			if (window.navigator.simulator === true) {
-				//alert('This plugin is not available in the simulator.');
 				return true;
 			} else if (window.plugins === undefined || window.plugins.toast === undefined) {
 				//alert('Plugin not found. Maybe you are running in AppBuilder Companion app which currently does not support this plugin.');
@@ -161,11 +160,11 @@ var app = (function (win) {
 				return false;
 			}
 		},
-		
+
 		// Return url for responsive bandwidth
-		ResponsiveImageUrl: function(id) {
+		ResponsiveImageUrl: function (id) {
 			el.Files.getById(id)
-				.then(function(data) {
+				.then(function (data) {
 					// get url from data
 					var url = data.result.Uri;
 					var size = "/resize=w:200,h:200,fill:cover/";
@@ -175,15 +174,15 @@ var app = (function (win) {
 					url = base + appSettings.everlive.appId + size + url;
 					return url;
 				}),
-			function(error) {
-				navigator.notification.alert(JSON.stringify(error));
-			};
+				function (error) {
+					navigator.notification.alert(JSON.stringify(error));
+				};
 		},
-		
+
 		// Return absolute user profile picture url
 		resolveBackgroundPictureUrl: function (id, option) {
 			if (id && id !== emptyGuid) {
-				if (option==='bg') {
+				if (option === 'bg') {
 					return 'url(' + el.Files.getDownloadUrl(id) + ')';
 				} else {
 					return el.Files.getDownloadUrl(id);
@@ -215,7 +214,7 @@ var app = (function (win) {
 		formatDate: function (dateString) {
 			return kendo.toString(new Date(dateString), 'MMM dd, yyyy');
 		},
-		
+
 		// Date formatter. Return likes count format
 		formatLikes: function (likesArray, text) {
 			if (likesArray !== undefined) {
@@ -229,16 +228,16 @@ var app = (function (win) {
 		logout: function () {
 			return el.Users.logout();
 		},
-        
+
 		autoSizeTextarea: function () {
 			var rows = $(this).val().split('\n');
 			$(this).prop('rows', rows.length + 1);
 		},
-		
+
 		convertToDataURL: function convertToDataURLviaCanvas(url, callback, outputFormat) {
 			var img = new Image();
 			img.crossOrigin = 'Anonymous';
-			img.onload = function() {
+			img.onload = function () {
 				var canvas = document.createElement('CANVAS');
 				var ctx = canvas.getContext('2d');
 				var dataURL;
@@ -248,71 +247,72 @@ var app = (function (win) {
 				dataURL = canvas.toDataURL(outputFormat, 0.5);
 				var ImgData = dataURL.substring("data:image/jepg;base64,".length);
 				callback(ImgData);
-				canvas = null; 
+				canvas = null;
 			};
 			img.src = url;
 		}
 	};
-	
+
 	var NotifyHelper = {
-		showMessageWithoutSound:
-		function () {
+
+		showShortTop: function (m) {
+			if (!app.helper.checkSimulator) {
+				window.plugins.toast.showShortTop(m);
+			}
+		},
+		
+		showMessageWithoutSound: function () {
 			this.notify({
-							id: 1,
-							title: 'I\'m the title!',
-							text: 'Sssssh!',
-							sound: null,
-							at: this.getNowPlus10Seconds()
-						});
+				id: 1,
+				title: 'I\'m the title!',
+				text: 'Sssssh!',
+				sound: null,
+				at: this.getNowPlus10Seconds()
+			});
 		},
 
-		showMessageWithDefaultSound
-		: function () {
+		showMessageWithDefaultSound: function () {
 			this.notify({
-							id: '2', // you don't have to use an int by the way.. '1a' or just 'a' would be fine
-							title: 'Sorry for the noise',
-							text: 'Unless you have sound turned off',
-							at: this.getNowPlus10Seconds()
-						});
+				id: '2', // you don't have to use an int by the way.. '1a' or just 'a' would be fine
+				title: 'Sorry for the noise',
+				text: 'Unless you have sound turned off',
+				at: this.getNowPlus10Seconds()
+			});
 		},
 
-		showMessageWithData
-		: function () {
+		showMessageWithData: function () {
 			this.notify({
-							id: 3,
-							text: 'I have data, click me to see it',
-							json: JSON.stringify({
-													 test: 123
-												 }),
-							at: this.getNowPlus10Seconds()
-						});
+				id: 3,
+				text: 'I have data, click me to see it',
+				json: JSON.stringify({
+					test: 123
+				}),
+				at: this.getNowPlus10Seconds()
+			});
 		},
 
-		showMessageWithBadge
-		: function () {
+		showMessageWithBadge: function () {
 			this.notify({
-							id: 4,
-							title: 'Your app now has a badge',
-							text: 'Clear it by clicking the \'Cancel all\' button',
-							badge: 1,
-							at: this.getNowPlus10Seconds()
-						});
+				id: 4,
+				title: 'Your app now has a badge',
+				text: 'Clear it by clicking the \'Cancel all\' button',
+				badge: 1,
+				at: this.getNowPlus10Seconds()
+			});
 		},
 
-		showMessageWithSoundEveryMinute
-		: function () {
+		showMessageWithSoundEveryMinute: function () {
 			this.notify({
-							id: 5,
-							title: 'I will bother you every minute',
-							text: '.. until you cancel all notifications',
-							every: 'minute',
-							autoClear: false,
-							at: this.getNowPlus10Seconds()
-						});
+				id: 5,
+				title: 'I will bother you every minute',
+				text: '.. until you cancel all notifications',
+				every: 'minute',
+				autoClear: false,
+				at: this.getNowPlus10Seconds()
+			});
 		},
 
-		cancelAll
-		: function () {
+		cancelAll: function () {
 			if (!this.checkSimulator()) {
 				cordova.plugins.notification.local.cancelAll(function () {
 					alert('ok, all cancelled')
@@ -320,8 +320,7 @@ var app = (function (win) {
 			}
 		},
 
-		getScheduledNotificationIDs
-		: function () {
+		getScheduledNotificationIDs: function () {
 			if (!this.checkSimulator()) {
 				cordova.plugins.notification.local.getScheduledIds(function (scheduledIds) {
 					navigator.notification.alert(scheduledIds.join(', '), null, 'Scheduled Notification ID\'s', 'Close');
@@ -329,8 +328,7 @@ var app = (function (win) {
 			}
 		},
 
-		notify
-		: function (payload) {
+		notify: function (payload) {
 			if (!this.checkSimulator()) {
 				cordova.plugins.notification.local.schedule(payload, function () {
 					console.log('scheduled')
@@ -338,13 +336,11 @@ var app = (function (win) {
 			}
 		},
 
-		getNowPlus10Seconds
-		: function () {
+		getNowPlus10Seconds: function () {
 			return new Date(new Date().getTime() + 10 * 1000);
 		},
 
-		checkSimulator
-		: function () {
+		checkSimulator: function () {
 			if (window.navigator.simulator === true) {
 				alert('This plugin is not available in the simulator.');
 				return true;
@@ -355,11 +351,11 @@ var app = (function (win) {
 				return false;
 			}
 		}
-		
+
 	}
-	
+
 	var fileHelper = {
-		
+
 		uploadPhoto: function (imageURI, server) {
 			var options = new FileUploadOptions();
 			options.fileKey = "file";
@@ -381,23 +377,23 @@ var app = (function (win) {
 			console.log("Response = " + r.response);
 			console.log("Sent = " + r.bytesSent);
 		},
-		fail:function (error) {
+		fail: function (error) {
 			alert("An error has occurred: Code = " + error.code);
 			console.log("upload error source " + error.source);
 			console.log("upload error target " + error.target);
 		}
 	}
-	
+
 	var os = kendo.support.mobileOS,
 		statusBarStyle = os.ios && os.flatVersion >= 700 ? 'black-translucent' : 'black';
 
 	// Initialize KendoUI mobile application
 	var mobileApp = new kendo.mobile.Application(document.body, {
-													 transition: 'slide',
-													 statusBarStyle: statusBarStyle,
-													 skin: 'flat'
-												 });
-	var cropImage = function(image) {
+		transition: 'slide',
+		statusBarStyle: statusBarStyle,
+		skin: 'flat'
+	});
+	var cropImage = function (image) {
 		if (!app.helper.checkSimulator) {
 			window.plugins.toast.showShortTop("Croping image ...");
 		}
@@ -410,7 +406,7 @@ var app = (function (win) {
 			starterHeight = starter.naturalHeight;
 			sy = 0;
 		} else {
-			sy = (- starter.naturalWidth + starter.naturalHeight) / 2;
+			sy = (-starter.naturalWidth + starter.naturalHeight) / 2;
 			starterWidth = starter.naturalWidth;
 			starterHeight = starter.naturalWidth;
 			sx = 0;
@@ -423,21 +419,21 @@ var app = (function (win) {
 		ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
 		$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
 	}
-	
-	var createImage = function (baseImage) {				
+
+	var createImage = function (baseImage) {
 		if (!app.helper.checkSimulator) {
 			window.plugins.toast.showShortTop("Uploading image ...");
 		}
 		app.everlive.Files.create({
-									  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
-									  ContentType: "image/jpeg",
-									  base64: baseImage
-								  })
+				Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+				ContentType: "image/jpeg",
+				base64: baseImage
+			})
 			.then(function (promise) {
 				return promise;
 			})
 	}
-	
+
 	var takePicture = function () {
 		takePicture2(console.log("Callback"));
 	}
@@ -450,32 +446,32 @@ var app = (function (win) {
 		}, function () {
 			navigator.notification.alert("No selection was detected.");
 		}, {
-										//kjhh best result including iphone rotation
-										quality: 100, 
-										destinationType: navigator.camera.DestinationType.FILE_URI,
-										sourceType: navigator.camera.PictureSourceType.CAMERA,
-										encodingType: navigator.camera.EncodingType.JPEG,
-										correctOrientation: true
-									});		
+			//kjhh best result including iphone rotation
+			quality: 100,
+			destinationType: navigator.camera.DestinationType.FILE_URI,
+			sourceType: navigator.camera.PictureSourceType.CAMERA,
+			encodingType: navigator.camera.EncodingType.JPEG,
+			correctOrientation: true
+		});
 	}
-	
-	var simplify = function(object) {
+
+	var simplify = function (object) {
 		var simpleObject = {};
 		for (var prop in object) {
 			if (!object.hasOwnProperty(prop)) {
 				continue;
 			}
-			if (typeof(object[prop]) === 'object') {
+			if (typeof (object[prop]) === 'object') {
 				continue;
 			}
-			if (typeof(object[prop]) === 'function') {
+			if (typeof (object[prop]) === 'function') {
 				continue;
 			}
 			simpleObject[prop] = object[prop];
 		}
 		return JSON.stringify(simpleObject); // returns cleaned up JSON
 	}
-	
+
 	/*	var simpleList = function (censor) {
 	var i = 0;
 
@@ -503,7 +499,7 @@ var app = (function (win) {
 
 	console.log("Result: ", JSON.stringify(b, censor(b)));
 	}
-	*/	
+	*/
 	return {
 		showAlert: showAlert,
 		showError: showError,
@@ -517,7 +513,8 @@ var app = (function (win) {
 		fileHelp: fileHelper,
 		takePicture: takePicture,
 		saveImage: createImage,
-		simplify: simplify/*,
-		printList: printList*/
+		simplify: simplify
+			/*,
+					printList: printList*/
 	};
 }(window));
