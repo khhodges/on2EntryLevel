@@ -87,7 +87,7 @@ var app = (function (win) {
 
 		//register for device notifications
 		el.push.register(devicePushSettings, function () {
-			alert("Successful registration in Telerik Platform. You are ready to receive push notifications.");
+			app.notify.showShortTop("Successful registration in Telerik Platform. You are ready to receive push notifications.");
 		}, function (err) {
 			alert("Error: " + err.message);
 		})
@@ -256,7 +256,7 @@ var app = (function (win) {
 	var NotifyHelper = {
 
 		showShortTop: function (m) {
-			if (!app.helper.checkSimulator) {
+			if (!this.checkSimulator) {
 				window.plugins.toast.showShortTop(m);
 			} else {
 				showAlert(m, "Toast");

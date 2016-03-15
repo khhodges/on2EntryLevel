@@ -212,7 +212,8 @@ app.Activities = (function () {
 			}
 			if (validator.validate() && (selected !== undefined)) {				
 				if (!app.helper.checkSimulator) {
-					window.plugins.toast.showShortTop("Uploading image ...")
+					app.notify.showShortTop("Uploading image... please wait");
+					//window.plugins.toast.showShortTop("Uploading image ...")
 				}
 				;
 				app.mobileApp.showLoading();
