@@ -258,9 +258,11 @@ var app = (function (win) {
 		showShortTop: function (m) {
 			if (!app.helper.checkSimulator) {
 				window.plugins.toast.showShortTop(m);
+			} else {
+				showAlert(m, "Toast");
 			}
 		},
-		
+
 		showMessageWithoutSound: function () {
 			this.notify({
 				id: 1,
