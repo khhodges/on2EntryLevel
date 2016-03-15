@@ -158,13 +158,20 @@ app.Activity = (function () {
 			var activities = app.Activities.activities;
 			var activity = activities.getByUid(activityUid);
 			var comments;
-			comments = "\n COMMENTS: \n" ;
-			app.Comments.comments.data().forEach(function(entry) {comments = comments + entry.CreatedAt+": "+ entry.Comment +"... " + entry.User.DisplayName+"\n";});
-			var message = activity.Text + comments;
+			comments = "\n COMMENTS: \n";
+			var message = activity.Text;
+			if (!app.Comments.comments === undefined) {
+			    app.Comments.comments.data().forEach(function (entry) { comments = comments + entry.CreatedAt + ": " + entry.Comment + "... " + entry.User.DisplayName + "\n"; });
+			     message = message + comments;
+			}
 			var title = app.Users.currentUser.data.DisplayName;
 			var link = thePictureUrl;
-			window.plugins.toast.showLongBottom("Share options now being loaded for, " + message + ", " + title + ", " + link + ", please wait...");
-			window.plugins.socialsharing.share("The following posting is shared by " + title + ": " + message + ", " + link + "...", title, link);
+			if (!app.helper.checkSimulator) {
+			    window.plugins.toast.showLongBottom("Share options now being loaded for, " + message + ", " + title + ", " + link + ", please wait...");
+			    window.plugins.socialsharing.share("The following posting is shared by " + title + ": " + message + ", " + link + "...", title, link);
+			} else {
+			    app.showAlert("Share options now being loaded for, " + message + ", " + title + ", " + link + ", please wait...");
+			}
 		}
 		
 		return {
