@@ -6,12 +6,45 @@ var app = app || {};
 
 app.Users = (function () {
     'use strict';
+        var usersDataSource = (function () {
 
+            var dataModel = {
+                id: Everlive.idField,
+                isSelected: false,
+                isSelectedClass: function () {
+                    return this.get('isSelected') ? "listview-selected" : ''
+                }
+            };
+
+            var usersDataSource2 = new kendo.data.DataSource({
+                type: 'everlive',
+                transport: {
+                    typeName: 'Users'
+                },
+                schema: {
+                    model: dataModel
+                }
+            });
+            return usersDataSource2;
+        });
+
+        var onUserSelected = function (e) {
+            var isSelected = e.dataItem.get("isSelected");
+            var newState = isSelected ? false : true;
+            e.dataItem.set("isSelected", newState);
+        };
+
+        var handleSendAction = function () {
+            app.navigateToView(appSettings.views.main);
+            app.PushSender.send();
+        };
     var usersModel = (function () {
 
         var currentUser = kendo.observable({ data: null });
         var usersData;
-		var currentUserData;
+        var currentUserData;
+
+
 
         // Retrieve current user and all users data from Backend Services
         var loadUsers = function () {
@@ -43,7 +76,10 @@ app.Users = (function () {
             users: function () {
                 return usersData;
             },
-            currentUser: currentUser
+            currentUser: currentUser,
+           // usersData: usersDataSource,
+            onUserSelected: onUserSelected,
+            handleSendAction: handleSendAction
         };
 
     }());

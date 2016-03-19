@@ -8,12 +8,21 @@ var appSettings = {
         appId: '3t5oa8il0d0y02eq', // Put your Backend Services API key here
         scheme: 'http'
     },
-
+    views: {
+        init: '#initView',
+        noAppId: 'views/noAppIdView.html',
+        signUp: 'views/signupView.html',
+        users: 'views/usersView.html',
+        main: 'views/placesView.html'
+    },
+    notification: {
+        androidProjectNumber: "AIzaSyDQZoMoLsize-ArAfuGNen0MglbPcoZxWk"
+    },
     eqatec: {
         productKey: '3d777b61e0be40f5b61964bb1b05cbbb',  // Put your Tekerik Analytics project key here
         version: '1.0.0.0' // Put your application version here
     },
-    
+
     feedback: {
         apiKey: '3t5oa8il0d0y02eq'  // Put your AppFeedback API key here
     },

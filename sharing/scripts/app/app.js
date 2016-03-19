@@ -255,6 +255,18 @@ var app = (function (win) {
 
 	var NotifyHelper = {
 
+	    broadcast: function () {
+	        var activity = app.Activity.activity();
+	        app.everlive.push.notifications.create({ Message: activity.Text },
+                                                   function (data) {
+                                                       var createdAt = app.formatDate(data.result.CreatedAt);
+                                                       app.notify.showShortTop("Notification created: " + createdAt);
+                                                   },
+                                                   function (error) {
+                                                       app.showError(JSON.stringify(error));
+                                                   })
+	    },
+
 		showShortTop: function (m) {
 			if (!this.checkSimulator) {
 				window.plugins.toast.showShortTop(m);
@@ -395,6 +407,7 @@ var app = (function (win) {
 		statusBarStyle: statusBarStyle,
 		skin: 'flat'
 	});
+
 	var cropImage = function (image) {
 		if (!app.helper.checkSimulator) {
 			window.plugins.toast.showShortTop("Croping image ...");

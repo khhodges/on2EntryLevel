@@ -48,6 +48,7 @@
     <Content Include="scripts\app\analytics-monitor.js" />
     <Content Include="scripts\app\app.js" />
     <Content Include="scripts\app\comments.js" />
+    <Content Include="scripts\app\common.js" />
     <Content Include="scripts\app\identity-provider.js" />
     <Content Include="scripts\app\login.js" />
     <Content Include="scripts\app\settings.js" />
@@ -56,7 +57,6 @@
     <Content Include="scripts\app\users.js" />
     <Content Include="styles\images\avatar.png" />
     <Content Include="styles\images\background-picture.png" />
-    <Content Include="styles\images\btn-next-static.png" />
     <Content Include="styles\images\camera.png" />
     <Content Include="styles\images\chat.gif" />
     <Content Include="styles\images\default-image.jpg" />
@@ -66,6 +66,8 @@
     <Content Include="styles\images\icon-arrow_dark@2x.png" />
     <Content Include="styles\images\icon-comment.png" />
     <Content Include="styles\images\icon-comment@2x.png" />
+    <Content Include="styles\images\icon.png" />
+    <Content Include="styles\images\notify.png" />
     <Content Include="styles\images\share.png" />
     <Content Include="styles\images\icon-delete.png" />
     <Content Include="styles\images\icon-delete@2x.png" />
@@ -82,10 +84,12 @@
     <Content Include="styles\images\logo1.jpg" />
     <Content Include="styles\images\logo2.jpg" />
     <Content Include="styles\images\logo3.jpg" />
-    <Content Include="styles\images\share2.png" />
     <Content Include="styles\main.css" />
     <Content Include="views\activitiesView.html" />
     <Content Include="views\activityView.html" />
+    <Content Include="views\placesView.html" />
+    <Content Include="views\usersView.html" />
+    <Content Include="views\eventsView.html" />
     <Content Include="views\noAppId.html" />
     <Content Include="views\signupView.html" />
     <Content Include="views\updateView.html" />

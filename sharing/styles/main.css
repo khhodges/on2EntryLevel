@@ -345,6 +345,10 @@ input[type='week']
 {
 	background-image: url(images/share.png);
 }
+#friendsApp .nav-button-notify
+{
+	background-image: url(images/notify.png);
+}
 #friendsApp .nav-button-delete
 {
 	background-image: url(images/icon-delete.png);
@@ -398,7 +402,7 @@ input[type='week']
 	height: 119px;
 	margin: 1.5em auto;
 	text-indent: -9999px;
-	background: transparent url(images/logo3.jpg) no-repeat 0 0;
+	background: transparent url(images/icon.png) no-repeat 0 0;
 	overflow: hidden; 
 	background-size: contain;
 }
@@ -780,7 +784,7 @@ input[type='week']
 {
 	#friendsApp .app-name
 	{
-		background-image: url(images/logo3.jpg);
+		background-image: url(images/icon.png);
 		background-size: 120px 150px;
 		background-position: center;
 		background-size: contain;
