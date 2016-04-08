@@ -8,20 +8,19 @@ var app = app || {};
 app.Activities = (function () {
 	'use strict'
 	var $enterEvent, $newEventText, validator, selected, $baseImage;
-	
 	var init = function () {
 		validator = $('#enterEvent').kendoValidator().data('kendoValidator');
 		$enterEvent = $('#enterEvent');	
 		$newEventText = $('#newEventText');
 		$newEventText.on('keydown', app.helper.autoSizeTextarea);
 		validator.hideMessages();
+		$(document.body).css("visibility", "visible");
 	};
-	
+    //Remove
 	var showTitle = function() {
 		var title = document.getElementById("navbarTitle").InnerTEXT;
 		title = activities.User().DisplayName;
-	}
-	
+	}	
 	// Activities model
 	var activitiesModel = (function () {
 		var activityModel = {
@@ -47,7 +46,12 @@ app.Activities = (function () {
 				Likes: {
 						field: 'Likes',
 						defaultValue: []
-					}
+				    },
+				Location: {
+				        field: 'Location',
+                        defaultValue:[]
+				    }
+
 			},
 			CreatedAtFormatted: function () {
 				return app.helper.formatDate(this.get('CreatedAt'));
@@ -143,28 +147,37 @@ app.Activities = (function () {
 			activities: activitiesDataSource
 		};
 	}());
-
 	// Activities view model
 	var activitiesViewModel = (function () {
 		// Navigate to activityView When some activity is selected
 		var activitySelected = function (e) {
 			app.mobileApp.navigate('views/activityView.html?uid=' + e.data.uid);
 		};
-
 		// Navigate to app home
 		var navigateHome = function () {
 			app.mobileApp.navigate('#welcome');
 		};
-
 		// Logout user
 		var logout = function () {
+		    $.ajax({
+		        type: "GET",
+		        url: 'http://api.everlive.com/v1/3t5oa8il0d0y02eq/Push/Notifications',
+		        headers: {
+		            "Authorization": "qK0KymJ3iDZzAMmrfb1KIRcO9FMntcB7"
+		        },
+		        success: function (data) {
+		            alert(JSON.stringify(data));
+		        },
+		        error: function (error) {
+		            alert(JSON.stringify(error));
+		        }
+		    });
 			app.helper.logout()
 				.then(navigateHome, function (err) {
 					app.showError(err.message);
 					navigateHome();
 				});
 		};
-
 		var crop = function () {
 			var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
 			var starter = document.getElementById("picture");
@@ -203,19 +216,14 @@ app.Activities = (function () {
 				activities.sync();
 				app.mobileApp.hideLoading();
 			}
-		};
-		
+		};		
 		var saveImageActivity = function () {
 			// Validating of the required fields
 			if (selected === undefined || !$baseImage) {
 				app.showAlert("First take a photo with your camera and then add a message to match!", "Informational");
 			}
 			if (validator.validate() && (selected !== undefined)) {				
-				if (!app.helper.checkSimulator()) {
-					app.notify.showShortTop("Uploading image... please wait");
-					//window.plugins.toast.showShortTop("Uploading image ...")
-				}
-				;
+				app.notify.showShortTop("Uploading image... please wait");
 				app.mobileApp.showLoading();
 				// Save image as base64 to everlive
 				app.everlive.Files.create({
@@ -254,22 +262,19 @@ app.Activities = (function () {
 				$enterEvent.style.display = 'block';
 				document.getElementById('addButton').innerText = "Cancel";
 			}
-		};
-		
+		};		
 		var success = function (imageURI) {
 			selected = imageURI;
 			var picture = document.getElementById("picture");
 			picture.src = selected;
 		}
-
 		var error = function () {
 			app.showError("No selection was detected.");			
 			$enterEvent.style.display = 'none';
 			validator.hideMessages();
 			document.getElementById('addButton').innerText = "Add Event";
 			document.getElementById('newEventText').value = "";
-		};
-		
+		};	
 		var pickImage = function (e) {
 			$enterEvent = document.getElementById('enterEvent');
 			app.mobileApp.navigate('#view-all-activities');
@@ -291,8 +296,7 @@ app.Activities = (function () {
 												correctOrientation: true
 											});
 			}
-		};
-		
+		};		
 		return {
 			init: init,
 			activities: activitiesModel.activities,
@@ -304,6 +308,5 @@ app.Activities = (function () {
 			crop: crop
 		};
 	}());
-
 	return activitiesViewModel;
 }());

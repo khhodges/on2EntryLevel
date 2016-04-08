@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 	<head>
@@ -7,6 +7,7 @@
 		<script src="cordova.js"></script>
 		<script src="kendo/js/jquery.min.js"></script>
 		<script src="kendo/js/kendo.mobile.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDV8dnz0UDs1aoCLVZcC6UAPSn3eSXyYh8&libraries=places"></script>
 		<script src="bower_components/everlive/min/everlive.all.min.js"></script>
 		<script src="scripts/app/identity-provider.js"></script>
 		<script src="scripts/app/settings.js"></script>
@@ -15,7 +16,8 @@
         <script src="scripts/app/social.js"></script>
 		<script src="scripts/app/analytics-monitor.js"></script>
 		<script src="scripts/app/users.js"></script>
-		<script src="scripts/app/update.js"></script>
+        <script src="scripts/app/update.js"></script>
+        <script src="scripts/app/map.js"></script>
 		<script src="scripts/app/login.js"></script>
 		<script src="scripts/app/signup.js"></script>
 		<script src="scripts/app/activities.js"></script>
@@ -27,6 +29,11 @@
 	</head>
 
 	<body id="friendsApp">
+        <script>
+        //initially hiding the body so that the ugly body before the css rendering doesn't show up for users
+        //body visibility set back to 'visible' on the data-show method of the first view, home.
+        $(document.body).css("visibility", "hidden");
+        </script>
 		<div data-role="layout" data-id="default">
 			<!--View content will render here-->
 		</div>
@@ -73,8 +80,8 @@
 				<li>
 					<a href="http://www.on2t.com" target="_blank">Switch to our Web Site</a>
 				</li>
-				<br/>
-				<span>OFA version 1.3.0 - 3/16/2016</span>
+				<li>
+				<span>OFA version 1.3.2 - 4/8/2016</span></li>
 			</ol>
 		</div>
 		<div id="appDrawer" data-role="drawer" data-title="Menu">
@@ -89,13 +96,13 @@
 					<a href="views/activitiesView.html" data-icon="home" style="color: black">Activities</a>
 				</li>
                 <li>
-                    <a href="views/eventsView.html" data-icon="recents" style="color: black">Events</a>
+                    <a href="views/localView.html" data-icon="recents" style="color: black">Local</a>
                 </li>
                 <li>
                     <a href="views/usersView.html" data-icon="contacts" style="color: black">Users</a>
                 </li>
                 <li>
-                    <a href="views/placesView.html" data-icon="globe" style="color: black">Places</a>
+                    <a href="views/mapView.html" data-icon="globe" style="color: black">Updates</a>
                 </li>
                 <li>
                     <a href="views/updateView.html" data-icon="settings" style="color: red">Settings</a>

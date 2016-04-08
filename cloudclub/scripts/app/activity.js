@@ -50,9 +50,9 @@ app.Activity = (function () {
 				});
 			
 			$activityPicture[0].style.display = activity.Picture ? 'block' : 'none';			
-			if (!app.helper.checkSimulator()) {
-				window.plugins.toast.showShortTop("Downloading ...")
-			}
+			
+			    app.notify.showShortTop("Checking for Comments ...")
+			
 			//app.mobileApp.showLoading();
 			app.Comments.comments.filter({
 											 field: 'ActivityId',
@@ -96,9 +96,8 @@ app.Activity = (function () {
 				comment.UserId = app.Users.currentUser.get('data').Id;
 				comment.ActivityId = app.Activity.activity().Id;
                 
-				if (!app.helper.checkSimulator()) {
-					window.plugins.toast.showShortTop("Updating Comments ...")
-				}
+				app.notify.showShortTop("Updating Comments ...")
+				
 				comments.sync();
 				$newComment.Val = "";
 				
@@ -107,6 +106,12 @@ app.Activity = (function () {
 				document.getElementById("three").style.visibility = "hidden";
 				document.getElementById("four").style.visibility = "hidden";
 				document.getElementById("five").style.visibility = "hidden";
+			    //update Likes
+			    // Adding new activity to Activities model
+				var activities = app.Activities.activities;
+				var activity = activities.getByUid(activityUid);
+				activity.Likes.push(comment.UserId);
+				activities.sync();
 			}
 		};
 		var addComment = function () {
