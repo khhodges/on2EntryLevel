@@ -5,6 +5,9 @@
 (function (win) {
 
     var analytics = win.analytics = win.analytics || {};
+	
+	
+	alert('line 9');
 
     analytics.isAnalytics = function () {
         return win.app.isKeySet(appSettings.eqatec.productKey);
@@ -15,7 +18,7 @@
         // Handy shortcuts to the analytics api
         var factory = win.plugins.EqatecAnalytics.Factory;
         var monitor = win.plugins.EqatecAnalytics.Monitor;
-
+      alert('line 21');
         // Create the monitor instance using the unique product key for platform-friends-hybrid
         var productId = appSettings.eqatec.productKey;
         var version = appSettings.eqatec.version || '1.0.0.0';

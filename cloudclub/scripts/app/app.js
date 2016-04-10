@@ -151,9 +151,9 @@ var app = (function (win) {
 	};
 
 	var AppHelper = {
-	    isAnalytics: function(){
-	        analytics.isAnalytics();
-	    },
+		isAnalytics: function () {
+			analytics.isAnalytics();
+		},
 
 		checkSimulator: function () {
 			if (window.navigator.simulator === true) {
@@ -220,22 +220,22 @@ var app = (function (win) {
 			return kendo.toString(new Date(dateString), 'MMM dd, yyyy');
 		},
 
-	    // Like formatter. Return likes count format
+		// Like formatter. Return likes count format
 		formatLikes: function (likesArray, text) {
-		    if (likesArray !== undefined) {
-		        return kendo.toString('Comments: ' + likesArray.length);
-		    } else {
-		        return kendo.toString('Be the first to comment!');
-		    }
+			if (likesArray !== undefined) {
+				return kendo.toString('Comments: ' + likesArray.length);
+			} else {
+				return kendo.toString('Be the first to comment!');
+			}
 		},
 
-	    // Geopoint formatter. Return lat/long  format
+		// Geopoint formatter. Return lat/long  format
 		formatGeopoint: function (geopoint) {
-		    if (geopoint !== undefined && geopoint !== null) {
-		        return kendo.toString('Lat/Long: ' + geopoint.length);
-		    } else {
-		        return kendo.toString('Location unknown!');
-		    }
+			if (geopoint !== undefined && geopoint !== null) {
+				return kendo.toString('Lat/Long: ' + geopoint.length);
+			} else {
+				return kendo.toString('Location unknown!');
+			}
 		},
 
 		// Current user logout
@@ -269,24 +269,31 @@ var app = (function (win) {
 
 	var NotifyHelper = {
 
-	    broadcast: function () {
-	        var activity = app.Activity.activity();
-	        app.everlive.push.notifications.create({ Message: activity.Text },
-                                                   function (data) {
-                                                       var createdAt = app.formatDate(data.result.CreatedAt);
-                                                       app.notify.showShortTop("Notification created: " + createdAt);
-                                                   },
-                                                   function (error) {
-                                                       app.showError(JSON.stringify(error));
-                                                   })
-	    },
+		openBrowser: function (url) {
+			window.open(url, "_blank", "_blank", "location=yes", "closebuttoncaption=done");
+		},
+
+		broadcast: function () {
+			var activity = app.Activity.activity();
+			app.everlive.push.notifications.create({
+					Message: activity.Text
+				},
+				function (data) {
+					var createdAt = app.formatDate(data.result.CreatedAt);
+					app.notify.showShortTop("Notification created: " + createdAt);
+				},
+				function (error) {
+					app.showError(JSON.stringify(error));
+				})
+		},
 
 		showShortTop: function (m) {
-		        if (analytics.isAnalytics()) {
-		            analytics.TrackFeature('Toast.'+ m.substring(0,10));
-		    if (!app.helper.checkSimulator()) {
-		        window.plugins.toast.showShortTop(m);
-		        }
+			if (analytics.isAnalytics()) {
+				alert('line 292');
+				analytics.TrackFeature('Toast.' + m.substring(0, 10));
+			}
+			if (!app.helper.checkSimulator()) {
+				window.plugins.toast.showShortTop(m);
 			} else {
 				showAlert(m, "Toast Simulation");
 			}
@@ -344,7 +351,7 @@ var app = (function (win) {
 		},
 
 		cancelAll: function () {
-		    if (!app.helper.checkSimulator()) {
+			if (!app.helper.checkSimulator()) {
 				cordova.plugins.notification.local.cancelAll(function () {
 					alert('ok, all cancelled')
 				});
@@ -352,7 +359,7 @@ var app = (function (win) {
 		},
 
 		getScheduledNotificationIDs: function () {
-		    if (!app.helper.checkSimulator()) {
+			if (!app.helper.checkSimulator()) {
 				cordova.plugins.notification.local.getScheduledIds(function (scheduledIds) {
 					navigator.notification.alert(scheduledIds.join(', '), null, 'Scheduled Notification ID\'s', 'Close');
 				})
@@ -360,7 +367,7 @@ var app = (function (win) {
 		},
 
 		notify: function (payload) {
-		    if (!app.helper.checkSimulator()) {
+			if (!app.helper.checkSimulator()) {
 				cordova.plugins.notification.local.schedule(payload, function () {
 					console.log('scheduled')
 				});
@@ -426,8 +433,8 @@ var app = (function (win) {
 	});
 
 	var cropImage = function (image) {
-	    app.notify.showShortTop("Croping image ...");
-		
+		app.notify.showShortTop("Croping image ...");
+
 		var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
 		var starter = document.getElementById(image);
 		var canvas = document.getElementById("canvas");
@@ -452,8 +459,8 @@ var app = (function (win) {
 	}
 
 	var createImage = function (baseImage) {
-	    app.notify.showShortTop("Uploading image ...");
-		
+		app.notify.showShortTop("Uploading image ...");
+
 		app.everlive.Files.create({
 				Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
 				ContentType: "image/jpeg",
@@ -468,8 +475,8 @@ var app = (function (win) {
 		takePicture2(console.log("Callback"));
 	}
 	var takePicture2 = function (callback) {
-	    app.notify.showShortTop("Using camera ...");
-		
+		app.notify.showShortTop("Using camera ...");
+
 		navigator.camera.getPicture(function (imageURI) {
 			callback(imageURI);
 		}, function () {
