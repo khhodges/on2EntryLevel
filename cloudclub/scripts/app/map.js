@@ -6,7 +6,8 @@ var app = app || {};
 
 app.Places = (function () {
     'use strict'
-    var infoWindow, markers, place;
+    var infoWindow, markers, place, result, service, here, request, lat1, lng1, allBounds, theZoom = 12, infoContent;
+    var HEAD = '<div class="iw-title"></div><div class="iw-content"><div class="iw-subTitle" onclick="test(\'WebSite\')"><u>Name</u></div><img src="Icon" alt="Logo" height="80" width="80"><p>Text</p><div class="iw-subTitle"><a href="tel:+Phone"><small>Click to Call (+Phone)<br/>Address</small></a></div></div><table ${visibility} style="width:100%; margin-top:15px"><tr style="width:100%"><td style="width:50%"><a data-role="button" class="btn-continue km-widget km-button" href="components/partners/view.html?partner=Name">Add a Comment</a></td></tr></table><div class="iw-bottom-gradient"></div>';
     /**
      * The CenterControl adds a control to the map that recenters the map on
      * current location.
@@ -19,8 +20,8 @@ app.Places = (function () {
         controlUI.style.borderRadius = '3px';
         controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
         controlUI.style.cursor = 'pointer';
-        controlUI.style.marginBottom = '15px';
-        controlUI.style.marginRight = '15px';
+        controlUI.style.marginTop = '10px';
+        controlUI.style.marginRight = '10px';
         controlUI.style.textAlign = 'center';
         controlUI.title = 'Click to recenter the map';
         controlDiv.appendChild(controlUI);
@@ -33,25 +34,31 @@ app.Places = (function () {
         controlText.style.lineHeight = '20px';
         controlText.style.paddingLeft = '5px';
         controlText.style.paddingRight = '5px';
-        controlText.innerHTML = 'Restart';
+        controlText.innerHTML = 'List';
         controlUI.appendChild(controlText);
+
 
         // Setup the click event listeners: simply set the map to Chicago.
         controlUI.addEventListener('click', function () {
-            app.Places.locationViewModel.onNavigateHome();
+            //app.Places.locationViewModel.onNavigateHome();
+            app.mobileApp.navigate('views/listView.html');
         });
     }
     var placesViewModel = (function () {
-        var map, geocoder,locality, home
+        var map, geocoder, locality, home
         var placeModel = {
             fields: {
-                place: {
+                name: {
                     field: 'Place',
                     defaultValue: ''
                 },
                 url: {
                     field: 'Website',
-                    defaultValue: 'www.on2t.com'
+                    defaultValue: 'www.google.com?search=\' + result.name'
+                },
+                icon: {
+                    field: 'Icon',
+                    defaultValue: ''
                 },
                 marker: {
                     field: 'Location',
@@ -60,6 +67,18 @@ app.Places = (function () {
                 text: {
                     field: 'Description',
                     defaultValue: 'Empty'
+                },
+                html: {
+                    field: 'Html',
+                    defaultValue: ''
+                },
+                address: {
+                    field: 'Address',
+                    defaultValue: ''
+                },
+                phone: {
+                    field: 'Phone',
+                    defaultValue: ''
                 }
             }
         };
@@ -72,27 +91,62 @@ app.Places = (function () {
                 typeName: 'Places'
             }
         });
+        var viewModelSearch = kendo.observable({
+            selectedProduct: null, products: appSettings.products
+        });
+        viewModelSearch.selectedProduct = viewModelSearch.products[7];
+        //kendo.bind($("#searchList"), app.Places.locationViewModel.viewModelSearch);
         var LocationViewModel = kendo.data.ObservableObject.extend({
             _lastMarker: null,
             _isLoading: false,
             address: "",
+            find: "pizza",
             isGoogleMapsInitialized: false,
             markers: [],
+            details: [],
             hideSearch: false,
-            locatedAtFormatted: function (marker) {
-                var position = new google.maps.LatLng(marker.latitude, marker.longitude);
-                marker.Mark = new google.maps.Marker({
-                    map: map,
-                    position: position,
-                    icon: {
-                    url: 'http://maps.gstatic.com/mapfiles/circle.png',
-                    anchor: new google.maps.Point(10, 10),
-                    scaledSize: new google.maps.Size(10, 17)
+            products: viewModelSearch.products,
+            selectedProduct: viewModelSearch.selectedProduct,
+            locatedAtFormatted: function (marker, text, html, address, name, url, phone, icon) {
+                if (marker) {
+                    var htmlString = HEAD.replace('text', text).replace('WebSite', url).replace('Icon', icon).replace('Text', text).replace('Phone', phone).replace('Name', name).replace('Address', address);
+                    htmlString = htmlString.replace('Phone', phone).replace('Name', name);
+                    var filter = {};
+                    var params = [];
+                    filter.params = params;
+                    var field = "name";
+                    var operator = "contains";
+                    var value = name;
+                    var param = { "field": field, "operator": operator, "value": value };
+                    filter.params.push(param);
+                    var js = JSON.stringify(filter);
+                    htmlString = htmlString.replace('Filter', js);
+                    var position = new google.maps.LatLng(marker.latitude, marker.longitude);
+                    marker.Mark = new google.maps.Marker({
+                        map: map,
+                        position: position,
+                        icon: {
+                            url: 'styles/images/icon.png',
+                            anchor: new google.maps.Point(20, 38),
+                            scaledSize: new google.maps.Size(40, 40),
+                            title: viewModelSearch.selectedProduct
+                        }
+                        //TO DO: add popup
+
+                    });
+                    google.maps.event.addListener(marker.Mark, 'click', function () {
+                        if (html === '' || html === undefined) {
+                            infoWindow.setContent(text);
+                        } else {
+                            infoWindow.setContent(htmlString);
+                        }
+                        infoWindow.open(map, marker.Mark);
+                    });
                 }
-                });
-                return (marker.latitude+"/"+marker.longitude);
+                return ;
             },
             onNavigateHome: function () {
+                //find present location, clear markers and set up members as icons
                 var that = this,
                     position;
                 that._isLoading = true;
@@ -103,27 +157,28 @@ app.Places = (function () {
                 }
                 markers = [];
                 app.Places.locationViewModel.markers = new Array;
-
+                app.Places.locationViewModel.details = new Array;
                 navigator.geolocation.getCurrentPosition(
                     function (position) {
+                        home = position;
                         position = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         map.panTo(position);
-                        that._putMarker(position);
-                        home=position;
+                        //that._putMarker(position); //TO DO: hide or show present location marker
                         locality = position;
-
+                        lat1 = position.lat();
+                        lng1 = position.lng();
                         that._isLoading = false;
                         that.toggleLoading();
                     },
                     function (error) {
                         //default map coordinates
-                        position = new google.maps.LatLng(0,0);
+                        position = new google.maps.LatLng(0, -20);
                         map.panTo(position);
 
                         that._isLoading = false;
                         that.toggleLoading();
 
-                        app.notify.showShortTop("Unable to determine current location. Cannot connect to GPS satellite.");
+                        app.notify.showShortTop("Map.Unable to determine current location. Cannot connect to GPS satellite.");
                     },
                     {
                         timeout: 30000,
@@ -133,48 +188,110 @@ app.Places = (function () {
             },
             clearMap: // Deletes all markers in the array by removing references to them.
                 function deleteMarkers() {
-                    setMapOnAll(null);
+                    markers = app.Places.locationViewModel.markers;
+                    for (var i = 0; i < markers.length; i++) {
+                        markers[i].setMap(null);
+                    }
+
                     markers = [];
                     app.Places.locationViewModel.markers = new Array;
+                    app.Places.locationViewModel.details = new Array;
+                    //if (document.getElementById("place-list-view") !== null && document.getElementById("place-list-view").innerHTML !== null) {
+                    //    document.getElementById("place-list-view").innerHTML = "<strong> Cleared</strong>";
+                    //}
                 },
             onPlaceSearch: function () {
+                markers = app.Places.locationViewModel.markers;
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setMap(null);
+                }
+                markers = [];
+                app.Places.locationViewModel.markers = new Array;
+                app.Places.locationViewModel.details = new Array;
                 // Create the PlaceService and send the request.
                 // Handle the callback with an anonymous function.
-                var service = new google.maps.places.PlacesService(map);
-                
+                service = new google.maps.places.PlacesService(map);
+                here = map.getBounds();
                 // Specify location, radius and place types for your Places API search.
-                var request = {
+                request = {
                     location: locality,
-                    bounds: map.getBounds(),
-                    keyword: ['cafe', 'restaurant']
+                    bounds: here,
+                    keyword: app.Places.locationViewModel.find
                 };
-
-                
-                service.radarSearch(request, function (results, status) {
+                service.nearbySearch(request, function (results, status) {
                     if (status == google.maps.places.PlacesServiceStatus.OK) {
-                        map.panTo(results[0].geometry.location);
+                        //if length = 0 offer search by country or search by region
+
+                        //map.panTo(results[0].geometry.location);
                         for (var i = 0; i < results.length; i++) {
                             place = results[i];
-                            addMarker(place)
+                            var lat2 = place.geometry.location.lat();
+                            var lng2 = place.geometry.location.lng();
+                            var R = 6371; // km
+                            var dLat = (lat2 - lat1) * Math.PI / 180;
+                            var dLon = (lng2 - lng1) * Math.PI / 180;
+                            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                            var c = 2 * Math.asin(Math.sqrt(a));
+                            var d = R * c / 1.61; // converted to miles
+                            place.distance = d.toFixed(2);
+                            if (app.isNullOrEmpty(place.rating)) {
+                                place.rating = "??";
+                            }
+                            place.isSelected = false;
+                            place.isSelectedClass = "";
+                            place.visibility = "hidden";
+                            if (app.isNullOrEmpty(place.price_level)) {
+                                place.price_level = 0;
+                            }
+                            addMarker(place);
+                            place.priceString = '$$$$$$$'.substring(0, place.price_level);
+							
+                            app.Places.locationViewModel.details.push(place);
                         }
                     }
+                    else {
+                        // Do Place search
+                        app.notify.showShortTop("Nothing was found in the area shown.");
+                    }
                 });
+
 
                 function addMarker(place) {
                     // If the request succeeds, draw the place location on
                     // the map as a marker, and register an event to handle a
                     // click on the marker.
+                    var markerUrl = 'http://laverre.com/ys-x6/soft/YS-X6-PC-150413/html/greencircle.png';//'http://maps.gstatic.com/mapfiles/circle.png';
+                    if (place.rating < 3.5) markerUrl = 'http://laverre.com/ys-x6/soft/YS-X6-PC-150413/html/redcircle.png';
+                    if (place.rating > 4.2) markerUrl = 'http://laverre.com/ys-x6/soft/YS-X6-PC-150413/html/orangecircle.png';
+
                     var marker = new google.maps.Marker({
                         map: map,
                         position: place.geometry.location,
                         icon: {
-                            url: 'http://maps.gstatic.com/mapfiles/circle.png',
-                            anchor: new google.maps.Point(10, 10),
-                            scaledSize: new google.maps.Size(10, 17)
+                            //url: 'http://maps.google.com/mapfiles/ms/micons/restaurant.png',
+                            ////url: 'http://maps.gstatic.com/mapfiles/10_blue.png',
+                            ////url: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+                            //// This marker is 20 pixels wide by 32 pixels high.
+                            //size: new google.maps.Size(6*place.rating, 6*place.rating),
+                            //// The origin for this image is (0, 0).
+                            //origin: new google.maps.Point(0, 0),
+                            //// The anchor for this image is the base of the flagpole at (0, 32).
+                            //anchor: new google.maps.Point(0, 32),
+                            //title:'pizza'
+                            url: markerUrl,
+                            anchor: new google.maps.Point(3 * place.rating, 5 * place.rating),
+                            scaledSize: new google.maps.Size(4 * place.rating, 4 * place.rating)
                         }
                     });
 
+
                     app.Places.locationViewModel.markers.push(marker);
+                    //extend the bounds to include each marker's position
+                    allBounds.extend(marker.position);
+                    //now fit the map to the newly inclusive bounds
+                    map.fitBounds(allBounds);
 
                     google.maps.event.addListener(marker, 'click', function () {
                         service.getDetails(place, function (result, status) {
@@ -182,18 +299,46 @@ app.Places = (function () {
                                 console.error(status);
                                 return;
                             }
+							place.openString = " Closed";
+							if(place.opening_hours.open_now) place.openString = '<a href="tel:' 
+								+ result.formatted_phone_number + '"><strong> Open - Call Now</strong>';
+							place.starString = '<br>No reviews or stars. ';
                             if (result.reviews === undefined || result.reviews === undefined) {
-                                infoWindow.setContent('<div><strong>' + '<a id="addButton" class="nav-button" data-align="right" data-role="button" data-click="app.notify.openBrowser(\''+
-                  result.website + ')\"><u>'+ result.name + '</u></a></strong><br>' +
-                  'Phone: ' + result.formatted_phone_number + '<br>' +
-                  result.formatted_address + '<br>No reviews or stars.</div>');
-                            }
+							place.starString = '<br>' + result.reviews[0].text.split(". ")[0] + '  ... ' + result.reviews.length + ' reviews and ' + result.rating + ' stars';
+							}							
                             else {
-                                infoWindow.setContent('<div><strong>' + '<a href=\'' +
-              result.website + 'target=\'_blank\' \'location=yes,closebuttoncaption=Done\' >' + result.name + '</a></strong><br>' +
-              'Phone: ' + result.formatted_phone_number + '<br>' +
-              result.formatted_address + '<br>' + result.reviews[0].text.split(". ")[0] + '  ... ' + result.reviews.length + ' reviews and ' + result.rating + ' stars.</div>');
+                                place.infoContent ='<div><span onclick="test(\'' + result.website + '\')\"><strong><u>' + result.name + '</u></a></strong><br>' 
+								+ 'Phone: ' + result.formatted_phone_number + '<br>'
+								+ result.formatted_address 
+								+ place.starString +'<br/>Distance (about) ' 
+								+ place.distance + ' miles (ATCF). <br/>' 
+								+ place.priceString 
+								+ place.openString + '</span></div><div><table ${visibility} style="width:100%; margin-top:15px"><tr style="width:100%"><td style="width:33%"><a data-role="button" href="components/partners/add.html?Name=' 
+								+ result.name
+                                + '&email=newpartner@on2t.com'
+								+ '&longitude='+place.geometry.location.lng()
+								+ '&latitude=' + place.geometry.location.lat()
+                                + '&html=hhhhh'
+                                + '&icon=iiiii' 
+								+ '&address=' + result.formatted_address
+                                + '&textField=' + result.reviews[0].text
+                                + '&www=' + result.website
+                                + '&tel=' + result.formatted_phone_number + '" class="btn-login km-widget km-button">Endorse this Place</a></td></tr></table></div>';
                             }
+							//<a data-role="button" href="components/partners/add.html?Name=Pepi's Pizza&amp;email=newpartner@on2t.com&amp;location= 123&amp;html=hhhhh&amp;icon=iiiii&amp;address=87 Water St N, Kitchener, ON N2H 5A6, Canada&amp;textField=The munchie sub OMG the munchie sub! Half of the reason I moved to Kitchener is for this amazing sub. I tried the pizza recently too and found it to be loaded with toppings and really good. It is more expensive than most pizza places, but for what they serve there, I can see why. Everything is fresh and real (bacon for example). I know this location also has lasagna, salads and desserts too!&amp;www=http://www.pepispizza.ca/&amp;tel=(519) 578-6640" class="btn-login km-widget km-button">Endorse this Place</a>
+							//<a data-role="button" href="components/partners/add.html?
+							//Name=Pepi's Pizza
+							//&amp;email=newpartner@on2t.com;
+							//&amplocation=(43.45405469999999, -80.49280579999999)
+							//&amp;html=undefined
+							//&amp;icon=https://maps.gstatic.com/mapfiles/place_api/icons/restaurant-71.png
+							//&amp;address=87 Water St N, Kitchener, ON N2H 5A6, Canada
+							//&amp;textField=The munchie sub OMG the munchie sub! Half of the reason I moved to Kitchener is for this amazing sub. I tried the pizza recently too and found it to be loaded with toppings and really good. It is more expensive than most pizza places, but for what they serve there, I can see why. Everything is fresh and real (bacon for example). I know this location also has lasagna, salads and desserts too!
+							//&amp;www=http://www.pepispizza.ca/
+							//&amp;tel=(519) 578-6640" 
+							//class="btn-login km-widget km-button">Endorse this Place</a>
+							//place.infoContent = place.infoContent.replace('xxxxx',place.infoContent);
+                            infoWindow.setContent(place.infoContent);
                             infoWindow.open(map, marker);
                         });
                     });
@@ -211,14 +356,14 @@ app.Places = (function () {
 
                 geocoder.geocode(
                     {
-                        'address': that.get("address")
+                        'address': that.get("map-address")
                     },
                     function (results, status) {
                         if (status !== google.maps.GeocoderStatus.OK) {
-                            app.notify.showShortTop("Unable to find that address.");
+                            app.notify.showShortTop("Map.Unable to find anything.");
                             return;
                         }
-                        
+
                         map.panTo(results[0].geometry.location);
                         //bounds
                         that._putMarker(results[0].geometry.location);
@@ -245,7 +390,7 @@ app.Places = (function () {
                 });
             },
             places: placesDataSource,
-            currentLocation:home
+            homeLocation: home
         });
         return {
             initLocation: function () {
@@ -255,6 +400,8 @@ app.Places = (function () {
                 }
 
                 infoWindow = new google.maps.InfoWindow();
+                //create empty LatLngBounds object
+                allBounds = new google.maps.LatLngBounds();
 
                 var pos, userCords, streetView, tempPlaceHolder = [];
 
@@ -267,8 +414,8 @@ app.Places = (function () {
                     mapTypeControl: false,
                     streetViewControl: false,
                     scroolwheel: false,
-                    zoom: 14,
-                    center: new google.maps.LatLng(0,0),
+                    zoom: theZoom,
+                    center: new google.maps.LatLng(0, -20),// only blue sea
                     panCtrl: false,
                     zoomCtrl: true,
                     zoomCtrlOptions: {
@@ -279,27 +426,43 @@ app.Places = (function () {
                 }
 
                 //Fire up
+
                 app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
                 map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+                var directionsService = new google.maps.DirectionsService;
+                var directionsDisplay = new google.maps.DirectionsRenderer;
+                directionsDisplay.setMap(map);
+                var origin_input = document.getElementById('origin-input');
+                var destination_input = document.getElementById('destination-input');
+                var modes = document.getElementById('mode-selector');
+
+                //map.controls[google.maps.ControlPosition.TOP_LEFT].push(origin_input);
+                map.controls[google.maps.ControlPosition.TOP_LEFT].push(destination_input);
+                //map.controls[google.maps.ControlPosition.TOP_LEFT].push(modes);
+
                 geocoder = new google.maps.Geocoder();
                 app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
                 streetView = map.getStreetView();
                 // Create the DIV to hold the control and call the CenterControl()
                 // constructor passing in this DIV.
-                var centerControlDiv = document.createElement('div');
-                var centerControl = new CenterControl(centerControlDiv, map);
-                centerControlDiv.index = 1;
-                map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(centerControlDiv);
-                google.maps.event.addListener(streetView, 'visible_changed', function () {
-                    if (streetView.getVisible()) {
-                        app.Places.locationViewModel.set("hideSearch", true);
-                    } else {
-                        app.Places.locationViewModel.set("hideSearch", false);
-                    }
-                });
+                //var centerControlDiv = document.createElement('div');
+                //var centerControl = new CenterControl(centerControlDiv, map);
+                //centerControlDiv.index = 1;
+                //map.controls[google.maps.ControlPosition.RIGHT_TOP].push(centerControlDiv);
+                //google.maps.event.addListener(streetView, 'visible_changed', function () {
+                //    if (streetView.getVisible()) {
+                //        app.Places.locationViewModel.set("hideSearch", true);
+                //    } else {
+                //        app.Places.locationViewModel.set("hideSearch", false);
+                //    }
+                //});
             },
             show: function () {
-                if (!app.Places.locationViewModel.get("isGoogleMapsInitialized")) {
+                if (app.isNullOrEmpty(app.Places.locationViewModel) || !app.Places.locationViewModel.get("isGoogleMapsInitialized")) {
+                    app.Places.locationViewModel = new LocationViewModel();
+                    //TO DO: Clean up map locations
+                    app.notify.showShortTop("Map reload!");
                     return;
                 }
                 //resize the map in case the orientation has been changed while showing other tab
@@ -309,7 +472,32 @@ app.Places = (function () {
                 //hide loading mask if user changed the tab as it is only relevant to location tab
                 kendo.mobile.application.hideLoading();
             },
-            locationViewModel: new LocationViewModel()
+            locationViewModel: new LocationViewModel(),
+            listShow: function () {
+                //var price = '$$$$$'.substring(1, app.Places.locationViewModel.details.price_level);
+                $("#place-list-view").kendoMobileListView({
+                    dataSource: app.Places.locationViewModel.details,
+                    template: "<div class='${isSelectedClass}'>#: name #<br /> #: vicinity # -- #: distance # m, #: rating # Stars, #: priceString # <table ${visibility} style='width:100%; margin-top:15px'><tr style='width:100%'><td style='width:33%'><a data-role='button' data-bind='click: memorize' class='btn-register'>Endorse</a></td><td style='width:33%'><a data-role='button' data-click='memorize' class='btn-login km-widget km-button'>Memorize</a></td><td style='width:33%'><a data-role='button' href='views/activitiesView.html' class='btn-continue km-widget km-button'>Comment</a></td></tr></table><br /></div>"
+                });
+            },
+            onSelected: function (e) {
+                if (!e.dataItem) {
+                    return;
+                }
+                var isSelected = e.dataItem.get("isSelected");
+                var newState = isSelected ? false : true;
+                e.dataItem.set("isSelected", newState);
+                if (newState === true) {
+                    e.dataItem.set("isSelectedClass", "listview-selected");
+                    e.dataItem.set("visibility", "visible")
+                } else {
+                    e.dataItem.set("isSelectedClass", "");
+                    e.dataItem.set("visibility", "hidden")
+                }
+            },
+            memorize: function () {
+                app.notify.memorize();
+            }
         };
     }());
     return placesViewModel;

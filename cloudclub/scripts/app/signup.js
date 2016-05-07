@@ -94,6 +94,7 @@ app.Signup = (function () {
 
 		// Executed after show of the Signup view
 		var show = function () {
+		    //app.showAlert("show");
 			$signupInfo.prop('rows', 1);
 			dataSource = kendo.observable({
 											  Username: '',
@@ -107,7 +108,7 @@ app.Signup = (function () {
 										  });
 			kendo.bind($('#signup-form'), dataSource, kendo.mobile.ui);
 			if (!app.helper.checkSimulator()) {
-				window.plugins.toast.showLongBottom("Enter all field and then add your own Avatar by using your camera to upload a selfie...");
+				window.plugins.toast.showLongBottom("Check 'I agree' after reading the Club Notes, the fill all fields to register, later add your own Avatar by updating your settings page and using the camera to take a selfie...");
 			}
 		};
 		
@@ -150,7 +151,7 @@ app.Signup = (function () {
 		var addImage = function () {
 			var success = function (data) {
 				if (!app.helper.checkSimulator()) {
-				    app.notify.showShortTop("Uploading image ...");
+				    app.notify.showShortTop("Image.Uploading image ...");
 					everlive.Files.create({
 											  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
 											  ContentType: "image/jpeg",
@@ -204,11 +205,11 @@ app.Signup = (function () {
 			var source = new Image();
 			var d = document.getElementById("zoom_mw");
 			source.src = d.src;
-			var canvas = document.getElementById("myCanvas");
+			var cropCanvas = document.getElementById("myCanvas");
 			var avatar = document.getElementById("myCanvas");
-			var context = canvas.getContext("2d");
-			canvas.width = source.width;
-			canvas.height = source.height;
+			var context = cropCanvas.getContext("2d");
+			cropCanvas.width = source.width;
+			cropCanvas.height = source.height;
 			if (source.height > source.width) {
 				context.drawImage(source, X, Y, source.height / 2, source.height / 2, 0, 0, source.height, source.height);
 				avatar.style.height = source.height / 2;
@@ -221,7 +222,7 @@ app.Signup = (function () {
 			context.font = size + "px impact";
 			var lineOfText = "Kenneth Hamer-Hodges";
 
-			while (context.measureText(lineOfText).width / canvas.offsetWidth > 1) {
+			while (context.measureText(lineOfText).width / cropCanvas.offsetWidth > 1) {
 				size = size - scale;
 				context.font = size + "px impact";
 				if (size < 30)
@@ -230,9 +231,9 @@ app.Signup = (function () {
 			context.textAlign = 'center';
 			context.fillStyle = 'yellow';
 
-			context.fillText(lineOfText, canvas.width / 2, canvas.height * 0.6);
+			context.fillText(lineOfText, cropCanvas.width / 2, cropCanvas.height * 0.6);
 
-			var imgURI = canvas.toDataURL();
+			var imgURI = cropCanvas.toDataURL();
 
 			setTimeout(function () {
 				var imageA = document.getElementById("avatarImage");
@@ -244,7 +245,7 @@ app.Signup = (function () {
 					imageA.style.height = "auto";
 					imageA.style.width = "100%";
 				}
-				canvas.style.visibility = 'hidden';
+				cropCanvas.style.visibility = 'hidden';
 			}, 200);
 		}
 		return {
@@ -255,7 +256,26 @@ app.Signup = (function () {
 			signup: defaultAvatar,
 			addImage: addImage,
 			pickImage: addImage,
-			resetImage: resetImage
+			resetImage: resetImage,
+			submit: function () {
+			    if (!this.email) {
+			        navigator.notification.alert("Email address is required.");
+			        return;
+			    }
+			    $.ajax({
+			        type: "POST",
+			        url: "http://api.everlive.com/v1/" + appSettings.everlive.appId + "/Users/resetpassword",
+			        contentType: "application/json",
+			        data: JSON.stringify({ Email: this.email }),
+			        success: function () {
+			            navigator.notification.alert("Your password was successfully reset. Please check your email for instructions on choosing a new password.");
+			            window.location.href = "#welcome";
+			        },
+			        error: function (result) {
+			            navigator.notification.alert("Unfortunately, an error occurred resetting your password. " + result.responseText)
+			        }
+			    });
+			}
 		};
 	}()
 	);

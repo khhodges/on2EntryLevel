@@ -2,7 +2,7 @@
 
 (function() {
 	var scheme = 'http';
-		if(window.navigator.simulator) scheme = 'https';
+		if(window.navigator.simulator) scheme = 'http';
     var provider = app.data.defender = new Everlive({		
             offlineStorage: true,
             appId: '3t5oa8il0d0y02eq',

@@ -10,7 +10,9 @@ app.Users = (function () {
 
             var dataModel = {
                 id: Everlive.idField,
-                isSelected: false,
+                isSelected: function () {
+                    return this.get('isSelected')
+                },
                 isSelectedClass: function () {
                     return this.get('isSelected') ? "listview-selected" : ''
                 }
@@ -92,6 +94,17 @@ app.Users = (function () {
             },
             admin: function () {
                 return adminData;
+            },
+            isOnline: function (){
+                if (currentUser === null || currentUser.data === null) {
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            clearUsersData: function(){
+                currentUser.data = null;
+                usersData = null;
             },
             currentUser: currentUser,
            // usersData: usersDataSource,

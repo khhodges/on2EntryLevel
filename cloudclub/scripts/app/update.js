@@ -62,7 +62,19 @@ app.Update = (function () {
 		// Executed after update view initialization
 		// init form validator
 		var init = function () {
-			// Get a reference to our sensitive element
+		    // Get a reference to our sensitive element
+		    try {
+		        if (!app.Users.isOnline()) {
+		            app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
+		            app.mobileApp.navigate('#welcome');
+		            return;
+		        }
+		    } catch (e) {
+		        app.notify.showShortTop('User.Direction. Please login to access these features.' + e.message);
+		        app.mobileApp.navigate('#welcome');
+		        return;
+		    }
+
 			updateImage = document.getElementById("updateImage");
 			picture = document.getElementById("picture");
 			$updateForm = $('#update');
@@ -84,7 +96,18 @@ app.Update = (function () {
 
 		// Executed after show of the update view
 		var show = function () {
-			analytics.TrackFeature('Update.Show');
+		    try {
+		        if (!app.Users.isOnline()) {
+		            app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
+		            app.mobileApp.navigate('#welcome');
+		            return;
+		        }
+		    } catch (e) {
+		        app.notify.showShortTop('User.Direction. Please login to access these features.' + e.message);
+		        app.mobileApp.navigate('#welcome');
+		        return;
+		    }
+		    analytics.TrackFeature('Update.Show');
 			$updateInfo.prop('rows', 1);
 
 			dataSource = kendo.observable({
