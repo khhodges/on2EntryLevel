@@ -134,20 +134,11 @@
                     <a href="components/notifications/view.html" data-icon="flash-button" style="color: black">Find Alerts</a>
                 </li>
                 <li>
-                    <a href="views/activitiesView.html" data-icon="home" style="color: black">Find Updates</a>
+                    <a href="views/activitiesView.html" data-bind="visible: app.isOnLine()" data-icon="home" style="color: black">Find Updates</a>
                 </li>
                 <li>
                     <a href="views/mapView.html" data-icon="globe" style="color: black">Find Places</a>
                 </li>
-                <!--<li>
-                    <a href="views/on2tView.html" data-icon="globe" style="color: black">Endorsed Places</a>
-                </li>-->
-                <!--<li>
-                    <a href="views/tripView.html" data-icon="globe" style="color: black">Create Trip</a>
-                </li>-->
-                <!--<li>
-                    <a href="views/listView.html" data-icon="favorites" style="color: black">Favorite Places</a>
-                </li-->
                 <li>
                     <a href="components/activities/view.html" data-icon="mostrecent" style="color: black">Find Activity</a>
                 </li>

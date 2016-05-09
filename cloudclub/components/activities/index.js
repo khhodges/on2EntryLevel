@@ -130,6 +130,9 @@ app.activities = kendo.observable({
 				}
 				fetchFilteredData(activitiesModel.get('paramFilter'), searchFilter);
 			},
+			isVisible: function(){
+				 true;
+			},
 			itemClick: function (e) {
 
 				app.mobileApp.navigate('#components/activities/details.html?uid=' + e.dataItem.uid);

@@ -155,13 +155,6 @@ var app = (function (win) {
 
     var AppHelper = {
 		
-		//check online
-		isOnLine: function(){
-			if (!app.Users.currentUser.data) {
-				app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
-				app.mobileApp.navigate('#welcome');}
-		},
-		
         // Logout user
         logout: function () {
             app.helper.doLogout()

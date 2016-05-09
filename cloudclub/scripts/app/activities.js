@@ -9,17 +9,6 @@ app.Activities = (function () {
 	'use strict'
 	var $enterEvent, $newEventText, validator, selected, $baseImage;
 	var init = function () {
-		try {
-			if (!app.Users.isOnline()) {
-				app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
-				app.mobileApp.navigate('#welcome');
-				return;
-			}
-		} catch (e) {
-			app.notify.showShortTop('User.Direction. Please login to access these features.' + e.message);
-			app.mobileApp.navigate('#welcome');
-			return;
-		}
 		validator = $('#enterEvent').kendoValidator().data('kendoValidator');
 		$enterEvent = $('#enterEvent');
 		$newEventText = $('#newEventText');
@@ -28,17 +17,6 @@ app.Activities = (function () {
 		$(document.body).css("visibility", "visible");
 	};
 	var show = function () {
-		try {
-			if (!app.Users.currentUser.data.Id) {
-				app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
-				app.mobileApp.navigate('#welcome');
-				return;
-			}
-		} catch (e) {
-			app.notify.showShortTop('User.Direction. Please login to access these features.' + e.message);
-			app.mobileApp.navigate('#welcome');
-			return;
-		}
 	};
 	// Activities model
 	var activitiesModel = (function () {
@@ -70,18 +48,6 @@ app.Activities = (function () {
 					field: 'Location',
 					defaultValue: []
 				},
-				//Id  Identifier
-				//CreatedAt  DateTime
-				//ModifiedAt  DateTime
-				//CreatedBy Users  Relation
-				//ModifiedBy Users  Relation
-				//Owner Users  Relation
-				//Picture  File 
-				//Stars  Number 
-				//Status  Text 
-				//Text  Text 
-				//UserId Users  Relation 
-				//Likes Users  Relation (multiple) 
 				Active: {
 					fields: 'Active',
 					defaultValue: 1
@@ -98,11 +64,23 @@ app.Activities = (function () {
 					fields: 'Value',
 					defaultValue: 0
 				},
+				/*Id  Identifier
+				//CreatedAt  DateTime
+				//ModifiedAt  DateTime
+				//CreatedBy Users  Relation
+				//ModifiedBy Users  Relation
+				//Owner Users  Relation
+				//Picture  File 
+				//Stars  Number 
+				//Status  Text 
+				//Text  Text 
+				//UserId Users  Relation 
+				//Likes Users  Relation (multiple)
 				//Active  YesNo 
 				//Location  Geopoint 
 				//Notes  Text 
 				//Title  Text 
-				//Value  Number
+				//Value  Number*/
 			},
 			CreatedAtFormatted: function () {
 				return app.helper.formatDate(this.get('CreatedAt'));
@@ -308,25 +286,27 @@ app.Activities = (function () {
 			document.getElementById('newEventText').value = "";
 		};
 		var pickImage = function (e) {
-			$enterEvent = document.getElementById('enterEvent');
-			app.mobileApp.navigate('#view-all-activities');
-			if ($enterEvent.style.display === 'block') {
-				$enterEvent.style.display = 'none';
-				validator.hideMessages();
-				document.getElementById('addButton').innerText = "Add Event";
-				document.getElementById('newEventText').value = "";
-				document.getElementById('picture').src = "styles/images/default-image.jpg";
-			} else {
-				$enterEvent.style.display = 'block';
-				document.getElementById('addButton').innerText = "Cancel";
-				navigator.camera.getPicture(success, error, {
-					//kjhh best result including iphone rotation
-					quality: 100,
-					destinationType: navigator.camera.DestinationType.FILE_URI,
-					sourceType: navigator.camera.PictureSourceType.CAMERA,
-					encodingType: navigator.camera.EncodingType.JPEG,
-					correctOrientation: true
-				});
+			if (app.isOnline()) {
+				$enterEvent = document.getElementById('enterEvent');
+				app.mobileApp.navigate('#view-all-activities');
+				if ($enterEvent.style.display === 'block') {
+					$enterEvent.style.display = 'none';
+					validator.hideMessages();
+					document.getElementById('addButton').innerText = "Add Event";
+					document.getElementById('newEventText').value = "";
+					document.getElementById('picture').src = "styles/images/default-image.jpg";
+				} else {
+					$enterEvent.style.display = 'block';
+					document.getElementById('addButton').innerText = "Cancel";
+					navigator.camera.getPicture(success, error, {
+						//kjhh best result including iphone rotation
+						quality: 100,
+						destinationType: navigator.camera.DestinationType.FILE_URI,
+						sourceType: navigator.camera.PictureSourceType.CAMERA,
+						encodingType: navigator.camera.EncodingType.JPEG,
+						correctOrientation: true
+					});
+				}
 			}
 		};
 		return {
