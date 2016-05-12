@@ -73,6 +73,10 @@ app.Login = (function () {
                 }
                 
                 app.mobileApp.hideLoading();
+                var logonB = document.getElementById("logonButton");
+                var logoffB = document.getElementById("logoffButton");
+                logoffB.style.display = "";
+                logonB.style.display = "none";
                 return app.Users.load();
             })
             .then(function () {

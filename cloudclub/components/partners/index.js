@@ -76,7 +76,7 @@ app.home = kendo.observable({
                     dataItem['ImageUrl'] =
                         processImage(dataItem['Image']);
 
-                    flattenLocationProperties(dataItem);
+                    //flattenLocationProperties(dataItem);
                 }
             },
             error: function (e) {

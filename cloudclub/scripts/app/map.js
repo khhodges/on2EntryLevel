@@ -8,7 +8,7 @@ app.Places = (function () {
 	'use strict'
 	var infoWindow, markers, place, result, service, here, request, lat1, lng1, allBounds, theZoom = 12,
 		infoContent;
-	var HEAD = '<div class="iw-title"></div><div class="iw-content"><div class="iw-subTitle" onclick="test(\'WebSite\')"><u>Name</u></div><img src="Icon" alt="Logo" height="80" width="80"><p>Text</p><div class="iw-subTitle"><a href="tel:+Phone"><small>Click to Call (+Phone)<br/>Address</small></a></div></div><table ${visibility} style="width:100%; margin-top:15px"><tr style="width:100%"><td style="width:50%"><a data-role="button" class="btn-continue km-widget km-button" href="components/partners/view.html?partner=Name">Add a Comment</a></td></tr></table><div class="iw-bottom-gradient"></div>';
+	var HEAD = '<div class="iw-title"></div><div class="iw-content"><div class="iw-subTitle" onclick="test(\'WebSite\')"><u>Name</u></div><img src="Icon" alt="Logo" height="80" width="80"><p>Text</p><div class="iw-subTitle"><small><a href="tel:+Phone">Click to Call (+Phone)</a></small></div></div><table ${visibility} style="width:100%; margin-top:15px"><tr style="width:100%"><td style="width:50%"><a data-role="button" class="btn-continue km-widget km-button" href="components/activities/view.html?partner=Name">See the Details</a></td></tr></table><div class="iw-bottom-gradient"></div>';
 	/**
 	 * The CenterControl adds a control to the map that recenters the map on
 	 * current location.
@@ -102,7 +102,7 @@ app.Places = (function () {
 			_lastMarker: null,
 			_isLoading: false,
 			address: "",
-			find: "pizza",
+			find: null,
 			isGoogleMapsInitialized: false,
 			markers: [],
 			details: [],
@@ -367,7 +367,9 @@ app.Places = (function () {
 				});
 			},
 			places: placesDataSource,
-			homeLocation: home
+			homeLocation: function () {
+			    navigator.geolocation.getCurrentPosition();
+			}
 		});
 		return {
 			initLocation: function () {

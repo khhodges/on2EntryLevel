@@ -75,8 +75,9 @@ app.activities = kendo.observable({
 					}
 				}
 			},
-			group: {
-				field: 'Title'
+			sort: {
+			    field: 'Date',
+			    dir: 'desc'
 			},
 			change: function (e) {
 				var data = this.data();
@@ -86,7 +87,7 @@ app.activities = kendo.observable({
 					dataItem['PictureUrl'] =
 						processImage(dataItem['Picture']);
 
-					flattenLocationProperties(dataItem);
+					//flattenLocationProperties(dataItem);
 				}
 			},
 			error: function (e) {
@@ -102,13 +103,17 @@ app.activities = kendo.observable({
 							defaultValue: ''
 						},
 						'Stars': {
-							field: 'UserId.DisplayName',
+							field: 'Stars',
 							defaultValue: ''
 						},
 						'Picture': {
 							field: 'Picture',
 							defaultValue: ''
 						},
+						'Date': {
+						    field: 'CreatedAt',
+                            defaultValue:''
+						}
 					}
 				}
 			},
@@ -123,7 +128,7 @@ app.activities = kendo.observable({
 
 				if (searchVal) {
 					searchFilter = {
-						field: 'Text',
+						field: 'UserId.DisplayName',
 						operator: 'contains',
 						value: searchVal
 					};
@@ -144,9 +149,29 @@ app.activities = kendo.observable({
 					app.mobileApp.navigate('#components/activities/add.html');
 				}
 			},
-			//kjhh
+		    //kjhh
 			likeClick: function () {
-				app.notify.memorize;
+			    if (app.isOnline()) {
+			        var data = app.everlive.data('Activities');
+			        var attributes = {
+			            "$push": {
+			                "Users": app.Users.currentUser.data.Id //liked - user - id
+			            }
+			        };
+			        var filter = {
+			            'Id': activitiesModel.get('currentItem').Id
+			        };
+			        data.rawUpdate(attributes, filter, function (data) {
+			            app.notify.showShortTop("You have sucesfully remembered this place in your favorites list.");
+			        }, function (err) {
+			            app.notify.showShortTop("You have already endorced this place. Visit your favourites to see the full list.");
+			        });
+			    }
+			    else {
+			        app.notify.showShortTop("If you register and login all many extended community features are available.");
+			        app.mobileApp.navigate('views/signupView.html');
+			    }
+
 			},
 			deleteClick: function () {
 				var dataSource = activitiesModel.get('dataSource'),

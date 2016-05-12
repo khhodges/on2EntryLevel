@@ -10,9 +10,8 @@
             <span data-role="view-title" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;"></span>
 
             <a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button"></a>
-			<a data-role="button" href="#welcome" data-align="left" >Logon</a>
 
-            <a data-role="button" data-align="right" data-bind="visible: isVisible"  data-bind="events: { click: activitiesModel.commentClick }">Comment</a>
+            <!--<a data-role="button" data-align="right" data-bind="visible: isVisible; events: { click: activitiesModel.commentClick }">Comment</a>-->
         </div>
     </header>
 
@@ -32,7 +31,7 @@
         <div class="image-with-text">
             <img src="#: data['PictureUrl'] #" width="30%" height="30%">
             <h3>#: data['Text'] #</h3>
-            <p>#: data['Stars'] #</p>
+            <p>#: data['Date'] #</p>
         </div>
     </script>
 </div>
