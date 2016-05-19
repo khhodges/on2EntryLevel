@@ -19,7 +19,6 @@ app.Activities = (function () {
     var show = function () {
         if (!app.isOnline()) {
             app.mobileApp.navigate('#welcome');
-
         }
     };
     // Activities model
@@ -302,7 +301,7 @@ app.Activities = (function () {
             picture.src = selected;
         }
         var error = function () {
-            app.showError("No selection was detected.");
+            app.notify.showShortTop("No selection was detected.");
             $enterEvent.style.display = 'none';
             validator.hideMessages();
             document.getElementById('addButton').innerText = "Add Event";
