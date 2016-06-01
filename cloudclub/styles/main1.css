@@ -361,6 +361,7 @@ input[type='week']
 #friendsApp .btn
 {
 	border-radius: 0;
+	padding-right:5px;
 }
 #friendsApp.km-flat form .km-list > li
 {

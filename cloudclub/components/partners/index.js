@@ -161,7 +161,8 @@ app.home = kendo.observable({
 			addGeopoint = e.view.params.location;
 			// Reset the form data.
 			this.set('addFormData', {
-			    place: e.view.params.Name.replace( "%26","&").replace("%26","&" ),
+				place: e.view.params.Name.replace("%26", "&").replace("%26", "&"),
+				id: e.view.params.placeId,
 				www: e.view.params.www,
 				textField: e.view.params.textField,
 				longitude: e.view.params.longitude,
@@ -175,7 +176,7 @@ app.home = kendo.observable({
 		},
 		onSaveClick: function (e) {
 			if (!app.isOnline()) {
-			    app.notify.showShortTop("Please register and login");
+				app.notify.showShortTop("Please register and login");
 				app.mobileApp.navigate('#welcome');
 			} else {
 				var addFormData = this.get('addFormData'),
@@ -190,6 +191,7 @@ app.home = kendo.observable({
 					//Location.push(addFormData.longitude);
 					//Location.push(addFormData.latitude);
 				dataSource.add({
+					PlaceId: addFormData.id,
 					Place: addFormData.place,
 					Website: addFormData.www,
 					Location: Location,
@@ -206,6 +208,7 @@ app.home = kendo.observable({
 				});
 
 				dataSource.sync();
+				app.notify.showShortTop("The new location has been added to your Favourites!");
 			}
 		}
 	}));

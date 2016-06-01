@@ -66,14 +66,19 @@ var app = (function (win) {
     var onDeviceReady = function () {
         // Handle "backbutton" event
         document.addEventListener('backbutton', onBackKeyDown, false);
-
+ if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
+            $('.ui-header > *').css('margin-top', function (index, curValue) {
+                return parseInt(curValue, 10) + 0 + 'px';
+            });
+        }
         //var openExternalInAppBrowser = document.getElementById("openExternalInAppBrowser");
         //openExternalInAppBrowser.addEventListener("click", app.helper.openExternalInAppBrowser);
 
         var activityRoute = document.getElementById("activityRoute");
         activityRoute.addEventListener("click", app.helper.activityRoute);
 
-        navigator.splashscreen.hide();
+        //navigator.splashscreen.hide();
+        StatusBar.overlaysWebView(false); //Turns off web view overlay.
 
         app.mobileApp.navigate("views/mapView.html");
 
@@ -313,6 +318,7 @@ var app = (function (win) {
 
         convertToDataURL: function convertToDataURLviaCanvas(url, callback, outputFormat) {
             var img = new Image();
+			//cors
             img.crossOrigin = 'Anonymous';
             img.onload = function () {
                 var canvas = document.createElement('CANVAS');
