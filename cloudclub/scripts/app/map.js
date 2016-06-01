@@ -317,7 +317,7 @@ app.Places = (function () {
 				    //    document.getElementById("place-list-view").innerHTML = "<strong> Cleared</strong>";
 				    //}
 				},
-            onPlaceSearch: function (markers) {
+            onPlaceSearch: function () {
                 markers = app.Places.locationViewModel.markers;
                 for (var i = 0; i < markers.length; i++) {
                     markers[i].setMap(null);
@@ -330,28 +330,32 @@ app.Places = (function () {
                 service = new google.maps.places.PlacesService(map);
                 here = map.getBounds();
                 // Specify location, radius and place types for your Places API search.
-                request = {
-                    location: locality,
-                    bounds: here,
-                    keyword: app.Places.locationViewModel.find
-                };
-                service.nearbySearch(request, function (results, status) {
-                    if (status == google.maps.places.PlacesServiceStatus.OK) {
-                        //if length = 0 offer search by country or search by region
-                        map.panTo(results[0].geometry.location);
-                        for (var i = 0; i < results.length; i++) {
-                            place = results[i];
-                            place.distance = app.Places.locationViewModel.updateDistance(place.geometry.location.lat(), place.geometry.location.lng());
-                            place = app.Places.locationViewModel.updateStars(place);
-                            app.Places.locationViewModel.addMarker(place);
-                            app.Places.locationViewModel.details.push(place);
+                if (app.Places.locationViewModel.find.indexOf(',') < 0) {
+                    request = {
+                        location: locality,
+                        bounds: here,
+                        keyword: app.Places.locationViewModel.find
+                    };
+                    service.nearbySearch(request, function (results, status) {
+                        if (status == google.maps.places.PlacesServiceStatus.OK) {
+                            //if length = 0 offer search by country or search by region
+                            map.panTo(results[0].geometry.location);
+                            for (var i = 0; i < results.length; i++) {
+                                place = results[i];
+                                place.distance = app.Places.locationViewModel.updateDistance(place.geometry.location.lat(), place.geometry.location.lng());
+                                place = app.Places.locationViewModel.updateStars(place);
+                                app.Places.locationViewModel.addMarker(place);
+                                app.Places.locationViewModel.details.push(place);
+                            }
+                        } else {
+                            // Do Place search
+                            app.notify.showShortTop("Nothing was found in the area shown.");
                         }
-                    } else {
-                        // Do Place search
-                        app.notify.showShortTop("Nothing was found in the area shown.");
-                    }
-                });
-                
+                    });
+                }
+                else {
+                    app.Places.locationViewModel.onSearchAddress();
+                }
                 function toggleBounce() {
                     if (this.getAnimation() !== null) {
                         this.setAnimation(null);
@@ -432,13 +436,15 @@ app.Places = (function () {
             onSearchAddress: function () {
                 var that = this;
 
-                geocoder.geocode({
-                    'address': that.get("map-address")
-                },
-					function (results, status) {
-					    if (status !== google.maps.GeocoderStatus.OK) {
-					        app.notify.showShortTop("Map.Unable to find anything.");
-					        return;
+                geocoder.geocode(
+                    {
+                        'address': that.get("find")
+                    },
+					function (results, status)
+					    {
+					        if (status !== google.maps.GeocoderStatus.OK) {
+					            app.notify.showShortTop("Map.Unable to find anything.");
+					            return;
 					    }
 
 					    map.panTo(results[0].geometry.location);
@@ -472,7 +478,7 @@ app.Places = (function () {
                 var htmlString = HEAD;
                 htmlString = htmlString.replace('WebSite', place.details.website).replace('Icon', place.avatar).replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('%Name%', place.name).replace('%Name%', place.name).replace("Address", place.details.formatted_address);
                 htmlString = htmlString.replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('Open', place.openString).replace('Stars', place.starString);
-                htmlString = htmlString.replace('UrlString', place.addurl);
+                htmlString = htmlString.replace('UrlString', "components/partners/view.html?Partner="+place.name);
                 var stringResult, find, replace;
                 //Twitter Change//https://twitter.com/search?q=Nick%27s%20Pizza%20Deerfield%20Beach&src=typd&lang=en
                 find = '\'';
