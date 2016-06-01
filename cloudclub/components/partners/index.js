@@ -162,7 +162,6 @@ app.home = kendo.observable({
 			// Reset the form data.
 			this.set('addFormData', {
 			    place: e.view.params.Name.replace( "%26","&").replace("%26","&" ),
-				id: e.view.params.placeId,
 				www: e.view.params.www,
 				textField: e.view.params.textField,
 				longitude: e.view.params.longitude,
@@ -191,7 +190,6 @@ app.home = kendo.observable({
 					//Location.push(addFormData.longitude);
 					//Location.push(addFormData.latitude);
 				dataSource.add({
-					PlaceId: addFormData.id,
 					Place: addFormData.place,
 					Website: addFormData.www,
 					Location: Location,
@@ -208,7 +206,6 @@ app.home = kendo.observable({
 				});
 
 				dataSource.sync();
-				app.notify.showShortTop("The new location has been added to your Favourites!");
 			}
 		}
 	}));

@@ -23,7 +23,7 @@ app.on2tClients = (function () {
                 },
                 url: {
                     field: 'Website',
-                    defaultValue: 'www.on2See.com'
+                    defaultValue: 'www.on2t.com'
                 },
                 marker: {
                     field: 'Location',

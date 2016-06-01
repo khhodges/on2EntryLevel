@@ -358,10 +358,9 @@ input[type='week']
 	color: #4d4d4d;
 }
 #friendsApp.km-flat form .km-list > li,
-#friendsApp .butn
+#friendsApp .btn
 {
 	border-radius: 0;
-    padding-right:5px;
 }
 #friendsApp.km-flat form .km-list > li
 {

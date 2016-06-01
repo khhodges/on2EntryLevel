@@ -14,9 +14,9 @@ var app = (function (win) {
         showAlert(message, 'Error occured');
     };
 
-    //window.onerror = function (message, file, line) {
-	//alert("Error: " + message + ", File: " + file + ", Line: " + line);
-	//}
+    /*	window.onerror = function (message, file, line) {
+	alert("Error: " + message + ", File: " + file + ", Line: " + line);
+	}*/
 
 
 
@@ -67,19 +67,13 @@ var app = (function (win) {
         // Handle "backbutton" event
         document.addEventListener('backbutton', onBackKeyDown, false);
 
-        if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
-            $('.ui-header > *').css('margin-top', function (index, curValue) {
-                return parseInt(curValue, 10) + 0 + 'px';
-            });
-        }
         //var openExternalInAppBrowser = document.getElementById("openExternalInAppBrowser");
         //openExternalInAppBrowser.addEventListener("click", app.helper.openExternalInAppBrowser);
 
         var activityRoute = document.getElementById("activityRoute");
         activityRoute.addEventListener("click", app.helper.activityRoute);
 
-        //navigator.splashscreen.hide();
-        StatusBar.overlaysWebView(false); //Turns off web view overlay.
+        navigator.splashscreen.hide();
 
         app.mobileApp.navigate("views/mapView.html");
 
@@ -192,13 +186,9 @@ var app = (function (win) {
 				});
         },
         activityRoute: function () {
-            //app.showAlert("1 " + app.isOnline());
             if (app.isOnline()) {
-                //app.showAlert("2");
-
                 app.mobileApp.navigate('views/activitiesView.html');
             } else {
-                //app.showAlert("3");
                 app.mobileApp.navigate('components/activities/view.html');
             }
 
@@ -214,7 +204,7 @@ var app = (function (win) {
         },
 
         openExternalInAppBrowser: function () {
-            var winB = window.open("http://www.on2See.com", "_blank");
+            var winB = window.open("http://www.on2t.com/mobile", "_blank");
             app.notify.showShortTop("url.on2t Click 'Done' or 'X' to return to the App");
             //winB.addEventListener("loadstop", function () {
             //    winB.executeScript({ code: "alert( 'Click the X button to return to the App' );" });
@@ -323,7 +313,6 @@ var app = (function (win) {
 
         convertToDataURL: function convertToDataURLviaCanvas(url, callback, outputFormat) {
             var img = new Image();
-            //cors
             img.crossOrigin = 'Anonymous';
             img.onload = function () {
                 var canvas = document.createElement('CANVAS');
