@@ -78,7 +78,7 @@ var app = (function (win) {
         activityRoute.addEventListener("click", app.helper.activityRoute);
 
         //navigator.splashscreen.hide();
-        StatusBar.overlaysWebView(false); //Turns off web view overlay.
+        //StatusBar.overlaysWebView(false); //Turns off web view overlay.
 
         app.mobileApp.navigate("views/mapView.html");
 

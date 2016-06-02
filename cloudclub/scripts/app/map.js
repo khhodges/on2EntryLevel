@@ -14,8 +14,8 @@ app.Places = (function () {
         + '<div><a data-role="button" class="butn" data-rel="external" href="tel:Phone">'
         + '<img src="styles/images/phone2.png" alt="phone" height="auto" width="15%"></a><small>'
         + 'Address, Open Stars</small></div>'
-        + '<div ><br/>' + '<a data-role="button" class="butn" href="components/activities/view.html?partner=%Name%");"><img src="styles/images/icon.png" alt="On2See" height="auto" width="15%"></a>'
-        + '<a data-role="button" class="butn" href="UrlString");"><img src="styles/images/thumb_up.png" alt="On2See" height="auto" width="15%"></a>'
+        + '<div ><br/>' + '<a data-role="button" class="butn" href="components/activities/view.html?partner=%Name%"><img src="styles/images/icon.png" alt="On2See" height="auto" width="15%"></a>'
+        + '<a data-role="button" class="butn" href="UrlString"><img src="styles/images/thumb_up.png" alt="On2See" height="auto" width="15%"></a>'
         + '<a data-role="button" class="butn" href="components/activities/view.html?partner=%Name%");"><img src="styles/images/green-share.png" alt="On2See" height="auto" width="15%"></a>'
         + '<a data-role="button" class="butn" onclick="test(\'https://www.google.com/maps/place/Google\');"><img src="styles/images/googleMap.png" alt="Google" height="auto" width="15%"></a>'
         + '<a data-role="button" class="butn" data-rel="external" onclick="test(\'https://twitter.com/search?q=Twitter\');"><img src="styles/images/twitter.png" alt="Twitter" height="auto" width="15%"></a>'
@@ -178,8 +178,8 @@ app.Places = (function () {
                 place = app.Places.locationViewModel.updateStars(place);
                 //Add review count, Stars and Distance
                 if (marker) {
+                    place.addurl = "components/partners/view.html?partner=" + place.name;
                     var htmlString = app.Places.locationViewModel.getButtons(place);
-                    htmlString = htmlString.replace('UrlString', place.addurl);
                     var filter = {};
                     var params = [];
                     filter.params = params;
@@ -478,7 +478,7 @@ app.Places = (function () {
                 var htmlString = HEAD;
                 htmlString = htmlString.replace('WebSite', place.details.website).replace('Icon', place.avatar).replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('%Name%', place.name).replace('%Name%', place.name).replace("Address", place.details.formatted_address);
                 htmlString = htmlString.replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('Open', place.openString).replace('Stars', place.starString);
-                htmlString = htmlString.replace('UrlString', "components/partners/view.html?Partner="+place.name);
+                htmlString = htmlString.replace('UrlString', place.addurl);
                 var stringResult, find, replace;
                 //Twitter Change//https://twitter.com/search?q=Nick%27s%20Pizza%20Deerfield%20Beach&src=typd&lang=en
                 find = '\'';

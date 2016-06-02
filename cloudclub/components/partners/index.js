@@ -172,6 +172,7 @@ app.home = kendo.observable({
 				icon: e.view.params.icon,
 				address: e.view.params.address,
 				tel: e.view.params.tel,
+
 			});
 		},
 		onSaveClick: function (e) {
@@ -201,6 +202,7 @@ app.home = kendo.observable({
 					Description: addFormData.textField,
 					Address: addFormData.address,
 					Phone: addFormData.tel,
+                    CreatedBy: app.Users.currentUser.get('data').Id,
 				});
 
 				dataSource.one('change', function (e) {
@@ -208,6 +210,7 @@ app.home = kendo.observable({
 				});
 
 				dataSource.sync();
+				app.notify.memorize(dataSource.Id);
 				app.notify.showShortTop("The new location has been added to your Favourites!");
 			}
 		}
