@@ -14,7 +14,7 @@ app.Activities = (function () {
 		$newEventText = $('#newEventText');
 		$newEventText.on('keydown', app.helper.autoSizeTextarea);
 		validator.hideMessages();
-		$(document.body).css("visibility", "visible");
+		//$(document.body).css("visibility", "visible");
 	};
 
 	//var show = function () {
@@ -142,7 +142,7 @@ app.Activities = (function () {
 				};
 			},
 			isVisible: function () {
-				var currentUserId = app.Users.currentUser.data.Id;
+				var currentUserId;
 				var userId = this.get('UserId');
 
 				return currentUserId === userId;

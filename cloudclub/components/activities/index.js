@@ -179,7 +179,7 @@ app.activities = kendo.observable({
 			        });
 			    }
 			    else {
-			        }
+			        
 			        navigator.notification.confirm(
                         'First Register or Logon.',  // message
                         onPrompt,                  // callback to invoke

@@ -408,6 +408,7 @@ app.Places = (function () {
                             }
                             if (!place.name) { place.name = "Unknown Name"; }
                             if (place.text) { place.text = resolveString(place.text, "&", "and"); }
+                            if (place.name) { place.name = resolveString(place.name, "&", "and"); }
                             else { place.text = "Not Available" };
                             place.addurl = encodeURI('components/partners/add.html?Name=' + place.name
                                 + '&email=newpartner@on2t.com'

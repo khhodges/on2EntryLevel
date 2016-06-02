@@ -14,9 +14,9 @@ var app = (function (win) {
         showAlert(message, 'Error occured');
     };
 
-    /*	window.onerror = function (message, file, line) {
+    window.onerror = function (message, file, line) {
 	alert("Error: " + message + ", File: " + file + ", Line: " + line);
-	}*/
+	}
 
 
 
@@ -393,28 +393,35 @@ var app = (function (win) {
         },
 
         broadcast: function () {
-            var activity = app.Activity.activity();
-            app.everlive.push.notifications.create({
-                Message: activity.Text
-            },
-				function (data) {
-				    var createdAt = app.formatDate(data.result.CreatedAt);
-				    app.notify.showShortTop("Notification created: " + createdAt);
-				    //update notification assets Activity reference and status
-                    //everlive = el
-				    var data = el.data('Notifications');
-				    data.create({ 'Reference': activity.Id, 'Status':true },
-                        function (data) {
-                            app.notify.showShortTop(data.message);
-                        },
-                        function (error) {
-                            app.notify.showShortTop(error.message);
-                        });
-				},
-				function (error) {
-				    app.showError(JSON.stringify(error));
-				})
+            //if does not exist
+            if (true) {
+                var activity = app.Activity.activity();
+                app.everlive.push.notifications.create({
+                    Message: activity.Text
+                },
+                    function (data) {
+                        var createdAt = app.formatDate(data.result.CreatedAt);
+                        app.notify.showShortTop("Notification created: " + createdAt);
+                        //update notification assets Activity reference and status
+                        //everlive = el
+                        var data = el.data('Notifications');
+                        data.create({ 'Reference': activity.Id, 'Status': true },
+                            function (data) {
+                                app.notify.showShortTop(data.message);
+                            },
+                            function (error) {
+                                app.notify.showShortTop(error.message);
+                            });
+                    },
+                    function (error) {
+                        app.showError(JSON.stringify(error));
+                    })
+            }
+            else {
+                app.notify.showShortTop("This alert was already sent out!");
+            }
         },
+
 
         showShortTop: function (m) {
             if (analytics.isAnalytics()) {
