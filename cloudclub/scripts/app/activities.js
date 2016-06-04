@@ -142,7 +142,8 @@ app.Activities = (function () {
 				};
 			},
 			isVisible: function () {
-				var currentUserId;
+			    var currentUserId;
+                currentUserId = app.Users.currentUser.data.Id;
 				var userId = this.get('UserId');
 
 				return currentUserId === userId;

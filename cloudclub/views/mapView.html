@@ -9,12 +9,35 @@
      data-stretch="true">
         <script>
 
+            function iabLoadError(event) {
+                app.notify.showShortTop(event.type + ' - ' + event.message);
+                ref.close();
+            }
+
+            function iabClose(event) {
+                app.notify.showShortTop(event.type);
+                //iabRef.removeEventListener('loadstart', iabLoadStart);
+                //iabRef.removeEventListener('loadstop', iabLoadStop);
+                //iabRef.removeEventListener('loaderror', iabLoadError);
+                iabRef.removeEventListener('exit', iabClose);
+            }
+
             function test(url) {
                 if (url === null || url === undefined || url.length < 10) {
                     app.notify.showShortTop(url + " the client data is missing preventing service connection!");
                 } else {
-                    app.notify.showShortTop("Url.Map Search " + url);
-                    window.open(url, "_blank");
+                    //var http = new XMLHttpRequest();
+                    //http.open("HEAD", url, false);
+                    //http.send();
+                    //if (http.status != 404) {
+                        app.notify.showShortTop("Url.Map Search " + url);
+                        var ref = window.open(url, "_blank", "location=yes");
+                        ref.addEventListener("loaderror", iabLoadError);
+                        ref.addEventListener("exit", iabClose);
+                    //}
+                    //else {
+                    //    app.notify.showShortTop("404 mesage, the request is unavailable!");
+                    //}
                 }
             };
 

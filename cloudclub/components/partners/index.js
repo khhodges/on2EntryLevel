@@ -159,21 +159,21 @@ app.home = kendo.observable({
     parent.set('addItemViewModel', kendo.observable({
         onShow: function (e) {
             addGeopoint = e.view.params.location;
-            var m = JSON.stringify({
-                place: e.view.params.Name.replace("%26", "&").replace("%26", "&"),
-                id: e.view.params.placeId,
-                www: e.view.params.www,
-                textField: e.view.params.textField,
-                longitude: e.view.params.longitude,
-                latitude: e.view.params.latitude,
-                email: e.view.params.email,
-                html: e.view.params.html,
-                icon: e.view.params.icon,
-                address: e.view.params.address,
-                tel: e.view.params.tel,
+            //var m = JSON.stringify({
+            //    place: e.view.params.Name.replace("%26", "&").replace("%26", "&"),
+            //    id: e.view.params.placeId,
+            //    www: e.view.params.www,
+            //    textField: e.view.params.textField,
+            //    longitude: e.view.params.longitude,
+            //    latitude: e.view.params.latitude,
+            //    email: e.view.params.email,
+            //    html: e.view.params.html,
+            //    icon: e.view.params.icon,
+            //    address: e.view.params.address,
+            //    tel: e.view.params.tel,
 
-            });
-            app.showError(m);
+            //});
+            //app.showError(m);
             // Reset the form data.
             this.set('addFormData', {
                 place: e.view.params.Name.replace("%26", "&").replace("%26", "&"),
