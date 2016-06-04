@@ -14,9 +14,9 @@ var app = (function (win) {
         showAlert(message, 'Error occured');
     };
 
-    /*	window.onerror = function (message, file, line) {
+    window.onerror = function (message, file, line) {
 	alert("Error: " + message + ", File: " + file + ", Line: " + line);
-	}*/
+	}
 
 
 
@@ -78,7 +78,7 @@ var app = (function (win) {
         activityRoute.addEventListener("click", app.helper.activityRoute);
 
         //navigator.splashscreen.hide();
-        StatusBar.overlaysWebView(false); //Turns off web view overlay.
+        //StatusBar.overlaysWebView(false); //Turns off web view overlay.
 
         app.mobileApp.navigate("views/mapView.html");
 
@@ -339,6 +339,7 @@ var app = (function (win) {
     var NotifyHelper = {
 
         addNotify: function (PartnerId, ActivityId) {
+            //check if exists
             if (app.Users.currentUser.data) {
                 //use everlive
                 var data = app.everlive.data('Places');
@@ -393,28 +394,36 @@ var app = (function (win) {
         },
 
         broadcast: function () {
-            var activity = app.Activity.activity();
-            app.everlive.push.notifications.create({
-                Message: activity.Text
-            },
-				function (data) {
-				    var createdAt = app.formatDate(data.result.CreatedAt);
-				    app.notify.showShortTop("Notification created: " + createdAt);
-				    //update notification assets Activity reference and status
-                    //everlive = el
-				    var data = el.data('Notifications');
-				    data.create({ 'Reference': activity.Id, 'Status':true },
-                        function (data) {
-                            app.notify.showShortTop(data.message);
-                        },
-                        function (error) {
-                            app.notify.showShortTop(error.message);
-                        });
-				},
-				function (error) {
-				    app.showError(JSON.stringify(error));
-				})
+            if (true) {
+                var activity = app.Activity.activity();
+                app.everlive.push.notifications.create({
+                    Message: activity.Text
+                },
+                    function (data) {
+                        var createdAt = app.formatDate(data.result.CreatedAt);
+                        app.notify.showShortTop("Notification sent: " + createdAt);
+                        //update notification assets Activity reference and status
+                        //everlive = el
+                        
+                        //if does not exist add to log
+                        var data = el.data('Notifications');
+                        data.create({ 'Reference': activity.Id, 'Status': true },
+                            function (data) {
+                                app.notify.showShortTop("Notification log "+data.result.Id+" saved!");
+                            },
+                            function (error) {
+                                app.notify.showShortTop("Not saved due to "+error.message);
+                            });
+                    },
+                    function (error) {
+                        app.showError(JSON.stringify("Notification not sent due to " + error.message));
+                    })
+            }
+            else {
+                app.notify.showShortTop("This alert was already sent out!");
+            }
         },
+
 
         showShortTop: function (m) {
             if (analytics.isAnalytics()) {
