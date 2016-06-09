@@ -8,10 +8,10 @@ app.on2tClients = (function () {
     'use strict'
     var locals, mapOptions;
         // map center
-    var center = new google.maps.LatLng(40.589500, -8.683542);
+    var center;// = new google.maps.LatLng(40.589500, -8.683542);
 
     // marker position
-    var factory = new google.maps.LatLng(40.589500, -8.683542);
+    var factory;// = new google.maps.LatLng(40.589500, -8.683542);
 
     var clientViewModel = (function () {
         var properties

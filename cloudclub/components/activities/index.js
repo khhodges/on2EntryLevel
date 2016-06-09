@@ -182,7 +182,7 @@ app.activities = kendo.observable({
 			        
 			        navigator.notification.confirm(
                         'First Register or Logon.',  // message
-                        onPrompt,                  // callback to invoke
+                        activitiesModel.onPrompt,                  // callback to invoke
                         'Authentication Required',            // title
                         ['Login', 'Register']             // buttonLabels
                         //'User Name address ...'                 // defaultText
@@ -286,7 +286,7 @@ app.activities = kendo.observable({
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
 		if ((param === null || param === undefined) && e.view.params.ActivityText)
 		    param = {
-			    "field": "Text",
+			    "field": "Title",
 			    "operator": "eq",
 			    "value": e.view.params.ActivityText
 		    };

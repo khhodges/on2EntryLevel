@@ -3,6 +3,24 @@
  */
 
 var appSettings = {
+    //Location PopUp Html
+    Strings: [{
+        "HEAD": '<div class="iw-title"></div>'
+            + '<div class="iw-content"><div class="iw-subTitle">%Name%</div>'
+            + '<div><a data-role="button" class="butn" data-rel="external" href="tel:Phone">'
+            + '<img src="styles/images/phone2.png" alt="phone" height="auto" width="15%"></a><small>'
+            + 'Address, Open Stars</small></div>'
+            + '<div ><br/>' + '<a data-role="button" class="butn" href="components/activities/view.html?partner=%Name%"><img src="styles/images/icon.png" alt="On2See" height="auto" width="15%"></a>'
+            + '<a data-role="button" class="butn" href="UrlString"><img src="styles/images/thumb_up.png" alt="On2See" height="auto" width="15%"></a>'
+            + '<a data-role="button" class="butn" href="components/notifications/view.html?partner=%Name%");"><img src="styles/images/green-share.png" alt="On2See" height="auto" width="15%"></a>'
+            + '<a data-role="button" class="butn" onclick="test(\'https://www.google.com/maps/place/Google\');"><img src="styles/images/googleMap.png" alt="Google" height="auto" width="15%"></a>'
+            + '<a data-role="button" class="butn" data-rel="external" onclick="test(\'https://twitter.com/search?q=Twitter\');"><img src="styles/images/twitter.png" alt="Twitter" height="auto" width="15%"></a>'
+            + '<a data-role="button" class="butn" data-rel="external" onclick="test(\'https://www.yelp.com/biz/Yelp\');"><img src="styles/images/yelp_64.png" alt="Yelp" height="auto" width="15%"></a>'
+            + '<a data-role="button" class="butn" data-rel="external" onclick="test(\'https://www.facebook.com/Facebook\');"><img src="styles/images/facebook2.png" alt="Facebook" height="auto" width="15%"></a>'
+            + '<a data-role="button" class="butn" data-rel="external" onclick="test(\'WebSite\')"><img src="Icon" alt="Logo" height="auto" width="15%"></a>'
+            + '</div>'
+    }],
+
     items: [{ "id": 1, "name": "Banks ", "list": ["bank", "atm"] },
                        { "id": 2, "name": "Business ", "list": ["travel_agency", "roofing_contractor", "plumber", "painter", "locksmith", "lawyer", "laundry", "insurance_agency", "florist", "electrician", "car_wash", "car_repair", "car_dealer", "book_store", "bicycle_store", "beauty_salon", "accounting"] },
                        { "id": 3, "name": "Community ", "list": ["synagogue", "post_office", "police", "park", "museum", "mosque", "local_government_office", "hindu_temple", "funeral_home", "fire_station", "courthouse", "city_hall", "church", "cemetery", "amusement_park"] },

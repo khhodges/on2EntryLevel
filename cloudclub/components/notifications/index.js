@@ -69,6 +69,7 @@ app.notifications = kendo.observable({
 					}
 				}
             },
+            sort: { field: 'Date', dir: 'desc' },
             change: function(e) {
                 var data = this.data();
                 for (var i = 0; i < data.length; i++) {
@@ -93,10 +94,10 @@ app.notifications = kendo.observable({
                             field: 'EventDetails.Text',
                             defaultValue: 'xxxxx'
                         },
-                        //'Location': {
-                        //    field: 'Reference.Location',
-                        //    defaultValue: 'xxxxx'
-                        //},
+                        'Location': {
+                            field: 'EventDetails.Location',
+                            defaultValue: 'xxxxx'
+                        },
                         'Date': {
                             field: 'CreatedAt',
                             defaultValue: 'xxxxx'
