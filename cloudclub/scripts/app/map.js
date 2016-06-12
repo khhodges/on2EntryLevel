@@ -121,6 +121,7 @@ app.Places = (function () {
             isGoogleMapsInitialized: true,
             markers: [],
             details: [],
+            selected: null,
             hideSearch: false,
             products: viewModelSearch.products,
             selectedProduct: viewModelSearch.selectedProduct,
@@ -157,6 +158,7 @@ app.Places = (function () {
                     location: marker,
                     starString: "",
                     distanceString: "",
+                    distance: 0,
                     addurl: "components/activities/view.html?partner=%Name%"
                 }
                 //place = app.Places.locationViewModel.updatePlace(place)
@@ -243,6 +245,7 @@ app.Places = (function () {
                 that.toggleLoading();
                 if (!app.Places.locationViewModel.markers) { app.Places.locationViewModel.markers = new Array; }
                 if (!app.Places.locationViewModel.details) { app.Places.locationViewModel.details = new Array; }
+                if (!app.Places.locationViewModel.selected) { app.Places.locationViewModel.selected = null; }
                 markers = app.Places.locationViewModel.markers;
                 for (var i = 0; i < markers.length; i++) {
                     markers[i].setMap(null);
@@ -250,6 +253,7 @@ app.Places = (function () {
                 markers = [];
                 app.Places.locationViewModel.markers = new Array;
                 app.Places.locationViewModel.details = new Array;
+                app.Places.locationViewModel.selected = null;
                 navigator.geolocation.getCurrentPosition(
 					function (position) {
 					    home = position;
@@ -267,6 +271,12 @@ app.Places = (function () {
 					        allPartners = data.result;
 					        for (var i = 0; i < data.count; i++) {
 					            var partner = allPartners[i];
+					            partner.vicinity = partner.Address;
+					            partner.distance = '??';
+					            partner.rating = 0;
+					            partner.priceString = '???';
+					            partner.name = partner.Place;
+					            //app.Places.locationViewModel.details.push(partner);
 					            app.Places.locationViewModel.locatedAtFormatted(partner.Location, partner.Description, partner.Html, partner.Address, partner.Place, partner.Website, partner.Phone, partner.Icon);
 					        }
 					    },
@@ -331,11 +341,15 @@ app.Places = (function () {
 				    markers = [];
 				    app.Places.locationViewModel.markers = new Array;
 				    app.Places.locationViewModel.details = new Array;
+				    app.Places.locationViewModel.selected = null;
 				    //if (document.getElementById("place-list-view") !== null && document.getElementById("place-list-view").innerHTML !== null) {
 				    //    document.getElementById("place-list-view").innerHTML = "<strong> Cleared</strong>";
 				    //}
 				},
             onPlaceSearch: function () {
+                if (!app.Places.locationViewModel.find) {
+                    return;
+                }
                 markers = app.Places.locationViewModel.markers;
                 for (var i = 0; i < markers.length; i++) {
                     markers[i].setMap(null);
@@ -343,6 +357,8 @@ app.Places = (function () {
                 markers = [];
                 app.Places.locationViewModel.markers = new Array;
                 app.Places.locationViewModel.details = new Array;
+                app.Places.locationViewModel.selected = null;
+
                 // Create the PlaceService and send the request.
                 // Handle the callback with an anonymous function.
                 service = new google.maps.places.PlacesService(map);
@@ -368,6 +384,7 @@ app.Places = (function () {
                                     place = app.Places.locationViewModel.updateStars(place);
                                     app.Places.locationViewModel.addMarker(place);
                                     app.Places.locationViewModel.details.push(place);
+                                    app.Places.locationViewModel.selected = place;
                                 }
                             } else {
                                 // Do Place search
@@ -418,6 +435,7 @@ app.Places = (function () {
                             console.error(status);
                             return;
                         }
+                        place.selected = result;
                         place.details = result;
                         place.openString = "Closed, ";
                         if (place.opening_hours) {
@@ -677,9 +695,12 @@ app.Places = (function () {
             locationViewModel: new LocationViewModel(),
             listShow: function () {
                 //var price = '$$$$$'.substring(1, app.Places.locationViewModel.details.price_level);
-                $("#places-listview").kendoMobileListView({
+                $("#place-listview").kendoMobileListView({
                     dataSource: app.Places.locationViewModel.details,
-                    template: "<div class='${isSelectedClass}'>#: name #<br /> #: vicinity # -- #: distance # m, #: rating # Stars, #: priceString # <table ${visibility} style='width:100%; margin-top:15px'><tr style='width:100%'><td style='width:33%'><a data-role='button' data-bind='click: memorize' class='btn-register'>Endorse</a></td><td style='width:33%'><a data-role='button' data-click='memorize' class='btn-login km-widget km-button'>Memorize</a></td><td style='width:33%'><a data-role='button' href='views/activitiesView.html' class='btn-continue km-widget km-button'>Comment</a></td></tr></table><br /></div>"
+                    dataSourceOptions:{
+                        sort:{field:name}   
+                    },
+                    template: "<div class='' href='components/partners/details.html?partner= #: name #'>#: name #<br /> #: vicinity # -- #: distance # m, #: rating # Stars, #: priceString # <table hidden style='width:100%; margin-top:15px'><tr style='width:100%'><td style='width:33%'><a data-role='button' data-bind='click: memorize' class='btn-register'>Endorse</a></td><td style='width:33%'><a data-role='button' data-click='memorize' class='btn-login km-widget km-button'>Memorize</a></td><td style='width:33%'><a data-role='button' href='views/activitiesView.html' class='btn-continue km-widget km-button'>Comment</a></td></tr></table><br /></div>"
                 });
             },
             onSelected: function (e) {

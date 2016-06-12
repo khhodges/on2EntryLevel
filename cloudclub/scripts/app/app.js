@@ -15,8 +15,8 @@ var app = (function (win) {
     };
 
     window.onerror = function (message, file, line) {
-	alert("Error: " + message + ", File: " + file + ", Line: " + line);
-	}
+        alert("Error: " + message + ", File: " + file + ", Line: " + line);
+    }
 
 
 
@@ -66,7 +66,7 @@ var app = (function (win) {
     var onDeviceReady = function () {
         // Handle "backbutton" event
         document.addEventListener('backbutton', onBackKeyDown, false);
- if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
+        if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
             $('.ui-header > *').css('margin-top', function (index, curValue) {
                 return parseInt(curValue, 10) + 0 + 'px';
             });
@@ -167,7 +167,7 @@ var app = (function (win) {
     };
 
     var AppHelper = {
-		
+
         // Logout user
         logout: function () {
             app.helper.doLogout()
@@ -188,7 +188,7 @@ var app = (function (win) {
                     var logoffB = document.getElementById("logoffButton");
                     logoffB.style.display = "none";
                     logonB.style.display = "";
-				});
+                });
         },
         activityRoute: function () {
             if (app.isOnline()) {
@@ -198,7 +198,7 @@ var app = (function (win) {
             }
 
         },
-         //Current user logout
+        //Current user logout
         doLogout: function () {
             var lo = el.Users.logout();
             return lo;
@@ -318,7 +318,7 @@ var app = (function (win) {
 
         convertToDataURL: function convertToDataURLviaCanvas(url, callback, outputFormat) {
             var img = new Image();
-			//cors
+            //cors
             img.crossOrigin = 'Anonymous';
             img.onload = function () {
                 var canvas = document.createElement('CANVAS');
@@ -397,22 +397,54 @@ var app = (function (win) {
             if (true) {
                 var activity = app.Activity.activity();
                 app.everlive.push.notifications.create({
-                    Message: activity.Text
-                },
+                    Message: activity.Text,
+                    //Title: app.Users.currentUser.get('data').DisplayName,
+
+                        //"Filter": "{\"Parameters.City\":\"London\"}",
+                        //"UseLocalTime": true,
+                        //"Android": {
+                        //    "data": {
+                        //        "title": app.Users.currentUser.get('data').DisplayName,
+                        //        "message": activity.Text,
+                        //        "customData": ""
+                        //    }
+                        //}
+                        //"IOS": {
+                        //    "aps": {
+                        //        "alert": activity.Text,
+                        //        "badge": "+1",
+                        //        "sound": "default",
+                        //        "category": app.Users.currentUser.get('data').DisplayName
+                        //    },
+                        //    "customData": ""
+                        //},
+                        //"WindowsPhone": {
+                        //    "Toast": {
+                        //        "Title": app.Users.currentUser.get('data').DisplayName,
+                        //        "Message": activity.Text
+                        //    }
+                        //},
+                        //"Windows": {
+                        //    "Toast": {
+                        //        "template": "ToastText01",
+                        //        "text": [activity.Text]
+                        //    }
+                        //}
+                    },
                     function (data) {
                         var createdAt = app.formatDate(data.result.CreatedAt);
                         app.notify.showShortTop("Notification sent: " + createdAt);
                         //update notification assets Activity reference and status
                         //everlive = el
-                        
+
                         //if does not exist add to log
                         var data = el.data('Notifications');
                         data.create({ 'Reference': activity.Id, 'Status': true },
                             function (data) {
-                                app.notify.showShortTop("Notification log "+data.result.Id+" saved!");
+                                app.notify.showShortTop("Notification log " + data.result.Id + " saved!");
                             },
                             function (error) {
-                                app.notify.showShortTop("Not saved due to "+error.message);
+                                app.notify.showShortTop("Not saved due to " + error.message);
                             });
                     },
                     function (error) {
@@ -513,7 +545,7 @@ var app = (function (win) {
         },
 
         getLocation: function (callBack) {
-            
+
             var options = {
                 enableHighAccuracy: false,
                 timeout: 5000,
@@ -534,7 +566,7 @@ var app = (function (win) {
             };
 
             navigator.geolocation.getCurrentPosition(success, error, options);
-            
+
         },
 
         getNowPlus10Seconds: function () {
@@ -700,7 +732,7 @@ var app = (function (win) {
 	}
 	*/
     return {
-        data:{},
+        data: {},
         showAlert: showAlert,
         showError: showError,
         showConfirm: showConfirm,
