@@ -57,7 +57,7 @@ app.Signup = (function () {
 											  .then(function () {
 											      //app.showAlert("Congratulations! You are now registered!", "The Loyalty Club");
 											      //register for device notifications
-											      el.push.register(devicePushSettings, function () {
+											      el.push.register(appSettings.devicePushSettings, function () {
 											          app.notify.showShortTop("Congratulations! Successful registration in on2t platform. You are ready to receive push notifications.");
 											      }, function (err) {
 											          alert("Error: " + err.message);

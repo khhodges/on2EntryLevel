@@ -99,11 +99,11 @@ var app = (function (win) {
         }
 
         ////register for device notifications
-        //el.push.register(devicePushSettings, function () {
-        //    app.notify.showShortTop("User.Successful registration in on2t platform. You are ready to receive push notifications.");
-        //}, function (err) {
-        //    alert("Error: " + err.message);
-        //})
+        el.push.register(devicePushSettings, function () {
+            app.notify.showShortTop("User.Successful registration in on2t platform. You are ready to receive push notifications.");
+        }, function (err) {
+            alert("Error: " + err.message);
+        })
 
         //for notifications
         if (cordova.plugins) {
