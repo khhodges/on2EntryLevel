@@ -160,7 +160,7 @@ var appSettings = {
         main: 'views/placesView.html'
     },
     notification: {
-        androidProjectNumber: "419311347951"
+        androidProjectNumber: "389531505311"
     },
     eqatec: {
         productKey: '3d777b61e0be40f5b61964bb1b05cbbb',  // Put your Tekerik Analytics project key here

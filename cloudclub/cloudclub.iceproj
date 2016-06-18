@@ -27,9 +27,6 @@
     <Content Include=".abproject" />
     <Content Include=".debug.abproject" />
     <Content Include=".release.abproject" />
-    <Content Include="App_Resources\iOS\Default-Landscape-1366%402x.png" />
-    <Content Include="App_Resources\iOS\Default-Portrait-1366%402x.png" />
-    <Content Include="App_Resources\iOS\icon-83.5%402x.png" />
     <Content Include="bower_components\everlive\.bower.json" />
     <Content Include="bower_components\everlive\.gitattributes" />
     <Content Include="bower_components\everlive\min\everlive.all.map" />
@@ -114,7 +111,7 @@
     <Content Include="styles\images\icon-comment@2x.png" />
     <Content Include="styles\images\icon-delete.png" />
     <Content Include="styles\images\icon-delete@2x.png" />
-    <Content Include="styles\images\icon-on2t.png" />
+    <Content Include="styles\images\icon.png" />
     <Content Include="styles\images\instagram.png" />
     <Content Include="styles\images\linkedIn.png" />
     <Content Include="styles\images\location.png" />
@@ -138,7 +135,6 @@
     <Content Include="styles\images\notify-backup.png" />
     <Content Include="styles\images\notify.png" />
     <Content Include="styles\images\notify_.png" />
-    <Content Include="styles\images\icon.png" />
     <Content Include="styles\images\phone2.png" />
     <Content Include="styles\images\pinterest.png" />
     <Content Include="styles\images\search.png" />

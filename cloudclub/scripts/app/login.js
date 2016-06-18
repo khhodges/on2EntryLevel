@@ -81,7 +81,7 @@ app.Login = (function () {
             })
             .then(function () {
 
-                app.mobileApp.navigate('views/activitiesView.html');
+                app.mobileApp.navigate('components/notifications/view.html');
             })
             .then(null,
                   function (err) {
