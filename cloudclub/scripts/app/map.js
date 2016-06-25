@@ -677,6 +677,7 @@ app.Places = (function () {
             },
             locationViewModel: new LocationViewModel(),
             listShow: function () {
+				if(app.Places.locationViewModel.details.length <1)app.mobileApp.navigate("components/partners/view.html");
                 //var price = '$$$$$'.substring(1, app.Places.locationViewModel.details.price_level);
                 $("#places-listview").kendoMobileListView({
                     dataSource: app.Places.locationViewModel.details,

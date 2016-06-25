@@ -19,6 +19,7 @@ app.Signup = (function () {
         var dataSource;
         var validator;
         var avatarImage;
+        var registered = false;
         var touchzone;
         var imageObj;
         var lastMove;
@@ -66,12 +67,19 @@ app.Signup = (function () {
             }, "image/jpeg");
         }
         var registerDevice = function () {
-            //register for device notifications
-            app.everlive.push.register(devicePushSettings, function () {
-                app.notify.showShortTop("Success! You can also receive local event notifications.");
-            }, function (err) {
-                app.notify.showShortTop("Error: " + err.message);
-            })
+            if (!registered) {
+                registered = true;
+                //register for device notifications
+                app.everlive.push.register(devicePushSettings, function () {
+                    app.notify.showShortTop("Success! You can also receive local event notifications.");
+                }, function (err) {
+                    app.notify.showShortTop("Error: " + err.message);
+                })
+            }
+            else
+            {
+                app.notify.showShortTop("Second request in the same test session.");
+            }
         }
 
         var devicePushSettings = {
