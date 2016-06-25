@@ -19,7 +19,9 @@
                 //iabRef.removeEventListener('loadstart', iabLoadStart);
                 //iabRef.removeEventListener('loadstop', iabLoadStop);
                 //iabRef.removeEventListener('loaderror', iabLoadError);
-                iabRef.removeEventListener('exit', iabClose);
+                if (iabRef) {
+                    iabRef.removeEventListener('exit', iabClose);
+                }
             }
 
             function test(url) {

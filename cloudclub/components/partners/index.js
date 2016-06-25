@@ -256,7 +256,7 @@ app.home = kendo.observable({
 									Description: addFormData.textField,
 									Address: addFormData.address,
 									Phone: addFormData.tel,
-									Createdby: app.Users.currentUser.get('data').Id,
+									Owner: app.Users.currentUser.get('data').Id,
 								});
 
 								dataSource.one('change', function (e) {
