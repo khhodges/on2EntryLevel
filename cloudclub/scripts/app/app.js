@@ -66,7 +66,7 @@ var app = (function (win) {
     var onDeviceReady = function () {
         // Handle "backbutton" event
         document.addEventListener('backbutton', onBackKeyDown, false);
- if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
+        if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
             $('.ui-header > *').css('margin-top', function (index, curValue) {
                 return parseInt(curValue, 10) + 0 + 'px';
             });

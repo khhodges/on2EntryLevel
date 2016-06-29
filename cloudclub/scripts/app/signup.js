@@ -56,8 +56,9 @@ app.Signup = (function () {
                         dataSource.Password,
                         dataSource)
                         .then(function () {
-                            app.notify.showShortTop("Congratulations! You are now registered!", "The Loyalty Club");
+                            console.log("Congratulations! You are now registered!", "The Loyalty Club");
                             registerDevice();
+                            app.notify.showShortTop("Congratulations! You are now registered!", "The Loyalty Club");
                             app.mobileApp.navigate('#welcome');
                         },
                               function (err) {
@@ -67,18 +68,21 @@ app.Signup = (function () {
             }, "image/jpeg");
         }
         var registerDevice = function () {
+            console.log("Start Registraion");
             if (!registered) {
                 registered = true;
-                //register for device notifications
+                console.log("Registered for device notifications");
                 app.everlive.push.register(devicePushSettings, function () {
-                    app.notify.showShortTop("Success! You can also receive local event notifications.");
+                    //app.notify.showShortTop("Success! You can also receive local event notifications.");
+                   console.log("Success! You can also receive local event notifications.");
                 }, function (err) {
-                    app.notify.showShortTop("Error: " + err.message);
+                    //app.notify.showShortTop("Error: " + err.message);
+                    console.log("Error: " + err.message);
                 })
             }
             else
             {
-                app.notify.showShortTop("Second request in the same test session.");
+                console.log("Second request in the same test session.");
             }
         }
 
