@@ -340,6 +340,7 @@ var app = (function (win) {
 
         addNotify: function (PartnerId, ActivityId) {
             //check if exists
+            console.log("Start Notify Message.");
             if (app.Users.currentUser.data) {
                 //use everlive
                 var data = app.everlive.data('Places');
@@ -366,6 +367,8 @@ var app = (function (win) {
         },
 
         memorize: function (PartnerId) {
+            console.log("Start Like." + PartnerId);
+
             if (app.Users.currentUser.data) {
                 //use everlive
                 var data = app.everlive.data('Places');
@@ -394,6 +397,7 @@ var app = (function (win) {
         },
 
         broadcast: function () {
+            console.log("Start Broadsact Message.");
             if (true) {
                 var activity = app.Activity.activity();
                 app.everlive.push.notifications.create({
@@ -426,6 +430,7 @@ var app = (function (win) {
 
 
         showShortTop: function (m) {
+            console.log("Start Toast Message - " +m);
             if (analytics.isAnalytics()) {
                 m = m + " . . . . . .";
                 analytics.TrackFeature('Toast.' + m.substring(0, 10));
