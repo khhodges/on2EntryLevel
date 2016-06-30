@@ -1,21 +1,9 @@
 {
-  "CorePlugins": [
-    "com.phonegap.plugins.PushPlugin@3.2.0",
-    "com.telerik.feedback@2.0.1",
-    "com.telerik.plugin.telerikanalytics@3.3.0",
-    "cordova-plugin-camera",
-    "cordova-plugin-device",
-    "cordova-plugin-device-orientation",
-    "cordova-plugin-dialogs",
-    "cordova-plugin-file",
-    "cordova-plugin-geolocation",
-    "cordova-plugin-globalization",
-    "cordova-plugin-inappbrowser",
-    "cordova-plugin-media-capture",
-    "cordova-plugin-splashscreen",
-    "cordova-plugin-vibration",
-    "cordova-plugin-whitelist",
-    "nl.x-services.plugins.socialsharing@5.1.1",
-    "nl.x-services.plugins.toast@2.5.2"
-  ]
+  "CordovaPluginVariables": {
+    "com.telerik.feedback": {
+      "API_KEY": "ositfon8wx3dradp",
+      "API_URL": "https://platform.telerik.com/feedback/api/v1",
+      "ENABLE_SHAKE": "True"
+    }
+  }
 }
