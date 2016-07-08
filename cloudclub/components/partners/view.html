@@ -1,31 +1,49 @@
 <div data-role="view" data-title="Partners" data-layout="main" data-model="app.home" data-show="app.home.onShow" data-after-show="app.home.afterShow">
-	<!-- START_CUSTOM_CODE_home -->
-	<!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
-	<!-- END_CUSTOM_CODE_home -->
-	<header data-role="header">
-		<div data-role="navbar" class="header-text">
-			<span data-role="view-title" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;"></span>
-			<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button"></a>
-			<a data-role="button" data-align="right" href="views/mapView.html">Find</a>
-		</div>
-	</header>
-	<form class="km-filter-form custom-filter">
-		<div class="km-filter-wrap">
-			<input type="search" placeholder="Search..." data-bind="{events:{keyup: homeModel.searchChange, changed: homeModel.searchChanged}}" id="MyDetails" data-show="MyDetailsShow">
-		</div>
-	</form>
-	<ul data-role="listview" data-auto-bind="false" data-style="inset" data-template="homeModelTemplate" data-bind="{ source: homeModel.dataSource, events: {click: homeModel.itemClick} }" data-pull-to-refresh="true" data-endless-scroll="false">
-	</ul>
-	<!-- START_CUSTOM_CODE_homeModel -->
-	<!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
-	<!-- END_CUSTOM_CODE_homeModel -->
-	<script type="text/x-kendo-template" id="homeModelTemplate">
-		<div class="image-with-text">
-			<img src="#: data['ImageUrl'] #" width="30%" height="30%">
-			<h3>#: data['Place'] #</h3>
-			<p>#: data['Address'] #</p>
-		</div>
-		<p class="editableListItem"><span>PlaceId</span><span>#: data['PlaceId'] #</span></p>
-	</script>
+    <!-- START_CUSTOM_CODE_home -->
+    <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+    <!-- END_CUSTOM_CODE_home -->
+    <header data-role="header">
+        <div data-role="navbar" class="header-text">
+            <span data-role="view-title" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;"></span>
+            <a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button"></a>
+            <a data-role="button" data-align="right" href="views/mapView.html">Back</a>
+        </div>
+    </header>
+    <form class="km-filter-form custom-filter">
+        <div class="km-filter-wrap">
+            <input type="search" placeholder="Search..." data-bind="{events:{keyup: homeModel.searchChange, changed: homeModel.searchChanged}}" id="MyDetails" data-show="MyDetailsShow">
+        </div>
+    </form>
+    <ul data-role="listview" data-auto-bind="false" data-style="inset" data-template="homeModelTemplate" data-bind="{ source: homeModel.dataSource, events: {click: homeModel.itemClick} }" data-pull-to-refresh="true" data-endless-scroll="false"></ul>
+    <!-- START_CUSTOM_CODE_homeModel -->
+    <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+    <!-- END_CUSTOM_CODE_homeModel -->
+    <script type="text/x-kendo-template" id="homeModelTemplate">
+        <div class="image-with-text">
+            <img src="#: data['ImageUrl'] #" width="30%" height="30%">
+            <h3>#: data['Place'] #</h3>
+            <p>#: data['Address'] #</p>
+            <small>
+                Open Stars
+            </small>
+        </div>
+        <div class="iw-title"></div>
+        <div class="iw-content">
+            <div class="iw-subTitle">Community Research</div>
+        </div>
+        <div>
+            <br />
+            <img src="styles/images/phone2.png" alt="phone" height="auto" width="15%" data-bind="events: { click: onSaveClick }">
+            <img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="15%">
+            <img src="styles/images/thumb_up.png" alt="On2See" height="auto" width="15%">
+            <img src="styles/images/green-share.png" alt="On2See" height="auto" width="15%">
+            <img src="styles/images/googleMap.png" alt="Google" height="auto" width="15%">
+            <img src="styles/images/facebook2.png" alt="Facebook" height="auto" width="15%">
+            <!--<img src="styles/images/twitter.png" alt="Twitter" height="auto" width="15%">
+            <img src="styles/images/yelp_64.png" alt="Yelp" height="auto" width="15%">
+            <img src="Icon" alt="Logo" height="auto" width="15%">-->
+        </div>
+        <!--<p class="editableListItem"><span>PlaceId</span><span>#: data['PlaceId'] #</span></p>-->
+    </script>
 </div>
 <script src="../../scripts/app/places.js"></script>

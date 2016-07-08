@@ -1,5 +1,5 @@
 function onPushNotificationReceived(e) {
-    showAlert(e.message, "On2T Notification");
+    alert(e.message, "On2T Notification");
 };
 
 var app = (function (win) {
@@ -14,9 +14,9 @@ var app = (function (win) {
         showAlert(message, 'Error occured');
     };
 
-    /*	window.onerror = function (message, file, line) {
+    window.onerror = function (message, file, line) {
 	alert("Error: " + message + ", File: " + file + ", Line: " + line);
-	}*/
+	}
 
 
 
@@ -66,7 +66,7 @@ var app = (function (win) {
     var onDeviceReady = function () {
         // Handle "backbutton" event
         document.addEventListener('backbutton', onBackKeyDown, false);
- if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
+        if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
             $('.ui-header > *').css('margin-top', function (index, curValue) {
                 return parseInt(curValue, 10) + 0 + 'px';
             });
@@ -80,7 +80,7 @@ var app = (function (win) {
         //navigator.splashscreen.hide();
         //StatusBar.overlaysWebView(false); //Turns off web view overlay.
 
-        app.mobileApp.navigate("views/mapView.html");
+        //app.mobileApp.navigate(appSettings.pageOne);
 
         if (analytics.isAnalytics()) {
             analytics.Start();
@@ -149,22 +149,22 @@ var app = (function (win) {
 
     var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
-    var devicePushSettings = {
-        iOS: {
-            badge: 'true',
-            sound: 'true',
-            alert: 'true'
-        },
-        android: {
-            projectNumber: '419311347951'
-        },
-        wp8: {
-            channelName: 'EverlivePushChannel'
-        },
-        notificationCallbackIOS: onPushNotificationReceived,
-        notificationCallbackAndroid: onPushNotificationReceived,
-        notificationCallbackWP8: onPushNotificationReceived
-    };
+    //var devicePushSettings = {
+    //    iOS: {
+    //        badge: 'true',
+    //        sound: 'true',
+    //        alert: 'true'
+    //    },
+    //    android: {
+    //        projectNumber: '508581667442'
+    //    },
+    //    wp8: {
+    //        channelName: 'EverlivePushChannel'
+    //    },
+    //    notificationCallbackIOS: onPushNotificationReceived,
+    //    notificationCallbackAndroid: onPushNotificationReceived,
+    //    notificationCallbackWP8: onPushNotificationReceived
+    //};
 
     var AppHelper = {
 		
@@ -339,6 +339,8 @@ var app = (function (win) {
     var NotifyHelper = {
 
         addNotify: function (PartnerId, ActivityId) {
+            //check if exists
+            console.log("Start Notify Message.");
             if (app.Users.currentUser.data) {
                 //use everlive
                 var data = app.everlive.data('Places');
@@ -365,6 +367,8 @@ var app = (function (win) {
         },
 
         memorize: function (PartnerId) {
+            console.log("Start Like." + PartnerId);
+
             if (app.Users.currentUser.data) {
                 //use everlive
                 var data = app.everlive.data('Places');
@@ -393,30 +397,40 @@ var app = (function (win) {
         },
 
         broadcast: function () {
-            var activity = app.Activity.activity();
-            app.everlive.push.notifications.create({
-                Message: activity.Text
-            },
-				function (data) {
-				    var createdAt = app.formatDate(data.result.CreatedAt);
-				    app.notify.showShortTop("Notification created: " + createdAt);
-				    //update notification assets Activity reference and status
-                    //everlive = el
-				    var data = el.data('Notifications');
-				    data.create({ 'Reference': activity.Id, 'Status':true },
-                        function (data) {
-                            app.notify.showShortTop(data.message);
-                        },
-                        function (error) {
-                            app.notify.showShortTop(error.message);
-                        });
-				},
-				function (error) {
-				    app.showError(JSON.stringify(error));
-				})
+            console.log("Start Broadsact Message.");
+            if (true) {
+                var activity = app.Activity.activity();
+                app.everlive.push.notifications.create({
+                    Message: activity.Text
+                },
+                    function (data) {
+                        var createdAt = app.formatDate(data.result.CreatedAt);
+                        app.notify.showShortTop("Notification sent: " + createdAt);
+                        //update notification assets Activity reference and status
+                        //everlive = el
+                        
+                        //if does not exist add to log
+                        var data = el.data('Notifications');
+                        data.create({ 'Reference': activity.Id, 'Status': true },
+                            function (data) {
+                                app.notify.showShortTop("Notification log "+data.result.Id+" saved!");
+                            },
+                            function (error) {
+                                app.notify.showShortTop("Not saved due to "+error.message);
+                            });
+                    },
+                    function (error) {
+                        app.showError(JSON.stringify("Notification not sent due to " + error.message));
+                    })
+            }
+            else {
+                app.notify.showShortTop("This alert was already sent out!");
+            }
         },
 
+
         showShortTop: function (m) {
+            console.log("Start Toast Message - " +m);
             if (analytics.isAnalytics()) {
                 m = m + " . . . . . .";
                 analytics.TrackFeature('Toast.' + m.substring(0, 10));

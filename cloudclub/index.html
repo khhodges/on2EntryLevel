@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -22,10 +22,12 @@
     <script src="scripts/app/users.js"></script>
     <script src="scripts/app/update.js"></script>
     <script src="scripts/app/map.js"></script>
+    <script src="scripts/js/on2tmap.js"></script>
     <script src="scripts/app/login.js"></script>
     <script src="scripts/app/signup.js"></script>
     <script src="scripts/app/activities.js"></script>
     <script src="scripts/app/activity.js"></script>
+    <script src="scripts/app/pushFactory.js"></script>
     <script src="scripts/app/comments.js"></script>
     <script src="components/aboutView/index.js"></script>
     <script src="components/notifications/index.js"></script>
@@ -63,10 +65,10 @@
         </h2>
         
         <p data-role="listview" data-style="inset">
-        Please enjoy this advanced mobile community application with simplified access to all social media.</p>
+        Please enjoy this advanced mobile community application with integrated access to all social media.</p>
     <p>No login required for visitors searching for social media on local Hot Spots and community activity.</p>
-    <p>For advanced search, loyalty clubs and instant notifications you will be redirected to register and login when needed.</p>
-        <p>More from the On2See team found <a href="http://www.on2see.com">here</a>.</p>
+    <p>For advanced search, loyalty clubs points and instant notifications on local activities and offers you need to <a href="#welcome" ><b>Join In</b></a> and stay <a href="#welcome"><b>logged on</b></a>.</p>
+        <p>Application help from the On2See team is found <a href="http://www.on2see.com"><b>here</b></a>.</p>
 
 
     </div>
@@ -123,7 +125,7 @@
 
             <br />
             <a href="#password">Forgot password?</a><br/>
-            <span>OFA version 1.5.1 - 6/1/2016</span><br />
+            <span>OFA version 1.5.2 - 7/3/2016</span><br />
             <!--<a href="tel:+19548398525">Call us on +1.954-839-8525</a>-->
 
         </div>
@@ -159,9 +161,9 @@
                     </div>
             </header>
             <ul id="navigation-container" data-role="listview">
-                <!--<li>
-                    <a href="components/notifications/view.html" data-icon="flash-button" style="color: black">Find Alerts</a>
-                </li>-->
+                <li>
+                    <a href="components/notifications/view.html" data-icon="flash-button" style="color: red">Local Notifications</a>
+                </li>
                 <li>
                     <a href="views/mapView.html" data-icon="globe" style="color: black">Hot Spots</a>
                 </li>
@@ -179,6 +181,6 @@
                 </li>
             </ul>
         </div>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.2&key=AIzaSyDV8dnz0UDs1aoCLVZcC6UAPSn3eSXyYh8&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_NGEphwHG1jQ1S6v2JeCcZNiz5BenfDw&libraries=places"></script>
 </body>
 </html>

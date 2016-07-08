@@ -65,7 +65,7 @@ app.Login = (function () {
             //app.mobileApp.showLoading();
 
             // Authenticate using the username and password
-            app.everlive.Users.login(username, password)
+            app.everlive.Users.login(username.trim(), password)
             .then(function () {
                 // EQATEC analytics monitor - track login type
                 if (isAnalytics && !app.helper.checkSimulator()) {

@@ -57,12 +57,19 @@ app.notifications = kendo.observable({
                 dataProvider: dataProvider,
 				read:{
 					headers:{
-						"X-Everlive-Expand": JSON.stringify({
-						Reference: true
-						})
+						"X-Everlive-Expand": {
+						    "Reference": {
+						        "TargetTypeName": "Activities",
+						        "ReturnAs": "EventDetails",
+						        "Fields": {
+                                    "Title":1,"Text":1
+						        }
+						    }
+						}
 					}
 				}
             },
+            sort: { field: 'Date', dir: 'desc' },
             change: function(e) {
                 var data = this.data();
                 for (var i = 0; i < data.length; i++) {
@@ -80,7 +87,15 @@ app.notifications = kendo.observable({
                 model: {
                     fields: {
                         'Reference': {
-                            field: 'Reference.Text',
+                            field: 'EventDetails.Title',
+                            defaultValue: 'xxxxx'
+                        },
+                        'Place': {
+                            field: 'EventDetails.Text',
+                            defaultValue: 'xxxxx'
+                        },
+                        'Location': {
+                            field: 'EventDetails.Location',
                             defaultValue: 'xxxxx'
                         },
                         'Date': {
@@ -125,6 +140,8 @@ app.notifications = kendo.observable({
 
     parent.set('onShow', function(e) {
         var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
+        //var query = new Everlive.Query();
+        //query.where().nearSphere('Location', new Everlive.GeoPoint(-80.0788709900011, 26.30422952323899), 20, 'km');
 
         fetchFilteredData(param);
     });

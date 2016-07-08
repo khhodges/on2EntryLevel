@@ -139,8 +139,11 @@ app.activities = kendo.observable({
 				 true;
 			},
 			itemClick: function (e) {
-
-				app.mobileApp.navigate('#components/activities/details.html?uid=' + e.dataItem.uid);
+			    if (e.dataItem) {
+			        app.mobileApp.navigate('#components/activities/details.html?uid=' + e.dataItem.uid);
+			    } else {
+			        app.mobileApp.navigate('views.mapView.html');
+			    }
 
 			},
 			addClick: function () {
@@ -179,10 +182,10 @@ app.activities = kendo.observable({
 			        });
 			    }
 			    else {
-			        }
+			        
 			        navigator.notification.confirm(
                         'First Register or Logon.',  // message
-                        onPrompt,                  // callback to invoke
+                        activitiesModel.onPrompt,                  // callback to invoke
                         'Authentication Required',            // title
                         ['Login', 'Register']             // buttonLabels
                         //'User Name address ...'                 // defaultText
@@ -284,11 +287,17 @@ app.activities = kendo.observable({
 
 	parent.set('onShow', function (e) {
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
-		if ((param === null || param === undefined) && e.view.params.ActivityText) param = {
-			"field": "Text",
-			"operator": "eq",
-			"value": e.view.params.ActivityText
-		};
+		if ((param === null || param === undefined) && e.view.params.ActivityText)
+		    param = {
+			    "field": "Title",
+			    "operator": "eq",
+			    "value": e.view.params.ActivityText
+		    };
+		//var query = new Everlive.Query();
+	    //query
+        //    .where()
+        //        .nearSphere('Location', [-80.0788709900011, 26.30422952323899], 15, 'km')
+        //        .eq('Text', e.view.params.ActivityText);
 		fetchFilteredData(param);
 	});
 })(app.activities);

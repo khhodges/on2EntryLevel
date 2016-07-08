@@ -82,8 +82,8 @@
 .map-tools .map-tools-button.home:active:before { background-image: url(../styles/images/location_active.png); }
 .map-tools .map-tools-button.search:before { background-image: url(../styles/images/search.png); }
 .map-tools .map-tools-button.search:active:before { background-image: url(../styles/images/search_active.png); }
-.map-tools .map-tools-button.place:before { background-image: url(../styles/images/icon.png); }
-.map-tools .map-tools-button.place:active:before { background-image: url(../styles/images/icon.png); }
+.map-tools .map-tools-button.place:before { background-image: url(../styles/images/on2see-icon-120x120.png); }
+.map-tools .map-tools-button.place:active:before { background-image: url(../styles/images/on2see-icon-120x120.png); }
 
 .map-tools input[type=search].map-tools-input {
     height: 100%;
@@ -545,7 +545,7 @@ input[type='week']
 	height: 119px;
 	margin: 1.5em auto;
 	text-indent: -9999px;
-	background: transparent url(images/icon.png) no-repeat 0 0;
+	background: transparent url(images/on2see-icon-120x120.png) no-repeat 0 0;
 	overflow: hidden; 
 	background-size: contain;
 }
@@ -927,7 +927,7 @@ input[type='week']
 {
 	#friendsApp .app-name
 	{
-		background-image: url(images/icon.png);
+		background-image: url(images/on2see-icon-120x120.png);
 		background-size: 120px 150px;
 		background-position: center;
 		background-size: contain;
