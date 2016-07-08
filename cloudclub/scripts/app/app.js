@@ -1,5 +1,5 @@
 function onPushNotificationReceived(e) {
-    showAlert(e.message, "On2T Notification");
+    alert(e.message, "On2T Notification");
 };
 
 var app = (function (win) {
@@ -80,7 +80,7 @@ var app = (function (win) {
         //navigator.splashscreen.hide();
         //StatusBar.overlaysWebView(false); //Turns off web view overlay.
 
-        app.mobileApp.navigate("views/mapView.html");
+        //app.mobileApp.navigate(appSettings.pageOne);
 
         if (analytics.isAnalytics()) {
             analytics.Start();

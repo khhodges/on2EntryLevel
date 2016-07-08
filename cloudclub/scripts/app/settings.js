@@ -3,6 +3,8 @@
  */
 
 var appSettings = {
+
+    pageOne: "",
     //Location PopUp Html
     Strings: [{
         "HEAD": '<div class="iw-title"></div>'
@@ -10,7 +12,7 @@ var appSettings = {
             + '<div><a data-role="button" class="butn" data-rel="external" href="tel:Phone">'
             + '<img src="styles/images/phone2.png" alt="phone" height="auto" width="15%"></a><small>'
             + 'Address, Open Stars</small></div>'
-            + '<div ><br/>' + '<a data-role="button" class="butn" href="components/activities/view.html?partner=%Name%"><img src="styles/images/icon.png" alt="On2See" height="auto" width="15%"></a>'
+            + '<div ><br/><a data-role="button" class="butn" href="components/activities/view.html?partner=%Name%"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="15%"></a>'
             + '<a data-role="button" class="butn" href="UrlString"><img src="styles/images/thumb_up.png" alt="On2See" height="auto" width="15%"></a>'
             + '<a data-role="button" class="butn" href="components/notifications/view.html?partner=%Name%");"><img src="styles/images/green-share.png" alt="On2See" height="auto" width="15%"></a>'
             + '<a data-role="button" class="butn" onclick="test(\'https://www.google.com/maps/place/Google\');"><img src="styles/images/googleMap.png" alt="Google" height="auto" width="15%"></a>'
@@ -160,8 +162,9 @@ var appSettings = {
         main: 'views/placesView.html'
     },
     notification: {
-        androidProjectNumber: "389531505311"
-    },
+        //androidProjectNumber: "389531505311"
+        androidProjectNumber: "508581667442"
+},
     eqatec: {
         productKey: '3d777b61e0be40f5b61964bb1b05cbbb',  // Put your Tekerik Analytics project key here
         version: '1.0.0.0' // Put your application version here
@@ -177,7 +180,7 @@ var appSettings = {
     },
 
     google: {
-        clientId: '406987471724-q1sorfhhcbulk6r5r317l482u9f62ti8.apps.googleusercontent.com', // Put your Google Client ID here
+        clientId: '508581667442-003egcp4sild1bms13n45e342pgsrki5.apps.googleusercontent.com', // Put your Google Cloud Club Client ID here
         redirectUri: 'http://localhost' // Put your Google Redirect URI here
     },
 

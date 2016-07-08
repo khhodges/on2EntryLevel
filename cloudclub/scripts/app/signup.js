@@ -32,7 +32,7 @@ app.Signup = (function () {
 
         var defaultAvatar = function () {
             var picture = document.getElementById("avatarImage");
-            app.helper.convertToDataURL("styles/images/icon.png", function (base64Img) {
+            app.helper.convertToDataURL("styles/images/on2see-icon-120x120.png", function (base64Img) {
                 everlive.Files.create({
                     Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
                     ContentType: "image/png",
@@ -56,32 +56,31 @@ app.Signup = (function () {
                         dataSource.Password,
                         dataSource)
                         .then(function () {
-                            console.log("Congratulations! You are now registered!", "The Loyalty Club");
-                            registerDevice();
+                            //console.log("Congratulations! You are now registered!", "The Loyalty Club");
                             app.notify.showShortTop("Congratulations! You are now registered!", "The Loyalty Club");
                             app.mobileApp.navigate('#welcome');
+                            registerDevice();
                         },
-                              function (err) {
-                                  app.showError(err.message);
-                              });
+                            function (err) {
+                                app.showError("Please try again: "+err.message);
+                            });
                 })
             }, "image/jpeg");
         }
         var registerDevice = function () {
-            console.log("Start Registraion");
+            app.notify.showShortTop("Start registration for event notifications.");
             if (!registered) {
                 registered = true;
-                console.log("Registered for device notifications");
+                console.log("Register for device notifications");
                 app.everlive.push.register(devicePushSettings, function () {
-                    //app.notify.showShortTop("Success! You can also receive local event notifications.");
-                   console.log("Success! You can also receive local event notifications.");
+                    app.notify.showShortTop("Success! You can also receive local event notifications.");
+                    //console.log("Success! You can also receive local event notifications.");
                 }, function (err) {
-                    //app.notify.showShortTop("Error: " + err.message);
-                    console.log("Error: " + err.message);
+                    app.notify.showShortTop("Notification Register Request: " + err.message);
+                    //console.log("Notification Register Request: " + err.message);
                 })
             }
-            else
-            {
+            else {
                 console.log("Second request in the same test session.");
             }
         }
@@ -105,6 +104,15 @@ app.Signup = (function () {
         // Executed after Signup view initialization
         // init form validator
         var init = function () {
+            //unregister device
+            var el = new Everlive(appSettings.everlive.appId);
+            el.push.unregister(function () {
+                app.notify.showShortTop("Success! You unregistered event notifications.");
+                console.log("Success! You will not receive local event notifications.");
+            }, function (err) {
+                app.notify.showShortTop("UnRegister Device: " + err.message);
+                console.log("UnRegister Device: " + err.message);
+            });
             // Get a reference to our touch-sensitive element
             touchzone = document.getElementById("touchzone");
             avatarImage = document.getElementById("avatarImage");

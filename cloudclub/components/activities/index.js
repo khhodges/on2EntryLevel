@@ -139,8 +139,11 @@ app.activities = kendo.observable({
 				 true;
 			},
 			itemClick: function (e) {
-
-				app.mobileApp.navigate('#components/activities/details.html?uid=' + e.dataItem.uid);
+			    if (e.dataItem) {
+			        app.mobileApp.navigate('#components/activities/details.html?uid=' + e.dataItem.uid);
+			    } else {
+			        app.mobileApp.navigate('views.mapView.html');
+			    }
 
 			},
 			addClick: function () {

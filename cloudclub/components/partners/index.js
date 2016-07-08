@@ -161,7 +161,7 @@ app.home = kendo.observable({
 
 			},
 			addClick: function () {
-				app.mobileApp.navigate('#components/partners/add.html');
+			    app.mobileApp.navigate('#components/aboutView/view.html');
 			},
 			//kjhh
 			likeClick: function () {
@@ -327,7 +327,7 @@ app.home = kendo.observable({
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
 		if ((param === null || param === undefined) && e.view.params.partner) param = {
 			"field": "Place",
-			"operator": "contains",
+			"operator": "startsWith",
 			"value": e.view.params.partner
 		};
 		fetchFilteredData(param);

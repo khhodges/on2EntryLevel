@@ -56,7 +56,7 @@ app.on2tClients = (function () {
                     map: map,
                     position: position,
                     icon: {
-                        url: 'styles/images/icon.png',
+                        url: 'styles/images/on2see-icon-120x120.png',
                         anchor: new google.maps.Point(20, 38),
                         scaledSize: new google.maps.Size(40, 40)
                     }
