@@ -28,8 +28,6 @@
     <Content Include=".debug.abproject" />
     <Content Include=".release.abproject" />
     <Content Include="App_Resources\Android\xml\config.xml" />
-    <Content Include="bower_components\everlive\.bower.json" />
-    <Content Include="bower_components\everlive\.gitattributes" />
     <Content Include="bower_components\everlive\min\everlive.all.map" />
     <Content Include="bower_components\everlive\min\everlive.all.min.js" />
     <Content Include="bower_components\everlive\src\everlive.all.js" />
@@ -48,7 +46,6 @@
     <Content Include="components\notifications\index.js" />
     <Content Include="components\notifications\view.html" />
     <Content Include="components\partners\add.html" />
-    <Content Include="components\partners\assets\Tim Finnegans Irish Pub.pdf" />
     <Content Include="components\partners\details.html" />
     <Content Include="components\partners\index.js" />
     <Content Include="components\partners\view.html" />
@@ -276,7 +273,6 @@
     <Folder Include="components\comments\" />
     <Folder Include="components\notifications\" />
     <Folder Include="components\partners\" />
-    <Folder Include="components\partners\assets\" />
     <Folder Include="dataProviders\" />
     <Folder Include="kendo\" />
     <Folder Include="kendo\js\" />
