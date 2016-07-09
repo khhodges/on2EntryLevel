@@ -286,19 +286,29 @@ app.activities = kendo.observable({
 	}
 
 	parent.set('onShow', function (e) {
-		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
-		if ((param === null || param === undefined) && e.view.params.ActivityText)
-		    param = {
-			    "field": "Title",
-			    "operator": "eq",
-			    "value": e.view.params.ActivityText
-		    };
-		//var query = new Everlive.Query();
-	    //query
-        //    .where()
-        //        .nearSphere('Location', [-80.0788709900011, 26.30422952323899], 15, 'km')
-        //        .eq('Text', e.view.params.ActivityText);
-		fetchFilteredData(param);
+	    if (app.isOnline()) {
+	        if (e.view.params.ActivityText) {
+	            app.mobileApp.navigate('views/activitiesView.html?activity=' + e.view.params.ActivityText);
+	        }
+	        else {
+	            app.mobileApp.navigate('views/activitiesView.html');
+	        }
+	    }
+	    else {
+	        var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
+	        if ((param === null || param === undefined) && e.view.params.ActivityText)
+	            param = {
+	                "field": "Title",
+	                "operator": "eq",
+	                "value": e.view.params.ActivityText
+	            };
+	        //var query = new Everlive.Query();
+	        //query
+	        //    .where()
+	        //        .nearSphere('Location', [-80.0788709900011, 26.30422952323899], 15, 'km')
+	        //        .eq('Text', e.view.params.ActivityText);
+	        fetchFilteredData(param);
+	    }
 	});
 })(app.activities);
 

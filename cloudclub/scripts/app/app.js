@@ -1,5 +1,5 @@
 function onPushNotificationReceived(e) {
-    alert(e.message, "On2T Notification");
+    alert( "On2See a Local Notification, " + e.message);
 };
 
 var app = (function (win) {
@@ -399,10 +399,21 @@ var app = (function (win) {
         broadcast: function () {
             console.log("Start Broadsact Message.");
             if (true) {
+				var activity = app.Activity.activity();
+                var notify = {
+                    "Message": activity.Text,
+                    "UseLocalTime": true,
+                    "Android": {
+                        "data": {
+                            "title": "Local Update",
+                            "message": activity.Text,
+                            "smallIcon": "iconcee24"
+                        }
+                    }
+                }
                 var activity = app.Activity.activity();
-                app.everlive.push.notifications.create({
-                    Message: activity.Text
-                },
+                app.everlive.push.notifications.create(
+                    notify,
                     function (data) {
                         var createdAt = app.formatDate(data.result.CreatedAt);
                         app.notify.showShortTop("Notification sent: " + createdAt);
