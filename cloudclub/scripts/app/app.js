@@ -398,20 +398,19 @@ var app = (function (win) {
 
         broadcast: function () {
             console.log("Start Broadsact Message.");
-            if (true) {
+            if (true) { //TO DO: check if notification activity exists to prevent second attempt
 				var activity = app.Activity.activity();
                 var notify = {
-                    "Message": activity.Text,
-                    "UseLocalTime": true,
-                    "Android": {
-                        "data": {
-                            "title": "Local Update",
-                            "message": activity.Text,
-                            "smallIcon": "iconcee24"
-                        }
-                    }
+                    "Message": activity.Text // upgrade required,
+                   // "UseLocalTime": true,
+                   // "Android": {
+                     //   "data": {
+                   //         "title": "Local Update",
+                   //         "message": activity.Text,
+                   //         "smallIcon": "iconcee24"
+                   //     }
+                   // }
                 }
-                var activity = app.Activity.activity();
                 app.everlive.push.notifications.create(
                     notify,
                     function (data) {
