@@ -6,38 +6,16 @@
 
             <a data-role="backbutton" data-align="left">Back</a>
 
-			<a id="saveButton" class="nav-button disabled" data-align="right" data-role="button" data-click="app.Update.update" >Save</a>
+            <a id="saveButton" class="nav-button disabled" data-align="right" data-role="button" data-click="app.Update.update">Save</a>
 		</div>
 	</div>
 	<form id="update">
 		<ul id="update-form" data-role="listview" data-style="inset">
-			<li>
-				<label>
-					Name:
-					<input type="text" id="updateName" data-bind="value: DisplayName" enabled="false" required>
-				</label>
-			</li>
-			<li>
-				<label>
-					Joined:
-					<input type="date" id="updateBirthDatePicker" data-bind="value: BirthDate">
-				</label>
-			</li>
-			<li class="select-wrp">
-				<label>
-					Gender:
-					<select id="updateGenderPicker" data-bind="value: Gender" onchange="app.Update.onSelectChange(this)">
-						<option value="0" selected>Include your gender</option>
-						<option value="1">Male</option>
-						<option value="2">Female</option>
-					</select>
-				</label>
-			</li>
-			<li class="txtarea-wrp">
+			<!--<li class="txtarea-wrp">
 				<label>
 					Notes: <textarea id="updateInfo" data-bind="value: About" placeholder="Add your own note."></textarea>
 				</label>
-			</li>
+			</li>-->
 			<li>
 
 				<table >
@@ -50,7 +28,7 @@
 
 							</div>
 							<div hidden>
-								<img id="updateImage" data-bind="attr: { src: aPictureUrl}" width="100px" onload="app.Update.crop()">
+								<img id="updateImage" data-bind="attr: { src: aPictureUrl}" width="100px" onload="app.Update.crop()"
 							</div>
 						</td>
 						<td >
@@ -68,10 +46,32 @@
 				</div>
 			
 			</li>
-
+            <li>
+                <label>
+                    Joined:
+                    <input type="date" id="updateBirthDatePicker" data-bind="value: BirthDate">
+                </label>
+            </li>
+            <li class="select-wrp">
+                <label>
+                    Gender:
+                    <select id="updateGenderPicker" data-bind="value: Gender" onchange="app.Update.onSelectChange(this)">
+                        <option value="0" selected>Include your gender</option>
+                        <option value="1">Male</option>
+                        <option value="2">Female</option>
+                    </select>
+                </label>
+            </li>
+            <li>
+                <a class="btn" data-role="button" data-click="app.Update.showImage" style="margin: 20px; padding:10px">
+                    Auto Blog Share is "ON"
+                </a>
+            </li>
+            <li>                
+                    <a class="btn" data-role="button" data-click="app.Update.showImage" style="margin: 20px; padding:10px">
+                        Auto Remember Me is "ON"
+                    </a>                
+            </li>
 		</ul>
-	</form><!--
-	<div id="updateBtnWrp" class="update-btn-wrp disabled">
-	<a class="btn btn-update" data-role="button" data-bind="click: update">Save to Update</a>
-	</div>-->
+	</form>
 </div>

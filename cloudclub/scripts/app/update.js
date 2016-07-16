@@ -76,10 +76,10 @@ app.Update = (function () {
 		    }
 
 			updateImage = document.getElementById("updateImage");
-			picture = document.getElementById("picture");
+			picture = document.getElementById("updateImage");
 			$updateForm = $('#update');
 			$formFields = $updateForm.find('input, textarea, select');
-			$updateInfo = $('#updateInfo');
+			//$updateInfo = $('#updateInfo');
 			var $saveButton = $('#saveButton');
 			validator = $updateForm.kendoValidator({ validateOnBlur: false }).data('kendoValidator');
 
@@ -91,7 +91,7 @@ app.Update = (function () {
 				}
 			});
 
-			$updateInfo.on('keydown', app.helper.autoSizeTextarea);
+			//$updateInfo.on('keydown', app.helper.autoSizeTextarea);
 		}
 
 		// Executed after show of the update view
@@ -108,7 +108,7 @@ app.Update = (function () {
 		        return;
 		    }
 		    analytics.TrackFeature('Update.Show');
-			$updateInfo.prop('rows', 1);
+			//$updateInfo.prop('rows', 1);
 
 			dataSource = kendo.observable({
 											  Username: app.Users.currentUser.data.Username,
