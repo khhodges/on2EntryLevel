@@ -73,6 +73,7 @@
     <Content Include="scripts\app\comments.js" />
     <Content Include="scripts\app\common.js" />
     <Content Include="scripts\app\identity-provider.js" />
+    <Content Include="scripts\app\listTemplate.js" />
     <Content Include="scripts\app\local.js" />
     <Content Include="scripts\app\login.js" />
     <Content Include="scripts\app\map.js" />

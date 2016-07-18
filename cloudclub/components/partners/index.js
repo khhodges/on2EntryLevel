@@ -35,7 +35,7 @@ app.home = kendo.observable({
 		},
 		processImage = function (img) {
 		    if (!img) {
-		        img = 'data:image/png;base64,' + appSettings.Strings[2].bavatar;
+		        img = 'data:image/png;base64,' + appSettings.bavatar;
 		    } else
 		        if (img.slice(0, 4) !== 'http' &&
                     img.slice(0, 2) !== '//' && img.slice(0, 5) !== 'data:') {
