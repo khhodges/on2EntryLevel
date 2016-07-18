@@ -105,14 +105,14 @@ app.Signup = (function () {
         // init form validator
         var init = function () {
             //unregister device
-            var el = new Everlive(appSettings.everlive.appId);
-            el.push.unregister(function () {
-                app.notify.showShortTop("Success! You unregistered event notifications.");
-                console.log("Success! You will not receive local event notifications.");
-            }, function (err) {
-                app.notify.showShortTop("UnRegister Device: " + err.message);
-                console.log("UnRegister Device: " + err.message);
-            });
+            //var el = new Everlive(appSettings.everlive.appId);
+            //el.push.unregister(function () {
+            //    app.notify.showShortTop("Success! You unregistered event notifications.");
+            //    console.log("Success! You will not receive local event notifications.");
+            //}, function (err) {
+            //    app.notify.showShortTop("UnRegister Device: " + err.message);
+            //    console.log("UnRegister Device: " + err.message);
+            //});
             // Get a reference to our touch-sensitive element
             touchzone = document.getElementById("touchzone");
             avatarImage = document.getElementById("avatarImage");

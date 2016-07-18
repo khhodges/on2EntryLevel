@@ -52,8 +52,15 @@ app.Login = (function () {
         };
 
         var show = function () {
-            $loginUsername.val('');
-            $loginPassword.val('');
+            if (localStorage.getItem("access_token") && (localStorage.getItem("access_token").length >10))
+            {
+                $loginUsername.val(localStorage.getItem("username"));
+                //TO DO: test for remember_me in local storage
+                $loginPassword.val(localStorage.getItem("password"));
+            }else{
+                $loginUsername.val('');
+                $loginPassword.val('');
+            }
         };
 
         // Authenticate to use Backend Services as a particular user
@@ -66,7 +73,10 @@ app.Login = (function () {
 
             // Authenticate using the username and password
             app.everlive.Users.login(username.trim(), password)
-            .then(function () {
+            .then(function (result) {
+                localStorage.setItem("access_token", result.result.access_token);
+                localStorage.setItem("username", username);
+                localStorage.setItem("password", password);
                 // EQATEC analytics monitor - track login type
                 if (isAnalytics && !app.helper.checkSimulator()) {
                     analytics.TrackFeature('Login.Regular');

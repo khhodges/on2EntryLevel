@@ -8,11 +8,7 @@ app.Places = (function () {
     'use strict'
     var infoWindow, markers, place, result, service, here, request, position, lat1, lng1, allBounds, near, theZoom = 12, service, allPartners, myAddress,
 		infoContent;
-    var HEAD = appSettings.Strings[0].HEAD;
-    //+ '<div class="button-group button-group-horizontal">'
-    //+ '<a data-role="button" class="butn" data-rel="external" onclick="test(\'https://www.groupon.com/browse?lat=26.44&lng=-80.07\');"><img src="styles/images/groupon.png" alt="groupon" height="auto" width="15%"></a><img src="styles/images/star3.png" alt="Star3" height="auto" width="15%"></div>';
-    //+ '<div class="iw-bottom-gradient"></div>';
-    //<table ${visibility} style="width:100%; margin-top:15px"><tr style="width:100%"><td style="width:50%"><a data-role="button" class="btn-continue km-widget km-button" href="components/activities/view.html?partner=Name">See the Details</a></td></tr></table>
+    var HEAD = appSettings.HEAD;
     /**
      * The Google Map CenterControl adds a control to the map that recenters the map on
      * current location.
@@ -51,6 +47,8 @@ app.Places = (function () {
     }
     //Places Model loads the known places 
     //TO DO: Filter by 70 mile region and refresh when locatio changes
+
+
     var placesViewModel = (function () {
         var map, geocoder, locality, home
         var placeModel = {
@@ -125,19 +123,15 @@ app.Places = (function () {
             products: viewModelSearch.products,
             selectedProduct: viewModelSearch.selectedProduct,
             locatedAtFormatted: function (marker, text, html, address, name, url, phone, icon) {
-                // test for geopoint as a string and convert string to geopoint
+                 //test for geopoint as a string and convert string to geopoint
                 if (marker.length != undefined) {
                     if (marker.length > 15) {
-                        var lat = parseFloat(marker.split(',')[0].split(':')[1].trim());
-                        var lng = parseFloat(marker.split(',')[1].split(':')[1].trim());
-                        marker = {
-                            latitude: lat,
-                            longitude: lng
-                        };
+                        app.showAlert('Marker Error' + marker);
                     }
                 }
                 marker.lat = marker.latitude;
                 marker.lng = marker.longitude;
+
                 var place = {
                     details: {
                         website: url,
@@ -188,7 +182,7 @@ app.Places = (function () {
                         place.markerUrl = place.avatar;
                         place.zIndex = 10;
                     }
-                    
+
                     try {
                         //app.Places.locationViewModel.addMarker(place);
                         marker.Mark = new google.maps.Marker({
@@ -202,9 +196,11 @@ app.Places = (function () {
                                 title: viewModelSearch.selectedProduct
                             }
                         });
+                        //Partners InfoWindow PopUp
                         google.maps.event.addListener(marker.Mark, 'click', function () {
-                            infoWindow.setContent(htmlString);                            
+                            infoWindow.setContent(htmlString);
                             infoWindow.open(map, marker.Mark);
+                            app.Places.visiting = place;
                         });
 
                     } catch (e) {
@@ -250,9 +246,9 @@ app.Places = (function () {
                 for (var i = 0; i < markers.length; i++) {
                     markers[i].setMap(null);
                 }
-                markers = [];
-                app.Places.locationViewModel.markers = new Array;
-                app.Places.locationViewModel.details = new Array;
+                //markers = [];
+                //app.Places.locationViewModel.markers = new Array;
+                //app.Places.locationViewModel.details = new Array;
                 navigator.geolocation.getCurrentPosition(
 					function (position) {
 					    home = position;
@@ -265,13 +261,20 @@ app.Places = (function () {
 					    lng1 = position.lng();
 					    that._isLoading = false;
 					    that.toggleLoading();
+
+					    var query = new Everlive.Query();
+					    query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 20, 'miles').ne('Icon', 'styles/images/avatar.png');
+					    
 					    var partners = app.everlive.data('Places');
-					    partners.get().then(function (data) {
+					    partners.get(query).then(function (data) {
 					        allPartners = data.result;
 					        app.Places.locationViewModel.allPartners = allPartners;
 					        for (var i = 0; i < data.count; i++) {
 					            var partner = allPartners[i];
-					            app.Places.locationViewModel.locatedAtFormatted(partner.Location, partner.Description, partner.Html, partner.Address, partner.Place, partner.Website, partner.Phone, partner.Icon);
+					            if (partner.Icon != "styles/images/avatar.png") {
+					                app.Places.locationViewModel.locatedAtFormatted(partner.Location, partner.Description, partner.Html, partner.Address, partner.Place, partner.Website, partner.Phone, partner.Icon);
+                                    //get details and add to details
+					            }
 					            if (partner.Place === "Home") {
 					                app.Places.locationViewModel.home = partner;
 					                //map.pan(partner.Location)
@@ -407,6 +410,10 @@ app.Places = (function () {
                     place.markerUrl = 'http://laverre.com/ys-x6/soft/YS-X6-PC-150413/html/greencircle.png'; //'http://maps.gstatic.com/mapfiles/circle.png';
                     if (place.rating < 3.5) place.markerUrl = 'http://laverre.com/ys-x6/soft/YS-X6-PC-150413/html/redcircle.png';
                     if (place.rating > 4.2) place.markerUrl = 'http://laverre.com/ys-x6/soft/YS-X6-PC-150413/html/orangecircle.png';
+                    if (place.rating === 5.0) {
+                        place.markerUrl = place.avatar;
+                        place.zIndex = 10;
+                    }
                 }
 
                 var marker = new google.maps.Marker({
@@ -425,7 +432,7 @@ app.Places = (function () {
                 allBounds.extend(marker.position);
                 //now fit the map to the newly inclusive bounds
                 map.fitBounds(allBounds);
-
+                //Search InfoWindow Popup
                 google.maps.event.addListener(marker, 'click', function () {
                     service.getDetails(place, function (result, status) {
                         if (status !== google.maps.places.PlacesServiceStatus.OK) {
@@ -433,6 +440,8 @@ app.Places = (function () {
                             return;
                         }
                         place.details = result;
+                        app.Places.visiting = place;
+
                         place.openString = "Closed, ";
                         if (place.opening_hours) {
                             if (place.opening_hours.open_now) {
@@ -531,6 +540,7 @@ app.Places = (function () {
                     draggable: false,
                     zIndex: -1
                 });
+                //Center InfoWindow PopUp
                 google.maps.event.addListener(that._lastMarker, 'click', function () {
                     infoWindow.setContent(that.currentLocation(that._lastMarker));
                     map.setZoom(18);
@@ -577,7 +587,7 @@ app.Places = (function () {
             places: placesDataSource,
             getButtons: function (place) {//url,icon,phone,name,address) {
                 var Stars = 3;
-                var htmlString = HEAD;
+                var htmlString = appSettings.HEAD;
                 htmlString = htmlString.replace('WebSite', place.details.website).replace('Icon', place.avatar).replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('%Name%', place.name).replace('%Name%', place.name).replace("Address", place.details.formatted_address);
                 htmlString = htmlString.replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('Open', place.openString).replace('Stars', place.starString);
                 htmlString = htmlString.replace('UrlString', place.addurl);
@@ -664,15 +674,6 @@ app.Places = (function () {
                 streetView = map.getStreetView();
             },
             show: function () {
-                //navigator.geolocation.getCurrentPosition(function (position) {
-                //    position = position;
-                //}, function (error) {
-                //    app.notify.showShortTop('code: ' + error.code + '<br/>' +
-                //		 'message: ' + error.message + '<br/>');
-                //}, {
-                //    enableHighAccuracy: true,
-                //    timeout: 10000
-                //});
                 if (app.isNullOrEmpty(app.Places.locationViewModel) || !app.Places.locationViewModel.get("isGoogleMapsInitialized")) {
                     app.Places.locationViewModel = new LocationViewModel();
                     //TO DO: Clean up map locations
@@ -688,8 +689,27 @@ app.Places = (function () {
             },
             locationViewModel: new LocationViewModel(),
             listShow: function () {
+                var urlString = encodeURIComponent('{"Location": {"nearSphere": {"longitude":' + app.cdr.longitude + ', "latitude": ' + app.cdr.latitude + '},"maxDistanceInKilometers": ' + app.cdr.distance + '}}');
                 if (app.Places.locationViewModel.details.length < 1) {
-                    app.mobileApp.navigate("components/partners/view.html");
+                    //app.mobileApp.navigate("components/partners/view.html?filter=" + urlString)
+                    //var el = new Everlive(appSettings.everlive);
+                    //var query = new Everlive.Query();
+                    //query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 20, 'miles').ne('Icon', 'styles/images/avatar.png');
+                    //var data = el.data('Places');
+                    //data.get(query)
+                    //    .then(function (data) {
+                    var data = app.Places.locationViewModel.allPartners;
+                    //        app.Places.locationViewModel.localPartners = data.result
+                            $("#places-listview").kendoMobileListView({
+                                dataSource: data,
+                                template: '<div>#: Place #</div>', //app.templateFactory.listString(),
+                                //template2:'<div >#: Place #<br /> <small>#: Address # </small><p><a href="components/activities/view.html?partner=#: Place #"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="12%" style="padding:2px"></a><a href="UrlString"><img src="styles/images/thumb_up.png" alt="On2See" height="auto" width="12%" style="padding:2px"></a><a href="components/notifications/view.html?partner=#: Place #");"><img src="styles/images/green-share.png" alt="On2See" height="auto" width="12%" style="padding:2px"></a><a onclick="app.Places.browse(\'https://www.google.com/maps/place/#: Place #\');"><img src="styles/images/googleMap.png" alt="Google" height="auto" width="12%" style="padding:2px"></a><a  data-rel="external" onclick="app.Places.browse(\'https://twitter.com/search?q=#: Place #\');"><img src="styles/images/twitter.png" alt="Twitter" height="auto" width="12%" style="padding:2px"></a><a  data-rel="external" onclick="app.Places.browse(\'https://www.yelp.com/biz/#: Place #\');"><img src="styles/images/yelp_64.png" alt="Yelp" height="auto" width="12%" style="padding:2px"></a><a data-rel="external" onclick="app.Places.browse(\'https://www.facebook.com/#: Place #\');"><img src="styles/images/facebook2.png" alt="Facebook" height="auto" width="12%" style="padding:2px"></a><a  data-rel="external" onclick="app.Places.browse(\' #: Website # \')"><img src="#: Icon #" alt="Logo" height="auto" width="12%"></a></p></div>'
+                            })
+
+                    //    },
+                    //    function (error) {
+                    //        app.showAlert(JSON.stringify(error));
+                    //    });
                 }
                 else {
                     //var price = '$$$$$'.substring(1, app.Places.locationViewModel.details.price_level);
@@ -719,7 +739,25 @@ app.Places = (function () {
             },
             near: function (callBack) {
                 app.notify.getLocation(function (x) { callBack(x) });
+            },
+            browse: function (url) {
+            if (url === null || url === undefined || url.length < 10) {
+                app.notify.showShortTop(url + " the client data is missing preventing service connection!");
+            } else {
+                //var http = new XMLHttpRequest();
+                //http.open("HEAD", url, false);
+                //http.send();
+                //if (http.status != 404) {
+                app.notify.showShortTop("Url.Map Search " + url);
+                var ref = window.open(url, "_blank", "location=yes");
+                ref.addEventListener("loaderror", iabLoadError);
+                ref.addEventListener("exit", iabClose);
+                //}
+                //else {
+                //    app.notify.showShortTop("404 mesage, the request is unavailable!");
+                //}
             }
+        }
         };
     }());
     return placesViewModel;
