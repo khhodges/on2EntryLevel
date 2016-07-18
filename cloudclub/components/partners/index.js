@@ -35,7 +35,7 @@ app.home = kendo.observable({
 		},
 		processImage = function (img) {
 		    if (!img) {
-		        img = 'data:image/png;base64,' + appSettings.bavatar;
+		        img = 'data:image/png;base64,' + appSettings.Strings[2].bavatar;
 		    } else
 		        if (img.slice(0, 4) !== 'http' &&
                     img.slice(0, 2) !== '//' && img.slice(0, 5) !== 'data:') {
@@ -294,8 +294,6 @@ app.home = kendo.observable({
     }
 
     parent.set('onShow', function (e) {
-        var param = e.view.params.filter ? JSON.parse(decodeURIComponent(e.view.params.filter)) : null;
-        //app.showAlert(param);
         if (e.view.params.partner) {
             param = {
                 "field": "Place",
@@ -303,6 +301,8 @@ app.home = kendo.observable({
                 "value": e.view.params.partner
             }
         };
+        //var param = e.view.params.filter ? JSON.parse(decodeURIComponent(e.view.params.filter)) : null;
+        //app.showAlert(param);
 
             fetchFilteredData(param);
         });
