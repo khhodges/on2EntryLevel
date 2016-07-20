@@ -462,9 +462,11 @@ app.Places = (function () {
                 //now fit the map to the newly inclusive bounds
                 map.fitBounds(allBounds);
                 //Search InfoWindow Popup
-                google.maps.event.addListener(marker, 'click', function () {
+                google.maps.event.addListener(marker, 'click',
+                    function () {
                 	app.showAlert(JSON.stringify(place));
-                    service.getDetails(place, function (result, status) {
+                	service.getDetails(place,
+                        function (result, status) {
                         if (status !== google.maps.places.PlacesServiceStatus.OK) {
                             console.error(status);
                             return;
