@@ -65,12 +65,27 @@ var app = (function (win) {
 
 	var onDeviceReady = function () {
 		// Handle "backbutton" event
-	    document.addEventListener('backbutton', onBackKeyDown, false);
-	    app.notify.getLocation(function (crd) {
-	        app.cdr = crd;
-	        var zoom = 15;
-	        app.cdr.distance = (21-zoom)*2;
-	    });
+		document.addEventListener('backbutton', onBackKeyDown, false);
+		app.notify.getLocation(function (crd) {
+				app.cdr = crd;
+				var zoom = 15;
+				app.cdr.distance = (21 - zoom) * 2;
+				localStorage.setItem("cdr", app.cdr.latitude + ":" + app.cdr.longitude);
+			},
+			function (error) {
+				//default map coordinates
+				//app.notify.showShortTop("Map.Unable to determine current location. Cannot connect to GPS satellite.");
+				if (localStorage.getItem("cdr")) {
+				    var lscdr = localStorage.getItem("cdr").split(':');
+				    app.cdr.latitude = lscdr[0];
+				    app.cdr.longitude = lscdr[1];
+				} else {
+					app.cdr = new google.maps.LatLng(0, -20);
+				}
+			}, {
+				timeout: 10000,
+				enableHighAccuracy: true
+			});
 		if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
 			$('.ui-header > *').css('margin-top', function (index, curValue) {
 				return parseInt(curValue, 10) + 0 + 'px';
@@ -679,7 +694,7 @@ var app = (function (win) {
 	return {
 		data: {},
 		showAlert: showAlert,
-        cdr: cdr,
+		cdr: cdr,
 		showError: showError,
 		showConfirm: showConfirm,
 		isKeySet: isKeySet,
@@ -696,26 +711,31 @@ var app = (function (win) {
 			return app.Users.isOnline();
 		},
 		welcome: function () {
-		    var action = document.getElementById("setupBtn");
+			var action = document.getElementById("setupBtn");
 			if (app.isOnline()) {
-			    document.getElementById("introduction").innerText = "Hello " + app.Users.currentUser.data.displayName;
-			    action.addEventListener("click", function () { app.mobileApp.navigate("views/updateView.html") });
-			    //button text Setting
-			    action.innerText = "Settings";
+				document.getElementById("introduction").innerText = "Hello " + app.Users.currentUser.data.displayName;
+				action.addEventListener("click", function () {
+					app.mobileApp.navigate("views/updateView.html")
+				});
+				//button text Setting
+				action.innerText = "Settings";
 
 			}
-			if(localStorage.getItem("access_token"))
-			{
-			    document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username");
-			    action.addEventListener("click", function () { app.mobileApp.navigate("#welcome") });
-			    //button text Logon
-			    document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username");
-			    action.innerText = "Logon";
+			if (localStorage.getItem("access_token")) {
+				document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username");
+				action.addEventListener("click", function () {
+					app.mobileApp.navigate("#welcome")
+				});
+				//button text Logon
+				document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username");
+				action.innerText = "Logon";
 
-			}else{				
-			    action.addEventListener("click", function () { app.mobileApp.navigate("views/signupView.html") });
-			    //button text register
-			    action.innerText = "Register";
+			} else {
+				action.addEventListener("click", function () {
+					app.mobileApp.navigate("views/signupView.html")
+				});
+				//button text register
+				action.innerText = "Register";
 
 			}
 		}

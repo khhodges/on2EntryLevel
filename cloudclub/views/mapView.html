@@ -3,10 +3,12 @@
      data-role="view"
      data-title="Location"
      data-init="app.Places.initLocation"
+     
      data-show="app.Places.show"
      data-hide="app.Places.hide"
      data-model="app.Places.locationViewModel"
      data-stretch="true">
+     
         <script>
             var ref;
 
@@ -53,7 +55,6 @@
                 <a data-role="button" data-align="left" data-icon="globe" href="views/listView.html"></a>
             </div>
         </div>
-
         <div id="map-canvas" class="map" data-bind="visible: isGoogleMapsInitialized" ></div>
 
         <div id="no-map" data-bind="invisible: isGoogleMapsInitialized">
