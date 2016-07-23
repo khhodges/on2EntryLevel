@@ -77,7 +77,7 @@
     <Content Include="scripts\app\local.js" />
     <Content Include="scripts\app\login.js" />
     <Content Include="scripts\app\map.js" />
-    <Content Include="scripts\app\placeMap.js" />
+    <Content Include="scripts\app\placeMap1.js" />
     <Content Include="scripts\app\places.js" />
     <Content Include="scripts\app\pushFactory.js" />
     <Content Include="scripts\app\settings.js" />
@@ -87,6 +87,7 @@
     <Content Include="scripts\app\users.js" />
     <Content Include="scripts\js\on2tmap.js" />
     <Content Include="scripts\js\on2tmap2.js" />
+    <Content Include="scripts\app\placeMap.js" />
     <Content Include="styles\images\avatar.png" />
     <Content Include="styles\images\background-picture.png" />
     <Content Include="styles\images\camera.png" />

@@ -54,10 +54,7 @@ app.aPlace = (function () {
             function (error) {
                 app.showAlert(JSON.stringify(error))
             });
-            var stringBuilder = function (place) {
-                var elements = {'<div><strong>',place.name,'</strong><br>','Phone: ',place.formatted_phone_number,'<br> Address: ':place.formatted_address,'<br> Open: ':place.opening_hours.open_now, '<br>':null,'</div>':null}
-                return                                            
+            var stringBuilder =  '<div><strong>'+place.name+'</strong><br>Phone: '+place.formatted_phone_number+'<br> Address: '+place.formatted_address+'<br> Open: '+place.opening_hours.open_now+ '<br></div>';
             }
         }
-    }
-}());
+    }());
