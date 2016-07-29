@@ -7,21 +7,28 @@ var app = app || {};
 
 app.Activities = (function () {
 	'use strict'
-	var $enterEvent, $newEventText, validator, selected, $baseImage;
+	var $enterEvent, $activityTitle, $newEventText, validator, selected, $baseImage;
 	var init = function () {
 		validator = $('#enterEvent').kendoValidator().data('kendoValidator');
 		$enterEvent = $('#enterEvent');
 		$newEventText = $('#newEventText');
+		$activityTitle = $('#activityTitle');
 		$newEventText.on('keydown', app.helper.autoSizeTextarea);
 		validator.hideMessages();
 		//$(document.body).css("visibility", "visible");
 	};
 
-	//var show = function () {
-	//    if (!app.isOnline()) {
-	//        app.mobileApp.navigate('#welcome');
-	//    }
-	//};
+	var show = function (e) {
+	    //if (!app.Places.visiting) app.Places.visiting = app.Places.home;
+	    var theName = "My Private Feed";
+            if(app.Places.visiting.name){
+	         theName = app.Places.visiting.name}
+	    document.getElementById('activityTitle').innerText = app.Users.currentUser.data.DisplayName + ' about ' + theName;
+	    if (app.Places.locationViewModel.myCamera === 'ON') {
+	        app.Places.locationViewModel.myCamera = 'OFF';
+	        app.Activities.addActivity();
+	    }
+	};
 	// Activities model
 	var activitiesModel = (function () {
 		var activityModel = {
@@ -65,8 +72,16 @@ app.Activities = (function () {
 					defaultValue: null
 				},
 				Value: {
-					fields: 'Value',
-					defaultValue: 0
+				    fields: 'Value',
+				    defaultValue: 0
+				},
+				Start: {
+				    fields: 'StartDate',
+				    defaultValue: new Date()
+				},
+				End: {
+				    fields: 'EndDate',
+				    defaultValue: new Date()
 				},
 				/*Id  Identifier
 				//CreatedAt  DateTime
@@ -87,7 +102,10 @@ app.Activities = (function () {
 				//Value  Number*/
 			},
 			CreatedAtFormatted: function () {
-				return app.helper.formatDate(this.get('CreatedAt'));
+			    return app.helper.formatDate(this.get('CreatedAt'));
+			},
+			DateFormatted: function (date) {
+			    return app.helper.formatDate(date);
 			},
 
 			LikesCount: function () {
@@ -220,7 +238,7 @@ app.Activities = (function () {
 		}
 		var saveActivity = function () {
 			// Validating of the required fields
-			if (validator.validate()) {
+		    if (validator.validate()) {
 				$enterEvent.style.display = 'none';
 				// Adding new comment to Comments model
 				var activities = app.Activities.activities;
@@ -228,8 +246,7 @@ app.Activities = (function () {
 				activity.Text = $newEventText.val();
 				$newEventText.Val = "";
 				activity.UserId = app.Users.currentUser.get('data').Id;
-				document.getElementById('addButton').innerText = "Add Event";
-				app.mobileApp.showLoading();
+				document.getElementById('addButton').innerText = "Post";
 				activities.sync();
 				app.mobileApp.hideLoading();
 			}
@@ -255,9 +272,11 @@ app.Activities = (function () {
 						var activities = app.Activities.activities;
 						var activity = activities.add();
 						activity.Text = document.getElementById('newEventText').value;
+
 						activity.UserId = app.Users.currentUser.get('data').Id;
 						activity.Picture = selected;
-						activity.Title = app.Users.currentUser.get('data').DisplayName;
+						activity.Title = "My Private Feed";//app.Users.currentUser.get('data').DisplayName;
+						if (app.Places.visiting.name) activity.Title = app.Places.visiting.name;
 						navigator.geolocation.getCurrentPosition(
 							function (position) {
 								activity.Location = {
@@ -267,7 +286,7 @@ app.Activities = (function () {
 								activities.sync();
 								$enterEvent.style.display = 'none';
 								validator.hideMessages();
-								document.getElementById('addButton').innerText = "Add Event";
+								document.getElementById('addButton').innerText = "Post";
 								document.getElementById('newEventText').value = "";
 								document.getElementById('picture').src = "styles/images/default-image.jpg";
 								app.mobileApp.hideLoading();
@@ -289,7 +308,7 @@ app.Activities = (function () {
 			if ($enterEvent.style.display === 'block') {
 				$enterEvent.style.display = 'none';
 				validator.hideMessages();
-				document.getElementById('addButton').innerText = "Add Event";
+				document.getElementById('addButton').innerText = "Post";
 				document.getElementById('newEventText').value = "";
 				document.getElementById('picture').src = "styles/images/default-image.jpg";
 			} else {
@@ -306,30 +325,43 @@ app.Activities = (function () {
 			app.notify.showShortTop("No selection was detected.");
 			$enterEvent.style.display = 'none';
 			validator.hideMessages();
-			document.getElementById('addButton').innerText = "Add Event";
+			document.getElementById('addButton').innerText = "Post";
 			document.getElementById('newEventText').value = "";
 		};
-		var pickImage = function (e) {
+		var takePicture = function () {
+		    navigator.camera.getPicture(success, error, {
+		        //kjhh best result including iphone rotation
+		        quality: 100,
+		        destinationType: navigator.camera.DestinationType.FILE_URI,
+		        sourceType: navigator.camera.PictureSourceType.CAMERA,
+		        encodingType: navigator.camera.EncodingType.JPEG,
+		        correctOrientation: true
+		    })
+		};
+		var pickImage = function () {
 			if (app.isOnline()) {
-				$enterEvent = document.getElementById('enterEvent');
+			    $enterEvent = document.getElementById('enterEvent');
 				app.mobileApp.navigate('#view-all-activities');
 				if ($enterEvent.style.display === 'block') {
 					$enterEvent.style.display = 'none';
 					validator.hideMessages();
-					document.getElementById('addButton').innerText = "Add Event";
+					document.getElementById('addButton').innerText = "Post";
 					document.getElementById('newEventText').value = "";
 					document.getElementById('picture').src = "styles/images/default-image.jpg";
-				} else {
-					$enterEvent.style.display = 'block';
-					document.getElementById('addButton').innerText = "Cancel";
-					navigator.camera.getPicture(success, error, {
-						//kjhh best result including iphone rotation
-						quality: 100,
-						destinationType: navigator.camera.DestinationType.FILE_URI,
-						sourceType: navigator.camera.PictureSourceType.CAMERA,
-						encodingType: navigator.camera.EncodingType.JPEG,
-						correctOrientation: true
-					});
+				        } else {
+		            $enterEvent.style.display = 'block';
+		            document.getElementById('addButton').innerText = "Cancel";
+				    takePicture();
+					//$enterEvent.style.display = 'block';
+					//document.getElementById('addButton').innerText = "Cancel";
+					//navigator.camera.getPicture(success, error, {
+					//	//kjhh best result including iphone rotation
+					//	quality: 100,
+					//	destinationType: navigator.camera.DestinationType.FILE_URI,
+					//	sourceType: navigator.camera.PictureSourceType.CAMERA,
+					//	encodingType: navigator.camera.EncodingType.JPEG,
+					//	correctOrientation: true
+					//});
 				}
 			}
 		};
@@ -339,7 +371,7 @@ app.Activities = (function () {
 			activitySelected: activitySelected,
 			addActivity: pickImage,
 			saveActivity: saveImageActivity,
-			//  show: show,
+			show: show,
 			crop: crop
 		};
 	}());

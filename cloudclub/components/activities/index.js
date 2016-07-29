@@ -128,7 +128,7 @@ app.activities = kendo.observable({
 
 				if (searchVal) {
 					searchFilter = {
-						field: 'UserId.DisplayName',
+						field: 'Text',
 						operator: 'contains',
 						value: searchVal
 					};

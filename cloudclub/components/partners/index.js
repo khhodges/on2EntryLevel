@@ -114,6 +114,14 @@ app.home = kendo.observable({
 		                    field: 'Address',
 		                    defaultValue: ''
 		                },
+		                'City': {
+		                    field: 'City',
+		                    defaultValue: ''
+		                },
+		                'Zipcode': {
+		                    field: 'Zipcode',
+		                    defaultValue: ''
+		                },
 		                'Image': {
 		                    field: 'Image',
 		                    defaultValue: ''
@@ -223,7 +231,8 @@ app.home = kendo.observable({
                 icon: e.view.params.icon,
                 address: e.view.params.address,
                 tel: e.view.params.tel,
-
+                city: e.view.params.city,
+                zipcode: e.params.zipcode
             });
         },
         onSaveClick: function (e) {
@@ -294,6 +303,7 @@ app.home = kendo.observable({
     }
 
     parent.set('onShow', function (e) {
+        var param = e.view.params.filter ? JSON.parse(decodeURIComponent(e.view.params.filter)) : null;
         if (e.view.params.partner) {
             param = {
                 "field": "Place",
@@ -301,7 +311,7 @@ app.home = kendo.observable({
                 "value": e.view.params.partner
             }
         };
-        //var param = e.view.params.filter ? JSON.parse(decodeURIComponent(e.view.params.filter)) : null;
+        //
         //app.showAlert(param);
 
             fetchFilteredData(param);
