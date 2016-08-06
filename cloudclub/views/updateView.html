@@ -1,12 +1,12 @@
 <div data-role="view" id="update" data-layout="default" class="update-view" data-model="app.Update" data-init="app.Update.init" data-show="app.Update.show" data-hide="app.Update.hide">
 	<div data-role="header">
 		<div data-role="navbar">
-			Account
+			Me
 			<!--<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button" ></a>-->
 
             <a data-role="backbutton" data-align="left">Back</a>
-
-            <a id="saveButton" class="nav-button disabled" data-align="right" data-role="button" data-click="app.Update.update">Save</a>
+			<a id="logoffButton" style="display:" data-role="button" data-click="app.helper.logout" data-align="right">Logout</a>
+            <a id="saveButton" style="display: none" data-align="left" data-role="button" data-click="app.Update.update">Save</a>
 		</div>
 	</div>
 	<form id="update">

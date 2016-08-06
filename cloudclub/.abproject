@@ -10,7 +10,7 @@
   "CorePlugins": [
     "com.phonegap.plugins.PushPlugin@3.2.0",
     "com.telerik.feedback@2.0.2",
-    "com.telerik.plugin.telerikanalytics@3.3.0",
+    "com.telerik.plugin.telerikanalytics@3.4.1",
     "cordova-plugin-camera",
     "cordova-plugin-contacts",
     "cordova-plugin-device",
@@ -66,6 +66,11 @@
       "API_KEY": "3t5oa8il0d0y02eq",
       "API_URL": "https://platform.telerik.com/feedback/api/v1",
       "ENABLE_SHAKE": "True"
+    },
+    "com.telerik.plugin.telerikanalytics": {
+      "AUTO_TRACK_KENDO_EVENTS": "True",
+      "AUTO_TRACK_EXCEPTIONS": "True",
+      "PRODUCT_ID": "ecfdcec2bb07416b861c4035fba82d31"
     }
   },
   "iOSDeploymentTarget": "6.0"

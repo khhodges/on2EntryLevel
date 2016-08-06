@@ -1,35 +1,34 @@
-<div data-role="view" id="view-all-activities" data-zoom="false" data-init="app.Activities.init" data-layout="default" class="activities-view" data-model="app.Activities" data-show="app.Activities.show">
+<div data-role="view" id="view-all-activities" data-zoom="false" data-init="app.Activities.init" data-layout="default" class="activities-view" data-show="app.Activities.show">
+     
     <div data-role="header">
         <div data-role="navbar" id="navbarTitle">
-            Local Updates
-
-            <a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button"></a>
-            <a id="addButton" class="nav-button" data-align="right" data-role="button" data-click="app.Activities.addActivity">Post</a>
+            Event Feed
+            <a data-role="button" href="views/mapView.html" data-align="left">Home</a>
+            <a id="addButton" data-align="right" data-role="button" data-click="app.Activities.addActivity">Post</a>
         </div>
     </div>
-    <div id="scroller">
-        <div hidden>
-            <p>Image to use:</p>
-            <img id="picture" src="styles/images/default-image.jpg" width="100%" onload="app.Activities.crop()">
-        </div>
-        <br />
-        <div id="enterEvent" class="share-form-wrp" data-role="listview" data-style="inset" style="display: none">
-            <div class="cf">
-                <div class="activity-content" >
-                    <p id="activityTitle"></p>
-                    <canvas id="canvas" width="250" height="250" style="border:1px solid #d3d3d3; padding:0px;top:0;bottom: 0;left: 0;right: 0;margin:auto;">
-                        Your browser does not support the HTML5 canvas tag.
-                    </canvas>
-                    <div class="cf">
-                        <div class="user-share">
-                            <textarea id="newEventText" style="background-color: azure;font-style: italic;" placeholder="What's the message to add?" required validationMessage="Comment text is required to describe your contribution!"></textarea>
-                            <a class="btn" data-align="right" data-role="button" data-bind="click: saveActivity" style="margin: 20px; padding:10px">Save this Event</a>
-                        </div>
+    <div hidden>
+        <p>Image to use:</p>
+        <img id="picture" src="styles/images/default-image.jpg" width="100%" onload="app.Activities.crop()">
+    </div>
+    <div id="enterEvent" class="share-form-wrp" data-role="listview" data-style="inset" style="display: none">
+        <div class="cf">
+            <div class="activity-content">
+                <p id="activityTitle"></p>
+                <canvas id="canvas" width="250" height="250" style="border:1px solid #d3d3d3; padding:0px;top:0;bottom: 0;left: 0;right: 0;margin:auto;">
+                    Your browser does not support the HTML5 canvas tag.
+                </canvas>
+                <div class="cf">
+                    <div class="user-share">
+                        <textarea id="newEventText" style="background-color: azure;font-style: italic;" placeholder="What's the message to add?" required validationMessage="Comment text is required to describe your contribution!"></textarea>
+                        <a class="btn" data-align="right" data-role="button" data-click="app.Activities.saveActivity" style="margin: 20px; padding:10px">Save this Event</a>
                     </div>
                 </div>
             </div>
         </div>
-        <ul id="activities-listview" data-style="inset" data-role="listview" data-template="activityTemplate" data-bind="source: activities"></ul>
+    </div>    
+    <div id="scroller">
+        <ul id="activities-listview" data-style="inset" data-role="listview" ></ul>
         <p id="no-activities-span" hidden="hidden" class="no-items-msg">
             <b>You have no posts yet.</b>
             <br>
@@ -38,40 +37,22 @@
     </div>
 </div>
 <!-- Activities ListView Template -->
-<script type="text/x-kendo-template" id="activityTemplate2">
-    <div>
-
-
-        <div class="cf">
-            <a data-role="touch" data-bind="events: { tap: activitySelected }">
-                <div data-bind="visible: Picture">
-                    <img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}" width="80%">
-                </div>
-            </a>
-            <span class="time-span" data-bind="text: CreatedAtFormatted()"></span>
-            <a class="user-share-txt">#: Text # </a>
-        </div>
-        <span class="time-span"><b>#: LikesCount() #</b></span>
-    </div>
-</script>
-
 <script type="text/x-kendo-template" id="activityTemplate">
-    <h3>#: Title #</h3>
-    <div class="user-avatar" data-role="touch" data-bind="events: { tap: addActivity }">
-        <div data-bind="style:{backgroundImage: User().urlPictureUrl}"></div>
-    </div>
-    <div class="activity-content">
-        
-        <h2 class="person-name"><small><i>#: User().DisplayName #</i></small></h2>
-        <div class="cf">
-            <a data-role="touch" data-bind="events: { tap: activitySelected }">
-                <div data-bind="visible: Picture">
-                    <img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}" width="80%">
-                </div>
-            </a>
-            <span class="time-span" data-bind="text: CreatedAtFormatted()"></span>
-            <a class="user-share-txt">#: Text # </a>
+    <div data-role="touch" data-tap="app.Activities.activitySelected">
+        <h3>#: Title #</h3>
+        <div class="user-avatar" data-role="touch">
+            <div style="background-image:#:User().urlPictureUrl#"></div>
         </div>
-        <span class="time-span"><b>#: LikesCount() #</b></span>
+        <div class="activity-content">
+            <h2 class="person-name"><small><i>#: User().DisplayName #</i></small></h2>
+            <div class="cf">
+                    <div>
+                        <img id="picture" class="picture" src="#:PictureUrl()#" width="80%">
+                    </div>
+                    <span class="time-span">#: CreatedAtFormatted()#></span>               
+                <a class="user-share-txt">#: Text # </a>
+            </div>
+            <span class="time-span"><b>#: LikesCount() #</b></span>
+        </div>
     </div>
 </script>

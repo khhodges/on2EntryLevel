@@ -9,9 +9,9 @@
 
             <span data-role="view-title" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;"></span>
 
-            <a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button"></a>
+            <!--<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button"></a>-->
 
-            <a data-role="backbutton" data-align="right">Back</a>
+            <a data-role="backbutton" data-align="left">Back</a>
 
             <!--<a data-role="button" data-align="right" data-bind="visible: isVisible; events: { click: activitiesModel.commentClick }">Comment</a>-->
         </div>
@@ -30,10 +30,11 @@
 
     <!-- END_CUSTOM_CODE_activitiesModel -->
     <script type="text/x-kendo-template" id="activitiesModelTemplate">
+        <h3>#: data['Title'] #</h3>
         <div class="image-with-text">
             <img src="#: data['PictureUrl'] #" width="30%" height="30%">
-            <h3>#: data['Text'] #</h3>
-            <p>#: data['Date'] #</p>
+            <p><i>#: data['Text'] #</i></p>
+            <p><small>#: app.formatDate(data['Date']) #</small></p>
         </div>
     </script>
 </div>

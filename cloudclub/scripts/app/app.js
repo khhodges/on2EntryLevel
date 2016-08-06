@@ -193,15 +193,25 @@ var app = (function (win) {
 					    logonB.style.display = "";
 					});
         },
-        activityRoute: function () {
+        activityRoute: function (e) {
+           // app.showAlert(JSON.stringify(e))
             if (app.isOnline()) {
-                //app.showAlert(app.Places.locationViewModel.myCamera);
-                app.mobileApp.navigate('views/activitiesView.html?camera='+app.Places.locationViewModel.myCamera);
+                    //app.showAlert(app.Places.locationViewModel.myCamera);
+                    app.mobileApp.navigate('views/activitiesView.html');
             } else {
                 app.notify.dialogAlert();
 				app.mobileApp.navigate('components/activities/view.html');
             }
-
+        },
+        cameraRoute: function (e) {
+            //app.showAlert(JSON.stringify(e))
+            if (app.isOnline()) {
+                    //app.showAlert(app.Places.locationViewModel.myCamera);
+                    app.mobileApp.navigate('views/activitiesView.html?camera=ON');
+            } else {
+                app.notify.dialogAlert();
+                app.mobileApp.navigate('components/activities/view.html');
+            }
         },
         //Current user logout
         doLogout: function () {
@@ -264,7 +274,7 @@ var app = (function (win) {
         resolveBackgroundPictureUrl: function (id, option) {
             if (id && id !== emptyGuid) {
                 if (option === 'bg') {
-                    return 'url(' + el.Files.getDownloadUrl(id) + ')';
+                    return 'url("' + el.Files.getDownloadUrl(id) + '")';
                 } else {
                     return el.Files.getDownloadUrl(id);
                 }

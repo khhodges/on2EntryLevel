@@ -3,15 +3,15 @@
  */
 
 (function (win) {
-
+    console.log("Analytics Loaded");
     var analytics = win.analytics = win.analytics || {};
-
+    console.log("Analytics Created "+ analytics.toString());
     analytics.isAnalytics = function () {
         return win.app.isKeySet(appSettings.eqatec.productKey);
     };
 
     analytics.Start = function() {
-
+        console.log("Analytics Start " + analytics.toString());
         // Handy shortcuts to the analytics api
         var factory = win.plugins.EqatecAnalytics.Factory;
         var monitor = win.plugins.EqatecAnalytics.Monitor;

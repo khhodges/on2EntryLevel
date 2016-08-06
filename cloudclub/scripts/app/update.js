@@ -32,7 +32,7 @@ app.Update = (function () {
 			Everlive.$.Users.update(dataSource)
 				.then(function () {				
 					analytics.TrackFeature('Update.User');
-					app.showAlert("Update successful");
+					app.notify.showShortTop("Update successful");
 				},
 					  function (err) {
 						  app.showError(err.message);
@@ -49,7 +49,9 @@ app.Update = (function () {
 										 },
 			
 										 function(data) {
-											 app.showAlert("Update saved, it can take several hours to cache the new image across the Internet!");
+											var sb = document.getElementById("saveButton");
+											sb.style.display = "none";
+											app.notify.showShortTop("Update saved, it can take several hours to cache the new image across the Internet!");
 										 },
 			
 										 function(error) {
@@ -85,9 +87,10 @@ app.Update = (function () {
 
 			$formFields.on('keyup keypress blur change input', function () {
 				if (validator.validate()) {
-					$saveButton.removeClass('disabled');
+					var sb = document.getElementById("saveButton");
+					sb.style.display = "";
 				} else {
-					$saveButton.addClass('disabled');
+					sb.style.display = "none";
 				}
 			});
 
