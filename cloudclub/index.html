@@ -23,7 +23,7 @@
 	<script src="scripts/app/users.js"></script>
 	<script src="scripts/app/update.js"></script>
 	<script src="scripts/app/map.js"></script>
-	<script src="scripts/js/on2tmap.js"></script>
+    //<script src="scripts/js/on2tmap.js"></script>
 	<script src="scripts/app/login.js"></script>
 	<script src="scripts/app/signup.js"></script>
 	<script src="scripts/app/activities.js"></script>
@@ -56,7 +56,7 @@
 			<div data-role="navbar">
 				<span data-role="view-title">Cloud Club</span>
 				<a id="setupBtn" style="display:" data-role="button" data-align="left">Set Up</a>
-				<a id="continueButton" data-role="button" href="views/mapView.html" data-align="right">Hot Spots</a>
+				<a id="continueButton" data-role="button" href="views/placeView.html" data-align="right">Hot Spots</a>
 			</div>
 		</header>
 		<h2 class="app-name">
@@ -154,7 +154,7 @@
                     <a href="components/notifications/view.html" data-icon="flash-button" style="color: red">Local Notifications</a>
                 </li -->
 			<li>
-				<a href="views/mapView.html" data-icon="globe" style="color: black">Hot Spots</a>
+				<a href="views/placeView.html" data-icon="globe" style="color: black">Hot Spots</a>
 			</li>
 			<!--li>
                     <a id="activityRoute" data-icon="home" style="color: black">Activity</a>
@@ -171,6 +171,8 @@
 		</ul>
 	</div>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_NGEphwHG1jQ1S6v2JeCcZNiz5BenfDw&libraries=places"></script>
+
+    <script defer src="scripts/app/placeMap.js"></script>
 </body>
 
 </html>
