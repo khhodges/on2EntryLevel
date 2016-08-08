@@ -461,11 +461,12 @@ var app = (function (win) {
 					    //if does not exist add to log
 					    var data = el.data('Notifications');
 					    data.create({
+							'Place': app.Places.visiting.partner.Id,
 					        'Reference': activity.Id,
 					        'Status': true
 					    },
 							function (data) {
-							    app.notify.showShortTop("Notification log " + data.result.Id + " saved!");
+							    app.notify.showShortTop(app.Places.visiting.Place + " Notification log " + data.result.Id + " saved!");
 							},
 							function (error) {
 							    app.notify.showShortTop("Not saved due to " + error.message);

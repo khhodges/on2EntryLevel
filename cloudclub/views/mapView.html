@@ -7,16 +7,13 @@
      data-show="app.Places.show"
      data-hide="app.Places.hide"
      data-model="app.Places.locationViewModel"
-     data-stretch="true">
-     
+     data-stretch="true">     
         <script>
             var ref;
-
             function iabLoadError(event) {
                 app.notify.showShortTop(event.type + ' - ' + event.message);
                 ref.close();
             }
-
             function iabClose(event) {
                 app.notify.showShortTop(event.type);
                 //iabRef.removeEventListener('loadstart', iabLoadStart);
@@ -27,7 +24,6 @@
                 }
                 app.mobileApp.navigate('views/mapView.html');
             }
-
             function test(url) {
                 if (url === null || url === undefined || url.length < 10) {
                     app.notify.showShortTop(url + " the client data is missing preventing service connection!");
@@ -46,7 +42,6 @@
                     //}
                 }
             };
-
         </script>
         <div data-role="header">
             <div data-role="navbar" id="navbarTitle">
@@ -57,22 +52,7 @@
             </div>
         </div>
         <div id="map-canvas" class="map" data-bind="visible: isGoogleMapsInitialized" ></div>
-
         <div id="no-map" data-bind="invisible: isGoogleMapsInitialized">
             <h3>Location requires internet connection to display the map.</h3>
         </div>
-
-        <!--<div id="map-search-wrap" class="map-tools" data-bind="visible: isGoogleMapsInitialized, invisible: hideSearch">
-            <div>
-                <ul hidden id="places-listview" data-role="listview" data-template="placesTemplate"></ul>
-            </div>
-        </div>-->
 </div>
-
-<!-- Places ListView Template -->
-<!--<script type="text/x-kendo-template" id="placesTemplate">
-    <ui hidden>
-        <span>#: app.Places.locationViewModel.locatedAtFormatted(marker, text, html, address, name, url, phone, icon) #</span>
-    </ui>
-
-</script>-->

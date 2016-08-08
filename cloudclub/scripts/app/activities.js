@@ -115,23 +115,6 @@ app.Activities = (function () {
                     fields: 'EndDate',
                     defaultValue: new Date()
                 },
-                /*Id  Identifier
-				//CreatedAt  DateTime
-				//ModifiedAt  DateTime
-				//CreatedBy Users  Relation
-				//ModifiedBy Users  Relation
-				//Owner Users  Relation
-				//Picture  File 
-				//Stars  Number 
-				//Status  Text 
-				//Text  Text 
-				//UserId Users  Relation 
-				//Likes Users  Relation (multiple)
-				//Active  YesNo 
-				//Location  Geopoint 
-				//Notes  Text 
-				//Title  Text 
-				//Value  Number*/
             },
             CreatedAtFormatted: function () {
                 return app.helper.formatDate(this.get('CreatedAt'));
@@ -219,14 +202,14 @@ app.Activities = (function () {
                     {
                         logic: 'and', filters: [
                                    { field: "Title", operator: "eq", value: "My Private Feed" },
-                                   { field: "UserId", operator: "eq", value: myId }
+                                   { field: "UserId", operator: "eq", value: myId },
+								   { field: "UserId", operator: "eq", value: ""}//add user setting
                         ]
                     },
                    {
                        logic: 'and', filters: [
                            { field: "Title", operator: "startswith", value: thePartner },
                            { field: "Title", operator: "neq", value: undefined},
-                           //{ field: "Title", operator: "startswith", value: "The Whale's Rib Raw Bar"}
                        ]
                    }
                 ]
@@ -329,6 +312,7 @@ app.Activities = (function () {
 
 					    activity.UserId = app.Users.currentUser.get('data').Id;
 					    activity.Picture = selected;
+						app.Places.locationViewModel.lastPicture = selected;
 					    activity.Title = "My Private Feed";//app.Users.currentUser.get('data').DisplayName;
 					    if (app.Places.visiting.name) activity.Title = app.Places.visiting.name;
 					    navigator.geolocation.getCurrentPosition(

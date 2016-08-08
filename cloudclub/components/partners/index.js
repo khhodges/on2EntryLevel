@@ -220,7 +220,7 @@ app.home = kendo.observable({
             //app.showError(m);
             // Reset the form data.
             this.set('addFormData', {
-                place: e.view.params.Name.replace("%26", "&").replace("%26", "&"),
+                place: e.view.params.Name, //.replace("%26", "&").replace("%26", "&"),
                 id: e.view.params.placeId,
                 www: e.view.params.www,
                 textField: e.view.params.textField,
@@ -232,7 +232,7 @@ app.home = kendo.observable({
                 address: e.view.params.address,
                 tel: e.view.params.tel,
                 city: e.view.params.city,
-                zipcode: e.params.zipcode
+                zipcode: e.view.params.zipcode
             });
         },
         onSaveClick: function (e) {

@@ -117,6 +117,7 @@ app.Places = (function () {
 			return theString;
 		};
 		var LocationViewModel = kendo.data.ObservableObject.extend({
+			lastPicture: "styles/images/avatar.png",
 			_lastMarker: null,
 			_isLoading: false,
 			address: "",
@@ -150,6 +151,7 @@ app.Places = (function () {
 						geometry: {
 							location: marker
 						},
+						icon: icon,
 						address: address,
 						name: name,
 						url: url,
@@ -198,10 +200,10 @@ app.Places = (function () {
 							position: position,
 							zIndex: place.zIndex,
 							icon: {
-								url: place.markerUrl,
-								anchor: new google.maps.Point(20, 38),
-								scaledSize: new google.maps.Size(40, 40),
-								title: viewModelSearch.selectedProduct
+								url: "styles/images/star.png", //place.markerUrl,
+								//anchor: new google.maps.Point(20, 38),
+								scaledSize: new google.maps.Size(30, 30),
+								//title: viewModelSearch.selectedProduct
 							}
 						});
 						//Partners InfoWindow PopUp
@@ -227,7 +229,7 @@ app.Places = (function () {
 					Math.sin(dLon / 2) * Math.sin(dLon / 2);
 				var c = 2 * Math.asin(Math.sqrt(a));
 				var d = R * c / 1.61; // converted to miles
-				return d.toFixed(2);
+				return d.toFixed(4);
 
 			},
 			updateStars: function (place) {
@@ -260,13 +262,6 @@ app.Places = (function () {
 				for (var i = 0; i < markers.length; i++) {
 					markers[i].setMap(null);
 				}
-				//markers = [];
-				//app.Places.locationViewModel.markers = new Array;
-				//app.Places.locationViewModel.details = new Array;
-				//navigator.geolocation.getCurrentPosition(
-				//	function (position) {
-				//	    app.showAlert(position.coords.latitude === app.cdr.latitude)
-				//	    home = position;
 				position = new google.maps.LatLng(app.cdr.latitude, app.cdr.longitude);
 				Selfie = {
 					Picture: null,
@@ -281,7 +276,6 @@ app.Places = (function () {
 				map.panTo(position);
 				that._putMarker(position); //TO DO: hide or show present location marker
 				locality = position;
-				//that.getAddress(position, that);
 				lat1 = position.lat();
 				lng1 = position.lng();
 				that._isLoading = false;
@@ -309,22 +303,6 @@ app.Places = (function () {
 					function (error) {
 						app.showError(JSON.stringify(error))
 					});
-
-				//	},
-				//	function (error) {
-				//	    //default map coordinates
-				//	    position = new google.maps.LatLng(0, -20);
-				//	    map.panTo(position);
-
-				//	    that._isLoading = false;
-				//	    that.toggleLoading();
-
-				//	    app.notify.showShortTop("Map.Unable to determine current location. Cannot connect to GPS satellite.");
-				//	}, {
-				//	    timeout: 30000,
-				//	    enableHighAccuracy: true
-				//	}
-				//);
 			},
 			getComponent: function (address_components, component) {
 				for (var i = 0; i < address_components.length; i++) {
@@ -344,22 +322,22 @@ app.Places = (function () {
 						if (results[0]) {
 							myAddress = results[0].formatted_address;
 							myCity = app.Places.locationViewModel.getComponent(results[0].address_components, "locality");
-							//for (var i = 0; i < results[0].address_components.length; i++) {
-							//    if (results[0].address_components[i].types[0] === "locality")
-							//        //|| results[0].address_components[i].types[0] === "administrative_area_level_1" || results[0].address_components[i].types[0] === "country")
-							//    {
-							//        myCity = myCity + results[0].address_components[i].long_name; //+", ";
-							//    }
-							//}
 							if (document.getElementById('addressStatus')) {
-								document.getElementById('addressStatus').innerHTML = myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(3) + ' Lng:' + marker.position.lng().toFixed(3) + '</span>';
+								document.getElementById('addressStatus').innerHTML = myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '</span>';
 							}
-							//document.getElementById('linkStatus').innerHTML = '<a id="linkStatus" data-role="button" class="butn" href="' + 'components/aboutView/view.html?Name=' + '&email=' + '&longitude=' + latLng.lng() + '&latitude=' + latLng.lat() + '&html=' + '&icon=' + '&address=' + myAddress + '&textField=' + '&www=' + '&tel=' + '&placeId=' + results[0].place_id + '"><img src="styles/images/thumb_up.png" alt="On2See" height="auto" width="15%"></a>';                        
 						}
 					} else {
 						window.alert('Geocoder failed due to find Address: ' + status);
 					}
 				});
+			},
+			getIconUrl: function () {
+				var iconText = this.get('Icon');
+				if (iconText.contains('//')) {
+					return iconText;
+				} else {
+					return app.helper.resolvePictureUrl(iconText);
+				}
 			},
 			clearMap: // Deletes all markers in the array by removing references to them.
 				function deleteMarkers() {
@@ -550,7 +528,7 @@ app.Places = (function () {
 				//kjhh to do update my address
 				var url = "styles/images/avatar.png";
 				if (app.Users.currentUser.data) url = app.Users.currentUser.data.PictureUrl;
-				return '<p>' + '<div class="user-avatar" style="margin-left:5px"> <a id="avatarLink" data-role="button" class="butn" style="padding:5px"> <img id="myAvatar" src=' + url + ' alt="On2See" height="auto" width="25%"></a></div>' + '<a id="cameraLink" data-role="button" class="butn" style="padding:5px; margin-left:-15px"> <img src="styles/images/camera.png" alt="On2See" height="auto" width="25%"></a>' + '<a id="myFeedLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/feed.png" alt="My Private Feed" height="auto" width="25%"/></a>' + '<a id="goHome" data-role="button" class="butn" style="padding:5px"><img src="styles/images/goHome.png" alt="Go Home" height="auto" width="25%"/></a>' + '<a id="saveAddressLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/contacts.png" alt="Go Home" height="auto" width="25%"/></a>' + '<a id="calendarLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/calendar.png" alt="Go Home" height="auto" width="25%"/></a>' + '</p>' + '<h3>Drag to locate the Inspector</h3>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(2) + ' Lng:' + marker.position.lng().toFixed(2) + '<br/>' + app.helper.formatDate(new Date()) + '</span>' + '<br/><span id="dateTime">' + '</span>' + '</p>'
+				return '<p>' + '<div class="user-avatar" style="margin-left:5px"> <a id="avatarLink" data-role="button" class="butn" style="padding:5px"> <img id="myAvatar" src=' + url + ' alt="On2See" height="auto" width="25%"></a></div>' + '<a id="cameraLink" data-role="button" class="butn" style="padding:5px; margin-left:-15px"> <img src="styles/images/camera.png" alt="On2See" height="auto" width="25%"></a>' + '<a id="myFeedLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/feed.png" alt="My Private Feed" height="auto" width="25%"/></a>' + '<a id="goHome" data-role="button" class="butn" style="padding:5px"><img src="styles/images/goHome.png" alt="Go Home" height="auto" width="25%"/></a>' + '<a id="saveAddressLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/contacts.png" alt="Go Home" height="auto" width="25%"/></a>' + '<a id="calendarLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/calendar.png" alt="Go Home" height="auto" width="25%"/></a>' + '</p>' + '<h3>Drag to locate the Inspector</h3>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>' + app.helper.formatDate(new Date()) + '</span>' + '<br/><span id="dateTime">' + '</span>' + '</p>'
 			},
 			_putMarker: function (position) {
 				var that = this;
@@ -612,7 +590,7 @@ app.Places = (function () {
 							if (app.isOnline()) {
 								app.mobileApp.navigate("views/activitiesView.html?ActivityText=My Private Feed&User=" + app.Users.currentUser.data.DisplayName);
 							} else {
-								app.mobileApp.navigate("components/activities/view.html?ActivityText=My Private Feed");
+								app.mobileApp.navigate("components/notifications/view.html");
 							}
 						});
 					}
@@ -632,7 +610,11 @@ app.Places = (function () {
 					if (saveAddressLink) {
 						saveAddressLink.addEventListener("click",
 							function () {
-								app.mobileApp.navigate("components/aboutView/view.html")
+								if (app.Users.currentUser.data && (app.Users.currentUser.data.Id === "84bb6cf0-b3e0-11e5-8558-adda7fdf67e8")) {
+									app.mobileApp.navigate("components/partners/add.html?Name=&placeId=" + marker.place_id + "&www=&textField=&longitude=" + marker.position.lng().toFixed(6) + "&latitude=" + marker.position.lat().toFixed(6) + "&email=newpartner@on2t.com&html=&icon=" + app.Places.locationViewModel.lastPicture + "&address=" + myAddress + "&tel=&city=&zipcode")
+								} else {
+									app.mobileApp.navigate("components/aboutView/view.html")
+								}
 							}
 						)
 					}
@@ -645,31 +627,6 @@ app.Places = (function () {
 						)
 					}
 				});
-
-				//google.maps.event.addListener(infoWindow, 'domready', function () {
-				//    //app.showAlert("InfoWindo ready 570");
-				//    var activityRoute = document.getElementById("cameraLink");
-				//    activityRoute.addEventListener("submit", function () {
-				//        if (activityRoute) {
-				//            app.Places.locationViewModel.myCamera = 'ON';
-				//            activityRoute.addEventListener("click", app.helper.activityRoute);
-				//        } else {
-				//            app.showError("Not ready link 580");
-				//        }
-				//    })
-				//});
-				//google.maps.event.addDomListener(document.getElementById("cameraLink"), 'click', function () {
-				//    window.alert('cameraLink was clicked!');
-				//});
-				//google.maps.event.addListener(map, 'dragend', function () {
-				//    var newPlace = this.getCenter();
-				//    that._lastMarker.setPosition(newPlace); // set marker position to map center
-
-				//    that.getAddress(newPlace);
-				//    updatePosition(this.getCenter().lat(), this.getCenter().lng()); // update position display
-
-				//});
-
 				function updatePosition(lat, lng) {
 					document.getElementById('dragStatus').innerHTML = 'New Lat: ' + lat.toFixed(6) + ' New Lng: ' + lng.toFixed(6);
 				}
@@ -791,9 +748,6 @@ app.Places = (function () {
 				kendo.mobile.application.hideLoading();
 			},
 			locationViewModel: new LocationViewModel(),
-			openBrowser: function () {
-
-			},
 			listShow: function () {
 				try {
 					$("#places-listview").kendoMobileListView({

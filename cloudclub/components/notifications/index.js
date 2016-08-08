@@ -70,6 +70,7 @@ app.notifications = kendo.observable({
 				}
             },
             sort: { field: 'Date', dir: 'desc' },
+			//filter: {field:'Date','gt', new Date.getDate()-10},
             change: function(e) {
                 var data = this.data();
                 for (var i = 0; i < data.length; i++) {
