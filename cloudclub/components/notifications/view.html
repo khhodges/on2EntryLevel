@@ -32,6 +32,9 @@
         <div class="image-with-text">
             <h3>#: data['Reference'] #</h3>
             <p>#: data['Place'] #</p>
+			<p>#: data['Picture'] #</p>
+			<p>#: data['ActivityId'] #</p>			
+			<img id="picture" data-bind="attr:{src: PictureUrl(#: data['ActivityId'] #)}" width="100%">
             <p><small>#: app.formatDate(data['Date']) #</small></p>
 
         </div>

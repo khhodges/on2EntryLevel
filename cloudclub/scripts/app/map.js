@@ -637,6 +637,11 @@ app.Places = (function () {
 			},
 			places: placesDataSource,
 			getButtons: function (place) { //url,icon,phone,name,address) {
+				var myIcon = place.avatar;
+				if(myIcon.substring(0, 4) !== 'http'){
+					place.avatar = //app.helper.resolvePictureUrl(myIcon).Response.Result.Uri;
+						'http://bs1.cdn.telerik.com/v1/3t5oa8il0d0y02eq/b4d5ce90-5cd1-11e6-a6e4-2b854199a941?20168719950';
+				}
 				var Stars = 3;
 				var htmlString = appSettings.HEAD;
 				htmlString = htmlString.replace('WebSite', place.details.website).replace('Icon', place.avatar).replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('%Name%', place.name).replace('%Name%', place.name).replace("Address", place.details.formatted_address);

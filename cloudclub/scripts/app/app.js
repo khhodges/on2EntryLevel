@@ -14,9 +14,9 @@ var app = (function (win) {
         showAlert(message, 'Error occured');
     };
 
-    window.onerror = function (message, file, line) {
-        alert("Error: " + message + ", File: " + file + ", Line: " + line);
-    }
+    // window.onerror = function (message, file, line) {
+    //     alert("Error: " + message + ", File: " + file + ", Line: " + line);
+    // }
 
     var cdr;
 
