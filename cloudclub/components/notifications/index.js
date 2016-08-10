@@ -164,6 +164,25 @@ app.notifications = kendo.observable({
 
 	parent.set('onShow', function(e) {
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
+			var d = new Date();
+			d.setDate(d.getDate() - 60);
+			app.notify.showShortTop("Filtering by " + e.view.params.ActivityText + " and " + d)
+			if ((param === null || param === undefined) && e.view.params.ActivityText) {
+				param = {
+					logic: 'and',
+					filters: [{
+								"field": "CreatedAt",
+								"operator": "gt",
+								"value": d
+							},{
+								"field": "Reference",
+								"operator": "eq",
+								"value": e.view.params.ActivityText
+							}
+					]
+				}
+			}
+		
 		fetchFilteredData(param);
 	});
 })(app.notifications);
