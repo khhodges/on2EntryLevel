@@ -11,7 +11,6 @@ app.Activity = (function () {
 		$enterComment,
 		listScroller, 
 		$newComment,
-		showComment,
 		stars,
 		thePictureUrl,
 		validator;

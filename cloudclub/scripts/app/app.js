@@ -236,7 +236,6 @@ var app = (function (win) {
             //});
         },
 
-
         isAnalytics: function () {
             analytics.isAnalytics();
         },

@@ -6,9 +6,8 @@ var app = app || {};
 
 app.Places = (function () {
 	'use strict'
-	var infoWindow, markers, place, result, myCity, service, here, request, position, lat1, lng1, allBounds, near, theZoom = 12,
-		service, allPartners, myAddress, Selfie,
-		infoContent;
+	var infoWindow, markers, place, result, myCity, here, request, position, lat1, lng1, allBounds, theZoom = 12,
+		service, allPartners, myAddress, Selfie;
 	var HEAD = appSettings.HEAD;
 	/**
 	 * The Google Map CenterControl adds a control to the map that recenters the map on
@@ -51,7 +50,7 @@ app.Places = (function () {
 
 
 	var placesViewModel = (function () {
-		var map, geocoder, locality, home
+		var map, geocoder, locality
 		var placeModel = {
 			fields: {
 				name: {
@@ -128,12 +127,9 @@ app.Places = (function () {
 			hideSearch: false,
 			products: viewModelSearch.products,
 			selectedProduct: viewModelSearch.selectedProduct,
-			mergePartner: function (partner) {
-				//gets details and adds one partner to details list 
-			},
 			locatedAtFormatted: function (partner, marker, text, html, address, name, url, phone, icon) {
 				//test for geopoint as a string and convert string to geopoint
-				if (marker.length != undefined) {
+				if (marker.length !== undefined) {
 					if (marker.length > 15) {
 						app.showError('Marker Error' + marker);
 					}
@@ -265,6 +261,7 @@ app.Places = (function () {
 				position = new google.maps.LatLng(app.cdr.latitude, app.cdr.longitude);
 				Selfie = {
 					Picture: null,
+					name: "My Private Feed",
 					Value: null,
 					Active: true,
 					Notes: 'Selfie',
@@ -339,8 +336,8 @@ app.Places = (function () {
 					return app.helper.resolvePictureUrl(iconText);
 				}
 			},
-			clearMap: // Deletes all markers in the array by removing references to them.
-				function deleteMarkers() {
+			clearMap: function deleteMarkers() {// Deletes all markers in the array by removing references to them.
+				
 				markers = app.Places.locationViewModel.markers;
 				for (var i = 0; i < markers.length; i++) {
 					markers[i].setMap(null);
@@ -523,7 +520,6 @@ app.Places = (function () {
 					kendo.mobile.application.hideLoading();
 				}
 			},
-
 			currentLocation: function (marker) {
 				//kjhh to do update my address
 				var url = "styles/images/avatar.png";
@@ -536,7 +532,7 @@ app.Places = (function () {
 				if (that._lastMarker !== null && that._lastMarker !== undefined) {
 					that._lastMarker.setMap(null);
 				}
-
+				
 				that._lastMarker = new google.maps.Marker({
 					map: map,
 					position: position,
@@ -588,7 +584,7 @@ app.Places = (function () {
 					if (feedRoute) {
 						feedRoute.addEventListener("click", function () {
 							if (app.isOnline()) {
-								app.mobileApp.navigate("views/activitiesView.html?ActivityText=My Private Feed&User=" + app.Users.currentUser.data.DisplayName);
+								app.mobileApp.navigate("views/activitiesView.html?ActivityText=My Private Feed&User=" + app.Users.currentUser.data.Id);
 							} else {
 								app.mobileApp.navigate("components/notifications/view.html");
 							}
@@ -611,7 +607,7 @@ app.Places = (function () {
 						saveAddressLink.addEventListener("click",
 							function () {
 								if (app.Users.currentUser.data && (app.Users.currentUser.data.Id === "84bb6cf0-b3e0-11e5-8558-adda7fdf67e8")) {
-									app.mobileApp.navigate("components/partners/add.html?Name=&placeId=" + marker.place_id + "&www=&textField=&longitude=" + marker.position.lng().toFixed(6) + "&latitude=" + marker.position.lat().toFixed(6) + "&email=newpartner@on2t.com&html=&icon=" + app.Places.locationViewModel.lastPicture + "&address=" + myAddress + "&tel=&city=&zipcode")
+									app.mobileApp.navigate("components/partners/add.html?Name=&placeId=" + app.Places.locationViewModel._lastMarker.place_id + "&www=&textField=&longitude=" + app.Places.locationViewModel._lastMarker.position.lng().toFixed(6) + "&latitude=" + app.Places.locationViewModel._lastMarker.position.lat().toFixed(6) + "&email=newpartner@on2t.com&html=&icon=" + app.Places.locationViewModel.lastPicture + "&address=" + myAddress + "&tel=&city=&zipcode")
 								} else {
 									app.mobileApp.navigate("components/aboutView/view.html")
 								}
@@ -642,7 +638,6 @@ app.Places = (function () {
 					place.avatar = //app.helper.resolvePictureUrl(myIcon).Response.Result.Uri;
 						'http://bs1.cdn.telerik.com/v1/3t5oa8il0d0y02eq/b4d5ce90-5cd1-11e6-a6e4-2b854199a941?20168719950';
 				}
-				var Stars = 3;
 				var htmlString = appSettings.HEAD;
 				htmlString = htmlString.replace('WebSite', place.details.website).replace('Icon', place.avatar).replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('%Name%', place.name).replace('%Name%', place.name).replace("Address", place.details.formatted_address);
 				htmlString = htmlString.replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('Open', place.openString).replace('Stars', place.starString);
