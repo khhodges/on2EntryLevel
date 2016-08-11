@@ -245,7 +245,7 @@ app.Places = (function () {
 			onNavigateHome: function () {
 				//find present location, clear markers and set up members as icons
 				var that = this,
-					position;
+					position = new google.maps.LatLng(-80.08,26.3);
 				that._isLoading = true;
 				that.toggleLoading();
 				if (!app.Places.locationViewModel.markers) {
@@ -258,7 +258,9 @@ app.Places = (function () {
 				for (var i = 0; i < markers.length; i++) {
 					markers[i].setMap(null);
 				}
-				position = new google.maps.LatLng(app.cdr.latitude, app.cdr.longitude);
+				if (!app.isNullOrEmpty(app.cdr)) {
+					position = new google.maps.LatLng(app.cdr.latitude, app.cdr.longitude);
+				} 
 				Selfie = {
 					Picture: null,
 					name: "My Private Feed",
@@ -336,8 +338,8 @@ app.Places = (function () {
 					return app.helper.resolvePictureUrl(iconText);
 				}
 			},
-			clearMap: function deleteMarkers() {// Deletes all markers in the array by removing references to them.
-				
+			clearMap: function deleteMarkers() { // Deletes all markers in the array by removing references to them.
+
 				markers = app.Places.locationViewModel.markers;
 				for (var i = 0; i < markers.length; i++) {
 					markers[i].setMap(null);
@@ -532,7 +534,7 @@ app.Places = (function () {
 				if (that._lastMarker !== null && that._lastMarker !== undefined) {
 					that._lastMarker.setMap(null);
 				}
-				
+
 				that._lastMarker = new google.maps.Marker({
 					map: map,
 					position: position,
@@ -623,6 +625,7 @@ app.Places = (function () {
 						)
 					}
 				});
+
 				function updatePosition(lat, lng) {
 					document.getElementById('dragStatus').innerHTML = 'New Lat: ' + lat.toFixed(6) + ' New Lng: ' + lng.toFixed(6);
 				}
@@ -634,10 +637,6 @@ app.Places = (function () {
 			places: placesDataSource,
 			getButtons: function (place) { //url,icon,phone,name,address) {
 				var myIcon = place.avatar;
-				if(myIcon.substring(0, 4) !== 'http'){
-					place.avatar = //app.helper.resolvePictureUrl(myIcon).Response.Result.Uri;
-						'http://bs1.cdn.telerik.com/v1/3t5oa8il0d0y02eq/b4d5ce90-5cd1-11e6-a6e4-2b854199a941?20168719950';
-				}
 				var htmlString = appSettings.HEAD;
 				htmlString = htmlString.replace('WebSite', place.details.website).replace('Icon', place.avatar).replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('%Name%', place.name).replace('%Name%', place.name).replace("Address", place.details.formatted_address);
 				htmlString = htmlString.replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('Open', place.openString).replace('Stars', place.starString);

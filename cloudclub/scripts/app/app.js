@@ -197,7 +197,8 @@ var app = (function (win) {
            // app.showAlert(JSON.stringify(e))
             if (app.isOnline()) {
                     //app.showAlert(app.Places.locationViewModel.myCamera);
-                    app.mobileApp.navigate('views/activitiesView.html');
+				app.mobileApp.navigate('components/activities/view.html');
+                    //app.mobileApp.navigate('views/activitiesView.html');
             } else {
                 app.notify.dialogAlert();
 				app.mobileApp.navigate('components/activities/view.html');
@@ -435,9 +436,14 @@ var app = (function (win) {
         },
 
         broadcast: function () {
-            console.log("Start Broadsact Message.");
+			var activity = app.Activity.activity();
+			if (activity.Title = "My Private Feed"){
+				app.showShortTop("To protect your privacy you cannot broadcast from your Private Data Feed!");
+				return;
+            }
+            app.showShortTop("Start Public Broadcast Message to local Cloud Club Members.");
             if (true) { //TO DO: check if notification activity exists to prevent second attempt
-                var activity = app.Activity.activity();
+                
                 var notify = {
                     "Message": activity.Text // upgrade required,
                     // "UseLocalTime": true,
@@ -578,6 +584,10 @@ var app = (function (win) {
 
             function success(pos) {
                 var crd = pos.coords;
+				var continueButton = document.getElementById("continueButton");
+				continueButton.style.display = "";
+				var setupBtn = document.getElementById("setupBtn");
+				setupBtn.style.display = "";
                 //console.log('Your current position is:');
                 //console.log('Latitude : ' + crd.latitude);
                 //console.log('Longitude: ' + crd.longitude);
@@ -586,7 +596,7 @@ var app = (function (win) {
             };
 
             function error(err) {
-                app.showError('ERROR( Location not available ' + err.code + '): ' + err.message);
+                app.showError('ERROR( Please enable Location and restart the application ' + err.code + '): ' + err.message);
             };
 
             navigator.geolocation.getCurrentPosition(success, error, options);

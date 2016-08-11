@@ -4,10 +4,6 @@ app.notifications = kendo.observable({
 										 onShow: function() {
 										 },
 										 afterShow: function() {
-										 },
-										 PictureUrl: function() {
-											 //return app.helper.resolvePictureUrl
-											 app.showAlert("5b6663d0-5da6-11e6-80f0-bfe4a34a3bdd");
 										 }
 									 });
 

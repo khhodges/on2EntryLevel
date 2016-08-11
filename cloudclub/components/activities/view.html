@@ -13,13 +13,22 @@
 
             <a data-role="backbutton" data-align="left">Back</a>
 
-            <!--<a data-role="button" data-align="right" data-bind="visible: isVisible; events: { click: activitiesModel.commentClick }">Comment</a>-->
+            <a data-role="button" data-align="right" >Share</a>
         </div>
     </header>
 
     <!--  Certain features like grouping and inset styling are not supported when endless scroll is enabled. -->
     <form class="km-filter-form custom-filter">
         <div class="km-filter-wrap">
+			<input id="dropdownlist" />
+<script>
+$("#dropdownlist").kendoDropDownList({
+  dataSource: {
+    data: ["One", "Two"]
+  },
+  animation: false
+});
+</script>
             <input type="search" placeholder="Search..." data-bind="{events:{keyup: activitiesModel.searchChange}}">
         </div>
     </form>

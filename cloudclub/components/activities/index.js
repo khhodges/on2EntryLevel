@@ -1,11 +1,9 @@
 'use strict';
 
 app.activities = kendo.observable({
-									  onShow: function () {
-									  },
-									  afterShow: function () {
-									  }
-								  });
+	onShow: function () {},
+	afterShow: function () {}
+});
 
 // START_CUSTOM_CODE_activities
 // Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
@@ -24,9 +22,9 @@ app.activities = kendo.observable({
 
 			if (paramFilter && searchFilter) {
 				dataSource.filter({
-									  logic: 'and',
-									  filters: [paramFilter, searchFilter]
-								  });
+					logic: 'and',
+					filters: [paramFilter, searchFilter]
+				});
 			} else if (paramFilter || searchFilter) {
 				dataSource.filter(paramFilter || searchFilter);
 			} else {
@@ -38,7 +36,7 @@ app.activities = kendo.observable({
 				var empty1x1png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQI12NgYAAAAAMAASDVlMcAAAAASUVORK5CYII=';
 				img = 'data:image/png;base64,' + empty1x1png;
 			} else if (img.slice(0, 4) !== 'http' &&
-					   img.slice(0, 2) !== '//' && img.slice(0, 5) !== 'data:') {
+				img.slice(0, 2) !== '//' && img.slice(0, 5) !== 'data:') {
 				var setup = dataProvider.setup || {};
 				img = setup.scheme + ':' + setup.url + setup.appId + '/Files/' + img + '/Download';
 			}
@@ -49,7 +47,7 @@ app.activities = kendo.observable({
 			var propName, propValue,
 				isLocation = function (value) {
 					return propValue && typeof propValue === 'object' &&
-											   propValue.longitude && propValue.latitude;
+						propValue.longitude && propValue.latitude;
 				};
 
 			for (propName in dataItem) {
@@ -57,8 +55,8 @@ app.activities = kendo.observable({
 					propValue = dataItem[propName];
 					if (isLocation(propValue)) {
 						dataItem[propName] =
-						kendo.format('Latitude: {0}, Longitude: {1}',
-									 propValue.latitude, propValue.longitude);
+							kendo.format('Latitude: {0}, Longitude: {1}',
+								propValue.latitude, propValue.longitude);
 					}
 				}
 			}
@@ -69,12 +67,12 @@ app.activities = kendo.observable({
 				typeName: 'Activities',
 				dataProvider: dataProvider,
 				read: {
-						headers: {
-								"X-Everlive-Expand": JSON.stringify({
-																		UserId: true
-																	})
-							}
+					headers: {
+						"X-Everlive-Expand": JSON.stringify({
+							UserId: true
+						})
 					}
+				}
 			},
 			sort: {
 				field: 'Date',
@@ -86,7 +84,7 @@ app.activities = kendo.observable({
 					var dataItem = data[i];
 
 					dataItem['PictureUrl'] =
-					processImage(dataItem['Picture']);
+						processImage(dataItem['Picture']);
 					//flattenLocationProperties(dataItem);
 				}
 			},
@@ -97,179 +95,179 @@ app.activities = kendo.observable({
 			},
 			schema: {
 				model: {
-						fields: {
-								'Text': {
-											field: 'Text',
-											defaultValue: ''
-										},
-								'Stars': {
-											field: 'Stars',
-											defaultValue: ''
-										},
-								'Picture': {
-											field: 'Picture',
-											defaultValue: ''
-										},
-								'Date': {
-											field: 'CreatedAt',
-											defaultValue: ''
-										}
-							}
+					fields: {
+						'Text': {
+							field: 'Text',
+							defaultValue: ''
+						},
+						'Stars': {
+							field: 'Stars',
+							defaultValue: ''
+						},
+						'Picture': {
+							field: 'Picture',
+							defaultValue: ''
+						},
+						'Date': {
+							field: 'CreatedAt',
+							defaultValue: ''
+						}
 					}
+				}
 			},
 			serverFiltering: true,
 		},
 		dataSource = new kendo.data.DataSource(dataSourceOptions),
 		activitiesModel = kendo.observable({
-											   dataSource: dataSource,
-											   searchChange: function (e) {
-												   var searchVal = e.target.value,
-													   searchFilter;
+			dataSource: dataSource,
+			searchChange: function (e) {
+				var searchVal = e.target.value,
+					searchFilter;
 
-												   if (searchVal) {
-													   searchFilter = {
-														   field: 'Text',
-														   operator: 'contains',
-														   value: searchVal
-													   };
-												   }
-												   fetchFilteredData(activitiesModel.get('paramFilter'), searchFilter);
-											   },
-											   isVisible: function () {
-												   true;
-											   },
-											   itemClick: function (e) {
-												   if (e.dataItem) {
-													   app.mobileApp.navigate('#components/activities/details.html?uid=' + e.dataItem.uid);
-												   } else {
-													   app.mobileApp.navigate('views.mapView.html');
-												   }
-											   },
-											   addClick: function () {
-												   //check for online
-												   if (app.helper.isOnLine()) {
-													   app.mobileApp.navigate('#components/activities/add.html');
-												   }
-											   },
-											   //kjhh
-											   onPrompt: function (results) {
-												   //alert("You selected button number " + results.buttonIndex + " and entered " + results.input1);
-												   if (results === 2) {
-													   app.notify.showShortTop("If you register and login all many extended community features are available.");
-													   app.mobileApp.navigate('views/signupView.html');
-												   } else {
-													   app.notify.showShortTop("Please sign in.");
-													   app.mobileApp.navigate('#welcome');
-												   }
-											   },
-											   likeClick: function () {
-												   if (app.isOnline()) {
-													   var data = app.everlive.data('Activities');
-													   var attributes = {
-														   "$push": {
-															   "Users": app.Users.currentUser.data.Id //liked - user - id
-														   }
-													   };
-													   var filter = {
-														   'Id': activitiesModel.get('currentItem').Id
-													   };
-													   data.rawUpdate(attributes, filter, function (data) {
-														   app.notify.showShortTop("You have sucesfully remembered this place in your favorites list.");
-													   }, function (err) {
-														   app.notify.showShortTop("You have already endorced this place. Visit your favourites to see the full list.");
-													   });
-												   } else {
-													   navigator.notification.confirm(
-														   'First Register or Logon.', // message
-														   activitiesModel.onPrompt, // callback to invoke
-														   'Authentication Required', // title
-														   ['Login', 'Register']             // buttonLabels
-														   //'User Name address ...'                 // defaultText
-														   );
-												   }
-											   },
-											   deleteClick: function () {
-												   var dataSource = activitiesModel.get('dataSource'),
-													   that = this;
+				if (searchVal) {
+					searchFilter = {
+						field: 'Text',
+						operator: 'contains',
+						value: searchVal
+					};
+				}
+				fetchFilteredData(activitiesModel.get('paramFilter'), searchFilter);
+			},
+			isVisible: function () {
+				true;
+			},
+			itemClick: function (e) {
+				if (e.dataItem) {
+					app.mobileApp.navigate('#components/activities/details.html?uid=' + e.dataItem.uid);
+				} else {
+					app.mobileApp.navigate('views.mapView.html');
+				}
+			},
+			addClick: function () {
+				//check for online
+				if (app.helper.isOnLine()) {
+					app.mobileApp.navigate('#components/activities/add.html');
+				}
+			},
+			//kjhh
+			onPrompt: function (results) {
+				//alert("You selected button number " + results.buttonIndex + " and entered " + results.input1);
+				if (results === 2) {
+					app.notify.showShortTop("If you register and login all many extended community features are available.");
+					app.mobileApp.navigate('views/signupView.html');
+				} else {
+					app.notify.showShortTop("Please sign in.");
+					app.mobileApp.navigate('#welcome');
+				}
+			},
+			likeClick: function () {
+				if (app.isOnline()) {
+					var data = app.everlive.data('Activities');
+					var attributes = {
+						"$push": {
+							"Users": app.Users.currentUser.data.Id //liked - user - id
+						}
+					};
+					var filter = {
+						'Id': activitiesModel.get('currentItem').Id
+					};
+					data.rawUpdate(attributes, filter, function (data) {
+						app.notify.showShortTop("You have sucesfully remembered this place in your favorites list.");
+					}, function (err) {
+						app.notify.showShortTop("You have already endorced this place. Visit your favourites to see the full list.");
+					});
+				} else {
+					navigator.notification.confirm(
+						'First Register or Logon.', // message
+						activitiesModel.onPrompt, // callback to invoke
+						'Authentication Required', // title
+														   ['Login', 'Register'] // buttonLabels
+						//'User Name address ...'                 // defaultText
+					);
+				}
+			},
+			deleteClick: function () {
+				var dataSource = activitiesModel.get('dataSource'),
+					that = this;
 
-												   if (!navigator.notification) {
-													   navigator.notification = {
-														   confirm: function (message, callback) {
-															   callback(window.confirm(message) ? 1 : 2);
-														   }
-													   };
-												   }
+				if (!navigator.notification) {
+					navigator.notification = {
+						confirm: function (message, callback) {
+							callback(window.confirm(message) ? 1 : 2);
+						}
+					};
+				}
 
-												   navigator.notification.confirm(
-													   "Are you sure you want to delete this item?",
-													   function (index) {
-														   //'OK' is index 1
-														   //'Cancel' - index 2
-														   if (index === 1) {
-															   dataSource.remove(that.currentItem);
+				navigator.notification.confirm(
+					"Are you sure you want to delete this item?",
+					function (index) {
+						//'OK' is index 1
+						//'Cancel' - index 2
+						if (index === 1) {
+							dataSource.remove(that.currentItem);
 
-															   dataSource.one('sync', function () {
-																   app.mobileApp.navigate('#:back');
-															   });
+							dataSource.one('sync', function () {
+								app.mobileApp.navigate('#:back');
+							});
 
-															   dataSource.one('error', function () {
-																   dataSource.cancelChanges();
-															   });
+							dataSource.one('error', function () {
+								dataSource.cancelChanges();
+							});
 
-															   dataSource.sync();
-														   }
-													   },
-													   '', ["OK", "Cancel"]
-													   );
-											   },
-											   detailsShow: function (e) {
-												   var item = e.view.params.uid,
-													   dataSource = activitiesModel.get('dataSource'),
-													   itemModel = dataSource.getByUid(item);
-												   itemModel.PictureUrl = processImage(itemModel.Picture);
+							dataSource.sync();
+						}
+					},
+					'', ["OK", "Cancel"]
+				);
+			},
+			detailsShow: function (e) {
+				var item = e.view.params.uid,
+					dataSource = activitiesModel.get('dataSource'),
+					itemModel = dataSource.getByUid(item);
+				itemModel.PictureUrl = processImage(itemModel.Picture);
 
-												   if (!itemModel.Text) {
-													   itemModel.Text = String.fromCharCode(160);
-												   }
+				if (!itemModel.Text) {
+					itemModel.Text = String.fromCharCode(160);
+				}
 
-												   activitiesModel.set('currentItem', null);
-												   activitiesModel.set('currentItem', itemModel);
-											   },
-											   currentItem: null
-										   });
+				activitiesModel.set('currentItem', null);
+				activitiesModel.set('currentItem', itemModel);
+			},
+			currentItem: null
+		});
 
 	parent.set('addItemViewModel', kendo.observable({
-														onShow: function (e) {
-															// Reset the form data.
-															this.set('addFormData', {
-																		 url: '',
-																		 number: '',
-																		 switch: '',
-																		 textField2: '',
-																		 textField3: '',
-																		 textField1: '',
-																	 });
-														},
-														onSaveClick: function (e) {
-															var addFormData = this.get('addFormData'),
-																dataSource = activitiesModel.get('dataSource');
+		onShow: function (e) {
+			// Reset the form data.
+			this.set('addFormData', {
+				url: '',
+				number: '',
+				switch: '',
+				textField2: '',
+				textField3: '',
+				textField1: '',
+			});
+		},
+		onSaveClick: function (e) {
+			var addFormData = this.get('addFormData'),
+				dataSource = activitiesModel.get('dataSource');
 
-															dataSource.add({
-																			   Picture: addFormData.url,
-																			   Value: addFormData.number,
-																			   Active: addFormData.switch,
-																			   Notes: addFormData.textField2,
-																			   Text: addFormData.textField3,
-																			   Title: addFormData.textField1,
-																		   });
+			dataSource.add({
+				Picture: addFormData.url,
+				Value: addFormData.number,
+				Active: addFormData.switch,
+				Notes: addFormData.textField2,
+				Text: addFormData.textField3,
+				Title: addFormData.textField1,
+			});
 
-															dataSource.one('change', function (e) {
-																app.mobileApp.navigate('#:back');
-															});
+			dataSource.one('change', function (e) {
+				app.mobileApp.navigate('#:back');
+			});
 
-															dataSource.sync();
-														}
-													}));
+			dataSource.sync();
+		}
+	}));
 
 	if (typeof dataProvider.sbProviderReady === 'function') {
 		dataProvider.sbProviderReady(function dl_sbProviderReady() {
@@ -295,13 +293,13 @@ app.activities = kendo.observable({
 				param = {
 					logic: 'and',
 					filters: [{
-								"field": "CreatedAt",
-								"operator": "gt",
-								"value": d
-							},{
-								"field": "Title",
-								"operator": "eq",
-								"value": e.view.params.ActivityText
+							"field": "CreatedAt",
+							"operator": "gt",
+							"value": d
+							}, {
+							"field": "Title",
+							"operator": "eq",
+							"value": e.view.params.ActivityText
 							}
 					]
 				}

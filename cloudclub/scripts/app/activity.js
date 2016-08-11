@@ -165,7 +165,7 @@ app.Activity = (function () {
 			var comments;
 			comments = "\n COMMENTS: \n";
 			var message = activity.Text;
-			if (!app.Comments.comments === undefined) {
+			if (app.Comments.comments !== undefined) {
 			    app.Comments.comments.data().forEach(function (entry) { comments = comments + entry.CreatedAt + ": " + entry.Comment + "... " + entry.User.DisplayName + "\n"; });
 			     message = message + comments;
 			}
