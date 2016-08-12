@@ -132,7 +132,13 @@ app.notifications = kendo.observable({
 		notificationsModel = kendo.observable({
 												  dataSource: dataSource,
 												  itemClick: function(e) {
-													  app.mobileApp.navigate('#components/activities/view.html?ActivityText=' + e.dataItem.Reference);
+													  if(app.isOnline())
+													  {
+														  app.mobileApp.navigate('#views/activitiesView.html?ActivityText=' + e.dataItem.Reference);
+                                                      }
+													  else{
+														  app.mobileApp.navigate('#components/activities/view.html?ActivityText=' + e.dataItem.Reference);
+														  }
 												  },
 												  detailsShow: function(e) {
 													  var item = e.view.params.uid,

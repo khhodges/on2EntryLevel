@@ -73,7 +73,7 @@ var app = (function (win) {
             //localStorage.setItem("cdr", cdr.latitude + ":" + cdr.longitude);
         },
 			function (error) {
-                app.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
+                app.notify.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
 			    //default map coordinates
 			    //app.notify.showShortTop("Map.Unable to determine current location. Cannot connect to GPS satellite.");
 			    if (localStorage.getItem("cdr")) {
@@ -437,11 +437,11 @@ var app = (function (win) {
 
         broadcast: function () {
 			var activity = app.Activity.activity();
-			if (activity.Title = "My Private Feed"){
-				app.showShortTop("To protect your privacy you cannot broadcast from your Private Data Feed!");
+			if (activity.Title === "My Private Feed"){
+				app.notify.showShortTop("To protect your privacy you cannot broadcast from your Private Data Feed!");
 				return;
             }
-            app.showShortTop("Start Public Broadcast Message to local Cloud Club Members.");
+            app.notify.showShortTop("Start Public Broadcast Message to local Cloud Club Members.");
             if (true) { //TO DO: check if notification activity exists to prevent second attempt
                 
                 var notify = {
@@ -466,15 +466,15 @@ var app = (function (win) {
 					    //if does not exist add to log
 					    var data = el.data('Notifications');
 					    data.create({
-							'Place': app.Places.visiting.partner.Id,
+							'Place': app.Places.visiting.name,
 					        'Reference': activity.Id,
 					        'Status': true
 					    },
 							function (data) {
-							    app.notify.showShortTop(app.Places.visiting.Place + " Notification log " + data.result.Id + " saved!");
+							    app.notify.showShortTop("Notification log " + data.result.Id + " saved!");
 							},
 							function (error) {
-							    app.notify.showShortTop("Not saved due to " + error.message);
+							    app.notify.showShortTop("Notification - Not saved due to " + error.message);
 							});
 					},
 					function (error) {

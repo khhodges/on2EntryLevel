@@ -1,58 +1,59 @@
-   <!--Location View-->
+<!--Location View-->
 <div id="tabstrip-location"
-     data-role="view"
-     data-title="Location"
-     data-init="app.Places.initLocation"
-     
-     data-show="app.Places.show"
-     data-hide="app.Places.hide"
-     data-model="app.Places.locationViewModel"
-     data-stretch="true">     
-        <script>
-            var ref;
-            function iabLoadError(event) {
-                app.notify.showShortTop(event.type + ' - ' + event.message);
-                ref.close();
-            }
-            function iabClose(event) {
-                app.notify.showShortTop(event.type);
-                //iabRef.removeEventListener('loadstart', iabLoadStart);
-                //iabRef.removeEventListener('loadstop', iabLoadStop);
-                //iabRef.removeEventListener('loaderror', iabLoadError);
-                if (ref === null) {
-                    ref.removeEventListener('exit', iabClose);
-                }
-                app.mobileApp.navigate('views/mapView.html');
-            }
-            function test(url) {
-                if (url === null || url === undefined || url.length < 10) {
-                    app.notify.showShortTop(url + " the client data is missing preventing service connection!");
-                } else {
-                    //var http = new XMLHttpRequest();
-                    //http.open("HEAD", url, false);
-                    //http.send();
-                    //if (http.status != 404) {
-                        app.notify.showShortTop("Url.Map Search " + url);
-                        var ref = window.open(url, "_blank", "location=yes");
-                        ref.addEventListener("loaderror", iabLoadError);
-                        ref.addEventListener("exit", iabClose);
-                    //}
-                    //else {
-                    //    app.notify.showShortTop("404 mesage, the request is unavailable!");
-                    //}
-                }
-            };
-        </script>
-        <div data-role="header">
-            <div data-role="navbar" id="navbarTitle">
-                <!-- a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button" ></a-->
-              <input id="map-address" style="margin-right:10px; padding-left:-20px; width:60%" type="search" data-bind="value: find" placeholder="Search for ..." />
-                <a data-role="button" data-align="right" data-icon="search" data-bind="click: onPlaceSearch"></a>
-                <a data-role="button" data-align="left" data-icon="globe" href="views/listView.html"></a>
-            </div>
-        </div>
-        <div id="map-canvas" class="map" data-bind="visible: isGoogleMapsInitialized" ></div>
-        <div id="no-map" data-bind="invisible: isGoogleMapsInitialized">
-            <h3>Location requires internet connection to display the map.</h3>
-        </div>
+	 data-role="view"
+	 data-title="Location"
+	 data-init="app.Places.initLocation"
+	 data-show="app.Places.show"
+	 data-hide="app.Places.hide"
+	 data-model="app.Places.locationViewModel"
+	 data-stretch="true">
+	<script>
+		var ref;
+		
+		function iabLoadError(event) {
+			app.notify.showShortTop(event.type + ' - ' + event.message);
+			ref.close();
+		}
+		function iabClose(event) {
+			app.notify.showShortTop(event.type);
+			//iabRef.removeEventListener('loadstart', iabLoadStart);
+			//iabRef.removeEventListener('loadstop', iabLoadStop);
+			//iabRef.removeEventListener('loaderror', iabLoadError);
+			if (ref === null) {
+				ref.removeEventListener('exit', iabClose);
+			}
+			app.mobileApp.navigate('views/mapView.html');
+		}
+		function test(url) {
+			if (url === null || url === undefined || url.length < 10) {
+				app.notify.showShortTop(url + " the client data is missing preventing service connection!");
+			} else {
+				//var http = new XMLHttpRequest();
+				//http.open("HEAD", url, false);
+				//http.send();
+				//if (http.status != 404) {
+				app.notify.showShortTop("Url.Map Search " + url);
+				var ref = window.open(url, "_blank", "location=yes");
+				ref.addEventListener("loaderror", iabLoadError);
+				ref.addEventListener("exit", iabClose);
+				//}
+				//else {
+				//    app.notify.showShortTop("404 mesage, the request is unavailable!");
+				//}
+			}
+		};
+	</script>
+	<div data-role="header">
+		<div data-role="navbar" id="navbarTitle">
+			<a data-role="button" data-align="left" data-icon="globe" href="views/listView.html">			
+			</a>
+			<input id="map-address" style="margin-right:10px; padding-left:-20px; width:60%" type="search" data-bind="value: find" placeholder="Search for ..." />
+			<a data-role="button" data-align="right" data-icon="search" data-bind="click: onPlaceSearch">				
+            </a>		
+		</div>
+	</div>
+	<div id="map-canvas" class="map" data-bind="visible: isGoogleMapsInitialized" ></div>
+	<div id="no-map" data-bind="invisible: isGoogleMapsInitialized">
+		<h3>Location requires internet connection to display the map.</h3>
+	</div>
 </div>

@@ -11,6 +11,7 @@ app.Activity = (function () {
 		$enterComment,
 		listScroller, 
 		$newComment,
+		showComment,
 		stars,
 		thePictureUrl,
 		validator;
@@ -36,9 +37,13 @@ app.Activity = (function () {
 			showComment = false;
 			listScroller = e.view.scroller;
 			listScroller.reset();
-			activityUid = e.view.params.uid;
-			// Get current activity (based on item uid) from Activities model
-			activity = app.Activities.activities.getByUid(activityUid);
+			if (e.view.params.ActivityText) {
+				activity = app.Activities.activities.getByUid(e.view.params.ActivityText);
+			}else {
+				activityUid = e.view.params.uid;
+				// Get current activity (based on item uid) from Activities model
+				activity = app.Activities.activities.getByUid(activityUid);
+			}
 			app.everlive.Files.getById(activity.Picture).then(
 				function(data) {
 					//alert(JSON.stringify(data));
@@ -50,7 +55,7 @@ app.Activity = (function () {
 			
 			$activityPicture[0].style.display = activity.Picture ? 'block' : 'none';			
 			
-			    app.notify.showShortTop("Activity.Checking for Comments ...")
+			app.notify.showShortTop("Activity.Checking for Comments ...")
 			
 			//app.mobileApp.showLoading();
 			app.Comments.comments.filter({
@@ -70,8 +75,8 @@ app.Activity = (function () {
 				appSettings.messages.removeActivityConfirm,
 				'Delete Activity',
 				function (confirmed) {
-				    if (confirmed === true || confirmed === 1) {
-				        app.notify.showShortTop("Activity.removed");
+					if (confirmed === true || confirmed === 1) {
+						app.notify.showShortTop("Activity.removed");
 						activities.remove(activity);
 						activities.one('sync', function () {
 							app.mobileApp.navigate('#:back');
@@ -106,8 +111,8 @@ app.Activity = (function () {
 				document.getElementById("three").style.visibility = "hidden";
 				document.getElementById("four").style.visibility = "hidden";
 				document.getElementById("five").style.visibility = "hidden";
-			    //update Likes
-			    // Adding new activity to Activities model
+				//update Likes
+				// Adding new activity to Activities model
 				var activities = app.Activities.activities;
 				var activity = activities.getByUid(activityUid);
 				activity.Likes.push(comment.UserId);
@@ -166,16 +171,28 @@ app.Activity = (function () {
 			comments = "\n COMMENTS: \n";
 			var message = activity.Text;
 			if (app.Comments.comments !== undefined) {
-			    app.Comments.comments.data().forEach(function (entry) { comments = comments + entry.CreatedAt + ": " + entry.Comment + "... " + entry.User.DisplayName + "\n"; });
-			     message = message + comments;
+				app.Comments.comments.data().forEach(function (entry) {
+					comments = comments + entry.CreatedAt + ": " + entry.Comment + "... " + entry.User.DisplayName + "\n";
+				});
+				message = message + comments;
 			}
-			var title = app.Users.currentUser.data.DisplayName;
+			var files;
+			var name = app.Users.currentUser.data.DisplayName;
 			var link = thePictureUrl;
+			var options = {
+				message: message +". From " + name, // not supported on some apps (Facebook, Instagram)
+				subject: activity.Title, // fi. for email
+				files: ['', ''], // an array of filenames either locally or remotely
+				url: link,
+				//chooserTitle:  // Android only, you can override the default share sheet title
+			}
 			if (!app.helper.checkSimulator()) {
-			    window.plugins.toast.showLongBottom("Share options now being loaded for, " + message + ", " + title + ", " + link + ", please wait...");
-			    app.shareEmail("The following posting is shared by " + title + ": " + message + ", " + link, link);
+				window.plugins.toast.showLongBottom("Share options now being loaded for, " + message + ", " + name + ", " + link + ", please wait...");
+				//app.myShare(options);
+				//message,subject,files,url,sucess,error
+				app.share("The following posting is shared by " + name +": " + message, activity.Title, files, link);
 			} else {
-			    app.showAlert("Share options now being loaded for, " + message + ", " + title + ", " + link + ", please wait...");
+				app.showAlert("Share options now being loaded for, " + message + ", " + name + ", " + link + ", please wait...");
 			}
 		}
 		

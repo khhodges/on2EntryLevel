@@ -152,6 +152,9 @@ app.activities = kendo.observable({
 			//kjhh
 			onPrompt: function (results) {
 				//alert("You selected button number " + results.buttonIndex + " and entered " + results.input1);
+				if(results===3){
+					return;
+                }
 				if (results === 2) {
 					app.notify.showShortTop("If you register and login all many extended community features are available.");
 					app.mobileApp.navigate('views/signupView.html');
@@ -181,7 +184,7 @@ app.activities = kendo.observable({
 						'First Register or Logon.', // message
 						activitiesModel.onPrompt, // callback to invoke
 						'Authentication Required', // title
-														   ['Login', 'Register'] // buttonLabels
+														   ['Login', 'Register', 'Continue'] // buttonLabels
 						//'User Name address ...'                 // defaultText
 					);
 				}
@@ -298,7 +301,7 @@ app.activities = kendo.observable({
 							"value": d
 							}, {
 							"field": "Title",
-							"operator": "eq",
+							"operator": "startswith",
 							"value": e.view.params.ActivityText
 							}
 					]

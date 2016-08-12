@@ -1,13 +1,14 @@
-<div id="place-list" class="view place-list" data-role="view" data-model="app.Places" data-show="app.Places.listShow">
+<div id="place-list" 
+	class="view place-list" 
+	data-role="view" 
+	data-model="app.Places" 
+	data-show="app.Places.listShow">
     <div data-role="header">
         <div data-role="navbar">
             List
             <a data-role="backbutton" data-align="left">Back</a>
-
-            <a data-role="button" data-align="left" data-icon="globe" href="views/listView.html"></a>
-
-            <!--<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button"></a>-->
-            <a id="addButton" class="nav-button" data-align="right" data-role="button" data-icon="globe" href="views/mapView.html"></a>
+			<a data-role="button" data-align="left" data-icon="globe" data-click="app.Places.browse"></a>
+			<a id="addButton" class="nav-button" data-align="right" data-role="button" data-icon="globe" href="views/mapView.html"></a>
         </div>
     </div>
 
