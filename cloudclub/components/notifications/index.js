@@ -73,18 +73,17 @@ app.notifications = kendo.observable({
 						headers:{
 								"X-Everlive-Expand": {
 											"Reference": {
-														"TargetTypeName": "Activities",
-														"ReturnAs": "EventDetails",
-														"Fields": {
-																		"Title":1,"Text":1,"Picture":1
-																	}
+												"TargetTypeName": "Activities",
+												"ReturnAs": "EventDetails",
+												"Fields": {"Title":1,"Text":1,"Picture":1},
+												//"Filter":{"EventsDetails.Title":{"startswith":"The Whale's Rib Raw Bar"}}
 													}
 										}
 							}
 					}
 			},
 			sort: { field: 'Date', dir: 'desc' },
-			//filter: {field:'Date','gt', new Date.getDate()-10},
+			//filter: {field:'Date', operator;'gt', value:new Date.getDate()-10},
 			change: function(e) {
 				var data = this.data();
 				for (var i = 0; i < data.length; i++) {
@@ -126,7 +125,7 @@ app.notifications = kendo.observable({
 							}
 					}
 			},
-			serverFiltering: true,
+			//serverFiltering: true,
 		},
 		dataSource = new kendo.data.DataSource(dataSourceOptions),
 		notificationsModel = kendo.observable({
@@ -166,24 +165,20 @@ app.notifications = kendo.observable({
 
 	parent.set('onShow', function(e) {
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
-			var d = new Date();
-			d.setDate(d.getDate() - 60);
-			app.notify.showShortTop("Filtering by " + e.view.params.ActivityText + " and " + d)
-			if ((param === null || param === undefined) && e.view.params.ActivityText) {
-				param = {
-					logic: 'and',
-					filters: [{
-								"field": "CreatedAt",
-								"operator": "gt",
-								"value": d
-							},{
-								"field": "Reference",
-								"operator": "eq",
-								"value": e.view.params.ActivityText
-							}
-					]
-				}
-			}
+			//var d = new Date();
+			//d.setDate(d.getDate() - 60);
+			//d=d.toDateString();
+			//app.notify.showShortTop("Filtering by " + e.view.params.ActivityText)
+			//if ((param === null || param === undefined) && e.view.params.ActivityText) {
+			//	param = {
+			//		filter: {
+			//					"field": "EventsDetails.Title",
+			//					"operator": "startswith",
+			//					"value": e.view.params.ActivityText
+			//				}
+					
+			//	}
+			//} 
 		
 		fetchFilteredData(param);
 	});

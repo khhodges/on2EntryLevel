@@ -24,28 +24,10 @@
 			}
 			app.mobileApp.navigate('views/mapView.html');
 		}
-		function test(url) {
-			if (url === null || url === undefined || url.length < 10) {
-				app.notify.showShortTop(url + " the client data is missing preventing service connection!");
-			} else {
-				//var http = new XMLHttpRequest();
-				//http.open("HEAD", url, false);
-				//http.send();
-				//if (http.status != 404) {
-				app.notify.showShortTop("Url.Map Search " + url);
-				var ref = window.open(url, "_blank", "location=yes");
-				ref.addEventListener("loaderror", iabLoadError);
-				ref.addEventListener("exit", iabClose);
-				//}
-				//else {
-				//    app.notify.showShortTop("404 mesage, the request is unavailable!");
-				//}
-			}
-		};
 	</script>
 	<div data-role="header">
 		<div data-role="navbar" id="navbarTitle">
-			<a data-role="button" data-align="left" data-icon="globe" href="views/listView.html">			
+			<a id="listButton" data-role="button" data-align="left" data-icon="globe" >			
 			</a>
 			<input id="map-address" style="margin-right:10px; padding-left:-20px; width:60%" type="search" data-bind="value: find" placeholder="Search for ..." />
 			<a data-role="button" data-align="right" data-icon="search" data-bind="click: onPlaceSearch">				
