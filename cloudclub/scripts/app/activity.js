@@ -206,7 +206,17 @@ app.Activity = (function () {
 				return activity;
 			},
 			addStar: addStar,
-			share: share
+			share: share,
+			updatePictureUrl: function(urId){
+				app.everlive.Files.getById(urId).then(
+				function(data) {
+					//alert(JSON.stringify(data));
+					thePictureUrl = data.result.Uri
+				}, 
+				function(error) {
+					app.showAlert("Picture File not found. Please try again.");
+				});
+            }
 		};
 	}()
 	);

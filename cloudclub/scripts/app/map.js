@@ -812,7 +812,7 @@ app.Places = (function () {
 				});
 			},
 			browse: function (url) {
-				if(url.substring(0,4)!=="http" || url === null || url === undefined || url.length < 10) {
+				if(url === null || url === undefined || url.length < 10 || url.button) {
 				var base = new URL("/", "https://en.wikipedia.org");
 				if (app.isNullOrEmpty(myCity))
 					myCity = app.Places.visiting.partner.City;

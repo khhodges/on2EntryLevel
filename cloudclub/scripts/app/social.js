@@ -24,22 +24,26 @@
 		window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
 	}
 	
-	app.shareEmail = function (message, files) {
-		window.plugins.socialsharing.share(message, 
-										   'Shared Message from ' + app.Users.currentUser.data.DisplayName, 
-										   null, 
-										   null, 
-										   app.Users.currentUser.data.Email, 
-										   files)
-		//NOTES:
-		//'Message', message // can contain HTML tags, but support on Android is rather limited:  http://stackoverflow.com/questions/15136480/how-to-send-html-content-with-image-through-android-default-email-client
-		//'Subject',
-		//['to@person1.com', 'to@person2.com'], // TO: must be null or an array
-		//['cc@person1.com'], // CC: must be null or an array
-		//null, // BCC: must be null or an array
-		//['https://www.google.nl/images/srpr/logo4w.png', 'www/localimage.png'], // FILES: can be null, a string, or an array
-		//onSuccess, // called when sharing worked, but also when the user cancelled sharing via email (I've found no way to detect the difference)
-		//onError // called when sh*t hits the fan
+	app.blogEmail = function (message, files) {
+		if(files.substring(0,4) ==="http"){
+			return;
+        }
+		app.everlive.Files.getById(files).then(
+			function(data) {
+				//alert(JSON.stringify(data));
+				window.plugins.socialsharing.shareViaEmail(
+					message,//'Message', message // can contain HTML tags, but support on Android is rather limited:  http://stackoverflow.com/questions/15136480/how-to-send-html-content-with-image-through-android-default-email-client
+					'Shared by ' + app.Users.currentUser.data.DisplayName,//'Subject',  			 
+					"ken294.on2seeme@blogger.com",//['to@person1.com', 'to@person2.com'], // TO: must be null or an array
+					"ken@sipantic.com",//['cc@person1.com'], // CC: must be null or an array			 
+					app.Users.currentUser.data.Email,//null, // BCC: must be null or an array			 
+					data.result.Uri,//['https://www.google.nl/images/srpr/logo4w.png', 'www/localimage.png'], // FILES: can be null, a string, or an array			
+					function(){app.notify.showShortTop("Blog sent sucessfully")}, // called when sharing worked, but also when the user cancelled sharing via email (I've found no way to detect the difference)
+					app.onError) // called when sh*t hits the fan
+		}, 
+		function(error) {
+			app.showAlert("Picture File not found. Please try again.");
+		});
 	}
      
 	app.shareViaInstagram = function(message, url) {
@@ -149,10 +153,10 @@
 
 	// callbacks
 	app.onSuccess = function(msg) {
-		console.log('SocialSharing success: ' + msg);
+		app.notify.showShortTop('SocialSharing success!');
 	}
 
 	app.onError = function(msg) {
-		alert('SocialSharing error: ' + msg);
+		app.notify.showShortTop('SocialSharing error: ' + msg);
 	}
 }(window));
