@@ -119,6 +119,7 @@ app.Places = (function () {
 			   _isLoading: false,
 			   address: "",
 			   find: null,
+			   list:[],
 			   isGoogleMapsInitialized: true,
 			   markers: [],
 			   details: [],
@@ -284,8 +285,8 @@ app.Places = (function () {
 					   allPartners = data.result;
 					   app.Places.locationViewModel.allPartners = allPartners;
 					   for (var i = 0; i < data.count; i++) {
-						   app.Places.packPartner(i);
 						   var partner = allPartners[i];
+						   app.Places.packPartner(partner);
 						   if (partner.Icon != "styles/images/avatar.png") {
 							   app.Places.locationViewModel.locatedAtFormatted(partner, partner.Location, partner.Description, partner.Html, partner.Address, partner.Place, partner.Website, partner.Phone, partner.Icon);
 							   //get details and add to details
@@ -393,6 +394,7 @@ app.Places = (function () {
 										   place = app.Places.locationViewModel.updateStars(place);
 										   app.Places.locationViewModel.addMarker(place);
 										   app.Places.locationViewModel.details.push(place);
+										   app.Places.packSearch(place);
 									   }
 								   } else {
 									   // Do Place search
@@ -759,24 +761,34 @@ app.Places = (function () {
 				kendo.mobile.application.hideLoading();
 			},
 			locationViewModel: new LocationViewModel(),
-			packPartner: function(i){
+			packPartner: function(item){
 					var result = new Object;
-					var item = allPartners[i];
 					result.name = item.Place;
 					result.vicinity = item.Address;
 					result.isSelectedClass = true;
-					result.rating = 2;
-					result.distance = 1;
+					result.rating = 5;
+					result.distance = app.Places.locationViewModel.updateDistance(item.Location.latitude,item.Location.longitude);
 					result.priceString = '$$';
 					result.visibility = "hidden";					
-					app.Places.locationViewModel.details.push(result);				
+					app.Places.locationViewModel.list.push(result);				
+            },
+			packSearch: function(item){
+					var result = new Object;
+					result.name = item.name;
+					result.vicinity = item.vicinity;
+					result.isSelectedClass = true;
+					result.rating = item.rating;
+					result.distance = item.distance;
+					result.priceString = item.priceString;
+					result.visibility = "hidden";					
+					app.Places.locationViewModel.list.push(result);				
             },
 			listShow: function () {
 				try {
-									list = $("#places-listview").kendoMobileListView({
-						  dataSource: app.Places.locationViewModel.details,
-						  template: "<div class='${isSelectedClass}'><strong> #: name #</strong> #: rating # Stars<div ${visibility} style='width:100%; margin-top:10px'> #: vicinity # -- #: distance # m,  #: priceString # <br/><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Add to Trip List</a></div></div>",
-					   	selectable: "multiple"})
+						list = $("#places-listview").kendoMobileListView({
+						dataSource: app.Places.locationViewModel.list,
+						template: "<div class='${isSelectedClass}'><strong> #: name #</strong> #: rating # Stars<div ${visibility} style='width:100%; margin-top:-5px'> #: vicinity # -- #: distance # m,  #: priceString # <br/><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a></div></div>",
+					    selectable: "multiple"})
 				.data("kendoListView");
 				} catch (ex) {
 					app.notify.showAlert(JSON.stringify(ex));
