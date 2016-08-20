@@ -33,9 +33,9 @@
     "Landscape"
   ],
   "iOSStatusBarStyle": "Default",
-  "AndroidHardwareAcceleration": "True",
+  "AndroidHardwareAcceleration": "true",
   "FrameworkVersion": "4.0.0",
-  "BundleVersion": "1.0",
+  "BundleVersion": "1.0.1",
   "iOSDisplayName": "",
   "iOSDeviceFamily": [
     "1",
@@ -63,15 +63,15 @@
   "WP8PackageIdentityName": "1234Telerik.com.telerik.everlivefriendshybrid",
   "WPSdk": "8.1",
   "CordovaPluginVariables": {
+    "com.telerik.plugin.telerikanalytics": {
+      "AUTO_TRACK_EXCEPTIONS": "True",
+      "AUTO_TRACK_KENDO_EVENTS": "True",
+      "PRODUCT_ID": "ecfdcec2bb07416b861c4035fba82d31"
+    },
     "com.telerik.feedback": {
       "API_KEY": "3t5oa8il0d0y02eq",
       "API_URL": "https://platform.telerik.com/feedback/api/v1",
       "ENABLE_SHAKE": "True"
-    },
-    "com.telerik.plugin.telerikanalytics": {
-      "AUTO_TRACK_KENDO_EVENTS": "True",
-      "AUTO_TRACK_EXCEPTIONS": "True",
-      "PRODUCT_ID": "ecfdcec2bb07416b861c4035fba82d31"
     }
   },
   "iOSDeploymentTarget": "6.0"
