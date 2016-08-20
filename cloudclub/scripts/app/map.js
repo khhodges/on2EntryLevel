@@ -287,7 +287,7 @@ app.Places = (function () {
 					   for (var i = 0; i < data.count; i++) {
 						   var partner = allPartners[i];
 						   app.Places.packPartner(partner);
-						   if (partner.Icon != "styles/images/avatar.png") {
+						   if (partner.Icon !== "styles/images/avatar.png") {
 							   app.Places.locationViewModel.locatedAtFormatted(partner, partner.Location, partner.Description, partner.Html, partner.Address, partner.Place, partner.Website, partner.Phone, partner.Icon);
 							   //get details and add to details
 						   }
@@ -501,6 +501,7 @@ app.Places = (function () {
 				   });
 			   },
 			   onSearchAddress: function () {
+				   app.adMobService.viewModel.prepareInterstitial();
 				   var that = this;
 				   var addr = that.get("find");
 				   geocoder.geocode({
@@ -643,9 +644,13 @@ app.Places = (function () {
 			   },
 			   places: placesDataSource,
 			   getButtons: function (place) { //url,icon,phone,name,address) {
-				   var myIcon = place.avatar;
+
 				   var htmlString = appSettings.HEAD;
-				   htmlString = htmlString.replace('WebSite', place.details.website).replace('Icon', place.avatar).replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('%Name%', place.name).replace('%Name%', place.name).replace("Address", place.details.formatted_address);
+				   //var myIcon = place.avatar;
+				   //if(myIcon.substring(0,4)!=='http'){
+				   //    htmlString = htmlString.replace('Icon', app.helper.resolvePictureUrl(myIcon));
+                   //}				   
+				   htmlString = htmlString.replace('WebSite', place.details.website).replace('Icon', app.helper.resolvePictureUrl(place.avatar)).replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('%Name%', place.name).replace('%Name%', place.name).replace("Address", place.details.formatted_address);
 				   htmlString = htmlString.replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('Open', place.openString).replace('Stars', place.starString);
 				   htmlString = htmlString.replace('UrlString', place.addurl);
 				   var stringResult, find, replace;
@@ -738,6 +743,8 @@ app.Places = (function () {
 				streetView = map.getStreetView();
 			},
 			show: function () {
+				app.adMobService.viewModel.removeBanner();
+				app.adMobService.viewModel.prepareInterstitial();
 				if (app.isOnline()) {
 					if (document.getElementById("myAvatar")) {
 						document.getElementById("myAvatar").src = app.Users.currentUser.data.PictureUrl;

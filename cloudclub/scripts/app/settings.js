@@ -24,7 +24,8 @@ var appSettings = {
 	empty1x1png: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQI12NgYAAAAAMAASDVlMcAAAAASUVORK5CYII=',
 
 
-	items: [{
+	items: [
+	{
 			"id": 1,
 			"name": "Banks ",
 			"list": ["bank", "atm"]
@@ -625,7 +626,10 @@ var appSettings = {
 
          ],
 
-
+	adMob: {
+		appId:'com.cloudclub.on2tplatform',
+		adMobId:'ca-app-pub-4526801130933964~1430116934'
+    },
 	everlive: {
 		appId: '3t5oa8il0d0y02eq', // Put your Backend Services API key here
 		scheme: 'http'

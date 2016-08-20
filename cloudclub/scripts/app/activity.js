@@ -65,6 +65,7 @@ app.Activity = (function () {
 										 });
 			app.mobileApp.hideLoading();
 			kendo.bind(e.view.element, activity, kendo.mobile.ui);
+			app.adMobService.viewModel.showBannerBottom();
 		};
         
 		var removeActivity = function () {

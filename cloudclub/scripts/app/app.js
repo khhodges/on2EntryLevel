@@ -285,7 +285,7 @@ var app = (function (win) {
 
         // Return user profile picture url
         resolveProfilePictureUrl: function (id) {
-            if (id && id !== emptyGuid) {
+            if (id && (id !== emptyGuid && id !== "styles/images/avatar.png")) {
                 return el.Files.getDownloadUrl(id);
             } else {
                 return 'styles/images/avatar.png';
@@ -294,10 +294,10 @@ var app = (function (win) {
 
         // Return current activity picture url
         resolvePictureUrl: function (id) {
-            if (id && id !== emptyGuid) {
+            if (id && (id !== emptyGuid && id !== "styles/images/avatar.png")) {
                 return el.Files.getDownloadUrl(id);
             } else {
-                return '';
+                return 'styles/images/default-image.jpg';
             }
         },
 
@@ -487,6 +487,7 @@ var app = (function (win) {
 
 
         showShortTop: function (m) {
+			//app.adMobService.viewModel.prepareInterstitial();
             console.log("Start Toast Message - " + m);
             if (analytics.isAnalytics()) {
                 m = m + " . . . . . .";
