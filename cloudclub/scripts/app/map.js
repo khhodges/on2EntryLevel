@@ -521,9 +521,9 @@ app.Places = (function () {
 			   },
 			   toggleLoading: function () {
 				   if (this._isLoading) {
-					   kendo.mobile.application.showLoading();
+					   //kendo.mobile.application.showLoading();
 				   } else {
-					   kendo.mobile.application.hideLoading();
+					   //kendo.mobile.application.hideLoading();
 				   }
 			   },
 			   currentLocation: function (marker) {
@@ -688,6 +688,7 @@ app.Places = (function () {
             },
 			initLocation: function () {
 				//common variables 
+				app.notify.showLongBottom("Please wait while the Community map data is loaded...");
 				if (typeof google === "undefined") {
 					return;
 				}
@@ -743,6 +744,7 @@ app.Places = (function () {
 				streetView = map.getStreetView();
 			},
 			show: function () {
+				kendo.mobile.application.showLoading();
 				app.adMobService.viewModel.removeBanner();
 				app.adMobService.viewModel.prepareInterstitial();
 				if (app.isOnline()) {

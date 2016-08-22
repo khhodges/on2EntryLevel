@@ -64,6 +64,8 @@ app.Update = (function () {
 		// Executed after update view initialization
 		// init form validator
 		var init = function () {
+			var sb = document.getElementById("saveButton");
+				sb.style.display = "none";
 		    // Get a reference to our sensitive element
 		    try {
 		        if (!app.Users.isOnline()) {
@@ -99,6 +101,9 @@ app.Update = (function () {
 
 		// Executed after show of the update view
 		var show = function () {
+			
+			var sb = document.getElementById("saveButton");
+				sb.style.display = "none";
 		    try {
 		        if (!app.Users.isOnline()) {
 		            app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
@@ -131,7 +136,8 @@ app.Update = (function () {
 		// Executed after hide of the update view
 		// disable update button
 		var hide = function () {
-			$saveButton.addClass('disabled');
+			var sb = document.getElementById("saveButton");
+			sb.style.display = "";
 		};
 
 		var onSelectChange = function (sel) {
@@ -169,8 +175,8 @@ app.Update = (function () {
 				var selected = imageURI;
 				updateImage.src = selected;
 				picture.src = selected;				
-				$saveButton = $('#saveButton');
-				$saveButton.removeClass('disabled');
+				var sb = document.getElementById("saveButton");
+				sb.style.display = "";
 			}
 			var error = function () {								
 				analytics.TrackFeature('Avatar.Error');

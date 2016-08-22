@@ -164,6 +164,7 @@ app.notifications = kendo.observable({
 	}
 
 	parent.set('onShow', function(e) {
+		app.notify.showShortTop("Please wait for all the latest Notification data to load...");
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
 			//var d = new Date();
 			//d.setDate(d.getDate() - 60);

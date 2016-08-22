@@ -179,6 +179,7 @@ app.home = kendo.observable({
 		    },
 		    //kjhh
 		    likeClick: function () {
+				app.notify.showShortTop("You are now added to this partners Loyalty Club");
 		        app.notify.memorize(dataSource.Id);
 		    },
 		    detailsShow: function (e) {

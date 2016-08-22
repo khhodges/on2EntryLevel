@@ -236,6 +236,7 @@ app.activities = kendo.observable({
 				activitiesModel.set('currentItem', null);
 				activitiesModel.set('currentItem', itemModel);
 				app.adMobService.viewModel.showBannerBottom();
+				kendo.mobile.application.showLoading();
 			},
 			currentItem: null
 		});

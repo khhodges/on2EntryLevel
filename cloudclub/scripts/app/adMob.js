@@ -95,11 +95,11 @@ if (/(android)/i.test(navigator.userAgent)) { // for android & amazon-fireos
         },
 
         checkSimulator: function() {
-            if (window.navigator.simulator === true) {
-                app.notify.showShortTop('This plugin is not available in the simulator.');
+            if (window.navigator.simulator === true || app.helper.getLevel() > 1) {
+                app.notify.showShortTop('Adverts are not used by Level '+app.helper.getLevel()+' users or with the simulator.');
                 return true;
             } else if (window.AdMob === undefined) {
-                app.notify.showShortTop('Plugin not found. Maybe you are running in AppBuilder Companion app which currently does not support this plugin.');
+                app.notify.showShortTop('When you are not logged in some features are not available.');
                 return true;
             } else {
                 return false;

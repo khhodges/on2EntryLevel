@@ -321,7 +321,7 @@ app.Activities = (function () {
 									"latitude": position.coords.latitude
 								};
 								activities.sync();
-								app.blogEmail(activity.Title,selected)
+								//app.blogEmail(activity.Title,selected)
 								$enterEvent.style.display = 'none';
 								validator.hideMessages();
 								document.getElementById('addButton').innerText = "Post";
