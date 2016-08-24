@@ -7,7 +7,7 @@ var app = app || {};
 app.Places = (function () {
 	'use strict'
 	var infoWindow, markers, place, result, myCity, here, request, position, lat1, lng1, allBounds, theZoom = 12,
-		service, allPartners, myAddress, Selfie, list;
+		service, allPartners, myAddress, Selfie, list, comand;
 	var HEAD = appSettings.HEAD;
 	/**
 	 * The Google Map CenterControl adds a control to the map that recenters the map on
@@ -300,9 +300,9 @@ app.Places = (function () {
 											function (error) {
 												app.showError(JSON.stringify(error))
 											});
-				var listButton = document.getElementById("listButton");
-				listButton.addEventListener("click",app.Places.listViewOpen);
-			   listButton.style.display = '';
+			   // var listButton = document.getElementById("listButton");
+			   // listButton.addEventListener("click",app.Places.listViewOpen);
+			   //listButton.style.display = '';
 			   },
 			   getComponent: function (address_components, component) {
 				   for (var i = 0; i < address_components.length; i++) {
@@ -352,6 +352,126 @@ app.Places = (function () {
 				   //    document.getElementById("place-list-view").innerHTML = "<strong> Cleared</strong>";
 				   //}
 			   },
+				//comandAlert: function () {
+				//	navigator.notification.confirm(
+				//		'Continue without Authentication (no Post options) or Register to access essental community features when you Logon.', // message
+				//		app.notify.onPrompt, // callback to invoke
+				//		'Authentication Required', // title
+				//		['Home','Clear','Locate']
+				//		)
+				//},
+				//onPrompt: function (results) {
+				//	//alert("You selected button number " + results + " and entered " + results);
+				//	if (results === 3) {
+				//		app.notify.showShortTop("Continue on this page without community POST features.");
+				//	}
+				//	if (results === 2) {
+				//		app.notify.showShortTop("Registration authorizes access to many extended personal, community and local notification features.");
+				//		app.mobileApp.navigate('views/signupView.html');
+				//	}
+				//	if (results === 1) {
+				//		app.notify.showShortTop("Please sign in.");
+				//		app.mobileApp.navigate('#welcome');
+				//	}
+				//},
+				openActionSheet: function () {
+						var partners = allPartners.length.toFixed(0);
+						var places = markers.length.toFixed(0);
+						places = (places + partners).toString()
+		            app.Places.locationViewModel.showActionSheet({
+		                'androidTheme' : window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+		                'title': 'What do you want to do?',
+		                'buttonLabels': [ 
+						'Show Place List',
+						'New mobile Location',
+						'Upgrade for more Features',
+						//'Switch Lists',
+						//'Get List as Trip Directions',
+						],
+		                'addCancelButtonWithLabel': 'Cancel',
+		                'androidEnableCancelButton' : true, // default false
+		                'winphoneEnableCancelButton' : true, // default false
+		                //'addDestructiveButtonWithLabel' : 'Delete it'                
+		            });
+		        },
+
+		        //delete: function () {
+		        //    this.showActionSheet({
+		        //        'androidTheme' : window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_DARK,
+		        //        'addCancelButtonWithLabel': 'Cancel',
+		        //        'addDestructiveButtonWithLabel' : 'Delete note'
+		        //    });
+		        //},
+
+		        //logout: function () {
+		        //    this.showActionSheet({
+		        //        'buttonLabels': ['Log out'],
+		        //        'androidEnableCancelButton' : true, // default false
+		        //        'winphoneEnableCancelButton' : true, // default false
+		        //        'addCancelButtonWithLabel': 'Cancel'
+		        //    });
+		        //},
+
+		        showActionSheet: function (options) {
+		            if (!this.checkSimulator()) {
+		                window.plugins.actionsheet.show(
+		                    options,
+		                    function (buttonIndex) {
+		                        // wrapping in a timeout so the dialog doesn't freeze the app
+		                        setTimeout(function() {
+									switch (buttonIndex) {
+										
+										//'Clear this List',
+										//'Center on Current Location',
+										//'Open Other List',
+										//'Move Down this List of Places',
+										//'Get List as Trip Directions'
+										//'Upgrade'
+										//Cancel
+									case 1:
+										//'Show List Details',
+										app.mobileApp.navigate("#views/listView.html");
+									break;
+									case 2:
+										//'Show List Details',
+										app.mobileApp.navigate("#blank");
+									break;
+									case 3:
+										app.mobileApp.navigate("#views/updateView.html");
+									break;
+									case 8:
+									break;
+										default:
+										app.notify.showShortTop('You will need to upgrade to use this feature.');
+										break;
+										
+									}
+		                        }, 0);
+		                    }
+		                );
+		            }
+					//else
+					//	if(app.isNullOrEmpty(localStorage.getItem("username"))){
+					//		app.notify.showShortTop("Please register first!");
+					//		app.mobileApp.navigate("#views/signupView.html");
+                    //    }
+					//else{
+					//	app.notify.showShortTop("Please login first!");
+					//	app.mobileApp.navigate("#welcome");
+                    //}
+		        },
+
+		        checkSimulator: function() {
+		            if (window.navigator.simulator === true) {
+		                alert('This plugin is not available in the simulator.');
+		                return true;
+		            } else if (window.cordova === undefined) {
+		                alert('Plugin not found. Maybe you are running in AppBuilder Companion app which currently does not support this plugin.');
+		                return true;
+		            } else {
+		                return false;
+		            }
+		        },
 			   onPlaceSearch: function () {
 				   markers = app.Places.locationViewModel.markers;
 				   for (var i = 0; i < markers.length; i++) {
@@ -363,20 +483,10 @@ app.Places = (function () {
 				   // Create the PlaceService and send the request.
 				   // Handle the callback with an anonymous function.
 				   service = new google.maps.places.PlacesService(map);
-				   here = map.getBounds();
+			   	here = map.getBounds();
+				   //comand = app.Places.locationViewModel.find;
+				   //if(comand==='?'){app.Places.locationViewModel.openActionSheet();}
 				   // Specify location, radius and place types for your Places API search.
-				   switch (app.Places.locationViewModel.find) {
-					   case "Home":
-						   map.panTo(location);
-						   break;
-					   case "Back":
-						   map.panTo(locality);
-						   break;
-					   case null:
-						   //clear markers and return
-						   break;
-					   default:
-
 						   if (app.Places.locationViewModel.find.indexOf(',') < 0) {
 							   //Perform Address Search
 							   request = {
@@ -402,10 +512,10 @@ app.Places = (function () {
 								   }
 							   });
 						   } else {
-							   //Search on find text
+							   //Search on find text with , in address
 							   app.Places.locationViewModel.onSearchAddress();
 						   }
-				   }
+				   
 
 				   function toggleBounce() {
 					   if (this.getAnimation() !== null) {
@@ -570,9 +680,9 @@ app.Places = (function () {
 					   //that._lastMarker.setDraggable(false);
 					   map.setZoom(theZoom);
 					   map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-					   var listButton = document.getElementById("listButton")
-					   listButton.addEventListener("click",app.Places.listViewOpen);
-					   listButton.style.display = '';
+					   //var listButton = document.getElementById("listButton")
+					   //listButton.addEventListener("click",app.Places.listViewOpen);
+					   //listButton.style.display = '';
 				   });
 
 				   google.maps.event.addListener(infoWindow, 'domready', function () {
@@ -694,9 +804,9 @@ app.Places = (function () {
 				}
 				infoWindow = new google.maps.InfoWindow();
 				google.maps.event.addListener(infoWindow, 'domready', function () {
-					var listButton = document.getElementById("listButton")
-					listButton.removeEventListener("click",app.Places.listViewOpen);
-					listButton.style.display = 'none';
+					//var listButton = document.getElementById("listButton")
+					//listButton.removeEventListener("click",app.Places.listViewOpen);
+					//listButton.style.display = 'none';
                 });
 				//create empty LatLngBounds object
 				allBounds = new google.maps.LatLngBounds();
@@ -796,7 +906,8 @@ app.Places = (function () {
 				try {
 						list = $("#places-listview").kendoMobileListView({
 						dataSource: app.Places.locationViewModel.list,
-						template: "<div class='${isSelectedClass}'><strong> #: name #</strong> #: rating # Stars<div ${visibility} style='width:100%; margin-top:-5px'> #: vicinity # -- #: distance # m,  #: priceString # <br/><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a></div></div>",
+						template: "<div class='${isSelectedClass}'><strong> #: name #</strong> #: rating # Stars<div ${visibility} style='width:100%; margin-top:-5px'> #: vicinity # -- #: distance # m,  #: priceString # <br/></div></div>",
+							//<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
 					    selectable: "multiple"})
 				.data("kendoListView");
 				} catch (ex) {
@@ -806,8 +917,8 @@ app.Places = (function () {
 			},
 			
 			addToTrip: function(e){
-				var   data = e.button.data();
-				app.notify.showShortTop("To use this feature for " + data.nameattribute + " you must upgrade to the subscription version.");				
+				//var   data = e.button;
+				//app.notify.showShortTop("To use this feature for you must upgrade to the subscription version.");				
             },
 			onSelected: function (e) {
 				if (!e.dataItem) {

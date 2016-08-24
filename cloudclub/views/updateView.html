@@ -62,6 +62,17 @@
                     </select>
                 </label>
             </li>
+            <li class="select-wrp">
+                <label>
+                    Service Level:
+                    <select id="updateLevelPicker" data-bind="value: Level" onchange="app.Update.onSelectChange(this)">
+                        <option value="1">Free Local Services</option>
+                        <option value="2">Local Services without Ads</option>
+                        <option value="3">With Address Book & Navigation</option>
+                        <option value="4">With Notifications & Calendar</option>
+                    </select>
+                </label>
+            </li>
             <li>
                 <a class="btn" data-role="button" data-click="app.Update.showImage" style="margin: 20px; padding:10px">
                     Auto Blog Share is "ON"

@@ -133,10 +133,10 @@ app.notifications = kendo.observable({
 												  itemClick: function(e) {
 													  if(app.isOnline())
 													  {
-														  app.mobileApp.navigate('#views/activitiesView.html?ActivityText=' + e.dataItem.Reference);
+														  app.mobileApp.navigate('#views/activitiesView.html?ActivityText=' + e.dataItem.Reference.split('&')[0] +'&Text=' + e.dataItem.Place);
                                                       }
 													  else{
-														  app.mobileApp.navigate('#components/activities/view.html?ActivityText=' + e.dataItem.Reference);
+														  app.mobileApp.navigate('#components/activities/view.html?ActivityText=' + e.dataItem.Reference.split('&')[0] +'&Text=' + e.dataItem.Place);
 														  }
 												  },
 												  detailsShow: function(e) {

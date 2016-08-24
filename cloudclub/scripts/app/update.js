@@ -124,7 +124,7 @@ app.Update = (function () {
 											  DisplayName: app.Users.currentUser.data.DisplayName,
 											  Email: app.Users.currentUser.data.Email,
 											  Gender: app.Users.currentUser.data.Gender,
-											  About: app.Users.currentUser.data.About,
+											  Level: app.Users.currentUser.data.Level, 
 											  Friends: app.Users.currentUser.data.Friends,
 											  BirthDate: app.Users.currentUser.data.BirthDate,
 											  PictureUrl: 'url("' + app.Users.currentUser.data.PictureUrl + '");',

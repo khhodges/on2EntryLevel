@@ -7,7 +7,7 @@ var app = app || {};
 
 app.Activities = (function () {
 	'use strict'
-	var $enterEvent, $activityTitle, $newEventText, validator, selected, $baseImage, filterValue, theName, myId, thePartner;
+	var $enterEvent, $activityTitle, $newEventText, validator, selected, $baseImage, filterValue, theName, myId, theText, thePartner;
 	var init = function () {
 		validator = $('#enterEvent').kendoValidator().data('kendoValidator');
 		$enterEvent = $('#enterEvent');
@@ -38,11 +38,14 @@ app.Activities = (function () {
 		if (e.view.params.ActivityText) {
 			app.Places.visiting.name = e.view.params.ActivityText;
 		}
+		
 		thePartner = app.Places.visiting.name;
+		theText = e.view.params.Text;
 		myId = app.Users.currentUser.data.Id;
 		//app.showAlert("Show starting "+ thePartner +" by " + myId);
 		app.Activities.activities._filter.filters[0].filters[1].value = myId;
 		app.Activities.activities._filter.filters[1].filters[0].value = thePartner;
+		app.Activities.activities._filter.filters[1].filters[2].value = theText;
 		app.Activities.activities.fetch(function () {
 			//app.Activities.activities = this.data();
 			//console.log(data.items)
@@ -117,6 +120,10 @@ app.Activities = (function () {
 						fields: 'EndDate',
 						defaultValue: new Date()
 					},
+				Level:{
+					fields: 'Level',
+					defaultValue: 1
+                }
 			},
 			CreatedAtFormatted: function () {
 				return app.helper.formatDate(this.get('CreatedAt'));
@@ -172,8 +179,9 @@ app.Activities = (function () {
 				var currentUserId;
 				currentUserId = app.Users.currentUser.data.Id;
 				var userId = this.get('UserId');
+				var level = app.Users.currentUser.data.Level;
 
-				return currentUserId === userId;
+				return (level===4 && currentUserId === userId);
 			}
 		};
 		// Activities data source. The Backend Services dialect of the Kendo UI DataSource component
@@ -210,6 +218,7 @@ app.Activities = (function () {
 								logic: 'and', filters: [
 												{ field: "Title", operator: "startswith", value: thePartner },
 												{ field: "Title", operator: "neq", value: undefined},
+												{ field: "Text", operator: "contains", value: theText},
 											]
 							}
 																		 ]
