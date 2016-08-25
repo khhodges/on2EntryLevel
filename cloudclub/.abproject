@@ -36,11 +36,10 @@
   "iOSStatusBarStyle": "Default",
   "AndroidHardwareAcceleration": "true",
   "FrameworkVersion": "4.0.0",
-  "BundleVersion": "1.0.2",
+  "BundleVersion": "1.0.3",
   "iOSDisplayName": "",
   "iOSDeviceFamily": [
-    "1",
-    "2"
+    "1"
   ],
   "iOSBackgroundMode": [],
   "AndroidVersionCode": "1",
