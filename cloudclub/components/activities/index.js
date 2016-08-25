@@ -310,11 +310,16 @@ app.activities = kendo.observable({
 				}
 			}
 		}
-		fetchFilteredData(param, {
+		var nameFilter = null;
+		if(e.view.params.Text){ nameFilter={
 						field: 'Text',
 						operator: 'contains',
 						value: e.view.params.Text
-					});
+					}
+		fetchFilteredData(param, nameFilter);}
+		else {
+			fetchFilteredData(param);
+        }
 	})
 })(app.activities);
 // START_CUSTOM_CODE_activitiesModel

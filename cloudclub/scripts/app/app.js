@@ -610,10 +610,6 @@ var app = (function (win) {
 				continueButton.style.display = "";
 				var setupBtn = document.getElementById("setupBtn");
 				setupBtn.style.display = "";
-				//console.log('Your current position is:');
-				//console.log('Latitude : ' + crd.latitude);
-				//console.log('Longitude: ' + crd.longitude);
-				//console.log('More or less ' + crd.accuracy + ' meters.');
 				callBack(crd);
 			};
 
