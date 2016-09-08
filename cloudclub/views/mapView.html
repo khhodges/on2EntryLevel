@@ -35,7 +35,12 @@
 		</div>
 	</div>
 	<div id="map-canvas" class="map" data-bind="visible: isGoogleMapsInitialized" ></div>
-	<div id="no-map" data-bind="invisible: isGoogleMapsInitialized">
+	<div id="map-directions" class="map" data-bind="visible: isGoogleDirectionsInitialized" ></div>
+	<div id="right-panel" data-style="inset" style="{
+          width: 90%;
+    	  overflow: scroll;
+        }" data-bind="visible: isGoogleDirectionsTextInitialized" ></div>
+	<!--div id="no-map" data-bind="invisible: isGoogleMapsInitialized">
 		<h3>Location requires internet connection to display the map.</h3>
-	</div>
+	</div-->
 </div>

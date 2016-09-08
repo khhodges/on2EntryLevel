@@ -20,39 +20,61 @@ app.Activities = (function () {
 	var filterOne = {
 		logic: 'or',
 		filters: [{
-					logic: 'and', filters: [
-						{ field: "Title", operator: "eq", value: "My Private Feed" },
-						{ field: "UserId", operator: "eq", value: myId }
+				logic: 'and',
+				filters: [
+					{
+						field: "Title",
+						operator: "eq",
+						value: "My Private Feed"
+					},
+					{
+						field: "UserId",
+						operator: "eq",
+						value: myId
+					}
 					]
-				},{
-					logic: 'and', filters: [
-								{ field: "Title", operator: "startswith", value: thePartner },
-								{ field: "Title", operator: "neq", value: undefined},
+				}, {
+				logic: 'and',
+				filters: [
+					{
+						field: "Title",
+						operator: "startswith",
+						value: thePartner
+					},
+					{
+						field: "Title",
+						operator: "neq",
+						value: undefined
+					},
 								//{ field: "Title", operator: "startswith", value: "The Whale's Rib Raw Bar"}
 							]
 				}
 		]
 	};
 	var show = function (e) {
+			app.showAlert(thePartner);
 		//app.showAlert("Show starting "+ app.Places.visiting.name +" b7 " + )
 		if (e.view.params.ActivityText) {
 			app.Places.visiting.name = e.view.params.ActivityText;
 		}
-		
+
 		thePartner = app.Places.visiting.name;
 		theText = e.view.params.Text;
 		myId = app.Users.currentUser.data.Id;
 		//app.showAlert("Show starting "+ thePartner +" by " + myId);
 		app.Activities.activities._filter.filters[0].filters[1].value = myId;
+		if (thePartner !== "My Private Feed") {
+			app.Activities.activities._filter.filters[0].filters[0].value = '';
+		}
 		app.Activities.activities._filter.filters[1].filters[0].value = thePartner;
 		app.Activities.activities._filter.filters[1].filters[2].value = theText;
 		app.Activities.activities.fetch(function () {
 			//app.Activities.activities = this.data();
 			//console.log(data.items)
 			$('#activities-listview').kendoMobileListView({
-															  dataSource: app.Activities.activities,
-															  template: kendo.template($('#activityTemplate').html())
-														  });
+				dataSource: app.Activities.activities,
+				template: kendo.template($('#activityTemplate').html())
+			});
 			kendo.bind($("#view-all-activities", app.Activities));
 		});
 		theName = "My Private Feed";
@@ -73,57 +95,57 @@ app.Activities = (function () {
 			id: 'Id',
 			fields: {
 				Text: {
-						field: 'Text',
-						defaultValue: ''
-					},
+					field: 'Text',
+					defaultValue: ''
+				},
 				CreatedAt: {
-						field: 'CreatedAt',
-						defaultValue: new Date()
-					},
+					field: 'CreatedAt',
+					defaultValue: new Date()
+				},
 				Picture: {
-						fields: 'Picture',
-						defaultValue: null
-					},
+					fields: 'Picture',
+					defaultValue: null
+				},
 				UserId: {
-						field: 'UserId',
-						defaultValue: null
-					},
+					field: 'UserId',
+					defaultValue: null
+				},
 				Likes: {
-						field: 'Likes',
-						defaultValue: []
-					},
+					field: 'Likes',
+					defaultValue: []
+				},
 				Location: {
-						field: 'Location',
-						defaultValue: []
-					},
+					field: 'Location',
+					defaultValue: []
+				},
 				Active: {
-						fields: 'Active',
-						defaultValue: 1
-					},
+					fields: 'Active',
+					defaultValue: 1
+				},
 				Notes: {
-						fields: 'Notes',
-						defaultValue: null
-					},
+					fields: 'Notes',
+					defaultValue: null
+				},
 				Title: {
-						fields: 'Title',
-						defaultValue: null
-					},
+					fields: 'Title',
+					defaultValue: null
+				},
 				Value: {
-						fields: 'Value',
-						defaultValue: 0
-					},
+					fields: 'Value',
+					defaultValue: 0
+				},
 				Start: {
-						fields: 'StartDate',
-						defaultValue: new Date()
-					},
+					fields: 'StartDate',
+					defaultValue: new Date()
+				},
 				End: {
-						fields: 'EndDate',
-						defaultValue: new Date()
-					},
-				Level:{
+					fields: 'EndDate',
+					defaultValue: new Date()
+				},
+				Level: {
 					fields: 'Level',
 					defaultValue: 1
-                }
+				}
 			},
 			CreatedAtFormatted: function () {
 				return app.helper.formatDate(this.get('CreatedAt'));
@@ -141,18 +163,18 @@ app.Activities = (function () {
 				var id = this.get('Picture');
 				var el = new Everlive(appSettings.everlive.appId);
 				el.Files.getById(id).then(function (data) {
-					// get url from data
-					var url = data.result.Uri;
-					var size = "/resize=w:200,h:200,fill:cover/";
-					var base = "https://bs1.cdn.telerik.com/image/v1/";
-					//navigator.notification.alert(url);
-					// convert to responsive url
-					url = base + appSettings.everlive.appId + size + url;
-					return url;
-				}),
-				function (error) {
-					navigator.notification.alert(JSON.stringify(error));
-				}
+						// get url from data
+						var url = data.result.Uri;
+						var size = "/resize=w:200,h:200,fill:cover/";
+						var base = "https://bs1.cdn.telerik.com/image/v1/";
+						//navigator.notification.alert(url);
+						// convert to responsive url
+						url = base + appSettings.everlive.appId + size + url;
+						return url;
+					}),
+					function (error) {
+						navigator.notification.alert(JSON.stringify(error));
+					}
 			},
 			User: function () {
 				var userId = this.get('UserId');
@@ -181,74 +203,99 @@ app.Activities = (function () {
 				var userId = this.get('UserId');
 				var level = app.Users.currentUser.data.Level;
 
-				return (level===4 && currentUserId === userId);
+				return (level === '4' && currentUserId === userId);
 			}
 		};
 		// Activities data source. The Backend Services dialect of the Kendo UI DataSource component
 		// supports filtering, sorting, paging, and CRUD operations.
 		var activitiesDataSource = new kendo.data.DataSource({
-																 type: 'everlive',
-																 schema: {
+			type: 'everlive',
+			schema: {
 				model: activityModel
 			},
-																 transport: {
+			transport: {
 				// Required by Backend Services
 				typeName: 'Activities',
 			},
-																 change: function (e) {
-																	 if (e.items && e.items.length > 0) {
-																		 $('#no-activities-span').hide();
-																	 } else {
-																		 $('#no-activities-span').show();
-																	 }
-																 },
-																 sort: {
+			change: function (e) {
+				if (e.items && e.items.length > 0) {
+					$('#no-activities-span').hide();
+				} else {
+					$('#no-activities-span').show();
+				}
+			},
+			sort: {
 				field: 'CreatedAt',
 				dir: 'desc'
 			},
-																 filter: {
+			filter: {
 				logic: 'or',
 				filters: [{
-								logic: 'and', filters: [
-									{ field: "Title", operator: "eq", value: "My Private Feed" },
-									{ field: "UserId", operator: "eq", value: myId },
-									{ field: "UserId", operator: "eq", value: ""}//add user setting
+						logic: 'and',
+						filters: [
+							{
+								field: "Title",
+								operator: "eq",
+								value: "My Private Feed"
+							},
+							{
+								field: "UserId",
+								operator: "eq",
+								value: myId
+							},
+							//{
+							//	field: "UserId",
+							//	operator: "eq",
+							//	value: ""
+							//} //add user setting
 								]
-							},{
-								logic: 'and', filters: [
-												{ field: "Title", operator: "startswith", value: thePartner },
-												{ field: "Title", operator: "neq", value: undefined},
-												{ field: "Text", operator: "contains", value: theText},
+							}, {
+						logic: 'and',
+						filters: [
+							{
+								field: "Title",
+								operator: "startswith",
+								value: thePartner
+							},
+							{
+								field: "Title",
+								operator: "neq",
+								value: undefined
+							},
+							{
+								field: "Text",
+								operator: "contains",
+								value: theText
+							},
 											]
 							}
 																		 ]
 			}
-															 }
-			);
+		});
 		//var myDataSource = app.Activities.activities;
 		return {
 			activities: activitiesDataSource
 		};
 	}());
 	var afterShow = function () {
-		app.showAlert("After Show starting")
-		var myDataSource = app.Activities.activities;
-		myDataSource.fetch(function () {
-			app.Activities.activities = this.data();
-			//console.log(data.items)
-			$('#activities-listview').kendoMobileListView({
-															  dataSource: app.Activities,
-															  template: kendo.template($('#activityTemplate').html())
-														  });
-		});
-	}
-	// Activities view model
+			app.showAlert("After Show starting")
+			var myDataSource = app.Activities.activities;
+			myDataSource.fetch(function () {
+				app.Activities.activities = this.data();
+				//console.log(data.items)
+				$('#activities-listview').kendoMobileListView({
+					dataSource: app.Activities,
+					template: kendo.template($('#activityTemplate').html())
+				});
+			});
+		}
+		// Activities view model
 
 	var activitiesViewModel = (function () {
 		// Navigate to activityView When some activity is selected
 		var activitySelected = function (e) {
 			var itemId = $(e.event.target).parents("li").attr("data-uid");
-			app.mobileApp.navigate('views/activityView.html?uid=' + itemId);// e.dataItem.uid);
+			app.mobileApp.navigate('views/activityView.html?uid=' + itemId); // e.dataItem.uid);
 		};
 		// Navigate to app home
 		var navigateHome = function () {
@@ -305,10 +352,10 @@ app.Activities = (function () {
 				app.mobileApp.showLoading();
 				// Save image as base64 to everlive
 				app.everlive.Files.create({
-											  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
-											  ContentType: "image/jpeg",
-											  base64: $baseImage
-										  })
+						Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+						ContentType: "image/jpeg",
+						base64: $baseImage
+					})
 					.then(function (promise) {
 						selected = promise.result.Id;
 
@@ -320,7 +367,7 @@ app.Activities = (function () {
 						activity.UserId = app.Users.currentUser.get('data').Id;
 						activity.Picture = selected;
 						app.Places.locationViewModel.lastPicture = selected;
-						activity.Title = "My Private Feed";//app.Users.currentUser.get('data').DisplayName;
+						activity.Title = "My Private Feed"; //app.Users.currentUser.get('data').DisplayName;
 						if (app.Places.visiting.name)
 							activity.Title = app.Places.visiting.name;
 						navigator.geolocation.getCurrentPosition(
@@ -346,7 +393,7 @@ app.Activities = (function () {
 								timeout: 30000,
 								enableHighAccuracy: true
 							}
-							);
+						);
 					})
 			}
 		};
@@ -377,13 +424,13 @@ app.Activities = (function () {
 		};
 		var takePicture = function () {
 			navigator.camera.getPicture(success, error, {
-											//kjhh best result including iphone rotation
-											quality: 100,
-											destinationType: navigator.camera.DestinationType.FILE_URI,
-											sourceType: navigator.camera.PictureSourceType.CAMERA,
-											encodingType: navigator.camera.EncodingType.JPEG,
-											correctOrientation: true
-										})
+				//kjhh best result including iphone rotation
+				quality: 100,
+				destinationType: navigator.camera.DestinationType.FILE_URI,
+				sourceType: navigator.camera.PictureSourceType.CAMERA,
+				encodingType: navigator.camera.EncodingType.JPEG,
+				correctOrientation: true
+			})
 		};
 		var pickImage = function () {
 			if (app.isOnline()) {
