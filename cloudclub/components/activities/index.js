@@ -140,7 +140,7 @@ app.activities = kendo.observable({
 				if (e.dataItem) {
 					app.mobileApp.navigate('#components/activities/details.html?uid=' + e.dataItem.uid);
 				} else {
-					app.mobileApp.navigate('views.mapView.html');
+					app.mobileApp.navigate('views/mapView.html');
 				}
 			},
 			addClick: function () {

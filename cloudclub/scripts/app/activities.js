@@ -52,7 +52,7 @@ app.Activities = (function () {
 		]
 	};
 	var show = function (e) {
-			app.showAlert(thePartner);
+			//app.showAlert(thePartner);
 		//app.showAlert("Show starting "+ app.Places.visiting.name +" b7 " + )
 		if (e.view.params.ActivityText) {
 			app.Places.visiting.name = e.view.params.ActivityText;

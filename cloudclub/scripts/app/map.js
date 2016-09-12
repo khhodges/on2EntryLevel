@@ -158,7 +158,8 @@ app.Places = (function () {
 					html: partner.Html,
 					text: partner.Description,
 					location: Marker,
-					starString: "",
+					starString: "4.5",
+					openString:"Normal hours",
 					distanceString: "",
 					addurl: "components/activities/view.html?partner=%Name%"
 				}
@@ -170,6 +171,7 @@ app.Places = (function () {
 					var htmlString = app.Places.locationViewModel.getButtons(place);
 					var position = place.geometry.location;
 					place.markerUrl = 'styles/images/on2see-icon-120x120.png';
+					place.openString = '</strong> stars, about <strong>' + place.distance + '</strong> miles (ATCF).';
 					place.zIndex = 5;
 					if (place.avatar) {
 						place.markerUrl = place.avatar;
@@ -206,7 +208,9 @@ app.Places = (function () {
 				return;
 			},
 			updateDistance: function (lat2, lng2) {
-				var R = 6371; // km
+			    var R = 6371; // km
+			    var lat1 = app.cdr.latitude;
+			    var lng1 = app.cdr.longitude;
 				var dLat = (lat2 - lat1) * Math.PI / 180;
 				var dLon = (lng2 - lng1) * Math.PI / 180;
 				var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -289,7 +293,8 @@ app.Places = (function () {
 			getComponent: function (address_components, component) {
 				for (var i = 0; i < address_components.length; i++) {
 					if (address_components[i].types[0] === component) {
-						myCity = address_components[i].long_name;
+					    myCity = address_components[i].long_name;
+					    if (myCity === undefined) myCity = "New York";
 						return myCity;
 					}
 				}
@@ -330,82 +335,122 @@ app.Places = (function () {
 				markers = [];
 				app.Places.locationViewModel.markers = new Array;
 			},
+			openListSheet: function () {
+			    if (!app.Places.locationViewModel.checkSimulator()) {
+			        var partners = allPartners.length.toFixed(0);
+			        var places = markers.length.toFixed(0);
+			        places = (places + partners).toString()
+			        app.Places.locationViewModel.showListSheet({
+			            'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+			            'title': 'What do you want to do?',
+			            'buttonLabels': [
+						   'Keep Selected Items Only',
+						   'Delete Selected Items',
+						   'Upgrade for more Features',
+						   //'Switch Lists',
+						   //'Get List as Trip Directions',
+			            ],
+			            'addCancelButtonWithLabel': 'Cancel',
+			            'androidEnableCancelButton': true, // default false
+			            'winphoneEnableCancelButton': true, // default false
+			            //'addDestructiveButtonWithLabel' : 'Delete it'                
+			        });
+			    }
+			},
 			openActionSheet: function () {
-				if (!app.Places.locationViewModel.checkSimulator()) {
-					var partners = allPartners.length.toFixed(0);
-					var places = markers.length.toFixed(0);
-					places = (places + partners).toString()
-					app.Places.locationViewModel.showActionSheet({
-						'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
-						'title': 'What do you want to do?',
-						'buttonLabels': [
+			    if (!app.Places.locationViewModel.checkSimulator()) {
+			        var partners = allPartners.length.toFixed(0);
+			        var places = markers.length.toFixed(0);
+			        places = (places + partners).toString()
+			        app.Places.locationViewModel.showActionSheet({
+			            'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+			            'title': 'What do you want to do?',
+			            'buttonLabels': [
 						   'Show Place List',
-						   'Recenter Location',
 						   'Update Nearby Partners',
 						   'Upgrade for more Features',
 						   //'Switch Lists',
 						   //'Get List as Trip Directions',
-					   ],
-						'addCancelButtonWithLabel': 'Cancel',
-						'androidEnableCancelButton': true, // default false
-						'winphoneEnableCancelButton': true, // default false
-						//'addDestructiveButtonWithLabel' : 'Delete it'                
-					});
-				}
+			            ],
+			            'addCancelButtonWithLabel': 'Cancel',
+			            'androidEnableCancelButton': true, // default false
+			            'winphoneEnableCancelButton': true, // default false
+			            //'addDestructiveButtonWithLabel' : 'Delete it'                
+			        });
+			    }
 			},
-			showActionSheet: function (options) {
-				if (!this.checkSimulator()) {
-					window.plugins.actionsheet.show(
+			showListSheet: function (options) {
+			    if (!this.checkSimulator()) {
+			        window.plugins.actionsheet.show(
 						options,
 						function (buttonIndex) {
-							// wrapping in a timeout so the dialog doesn't freeze the app
-							setTimeout(function () {
-								switch (buttonIndex) {
-									case 1:
-										//'Show List Details',
-										app.mobileApp.navigate("#views/listView.html");
-										break;
-									case 2:
-										app.Places.updateMapLocation();
-										break;
-									case 3:
-										app.Places.updatePartnerLocation();
-										break;
-									case 4:
-										app.mobileApp.navigate("#views/updateView.html");
-										break;
-									case 8:
-										break;
-									default:
-										app.notify.showShortTop('You will need to upgrade to use this feature.');
-										break;
-								}
-							}, 0);
+						    // wrapping in a timeout so the dialog doesn't freeze the app
+						    setTimeout(function () {
+						        switch (buttonIndex) {
+						            case 1://'Keep selected items',
+						            case 2://Delete selected items    
+						                app.mobileApp.navigate("#views/listView.html?keep="+buttonIndex);
+						                break;
+						            case 3:
+						                app.mobileApp.navigate("#views/updateView.html");
+						                break;
+						                //case 8:
+						                //	break;
+						            default:
+						                app.notify.showShortTop('You will need to upgrade to use this feature.');
+						                break;
+						        }
+						    }, 0);
 						}
 					);
-				}
-				//else
-				//	if(app.isNullOrEmpty(localStorage.getItem("username"))){
-				//		app.notify.showShortTop("Please register first!");
-				//		app.mobileApp.navigatedeleteMap("#views/signupView.html");
-				//    }
-				//else{
-				//	app.notify.showShortTop("Please login first!");
-				//	app.mobileApp.navigate("#welcome");
-				//}
+			    }
+			},
+			showActionSheet: function (options) {
+			    if (!this.checkSimulator()) {
+			        window.plugins.actionsheet.show(
+						options,
+						function (buttonIndex) {
+						    // wrapping in a timeout so the dialog doesn't freeze the app
+						    setTimeout(function () {
+						        switch (buttonIndex) {
+						            case 1:
+						                //'Show List Details',
+						                app.mobileApp.navigate("#views/listView.html");
+						                break;
+						                //case 2:
+						                //	app.Places.updateMapLocation();
+						                //	break;
+						            case 2:
+						                app.Places.updatePartnerLocation();
+						                break;
+						            case 3:
+						                app.mobileApp.navigate("#views/updateView.html");
+						                break;
+						                //case 8:
+						                //	break;
+						            default:
+						                app.notify.showShortTop('You will need to upgrade to use this feature.');
+						                break;
+						        }
+						    }, 0);
+						}
+					);
+			    }
+			    //else
+			    //	if(app.isNullOrEmpty(localStorage.getItem("username"))){
+			    //		app.notify.showShortTop("Please register first!");
+			    //		app.mobileApp.navigatedeleteMap("#views/signupView.html");
+			    //    }
+			    //else{
+			    //	app.notify.showShortTop("Please login first!");
+			    //	app.mobileApp.navigate("#welcome");
+			    //}
 			},
 			checkSimulator: function () {
 				//app.notify.showShortTop(window.navigator.simulator);
-				if (window.navigator.simulator === true) {
-					alert('This plugin is not available in the simulator.');
-					return true;
-				} else if (window.cordova === undefined) {
-					var x = app.Places.locationViewModel.get("isGoogleMapsInitialized");
-					//app.notify.showShortTop(x);
-					app.Places.locationViewModel.set("isGoogleMapsInitialized", !x);
-					app.Places.locationViewModel.set("isGoogleDirectionsInitialized", !x);
-					app.Places.locationViewModel.set("isGoogleDirectionsTextInitialized", x);
-					app.notify.showShortTop('Plugin not found. Maybe you are running in AppBuilder Companion app which currently does not support this plugin.');
+			    if (window.navigator.simulator === true || window.cordova === undefined) {
+			        app.notify.showShortTop('This plugin is not available in the simulator.');
+			        app.mobileApp.navigate("views/listView.html");
 					return true;
 				} else {
 					return false;
@@ -687,14 +732,14 @@ app.Places = (function () {
 							}
 						)
 					}
-					var calendarLink = document.getElementById("calendarLink");
-					if (calendarLink) {
-						calendarLink.addEventListener("click",
-							function () {
-								app.mobileApp.navigate("components/aboutView/view.html")
-							}
-						)
-					}
+					//var calendarLink = document.getElementById("calendarLink");
+					//if (calendarLink) {
+					//	calendarLink.addEventListener("click",
+					//		function () {
+					//			app.mobileApp.navigate("components/aboutView/view.html")
+					//		}
+					//	)
+					//}
 				});
 
 				function updatePosition(lat, lng) {
@@ -880,11 +925,23 @@ app.Places = (function () {
 				result.visibility = "hidden";
 				app.Places.locationViewModel.list.push(result);
 			},
-			listShow: function () {
+			listShow: function (e) {
+			    var ds = app.Places.locationViewModel.list;
+			    for (var i = 0; i < ds.length; i++) {
+			        var item = ds[i];
+			        //if ((e.view.params.keep === 1 && item.selected === false) || (e.view.params.keep === 2 && item.selected === true)) {
+			            //app.notify.showShortTop("Delete " + i.toString());
+			        //}
+			    }                
 				try {
 					list = $("#places-listview").kendoMobileListView({
-							dataSource: app.Places.locationViewModel.list,
-							template: "<div class='${isSelectedClass}'><strong> #: name #</strong> #: rating # Stars<div ${visibility} style='width:100%; margin-top:-5px'> #: vicinity # -- #: distance # m,  #: priceString # <br/></div></div>",
+					    dataSource: app.Places.locationViewModel.list,
+					    filter:{
+					        field: name,
+					        operator: "vicinity",
+                            value: "Pizza"
+					    },
+					    template: "<div class='${isSelectedClass}'><div data-role='touch' data-enable-swipe='true' data-swipe='app.Places.locationViewModel.openListSheet'><strong> #: name #</strong> #: rating # Stars<div ${visibility} style='width:100%; margin-top:-5px'> #: vicinity # -- #: distance # m,  #: priceString # <br/></div></div></div>",
 							//<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
 							selectable: "multiple"
 						})

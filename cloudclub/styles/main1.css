@@ -6,7 +6,6 @@
 
 .place-list-view li div {
     padding: .7em;
-    border: 1px solid rgba(0, 0, 0, .1);
   border-width: 0 0 10px 0;
 }
 
