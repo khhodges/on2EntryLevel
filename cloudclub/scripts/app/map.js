@@ -6,7 +6,7 @@ var app = app || {};
 
 app.Places = (function () {
 	'use strict'
-	var infoWindow, markers, place, result, myCity, newPlace, here, request, home, position, lat1, lng1, allBounds, theZoom = 13,
+	var infoWindow, markers, place, result, myCity, newPlace, here, request, home, position, lat1, lng1, allBounds, theZoom = 15,
 		service, allPartners, myAddress, Selfie, list;
 	var HEAD = appSettings.HEAD;
 	/**
@@ -189,6 +189,7 @@ app.Places = (function () {
 								scaledSize: new google.maps.Size(30, 30),
 							}
 						});
+						app.Places.locationViewModel.markers.push(partner.Mark);
 						//extend the bounds to include each marker's position
 						allBounds.extend(partner.Mark.position);
 						//now fit the map to the newly inclusive bounds
@@ -241,14 +242,18 @@ app.Places = (function () {
 				that._isLoading = true;
 				that.toggleLoading();
 				if (!app.Places.locationViewModel.markers) {
-					app.Places.locationViewModel.markers = new Array;
+				    app.Places.locationViewModel.markers = new Array;
+				    //create empty LatLngBounds object
+				    allBounds = new google.maps.LatLngBounds();
 				}
 				if (!app.Places.locationViewModel.details) {
 					app.Places.locationViewModel.details = new Array;
 				}
 				markers = app.Places.locationViewModel.markers;
 				for (var i = 0; i < markers.length; i++) {
-					markers[i].setMap(null);
+				    markers[i].setMap(null);
+				    //create empty LatLngBounds object
+				    allBounds = new google.maps.LatLngBounds();
 				}
 				if (!app.isNullOrEmpty(app.cdr)) {
 					position = new google.maps.LatLng(app.cdr.latitude, app.cdr.longitude);
@@ -270,14 +275,14 @@ app.Places = (function () {
 				that._isLoading = false;
 				that.toggleLoading();
 				var query = new Everlive.Query();
-				query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 20, 'miles').ne('Icon', 'styles/images/avatar.png');
+				query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 2, 'miles').ne('Icon', 'styles/images/avatar.png');
 				var partners = app.everlive.data('Places');
 				partners.get(query).then(function (data) {
 						allPartners = data.result;
 						app.Places.locationViewModel.allPartners = allPartners;
 						for (var i = 0; i < data.count; i++) {
 							var partner = allPartners[i];
-							app.Places.packPartner(partner);
+							partner.pack = app.Places.packPartner(partner);
 							if (partner.Icon !== "styles/images/avatar.png") {
 								app.Places.locationViewModel.locatedAtFormatted(partner);
 							}
@@ -329,7 +334,9 @@ app.Places = (function () {
 			clearMap: function deleteMarkers() { // Deletes all markers in the array by removing references to them.
 				markers = app.Places.locationViewModel.markers;
 				for (var i = 0; i < markers.length; i++) {
-					markers[i].setMap(null);
+				    markers[i].setMap(null);
+				    //create empty LatLngBounds object
+				    allBounds = new google.maps.LatLngBounds();
 				}
 
 				markers = [];
@@ -367,7 +374,8 @@ app.Places = (function () {
 			            'title': 'What do you want to do?',
 			            'buttonLabels': [
 						   'Show Place List',
-						   'Update Nearby Partners',
+						   'Show Nearby Partners',
+                           'Keep the Golden places',
 						   'Upgrade for more Features',
 						   //'Switch Lists',
 						   //'Get List as Trip Directions',
@@ -424,6 +432,16 @@ app.Places = (function () {
 						                app.Places.updatePartnerLocation();
 						                break;
 						            case 3:
+						                var markersList = app.Places.locationViewModel.markers;
+						                for (var i = 0; i < markersList.length; i++) {
+						                    var mark = markersList[i];
+						                    if (mark.icon.url==='styles/images/redcircle.png' || mark.icon.url==='styles/images/greencircle.png') {
+                                                mark.setMap(null);
+						                    }
+						                    //app.notify.showShortTop(JSON.stringify(mark))
+						                }
+						                break;
+						            case 4:
 						                app.mobileApp.navigate("#views/updateView.html");
 						                break;
 						                //case 8:
@@ -532,6 +550,7 @@ app.Places = (function () {
 				var marker = new google.maps.Marker({
 					map: map,
 					position: place.geometry.location,
+                    place: place,
 					icon: {
 						url: place.markerUrl,
 						anchor: new google.maps.Point(3 * place.sizeRating, 5 * place.sizeRating),
@@ -643,6 +662,7 @@ app.Places = (function () {
 					draggable: true,
 					zIndex: 100
 				});
+				//app.Places.locationViewModel.markers.push(that._lastMarker);
 				//extend the bounds to include each marker's position
 				allBounds.extend(that._lastMarker.position);
 				//now fit the map to the newly inclusive bounds
@@ -672,7 +692,7 @@ app.Places = (function () {
 				google.maps.event.addListener(infoWindow, 'closeclick', function () {
 					//app.showAlert("InfoWindo ready 570");
 					//that._lastMarker.setDraggable(false);
-					if(map.getZoom()===17) map.setZoom(theZoom);
+					//if(map.getZoom()===17) map.setZoom(theZoom);
 					map.fitBounds(allBounds);
 					map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
 					//var listButton = document.getElementById("listButton")
@@ -698,7 +718,7 @@ app.Places = (function () {
 					var feedRoute = document.getElementById("myFeedLink");
 					if (feedRoute) {
 						feedRoute.addEventListener("click", function () {
-							if (false) { //}app.isOnline()) {
+						    if (app.isOnline()) { //}app.isOnline()) {
 								app.mobileApp.navigate("views/activitiesView.html?ActivityText=My Private Feed&User=" + app.Users.currentUser.data.Id);
 							} else {
 								app.mobileApp.navigate("components/notifications/view.html");
@@ -808,7 +828,7 @@ app.Places = (function () {
 						lat: position.latitude,
 						lng: position.longitude
 					});
-					map.setZoom(theZoom);
+					//map.setZoom(theZoom);
 					map.fitBounds(allBounds);
 					map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
 					var iw = infoWindow;
@@ -913,6 +933,7 @@ app.Places = (function () {
 				result.priceString = '$$';
 				result.visibility = "hidden";
 				app.Places.locationViewModel.list.push(result);
+				return result;
 			},
 			packSearch: function (item) {
 				var result = new Object;
@@ -927,20 +948,35 @@ app.Places = (function () {
 			},
 			listShow: function (e) {
 			    var ds = app.Places.locationViewModel.list;
-			    for (var i = 0; i < ds.length; i++) {
-			        var item = ds[i];
-			        //if ((e.view.params.keep === 1 && item.selected === false) || (e.view.params.keep === 2 && item.selected === true)) {
-			            //app.notify.showShortTop("Delete " + i.toString());
-			        //}
+			    var ds2 = [];
+			    if(e.view.params.keep){
+			        for (var i = 0; i < ds.length; i++) {
+			            var item = ds[i];
+			            switch (e.view.params.keep) {
+			                case "1":
+			                    if (item.visibility === "visible") ds2.push(item);
+			                    item.visibility = "hidden";
+			                    item.isSelectedClass = "";
+			                    break;
+			                case "2":
+			                    if (item.visibility === "hidden") ds2.push(item);;
+			                    break;
+			                default:
+			                    alert("No case found " + e.view.params.keep)
+			                    break
+			            }
+			        }
+			        app.Places.locationViewModel.list = ds2;
+			        //clear markers not in new list
+			        var markers = app.Places.locationViewModel.markers;
+			        for (var i = 0; i < markers.length; i++) {
+			            //check is location is not in new list and then delete
+			            var mark = markers[i]}
 			    }                
-				try {
+				
+                try {
 					list = $("#places-listview").kendoMobileListView({
-					    dataSource: app.Places.locationViewModel.list,
-					    filter:{
-					        field: name,
-					        operator: "vicinity",
-                            value: "Pizza"
-					    },
+					    dataSource: app.Places.locationViewModel.list,					    
 					    template: "<div class='${isSelectedClass}'><div data-role='touch' data-enable-swipe='true' data-swipe='app.Places.locationViewModel.openListSheet'><strong> #: name #</strong> #: rating # Stars<div ${visibility} style='width:100%; margin-top:-5px'> #: vicinity # -- #: distance # m,  #: priceString # <br/></div></div></div>",
 							//<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
 							selectable: "multiple"
@@ -959,14 +995,23 @@ app.Places = (function () {
 					return;
 				}
 				var isSelected = e.dataItem.get("isSelected");
+				var name = e.dataItem.get("name");
+				var nameds;
+				var ds = app.Places.locationViewModel.list;
+				for (var i = 0; i < ds.length; i++) {
+				    nameds = ds[i].name;
+				    if (name === nameds) break;
+				}
 				var newState = isSelected ? false : true;
 				e.dataItem.set("isSelected", newState);
 				if (newState === true) {
 					e.dataItem.set("isSelectedClass", "listview-selected");
 					e.dataItem.set("visibility", "visible")
+					ds[i].visibility = "visible";
 				} else {
-					e.dataItem.set("isSelectedClass", "");
-					e.dataItem.set("visibility", "hidden")
+				    e.dataItem.set("isSelectedClass", "");
+				    e.dataItem.set("visibility", "hidden")
+				    ds[i].visibility = "hidden";
 				}
 			},
 			memorize: function () {
