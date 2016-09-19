@@ -81,6 +81,7 @@
     <Content Include="scripts\app\settings.js" />
     <Content Include="scripts\app\signup.js" />
     <Content Include="scripts\app\social.js" />
+    <Content Include="scripts\app\tableArray.js" />
     <Content Include="scripts\app\update.js" />
     <Content Include="scripts\app\users.js" />
     <Content Include="styles\images\avatar.png" />

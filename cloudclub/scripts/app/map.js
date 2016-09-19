@@ -7,7 +7,7 @@ var app = app || {};
 app.Places = (function () {
 	'use strict'
 	var infoWindow, markers, place, result, myCity, newPlace, here, request, home, position, lat1, lng1, allBounds, theZoom = 15,
-		service, allPartners, myAddress, Selfie, list;
+		service, allPartners, myAddress, Selfie, list = {};
 	var HEAD = appSettings.HEAD;
 	/**
 	 * The Google Map CenterControl adds a control to the map that recenters the map on
@@ -64,7 +64,7 @@ app.Places = (function () {
 					defaultValue: 'styles/images/avatar.png'
 				},
 				marker: {
-					field: 'Location',
+					field: 'location',
 					defaultValue: []
 				},
 				text: {
@@ -117,7 +117,7 @@ app.Places = (function () {
 			_isLoading: false,
 			address: "",
 			find: null,
-			list: [],
+			list: null,
 			homeMarker: null,
 			isGoogleMapsInitialized: true,
 			isGoogleDirectionsInitialized: false,
@@ -135,8 +135,8 @@ app.Places = (function () {
 					}
 				}
 				var Marker = {
-					lat: partner.Location.latitude,
-					lng: partner.Location.longitude
+					lat: partner.Location.lat,
+					lng: partner.Location.lng
 				};
 
 				var place = {
@@ -159,7 +159,7 @@ app.Places = (function () {
 					text: partner.Description,
 					location: Marker,
 					starString: "4.5",
-					openString:"Normal hours",
+					openString:"Normal hours apply, ",
 					distanceString: "",
 					addurl: "components/activities/view.html?partner=%Name%"
 				}
@@ -167,44 +167,48 @@ app.Places = (function () {
 				place = app.Places.locationViewModel.updateStars(place);
 				//Add review count, Stars and Distance
 				if (partner.Location) {
-					place.addurl = "components/partners/view.html?partner=" + place.name;
-					var htmlString = app.Places.locationViewModel.getButtons(place);
-					var position = place.geometry.location;
-					place.markerUrl = 'styles/images/on2see-icon-120x120.png';
-					place.openString = '</strong> stars, about <strong>' + place.distance + '</strong> miles (ATCF).';
-					place.zIndex = 5;
-					if (place.avatar) {
-						place.markerUrl = place.avatar;
-						place.zIndex = 10;
-					}
-
-					try {
-						//app.Places.locationViewModel.addMarker(place);
-						partner.Mark = new google.maps.Marker({
-							map: map,
-							position: position,
-							zIndex: place.zIndex,
-							icon: {
-								url: "styles/images/star.png", //place.markerUrl,
-								scaledSize: new google.maps.Size(30, 30),
-							}
-						});
-						app.Places.locationViewModel.markers.push(partner.Mark);
-						//extend the bounds to include each marker's position
-						allBounds.extend(partner.Mark.position);
-						//now fit the map to the newly inclusive bounds
-						map.fitBounds(allBounds);
-						//app.notify.showShortTop(map.getZoom())
-						//Partners InfoWindow PopUp
-						google.maps.event.addListener(partner.Mark, 'click', function () {
-							infoWindow.setContent(htmlString);
-							infoWindow.open(map, partner.Mark);
-							app.Places.visiting = place;
-							myCity = place.City;
-						});
-					} catch (e) {
-						app.showError("Error " + JSON.stringify(e));
-					}
+				    place.addurl = "components/partners/view.html?partner=" + place.name;
+				    var htmlString = app.Places.locationViewModel.getButtons(place);
+				    var position = place.geometry.location;
+				    place.markerUrl = 'styles/images/on2see-icon-120x120.png';
+				    place.openString = '</strong> stars, about <strong>' + place.distance + '</strong> miles (ATCF).';
+				    place.zIndex = 5;
+				    if (place.avatar) {
+				        place.markerUrl = place.avatar;
+				        place.zIndex = 10;
+				    }
+				        try {
+				            //app.Places.locationViewModel.addMarker(place);
+				            partner.Mark = new google.maps.Marker({
+				                map: map,
+				                position: position,
+				                zIndex: place.zIndex,
+				                vicinity: place.address,
+				                pack: place.pack,
+				                icon: {
+				                    url: "styles/images/star.png", //place.markerUrl,
+				                    scaledSize: new google.maps.Size(30, 30),
+				                }
+				            });
+				            app.Places.locationViewModel.markers.push(partner.Mark);
+				            //extend the bounds to include each marker's position
+				            partner.Mark.position = position;
+				            partner.Mark.pack = app.Places.packPartner(place);
+				            allBounds.extend(position);
+				            //now fit the map to the newly inclusive bounds
+				            map.fitBounds(allBounds);
+				            //app.notify.showShortTop(map.getZoom())
+				            //Partners InfoWindow PopUp
+				            google.maps.event.addListener(partner.Mark, 'click', function () {
+				                infoWindow.setContent(htmlString);
+				                infoWindow.open(map, partner.Mark);
+				                app.Places.visiting = place;
+				                myCity = place.City;
+				            });
+				        } catch (e) {
+				            app.showError("Error " + JSON.stringify(e));
+				        }
+				    
 				}
 				return;
 			},
@@ -249,12 +253,7 @@ app.Places = (function () {
 				if (!app.Places.locationViewModel.details) {
 					app.Places.locationViewModel.details = new Array;
 				}
-				markers = app.Places.locationViewModel.markers;
-				for (var i = 0; i < markers.length; i++) {
-				    markers[i].setMap(null);
-				    //create empty LatLngBounds object
-				    allBounds = new google.maps.LatLngBounds();
-				}
+				app.Places.locationViewModel.clearMap();
 				if (!app.isNullOrEmpty(app.cdr)) {
 					position = new google.maps.LatLng(app.cdr.latitude, app.cdr.longitude);
 				}
@@ -266,7 +265,7 @@ app.Places = (function () {
 					Notes: 'Selfie',
 					Text: '',
 					Title: 'Selfie',
-					Location: position
+					location: position
 				};
 				app.Places.visiting = Selfie;
 				map.panTo(position);
@@ -275,20 +274,22 @@ app.Places = (function () {
 				that._isLoading = false;
 				that.toggleLoading();
 				var query = new Everlive.Query();
-				query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 2, 'miles').ne('Icon', 'styles/images/avatar.png');
+				query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 8, 'miles').ne('Icon', 'styles/images/avatar.png');
 				var partners = app.everlive.data('Places');
 				partners.get(query).then(function (data) {
 						allPartners = data.result;
 						app.Places.locationViewModel.allPartners = allPartners;
 						for (var i = 0; i < data.count; i++) {
-							var partner = allPartners[i];
-							partner.pack = app.Places.packPartner(partner);
-							if (partner.Icon !== "styles/images/avatar.png") {
-								app.Places.locationViewModel.locatedAtFormatted(partner);
-							}
-							if (partner.Place === "Home") {
-								app.Places.locationViewModel.home = partner;
-							}
+						    var partner = allPartners[i];
+						    var partnerV = new app.Places.newPartner(partner);
+						    partnerV.setPartnerRow(partner);
+							//partner.pack = app.Places.packPartner(partner);
+							//if (partner.Icon !== "styles/images/avatar.png") {
+							//	app.Places.locationViewModel.locatedAtFormatted(partner);
+							//}
+							//if (partner.Place === "Home") {
+							//	app.Places.locationViewModel.home = partner;
+							//}
 						}
 					},
 					function (error) {
@@ -335,12 +336,12 @@ app.Places = (function () {
 				markers = app.Places.locationViewModel.markers;
 				for (var i = 0; i < markers.length; i++) {
 				    markers[i].setMap(null);
-				    //create empty LatLngBounds object
-				    allBounds = new google.maps.LatLngBounds();
 				}
-
+				//create empty LatLngBounds object
+				allBounds = new google.maps.LatLngBounds();
 				markers = [];
 				app.Places.locationViewModel.markers = new Array;
+				app.Places.locationViewModel.details = new Array;
 			},
 			openListSheet: function () {
 			    if (!app.Places.locationViewModel.checkSimulator()) {
@@ -353,7 +354,7 @@ app.Places = (function () {
 			            'buttonLabels': [
 						   'Keep Selected Items Only',
 						   'Delete Selected Items',
-						   'Upgrade for more Features',
+						   '\'Save\' and additional Features',
 						   //'Switch Lists',
 						   //'Get List as Trip Directions',
 			            ],
@@ -436,7 +437,8 @@ app.Places = (function () {
 						                for (var i = 0; i < markersList.length; i++) {
 						                    var mark = markersList[i];
 						                    if (mark.icon.url==='styles/images/redcircle.png' || mark.icon.url==='styles/images/greencircle.png') {
-                                                mark.setMap(null);
+						                        mark.setMap(null);
+                                                    //TO DO: Fix list
 						                    }
 						                    //app.notify.showShortTop(JSON.stringify(mark))
 						                }
@@ -475,13 +477,7 @@ app.Places = (function () {
 				}
 			},
 			onPlaceSearch: function () {
-				markers = app.Places.locationViewModel.markers;
-				for (var i = 0; i < markers.length; i++) {
-					markers[i].setMap(null);
-				}
-				markers = [];
-				app.Places.locationViewModel.markers = new Array;
-				app.Places.locationViewModel.details = new Array;
+			    app.Places.locationViewModel.clearMap();
 				// Create the PlaceService and send the request.
 				// Handle the callback with an anonymous function.
 				service = new google.maps.places.PlacesService(map);
@@ -505,8 +501,7 @@ app.Places = (function () {
 								place.distance = app.Places.locationViewModel.updateDistance(place.geometry.location.lat(), place.geometry.location.lng());
 								place = app.Places.locationViewModel.updateStars(place);
 								app.Places.locationViewModel.addMarker(place);
-								app.Places.locationViewModel.details.push(place);
-								app.Places.packSearch(place);
+								app.Places.locationViewModel.details.push(place);								
 							}
 						} else {
 							// Do Place search
@@ -558,7 +553,7 @@ app.Places = (function () {
 					}
 				});
 				place.rating = place.rating.toFixed(1);
-
+				marker.pack = app.Places.packSearch(place);
 				app.Places.locationViewModel.markers.push(marker);
 				//extend the bounds to include each marker's position
 				allBounds.extend(marker.position);
@@ -814,11 +809,13 @@ app.Places = (function () {
 				app.mobileApp.navigate("views/listView.html")
 			},
 			updatePartnerLocation: function () {
-				for (var i = 0; i < allPartners.length; i++) {
-					allPartners[i].Mark.setMap(null);
-
-				}
-				list = null;
+			    if (allPartners && allPartners.length) {
+			        for (var i = 0; i < allPartners.length; i++) {
+			            allPartners[i].Mark.setMap(null);
+                        //TO DO: reset list
+			        }
+			    }
+				//list = null;
 				app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
 			},
 			updateMapLocation: function () {
@@ -853,7 +850,7 @@ app.Places = (function () {
 				});
 				//create empty LatLngBounds object
 				allBounds = new google.maps.LatLngBounds();
-
+				app.Places.locationViewModel.list = new app.Places.List;
 				var pos, userCords, streetView, tempPlaceHolder = [];
 
 				var mapOptions = {
@@ -899,7 +896,7 @@ app.Places = (function () {
 			show: function () {
 				kendo.mobile.application.showLoading();
 				app.adMobService.viewModel.removeBanner();
-				app.adMobService.viewModel.prepareInterstitial();
+				//app.adMobService.viewModel.prepareInterstitial();
 				if (app.isOnline()) {
 					if (document.getElementById("myAvatar")) {
 						document.getElementById("myAvatar").src = app.Users.currentUser.data.PictureUrl;
@@ -929,10 +926,18 @@ app.Places = (function () {
 				result.vicinity = item.Address;
 				result.isSelectedClass = true;
 				result.rating = 5;
-				result.distance = app.Places.locationViewModel.updateDistance(item.Location.latitude, item.Location.longitude);
+				var lat, lng;
+				if (item.Location) {
+				    lat =item.Location.latitude;
+				    lng = item.Location.longitude;
+				}else{
+				    lat =item.location.lat;
+				    lng = item.location.lng;
+				}
+				result.distance = app.Places.locationViewModel.updateDistance(lat,lng );
 				result.priceString = '$$';
 				result.visibility = "hidden";
-				app.Places.locationViewModel.list.push(result);
+				app.Places.locationViewModel.list.put(result.vicinity,result);
 				return result;
 			},
 			packSearch: function (item) {
@@ -944,46 +949,75 @@ app.Places = (function () {
 				result.distance = item.distance;
 				result.priceString = item.priceString;
 				result.visibility = "hidden";
-				app.Places.locationViewModel.list.push(result);
+				app.Places.locationViewModel.list.put(result.vicinity, result);
 			},
 			listShow: function (e) {
-			    var ds = app.Places.locationViewModel.list;
-			    var ds2 = [];
-			    if(e.view.params.keep){
+                //reopen list so dynamically rebuild the List from the markers store
+			    var markers = app.Places.locationViewModel.markers;
+			    var ds = new app.Places.List;
+			    for (var i = 0; i < markers.length; i++) {
+			        var marker = markers[i];
+                    ds.put(marker.pack.vicinity,marker.pack)
+			    }
+			    app.Places.locationViewModel.list = ds;
+			    var ds2 = new app.Places.List;
+			    //find place markers in active list
+			    var markers = app.Places.locationViewModel.markers;
+			    if (e.view.params.keep) {
 			        for (var i = 0; i < ds.length; i++) {
 			            var item = ds[i];
-			            switch (e.view.params.keep) {
-			                case "1":
-			                    if (item.visibility === "visible") ds2.push(item);
-			                    item.visibility = "hidden";
-			                    item.isSelectedClass = "";
-			                    break;
-			                case "2":
-			                    if (item.visibility === "hidden") ds2.push(item);;
-			                    break;
-			                default:
-			                    alert("No case found " + e.view.params.keep)
-			                    break
+			            for (var j = 0; j < markers.length; j++) {
+			                var mark = markers[j];
+			                if (item.vicinity === mark.vicinity) {
+			                    // 
+			                    switch (e.view.params.keep) {
+			                        case 1:
+			                        case "1":
+			                            //keep selected (Push and do nothing)
+			                            if (item.visibility === "visible") {
+			                                ds2.put(item.vicinity, item);
+			                                item.visibility = "hidden";
+			                                item.isSelectedClass = "";
+			                                //app.showAlert(i + " push list " + j + " address " + item.vicinity)
+			                            } else {
+			                                mark.setMap(null);
+			                                //TO DO: clean up List
+			                            }
+			                            break;
+			                        case 2:
+			                        case "2":
+			                            //delete selected (Do not push and set null)			                    
+			                            if (item.visibility === "hidden") {
+			                                ds2.put(item.vicinity, item);
+			                            } else {
+			                                mark.setMap(null);
+                                            //TO DO: cleanUpList
+			                            }
+			                            break;
+			                        default:
+			                            alert("No case found " + e.view.params.keep)
+			                            break;
+			                    }
+			                } else {
+			                   // app.notify.showShortTop(i + " clear marker " + j + " item address " + item.vicinity + " mark address " + mark.vicinity)
+			                }
 			            }
 			        }
-			        app.Places.locationViewModel.list = ds2;
-			        //clear markers not in new list
-			        var markers = app.Places.locationViewModel.markers;
-			        for (var i = 0; i < markers.length; i++) {
-			            //check is location is not in new list and then delete
-			            var mark = markers[i]}
-			    }                
-				
-                try {
+			            
+			            app.Places.locationViewModel.list = ds2;
+			        }
+			    
+			    try {
+			        var aList = app.Places.locationViewModel.list.array();
 					list = $("#places-listview").kendoMobileListView({
-					    dataSource: app.Places.locationViewModel.list,					    
+					    dataSource: aList,					    
 					    template: "<div class='${isSelectedClass}'><div data-role='touch' data-enable-swipe='true' data-swipe='app.Places.locationViewModel.openListSheet'><strong> #: name #</strong> #: rating # Stars<div ${visibility} style='width:100%; margin-top:-5px'> #: vicinity # -- #: distance # m,  #: priceString # <br/></div></div></div>",
 							//<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
 							selectable: "multiple"
 						})
 						.data("kendoListView");
 				} catch (ex) {
-					app.notify.showAlert(JSON.stringify(ex));
+					app.showAlert(JSON.stringify(ex));
 				}
 			},
 			addToTrip: function (e) {
@@ -997,7 +1031,7 @@ app.Places = (function () {
 				var isSelected = e.dataItem.get("isSelected");
 				var name = e.dataItem.get("name");
 				var nameds;
-				var ds = app.Places.locationViewModel.list;
+				var ds = app.Places.locationViewModel.list.array();
 				for (var i = 0; i < ds.length; i++) {
 				    nameds = ds[i].name;
 				    if (name === nameds) break;
@@ -1007,11 +1041,11 @@ app.Places = (function () {
 				if (newState === true) {
 					e.dataItem.set("isSelectedClass", "listview-selected");
 					e.dataItem.set("visibility", "visible")
-					ds[i].visibility = "visible";
+					app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "visible");
 				} else {
 				    e.dataItem.set("isSelectedClass", "");
-				    e.dataItem.set("visibility", "hidden")
-				    ds[i].visibility = "hidden";
+				    e.dataItem.set("visibility", "hidden");
+				    app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "hidden");
 				}
 			},
 			memorize: function () {
@@ -1036,45 +1070,240 @@ app.Places = (function () {
 				ref.addEventListener("exit", iabClose);
 			},
 			directions: function (start, end) {
-				//app.notify.showShortTop("Showing directions from " + JSON.stringify(start) + " to this place " + JSON.stringify(end))
-				var directionsDisplay;
-				var directionsService = new google.maps.DirectionsService();
-				var directionsDisplay = new google.maps.DirectionsRenderer();
-				var mapDirections;
+			    //app.notify.showShortTop("Showing directions from " + JSON.stringify(start) + " to this place " + JSON.stringify(end))
+			    var directionsDisplay;
+			    var directionsService = new google.maps.DirectionsService();
+			    var directionsDisplay = new google.maps.DirectionsRenderer();
+			    var mapDirections;
 
-				function initialize() {
-					directionsDisplay = new google.maps.DirectionsRenderer();
-					var mapOptions = {
-						zoom: 15,
-						center: start
-					}
-					directionsDisplay.setMap(mapDirections);
-        			directionsDisplay.setPanel(document.getElementById('right-panel'));
-					mapDirections = new google.maps.Map(document.getElementById('map-directions'), mapOptions);
-					directionsDisplay.setMap(mapDirections);
-					app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
-					app.Places.locationViewModel.set("isGoogleDirectionsInitialized", true);
-					//app.notify.showShortTop("Route")
-					calcRoute();
-				}
+			    function initialize() {
+			        directionsDisplay = new google.maps.DirectionsRenderer();
+			        var mapOptions = {
+			            zoom: 15,
+			            center: start
+			        }
+			        directionsDisplay.setMap(mapDirections);
+			        directionsDisplay.setPanel(document.getElementById('right-panel'));
+			        mapDirections = new google.maps.Map(document.getElementById('map-directions'), mapOptions);
+			        app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
+			        app.Places.locationViewModel.set("isGoogleDirectionsInitialized", true);
+			        //app.notify.showShortTop("Route")
+			        calcRoute();
+			    }
 
-				function calcRoute() {
-					var request = {
-						origin: start,
-						destination: end,
-						travelMode: 'DRIVING'
-					};
-					directionsService.route(request, function (result, status) {
-						if (status == 'OK') {
-							app.notify.showShortTop("Route OK");
-							directionsDisplay.setDirections(result);
-							app.Places.locationViewModel.trips.push(result)
-						}
-					});
-				}
-				initialize();
+			    function calcRoute() {
+			        var request = {
+			            origin: start,
+			            destination: end,
+			            travelMode: 'DRIVING'
+			        };
+			        directionsService.route(request, function (result, status) {
+			            if (status == 'OK') {
+			                app.notify.showShortTop("Route OK");
+			                directionsDisplay.setDirections(result);
+			                app.Places.locationViewModel.trips.push(result)
+			            }
+			        });
+			    }
+
+			    initialize();
+			},
+			List: function () {
+                this.keys = new Array();
+	            this.data = new Object();
+	            this.put = function (key, value) {
+	                if(this.data[key]== null) {
+	                    this.keys.push(key);
+	                }
+	                this.data[key]= value;
+	                };
+	            this.get = function (key) {
+	                return this.data[key];
+	                };
+	            this.remove = function (key) {
+	                this.keys.remove(key);
+	                this.data[key]= null;
+	                };
+	            this.each = function (fn) {
+	                if(typeof fn != 'function') {
+	                    return;
+	                }
+	                var len = this.keys.length;
+	                for (var i = 0; i < len; i++) {
+	                    var k = this.keys[i];
+	                    fn(k, this.data[k], i);
+	                }
+	                };
+	            this.entrys = function () {
+	                var len = this.keys.length;
+	                var entrys = new Array(len);
+	                for (var i = 0; i < len; i++) {
+	                    entrys[i]= {key: this.keys[i],value: this.data[i]};
+	                }
+	                return entrys;
+	            };
+	            this.array = function () {
+	                var len = this.keys.length;
+	                var array = new Array(len);
+	                for (var i = 0; i < len; i++) {
+	                    var key = this.keys[i];
+	                    array[i] = this.get(key);
+	                }
+	                return array;
+	            };
+	            this.isEmpty = function () {
+	                return this.keys.length == 0;
+	                };
+	            this.size = function () {
+	                return this.keys.length;
+	            };
+	            this.attribute = function (key, action) {
+	                switch (action) {
+	                    case "visible":
+	                        this.data[key].visibility = "visible";
+	                        return this.data[key].visibility;
+	                        break;
+	                    case "hidden":
+	                        this.data[key].visibility = "hidden";
+	                        return this.data[key].visibility;
+	                        break;
+                        case "selected":
+                            this.data[key].isSelected = "selected";
+                            return this.data[key].visibility;
+                            break;
+                        case "notSelected":
+                            this.data[key].visible = "notSelected";
+                            return this.data[key].visibility;
+                            break;
+	                    default:
+	                        return { visible: this.data[key].visibility, isSelectedClass: this.data[key].isSelectedClass };
+	                }
+	                if (action === "get") {
+	                   
+	                }
+                
+	            }
+			},
+			newPartner: function () {
+			    var partnerRow = null;
+			    var isSelected = false;
+			    var priceString = "$$";
+			    var empty = "";
+			    var space = " ";
+			    var plus = "%27";
+			    var UrlString = "components/activities/view.html?ActivityText=";
+			    var Mark;
+			    var htmlIw;
+
+			    this.setPartnerRow = function (p) {
+			        //check p for valid values
+			        partnerRow = p;
+			        //test for geopoint as a string and convert string to geopoint
+			        if (partnerRow.Location.length !== undefined) {
+			            if (partnerRow.Location.length > 15) {
+			                app.showError('Marker Error' + partner.Location);
+			            }
+			        }
+			        if (p.Place === "Home") {
+			            app.Places.locationViewModel.home = partner;
+			        }
+                    var options =   {
+                                    map: map,
+                                    position: {
+                                        lat: partnerRow.Location.latitude,
+                                        lng: partnerRow.Location.longitude
+                                    },
+                                    zIndex: 10,
+                                    vicinity: partnerRow.Address,
+                                    icon: {
+                                        url: "styles/images/star.png", //place.markerUrl,
+                                        scaledSize: new google.maps.Size(30, 30),
+                                    }
+                                }
+			        if (partnerRow.icon !== 'styles/images/avatar.png') {
+			            Mark = new google.maps.Marker(options);
+
+			            app.Places.locationViewModel.markers.push(Mark);
+			            //extend the bounds to include each marker's position
+			            //partner.Mark.position = position;
+			            //partner.Mark.pack = app.Places.packPartner(place);
+			            allBounds.extend(options.position);
+			            //now fit the map to the newly inclusive bounds
+			            map.fitBounds(allBounds);
+			            //app.notify.showShortTop(map.getZoom())
+			            //Partners InfoWindow PopUp
+			            htmlIw = this.toHTMLString();
+			            google.maps.event.addListener(Mark, 'click', function () {
+			                infoWindow.setContent(htmlIw);
+			                infoWindow.open(map, Mark);
+			                app.Places.visiting = this;
+			                myCity = partnerRow.City;
+			            });
 			}
-		};
-	}());
+			    }
+			    this.name = function () {
+			        return partnerRow.Place;
+			    };
+			    this.distance = function () {
+			        var R = 6371; // km
+			        if (partnerRow) {
+			            var lat2 = partnerRow.Location.latitude;
+			            var lng2 = partnerRow.Location.longitude;
+			            var lat1 = app.cdr.latitude;
+			            var lng1 = app.cdr.longitude;
+			            var dLat = (lat2 - lat1) * Math.PI / 180;
+			            var dLon = (lng2 - lng1) * Math.PI / 180;
+			        }
+			        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+			        var c = 2 * Math.asin(Math.sqrt(a));
+			        var d = R * c / 1.61; // converted to miles
+			        return d.toFixed(4);
+			    };
+			    this.vicinity = function () {
+			        return partnerRow.Address;
+			    };
+			    this.isSelectedClass = function () {
+			        return isSelected;
+			    };
+			    this.rating = function () {
+			        return isSelected;
+			    };
+			    this.visibility = function () {
+			        return !isSelected;
+			    }
+			    this.icon = function () {
+			        return partnerRow.icon;
+			    };
+			    this.Phone = function () {
+			        return partnerRow.Phone;
+			    }
+			    this.toHTMLString = function () {
+			        return '<div><div class="iw-subTitle">' + partnerRow.Place + '</div>'
+                        + '<div><a data-role="button" class="butn" data-rel="external" href="tel:' + partnerRow.Phone + '">'
+                        + '<img src="styles/images/phone2.png" alt="' + partnerRow.Phone + '" height="auto" width="25%" style="padding:5px"></a><small>'
+                        + partnerRow.Address + ', Normal opening hours, ' + partnerRow.Rating + ' Stars, price level: ' + partnerRow.Stars + '</small></div>'
+                        + '<div ><br/><a data-role="button" class="butn" href="components/activities/view.html?ActivityText=' + partnerRow.Place + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+                        + '<a data-role="button" class="butn" href="' + UrlString + partnerRow.Place + '"><img src="styles/images/thumb_up.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+                        + '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText="' + partnerRow.Place + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+                        + '<a data-role="button" class="butn" onclick="app.Places.browse(\'https://www.google.com/maps/place/Google\');"><img src="styles/images/googleMap.png" alt="Google" height="auto" width="25%" style="padding:5px"></a>'
+                        + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'https://twitter.com/search?q=' + resolveString(partnerRow.Place, space, plus) + '\');"><img src="styles/images/twitter.png" alt="Twitter" height="auto" width="25%" style="padding:5px"></a>'
+                        + '<a id="cameraLink" ><img src="styles/images/instagram.png" alt="Camera" height="auto" width="25%" style="padding:5px"></a>'
+                        + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'https://www.facebook.com/' + resolveString(partnerRow.Place, space, empty) + '\');"><img src="styles/images/facebook2.png" alt="Facebook" height="auto" width="25%" style="padding:5px"></a>'
+                        + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''+partnerRow.Website+'\')"><img src="'+ app.helper.resolveProfilePictureUrl(partnerRow.Icon)+'" alt="Logo" height="auto" width="25%" style="padding:5px"></a>' + '</div>';
+			    };
+			    this.details = function () {
+			        return {
+			            name: partnerRow.Place,
+			            location: {lat: partnerRow.Location.latitude,lng: partnerRow.Location.longitude},
+			            website: partnerRow.Website,
+			            formatted_phone_number: partnerRow.Phone,
+			            formatted_address: partnerRow.Address,
+			        }
+			    }
+		    }
+			};
+		}());
 	return placesViewModel;
-}());
+	}());
