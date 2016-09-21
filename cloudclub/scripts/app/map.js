@@ -1189,11 +1189,14 @@ app.Places = (function () {
 			    var isSelected = false;
 			    var priceString = "$$";
 			    var empty = "";
-			    var space = " ";
-			    var plus = "%27";
+			    var space = "%20";
+			    var quote = "%27";
+			    var plus = "+";
+                var name = "\'+ partnerRow.Place + \'"
 			    var UrlString = "components/activities/view.html?ActivityText=";
 			    var Mark;
 			    var htmlIw;
+			    var htmlOptions;
 
 			    this.setPartnerRow = function (p) {
 			        //check p for valid values
@@ -1207,6 +1210,32 @@ app.Places = (function () {
 			        if (p.Place === "Home") {
 			            app.Places.locationViewModel.home = partner;
 			        }
+			        
+			        if (partnerRow.Html) {
+			            try {
+			                htmlOptions = JSON.parse(partnerRow.Html);
+			            } catch (e) {
+			                htmlOptions = {
+			                    "product": "On2See partners urls",
+			                    "version": 1.1,
+			                    "releaseDate": "2016-09-19T00:00:00.000Z",
+			                    "approved": true,
+			                    "partner": {
+			                        "stars": "4.2",
+			                        "rating": "$$"
+			                    },
+			                    "url": {
+			                        "facebook": "https://www.facebook.com/",
+			                        "youtube": "https://www.youtube.com/watch?v=",
+			                        "instagram": "https://www.instagram.com/",
+			                        "googleplus": "https://www.google.com/maps/place/name/@latlng",
+			                        "zomato": "https://www.zomato.com/miami/name-city/photos#tabtop",
+			                        "website": "http://www.google.com/"
+			                    }
+			                };
+			            }
+			        }
+			        
                     var options =   {
                                     map: map,
                                     position: {
@@ -1225,14 +1254,11 @@ app.Places = (function () {
 
 			            app.Places.locationViewModel.markers.push(Mark);
 			            //extend the bounds to include each marker's position
-			            //partner.Mark.position = position;
-			            //partner.Mark.pack = app.Places.packPartner(place);
 			            allBounds.extend(options.position);
 			            //now fit the map to the newly inclusive bounds
 			            map.fitBounds(allBounds);
-			            //app.notify.showShortTop(map.getZoom())
 			            //Partners InfoWindow PopUp
-			            htmlIw = this.toHTMLString();
+			            htmlIw = this.toCustomHtml();
 			            google.maps.event.addListener(Mark, 'click', function () {
 			                infoWindow.setContent(htmlIw);
 			                infoWindow.open(map, Mark);
@@ -1280,19 +1306,37 @@ app.Places = (function () {
 			        return partnerRow.Phone;
 			    }
 			    this.toHTMLString = function () {
-			        return '<div><div class="iw-subTitle">' + partnerRow.Place + '</div>'
-                        + '<div><a data-role="button" class="butn" data-rel="external" href="tel:' + partnerRow.Phone + '">'
+			        return '<div><div class="iw-subTitle">' + partnerRow.Place + '</div>' // Title Row
+                        + '<div><a data-role="button" class="butn" data-rel="external" href="tel:' + partnerRow.Phone + '">' //Phone Icon
                         + '<img src="styles/images/phone2.png" alt="' + partnerRow.Phone + '" height="auto" width="25%" style="padding:5px"></a><small>'
-                        + partnerRow.Address + ', Normal opening hours, ' + partnerRow.Rating + ' Stars, price level: ' + partnerRow.Stars + '</small></div>'
-                        + '<div ><br/><a data-role="button" class="butn" href="components/activities/view.html?ActivityText=' + partnerRow.Place + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
-                        + '<a data-role="button" class="butn" href="' + UrlString + partnerRow.Place + '"><img src="styles/images/thumb_up.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
-                        + '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText="' + partnerRow.Place + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
-                        + '<a data-role="button" class="butn" onclick="app.Places.browse(\'https://www.google.com/maps/place/Google\');"><img src="styles/images/googleMap.png" alt="Google" height="auto" width="25%" style="padding:5px"></a>'
-                        + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'https://twitter.com/search?q=' + resolveString(partnerRow.Place, space, plus) + '\');"><img src="styles/images/twitter.png" alt="Twitter" height="auto" width="25%" style="padding:5px"></a>'
-                        + '<a id="cameraLink" ><img src="styles/images/instagram.png" alt="Camera" height="auto" width="25%" style="padding:5px"></a>'
-                        + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'https://www.facebook.com/' + resolveString(partnerRow.Place, space, empty) + '\');"><img src="styles/images/facebook2.png" alt="Facebook" height="auto" width="25%" style="padding:5px"></a>'
-                        + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''+partnerRow.Website+'\')"><img src="'+ app.helper.resolveProfilePictureUrl(partnerRow.Icon)+'" alt="Logo" height="auto" width="25%" style="padding:5px"></a>' + '</div>';
+                        + partnerRow.Address + ', Normal opening hours, ' + htmlOptions.partner.rating + ' Stars, price level: ' + htmlOptions.partner.stars + '</small></div>' //Address etc
+                        + '<div ><br/><a data-role="button" class="butn" href="components/activities/view.html?ActivityText=' + partnerRow.Place + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>' // On2See activities button
+                        + '<a data-role="button" class="butn" href="' + UrlString + partnerRow.Place + '"><img src="styles/images/thumb_up.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>' // Like button click
+                        + '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText="' + partnerRow.Place + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>' //Alert feed
+                        + '<a data-role="button" class="butn" onclick="app.Places.browse(\''+ htmlOptions.url.google +'\');"><img src="styles/images/googleMap.png" alt="Google" height="auto" width="25%" style="padding:5px"></a>' // google place
+                        + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'' + htmlOptions.url.twitter + '\');"><img src="styles/images/twitter.png" alt="Twitter" height="auto" width="25%" style="padding:5px"></a>' // twitter click
+                        + '<a id="cameraLink" ><img src="styles/images/instagram.png" alt="Camera" height="auto" width="25%" style="padding:5px"></a>' // Camera link
+                        + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''+ htmlOptions.url.facebook +'\');"><img src="styles/images/facebook2.png" alt="Facebook" height="auto" width="25%" style="padding:5px"></a>' //Facebook click
+                        + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''+partnerRow.Website+'\')"><img src="'+ app.helper.resolveProfilePictureUrl(partnerRow.Icon)+'" alt="Logo" height="auto" width="25%" style="padding:5px"></a>' + '</div>'; // home page click
 			    };
+			    this.toCustomHtml = function () {
+			        var introHtml = '<div><div class="iw-subTitle">' + partnerRow.Place + '</div>' // Title Row
+                        + '<div><a data-role="button" class="butn" data-rel="external" href="tel:' + partnerRow.Phone + '">' //Phone Icon
+                        + '<img src="styles/images/phone2.png" alt="' + partnerRow.Phone + '" height="auto" width="25%" style="padding:5px"></a><small>'
+                        + partnerRow.Address + ', Normal opening hours, ' + htmlOptions.partner.rating + ' Stars, price level: ' + htmlOptions.partner.stars + '</small></div>' //Address etc
+                        + '<div ><br/><a data-role="button" class="butn" href="components/activities/view.html?ActivityText=' + partnerRow.Place + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+                        + '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText="' + partnerRow.Place + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+
+			        var customList = htmlOptions.url;
+			        for (var i = 0; i < 6; i++) {
+			            var Icon = JSON.stringify(customList).split(',')[i].split(':')[0].replace('"', '').replace('"', '').replace('{','');
+			            var Path = JSON.stringify(customList).split(',')[i].split(':')[2].replace('"', '').replace('"', '').replace('}', '');
+			            var Url = JSON.stringify(customList).split(',')[i].split(':')[1].replace('"', '').replace('"', '') + Path;			            
+			            var itemHtml = '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'' + Url + '\')"><img src="styles/images/'+Icon+'.png" alt="'+Url+'" height="auto" width="25%" style="padding:5px"></a>';
+			            introHtml = introHtml + itemHtml;
+			        };
+			        return introHtml.replace("styles/images/website.png", app.helper.resolveProfilePictureUrl(partnerRow.Icon)) + '</div>';
+			    }
 			    this.details = function () {
 			        return {
 			            name: partnerRow.Place,
