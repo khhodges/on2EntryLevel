@@ -161,7 +161,6 @@
     <Content Include="styles\images\twitter-circle.png" />
     <Content Include="styles\images\twitter.png" />
     <Content Include="styles\images\Yahoo.png" />
-    <Content Include="styles\images\yelp_64.png" />
     <Content Include="styles\main.css" />
     <Content Include="styles\main1.css" />
     <Content Include="styles\overrides.css" />
