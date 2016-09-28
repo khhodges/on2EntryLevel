@@ -8,22 +8,6 @@
 	 data-model="app.Places.locationViewModel"
 	 data-stretch="true">
 	<script>
-		var ref;
-		
-		function iabLoadError(event) {
-			app.notify.showShortTop(event.type + ' - ' + event.message);
-			ref.close();
-		}
-		function iabClose(event) {
-			app.notify.showShortTop(event.type);
-			//iabRef.removeEventListener('loadstart', iabLoadStart);
-			//iabRef.removeEventListener('loadstop', iabLoadStop);
-			//iabRef.removeEventListener('loaderror', iabLoadError);
-			if (ref === null) {
-				ref.removeEventListener('exit', iabClose);
-			}
-			app.mobileApp.navigate('views/mapView.html');
-		}
 	</script>
 	<div data-role="header">
 		<div data-role="navbar" id="navbarTitle">
