@@ -242,7 +242,7 @@ app.Places = (function () {
 			onNavigateHome: function () {
 				//find present location, clear markers and set up members as icons
 			    var that = this;
-			    if (!update) homePosition = new google.maps.LatLng(app.cdr.longitude, app.cdr.latitude);
+			    if (!update) homePosition = { lat: app.cdr.latitude, lng: app.cdr.longitude };//new google.maps.LatLng(app.cdr.longitude, app.cdr.latitude);
 			    var position = homePosition;
 				that._isLoading = true;
 				that.toggleLoading();
@@ -275,26 +275,19 @@ app.Places = (function () {
 				that._isLoading = false;
 				that.toggleLoading();
 				var query = new Everlive.Query();
-				query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 8, 'miles').ne('Icon', 'styles/images/avatar.png');
+				var point = new Everlive.GeoPoint(position.lng, position.lat);
+				//query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 8, 'miles').ne('Icon', 'styles/images/avatar.png');
+				query.where().nearSphere('Location', point, 8, 'miles').ne('Icon', 'styles/images/avatar.png');
 				var partners = app.everlive.data('Places');
 				partners.get(query).then(function (data) {
 						var allPartners = data.result;
-						//alert(JSON.stringify(data))
 						allNewPartners = new app.Places.List;
 						app.Places.locationViewModel.allPartners = allPartners;
 						for (var i = 0; i < data.count; i++) {
 							var partner = allPartners[i];
 							var partnerV = new app.Places.newPartner(partner);
 							partnerV.setPartnerRow(partner);
-							//alert(JSON.stringify(partner))
 							allNewPartners.put(partnerV.vicinity(),partnerV);
-							//partner.pack = app.Places.packPartner(partner);
-							//if (partner.Icon !== "styles/images/avatar.png") {
-							//	app.Places.locationViewModel.locatedAtFormatted(partner);
-							//}
-							//if (partner.Place === "Home") {
-							//	app.Places.locationViewModel.home = partner;
-							//}
 						}
 					},
 					function (error) {
@@ -644,6 +637,7 @@ app.Places = (function () {
 				return '<p>' + '<div class="user-avatar" style="margin-left:5px"> <a id="avatarLink" data-role="button" class="butn" style="padding:5px"> <img id="myAvatar" src=' + url + ' alt="On2See" height="auto" width="25%"></a></div>' + '<a id="cameraLink" data-role="button" class="butn" style="padding:5px; margin-left:-15px"> <img src="styles/images/camera.png" alt="On2See" height="auto" width="25%"></a>' + '<a id="myFeedLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/feed.png" alt="My Private Feed" height="auto" width="25%"/></a>' + '<a id="goHome" data-role="button" data-lat=' + lat + ' data-lng=' + lng + ' class="butn" style="padding:5px"><img src="styles/images/goHome.png" alt="Go Home" height="auto" width="25%"/></a>' + '<a id="saveAddressLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/contacts.png" alt="Go Home" height="auto" width="25%"/></a>' + '<a id="calendarLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/calendar.png" alt="Go Home" height="auto" width="25%"/></a>' + '</p>' + '<h3>Drag to locate the Inspector</h3>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>' + app.helper.formatDate(new Date()) + '</span>' + '<br/><span id="dateTime">' + '</span>' + '</p>'
 			},
 			_putMarker: function (position) {
+			    //position = { lat: -34.397, lng: 150.644 };
 				var that = this;
 
 				if (that._lastMarker !== null && that._lastMarker !== undefined) {
@@ -656,6 +650,8 @@ app.Places = (function () {
 					draggable: true,
 					zIndex: 100
 				});
+				homePosition = { lat: that._lastMarker.getPosition().lat(), lng: that._lastMarker.getPosition().lng() }; // update position display for local search
+
 				//app.Places.locationViewModel.markers.push(that._lastMarker);
 				//extend the bounds to include each marker's position
 				allBounds.extend(that._lastMarker.position);
@@ -680,7 +676,8 @@ app.Places = (function () {
 					map.setCenter(newPlace); // Set map center to marker position
 
 					that.getAddress(newPlace, this);
-					homePosition = new google.maps.LatLng( this.getPosition().lat(), this.getPosition().lng()); // update position display
+					//homePosition = new google.maps.LatLng(this.getPosition().lat(), this.getPosition().lng()); // update position display
+					homePosition = { lat: this.getPosition().lat(), lng: this.getPosition().lng() }; // update position display
 				});
 
 				google.maps.event.addListener(infoWindow, 'closeclick', function () {
