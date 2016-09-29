@@ -6,8 +6,8 @@ var app = app || {};
 
 app.Places = (function () {
 	'use strict'
-	var infoWindow, markers, place, result, myCity, newPlace, here, request, home, bw, position, lat1, lng1, allBounds, theZoom = 15,
-		service, allNewPartners, myAddress, Selfie, list = {};
+	var infoWindow, markers, place, result, myCity, newPlace, here, request, home, bw, lat1, lng1, allBounds, theZoom = 15,
+		service, allNewPartners, myAddress, Selfie, list = {}, homePosition, update = false;
 	var HEAD = appSettings.HEAD;
 	/**
 	 * The Google Map CenterControl adds a control to the map that recenters the map on
@@ -241,8 +241,9 @@ app.Places = (function () {
 			},
 			onNavigateHome: function () {
 				//find present location, clear markers and set up members as icons
-				var that = this,
-					position = new google.maps.LatLng(-80.08, 26.3);
+			    var that = this;
+			    if (!update) homePosition = new google.maps.LatLng(app.cdr.longitude, app.cdr.latitude);
+			    var position = homePosition;
 				that._isLoading = true;
 				that.toggleLoading();
 				if (!app.Places.locationViewModel.markers) {
@@ -254,9 +255,9 @@ app.Places = (function () {
 					app.Places.locationViewModel.details = new Array;
 				}
 				app.Places.locationViewModel.clearMap();
-				if (!app.isNullOrEmpty(app.cdr)) {
-					position = new google.maps.LatLng(app.cdr.latitude, app.cdr.longitude);
-				}
+				//if (!app.isNullOrEmpty(app.cdr)) {
+				//	position = new google.maps.LatLng(app.cdr.latitude, app.cdr.longitude);
+				//}
 				Selfie = {
 					Picture: null,
 					name: "My Private Feed",
@@ -269,7 +270,7 @@ app.Places = (function () {
 				};
 				app.Places.visiting = Selfie;
 				map.panTo(position);
-				that._putMarker(position); //TO DO: hide or show present location marker
+				that._putMarker(position); 
 				locality = position;
 				that._isLoading = false;
 				that.toggleLoading();
@@ -404,7 +405,7 @@ app.Places = (function () {
 										//case 8:
 										//	break;
 									default:
-										app.notify.showShortTop('You will need to upgrade to use this feature.');
+										//app.notify.showShortTop('You will need to upgrade to use this feature.');
 										break;
 								}
 							}, 0);
@@ -447,7 +448,7 @@ app.Places = (function () {
 										//case 8:
 										//	break;
 									default:
-										app.notify.showShortTop('You will need to upgrade to use this feature.');
+										//app.notify.showShortTop('You will need to upgrade to use this feature.');
 										break;
 								}
 							}, 0);
@@ -679,7 +680,7 @@ app.Places = (function () {
 					map.setCenter(newPlace); // Set map center to marker position
 
 					that.getAddress(newPlace, this);
-					//updatePosition(this.getPosition().lat(), this.getPosition().lng()); // update position display
+					homePosition = new google.maps.LatLng( this.getPosition().lat(), this.getPosition().lng()); // update position display
 				});
 
 				google.maps.event.addListener(infoWindow, 'closeclick', function () {
@@ -810,10 +811,9 @@ app.Places = (function () {
 				if (allNewPartners && allNewPartners.keys.length) {
 					for (var i = 0; i < allNewPartners.keys.length; i++) {
 						allNewPartners.get(allNewPartners.keys[i]).clearMark();
-						//TO DO: reset list
 					}
 				}
-				//list = null;
+				update = true;
 				app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
 			},
 			updateMapLocation: function () {
@@ -877,15 +877,15 @@ app.Places = (function () {
 				map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 				//                service = new google.maps.places.PlacesService(map);
 
-				var directionsService = new google.maps.DirectionsService;
-				var directionsDisplay = new google.maps.DirectionsRenderer;
-				directionsDisplay.setMap(map);
-				var origin_input = document.getElementById('origin-input');
-				var destination_input = document.getElementById('destination-input');
-				var modes = document.getElementById('mode-selector');
+				//var directionsService = new google.maps.DirectionsService;
+				//var directionsDisplay = new google.maps.DirectionsRenderer;
+				//directionsDisplay.setMap(map);
+				//var origin_input = document.getElementById('origin-input');
+				//var destination_input = document.getElementById('destination-input');
+				//var modes = document.getElementById('mode-selector');
 
 				//map.controls[google.maps.ControlPosition.TOP_LEFT].push(origin_input);
-				map.controls[google.maps.ControlPosition.TOP_LEFT].push(destination_input);
+				//map.controls[google.maps.ControlPosition.TOP_LEFT].push(destination_input);
 
 				geocoder = new google.maps.Geocoder();
 				app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
@@ -1076,45 +1076,45 @@ app.Places = (function () {
 				bw.addEventListener("loaderror", app.Places.iabLoadError);
 				bw.addEventListener("exit", app.Places.iabClose);
 			},
-			directions: function (start, end) {
-				//app.notify.showShortTop("Showing directions from " + JSON.stringify(start) + " to this place " + JSON.stringify(end))
-				var directionsDisplay;
-				var directionsService = new google.maps.DirectionsService();
-				var directionsDisplay = new google.maps.DirectionsRenderer();
-				var mapDirections;
+			//directions: function (start, end) {
+			//	//app.notify.showShortTop("Showing directions from " + JSON.stringify(start) + " to this place " + JSON.stringify(end))
+			//	var directionsDisplay;
+			//	var directionsService = new google.maps.DirectionsService();
+			//	var directionsDisplay = new google.maps.DirectionsRenderer();
+			//	var mapDirections;
 
-				function initialize() {
-					directionsDisplay = new google.maps.DirectionsRenderer();
-					var mapOptions = {
-						zoom: 15,
-						center: start
-					}
-					directionsDisplay.setMap(mapDirections);
-					directionsDisplay.setPanel(document.getElementById('right-panel'));
-					mapDirections = new google.maps.Map(document.getElementById('map-directions'), mapOptions);
-					app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
-					app.Places.locationViewModel.set("isGoogleDirectionsInitialized", true);
-					//app.notify.showShortTop("Route")
-					calcRoute();
-				}
+			//	function initialize() {
+			//		directionsDisplay = new google.maps.DirectionsRenderer();
+			//		var mapOptions = {
+			//			zoom: 15,
+			//			center: start
+			//		}
+			//		directionsDisplay.setMap(mapDirections);
+			//		directionsDisplay.setPanel(document.getElementById('right-panel'));
+			//		mapDirections = new google.maps.Map(document.getElementById('map-directions'), mapOptions);
+			//		app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
+			//		app.Places.locationViewModel.set("isGoogleDirectionsInitialized", true);
+			//		//app.notify.showShortTop("Route")
+			//		calcRoute();
+			//	}
 
-				function calcRoute() {
-					var request = {
-						origin: start,
-						destination: end,
-						travelMode: 'DRIVING'
-					};
-					directionsService.route(request, function (result, status) {
-						if (status == 'OK') {
-							app.notify.showShortTop("Route OK");
-							directionsDisplay.setDirections(result);
-							app.Places.locationViewModel.trips.push(result)
-						}
-					});
-				}
+			//	function calcRoute() {
+			//		var request = {
+			//			origin: start,
+			//			destination: end,
+			//			travelMode: 'DRIVING'
+			//		};
+			//		directionsService.route(request, function (result, status) {
+			//			if (status == 'OK') {
+			//				app.notify.showShortTop("Route OK");
+			//				directionsDisplay.setDirections(result);
+			//				app.Places.locationViewModel.trips.push(result)
+			//			}
+			//		});
+			//	}
 
-				initialize();
-			},
+			//	initialize();
+			//},
 			List: function () {
 				this.keys = new Array();
 				this.data = new Object();
@@ -1130,6 +1130,17 @@ app.Places = (function () {
 				        this.keys.push(key);
 				        this.data[key] = value;
 				    }
+				};
+				this.delete = function (key) {
+				    var state = false;
+				    for (var i = 0; i < this.keys.length; i++) {
+				        if (key === this.keys[i]) {
+				            delete this.keys[i];
+                            state = true
+				            break;
+				        }
+				    }				    
+				    return state;
 				};
 				this.get = function (key) {
 					return this.data[key];
@@ -1332,19 +1343,6 @@ app.Places = (function () {
 			    this.City = function () {
 			        return partnerRow.City;
 			    }
-			    //this.toHTMLString = function () {
-			    //	return '<div><div class="iw-subTitle">' + partnerRow.Place + '</div>' // Title Row
-			    //		+ '<div><a data-role="button" class="butn" data-rel="external" href="tel:' + partnerRow.Phone + '">' //Phone Icon
-			    //		+ '<img src="styles/images/phone2.png" alt="' + partnerRow.Phone + '" height="auto" width="25%" style="padding:5px"></a><small>' + partnerRow.Address + ', Normal opening hours, ' + htmlOptions.partner.rating + ' Stars, price level: ' + htmlOptions.partner.stars + '</small></div>' //Address etc
-			    //		+ '<div ><br/><a data-role="button" class="butn" href="components/activities/view.html?ActivityText=' + partnerRow.Place + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>' // On2See activities button
-			    //		+ '<a data-role="button" class="butn" href="' + UrlString + partnerRow.Place + '"><img src="styles/images/thumb_up.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>' // Like button click
-			    //		+ '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText="' + partnerRow.Place + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>' //Alert feed
-			    //		+ '<a data-role="button" class="butn" onclick="app.Places.browse(\'' + htmlOptions.url.google + '\');"><img src="styles/images/googleMap.png" alt="Google" height="auto" width="25%" style="padding:5px"></a>' // google place
-			    //		+ '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'' + htmlOptions.url.twitter + '\');"><img src="styles/images/twitter.png" alt="Twitter" height="auto" width="25%" style="padding:5px"></a>' // twitter click
-			    //		+ '<a id="cameraLink" ><img src="styles/images/instagram.png" alt="Camera" height="auto" width="25%" style="padding:5px"></a>' // Camera link
-			    //		+ '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'' + htmlOptions.url.facebook + '\');"><img src="styles/images/facebook2.png" alt="Facebook" height="auto" width="25%" style="padding:5px"></a>' //Facebook click
-			    //		+ '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'' + partnerRow.Website + '\')"><img src="' + app.helper.resolveProfilePictureUrl(partnerRow.Icon) + '" alt="Logo" height="auto" width="25%" style="padding:5px"></a>' + '</div>'; // home page click
-			    //};
 			    this.toCustomHtml = function () {
 			        var introHtml = '<div><div class="iw-subTitle">' + partnerRow.Place + '</div>' // Title Row
 						+ '<div><a data-role="button" class="butn" data-rel="external" href="tel:' + partnerRow.Phone + '">' //Phone Icon
@@ -1379,11 +1377,13 @@ app.Places = (function () {
 			            rating: htmlOptions.partner.rating,
 			            clearMapMark: function () {
 			                Mark.setMap(null);
+			                app.Places.locationViewModel.list.delete(partnerRow.Address);
 			            }
 			        }
 			    }
 			    this.clearMark = function () {
-			        Mark.setMap(null)
+			        Mark.setMap(null);
+			        app.Places.locationViewModel.list.delete(partnerRow.Address);
 			    }
 			    this.getPartner = function () {
 			        return partnerRow;
