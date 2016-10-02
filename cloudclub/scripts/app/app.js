@@ -7,8 +7,12 @@ var app = (function (win) {
 
 	// Global error handling
 	var showAlert = function (message, title, callback) {
-		navigator.notification.alert(message, callback || function () {
-		}, title, 'OK');
+	    navigator.notification.alert(message, callback || function () {
+	    }, title, 'OK');
+	};
+	var showReviews = function (message, title, callback) {
+	    navigator.notification.alert(message, callback || function () {
+	    }, title, 'Done');
 	};
 
 	var showError = function (message) {
@@ -295,10 +299,11 @@ var app = (function (win) {
 
 		// Return user profile picture url
 		resolveProfilePictureUrl: function (id) {
-			if (id && (id !== emptyGuid && id !== "styles/images/avatar.png")) {
+		    var result = id;
+		    if (id && (id !== emptyGuid && id !== "styles/images/avatar.png" && id !== "styles/images/default-image.jpg.png")) {
 				return el.Files.getDownloadUrl(id);
 			} else {
-				return 'styles/images/avatar.png';
+				return id;
 			}
 		},
 
@@ -757,6 +762,7 @@ var app = (function (win) {
 	return {
 		data: {},
 		showAlert: showAlert,
+		showReviews: showReviews,
 		cdr: cdr,
 		showError: showError,
 		showConfirm: showConfirm,
