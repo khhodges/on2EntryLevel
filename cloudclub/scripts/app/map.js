@@ -688,67 +688,67 @@ app.Places = (function () {
 					//listButton.style.display = '';
 				});
 
-				//google.maps.event.addListener(infoWindow, 'domready', function () {
-				//	var avatarRoute = document.getElementById("avatarLink");
-				//	if (avatarRoute) {
-				//		avatarRoute.addEventListener("click", function () {
-				//			if (app.isOnline()) {
-				//				app.mobileApp.navigate("views/updateView.html")
-				//			} else {
-				//				app.mobileApp.navigate("#welcome")
-				//			}
-				//		});
-				//	}
-				//	var activityRoute = document.getElementById("cameraLink");
-				//	if (activityRoute) {
-				//		activityRoute.addEventListener("click", app.helper.cameraRoute);
-				//	}
-				//	var feedRoute = document.getElementById("myFeedLink");
-				//	if (feedRoute) {
-				//		feedRoute.addEventListener("click", function () {
-				//			if (app.isOnline()) { //}app.isOnline()) {
-				//				app.mobileApp.navigate("views/activitiesView.html?ActivityText=My Private Feed&User=" + app.Users.currentUser.data.Id);
-				//			} else {
-				//				app.mobileApp.navigate("components/notifications/view.html");
-				//			}
-				//		});
-				//	}
-				//	var goHome = document.getElementById("goHome");
-				//	if (goHome) {
-				//		goHome.addEventListener("click",
-				//			function () {
-				//				//newPlace=this.geolocation;
-				//				var lat = this.attributes.valueOf()["data-lat"].value;
-				//				var lng = this.attributes.valueOf()["data-lng"].value
-				//					//app.notify.showShortTop(lat+", "+lng);
-				//					//map.panTo({lat: position.latitude,lng: position.longitude});
-				//				if (locality) {
-				//					app.Places.browse("https://maps.google.com?saddr=" + locality.lat() + "," + locality.lng() + "&daddr=" + lat + "," + lng)
-				//				} //app.Places.directions(locality, newPlace);
-				//			})
-				//	};
+				google.maps.event.addListener(infoWindow, 'domready', function () {
+					var avatarRoute = document.getElementById("avatarLink");
+					if (avatarRoute) {
+						avatarRoute.addEventListener("click", function () {
+							if (app.isOnline()) {
+								app.mobileApp.navigate("views/updateView.html")
+							} else {
+								app.mobileApp.navigate("#welcome")
+							}
+						});
+					}
+					var activityRoute = document.getElementById("cameraLink");
+					if (activityRoute) {
+						activityRoute.addEventListener("click", app.helper.cameraRoute);
+					}
+					var feedRoute = document.getElementById("myFeedLink");
+					if (feedRoute) {
+						feedRoute.addEventListener("click", function () {
+							if (app.isOnline()) { //}app.isOnline()) {
+								app.mobileApp.navigate("views/activitiesView.html?ActivityText=My Private Feed&User=" + app.Users.currentUser.data.Id);
+							} else {
+								app.mobileApp.navigate("components/notifications/view.html");
+							}
+						});
+					}
+					var goHome = document.getElementById("goHome");
+					if (goHome) {
+						goHome.addEventListener("click",
+							function () {
+								//newPlace=this.geolocation;
+								var lat = this.attributes.valueOf()["data-lat"].value;
+								var lng = this.attributes.valueOf()["data-lng"].value
+									//app.notify.showShortTop(lat+", "+lng);
+									//map.panTo({lat: position.latitude,lng: position.longitude});
+								if (locality) {
+									app.Places.browse("https://maps.google.com?saddr=" + locality.lat + "," + locality.lng + "&daddr=" + lat + "," + lng)
+								} //app.Places.directions(locality, newPlace);
+							})
+					};
 
-				//	var saveAddressLink = document.getElementById("saveAddressLink");
-				//	if (saveAddressLink) {
-				//		saveAddressLink.addEventListener("click",
-				//			function () {
-				//				if (app.Users.currentUser.data && (app.Users.currentUser.data.Id === "84bb6cf0-b3e0-11e5-8558-adda7fdf67e8")) {
-				//					app.mobileApp.navigate("components/partners/add.html?Name=&placeId=" + app.Places.locationViewModel._lastMarker.place_id + "&www=&textField=&longitude=" + app.Places.locationViewModel._lastMarker.position.lng().toFixed(6) + "&latitude=" + app.Places.locationViewModel._lastMarker.position.lat().toFixed(6) + "&email=newpartner@on2t.com&html=&icon=" + app.Places.locationViewModel.lastPicture + "&address=" + myAddress + "&tel=&city=&zipcode")
-				//				} else {
-				//					app.mobileApp.navigate("components/aboutView/view.html")
-				//				}
-				//			}
-				//		)
-				//	}
-				//	//var calendarLink = document.getElementById("calendarLink");
-				//	//if (calendarLink) {
-				//	//	calendarLink.addEventListener("click",
-				//	//		function () {
-				//	//			app.mobileApp.navigate("components/aboutView/view.html")
-				//	//		}
-				//	//	)
-				//	//}
-				//});
+					var saveAddressLink = document.getElementById("saveAddressLink");
+					if (saveAddressLink) {
+						saveAddressLink.addEventListener("click",
+							function () {
+								if (app.Users.currentUser.data && (app.Users.currentUser.data.Id === "84bb6cf0-b3e0-11e5-8558-adda7fdf67e8")) {
+									app.mobileApp.navigate("components/partners/add.html?Name=&placeId=" + app.Places.locationViewModel._lastMarker.place_id + "&www=&textField=&longitude=" + app.Places.locationViewModel._lastMarker.position.lng().toFixed(6) + "&latitude=" + app.Places.locationViewModel._lastMarker.position.lat().toFixed(6) + "&email=newpartner@on2t.com&html=&icon=" + app.Places.locationViewModel.lastPicture + "&address=" + myAddress + "&tel=&city=&zipcode")
+								} else {
+									app.mobileApp.navigate("components/aboutView/view.html")
+								}
+							}
+						)
+					}
+					var calendarLink = document.getElementById("calendarLink");
+					if (calendarLink) {
+						calendarLink.addEventListener("click",
+							function () {
+								app.mobileApp.navigate("components/aboutView/view.html")
+							}
+						)
+					}
+				});
 
 				function updatePosition(lat, lng) {
 					document.getElementById('dragStatus').innerHTML = 'New Lat: ' + lat.toFixed(6) + ' New Lng: ' + lng.toFixed(6);
@@ -798,528 +798,580 @@ app.Places = (function () {
 			//},
 		});
 		return {
-			listViewOpen: function () {
-				app.mobileApp.navigate("views/listView.html")
-			},
-			updatePartnerLocation: function () {
-				if (app.Places.locationViewModel.list && app.Places.locationViewModel.list.keys.length) {
-					for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
-						app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]).clearMark();
-					}
-				}
-				update = true;
-				app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
-			},
-			updateMapLocation: function () {
-				app.notify.getLocation(function (position) {
-					locality = position;
-					map.panTo({
-						lat: position.latitude,
-						lng: position.longitude
-					});
-					//map.setZoom(theZoom);
-					map.fitBounds(allBounds);
-					map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-					var iw = infoWindow;
-					iw.close();
-					app.Places.locationViewModel._putMarker({
-						lng: position.longitude,
-						lat: position.latitude
-					});
-				})
-			},
-			initLocation: function () {
-				//common variables 
-				app.notify.showLongBottom("Please wait while the Community map data is loaded...");
-				if (typeof google === "undefined") {
-					return;
-				}
-				infoWindow = new google.maps.InfoWindow();
-				google.maps.event.addListener(infoWindow, 'domready', function () {
-					//var listButton = document.getElementById("listButton")
-					//listButton.removeEventListener("click",app.Places.listViewOpen);
-					//listButton.style.display = 'none';
-				});
-				//create empty LatLngBounds object
-				allBounds = new google.maps.LatLngBounds();
-				app.Places.locationViewModel.list = new app.Places.List;
-				var pos, userCords, streetView, tempPlaceHolder = [];
+		    listViewOpen: function () {
+		        app.mobileApp.navigate("views/listView.html")
+		    },
+		    updatePartnerLocation: function () {
+		        if (app.Places.locationViewModel.list && app.Places.locationViewModel.list.keys.length) {
+		            for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
+		                app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]).clearMark();
+		            }
+		        }
+		        update = true;
+		        app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
+		    },
+		    updateMapLocation: function () {
+		        app.notify.getLocation(function (position) {
+		            locality = position;
+		            map.panTo({
+		                lat: position.latitude,
+		                lng: position.longitude
+		            });
+		            //map.setZoom(theZoom);
+		            map.fitBounds(allBounds);
+		            map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+		            var iw = infoWindow;
+		            iw.close();
+		            app.Places.locationViewModel._putMarker({
+		                lng: position.longitude,
+		                lat: position.latitude
+		            });
+		        })
+		    },
+		    initLocation: function () {
+		        //common variables 
+		        app.notify.showLongBottom("Please wait while the Community map data is loaded...");
+		        if (typeof google === "undefined") {
+		            return;
+		        }
+		        infoWindow = new google.maps.InfoWindow();
+		        google.maps.event.addListener(infoWindow, 'domready', function () {
+		            //var listButton = document.getElementById("listButton")
+		            //listButton.removeEventListener("click",app.Places.listViewOpen);
+		            //listButton.style.display = 'none';
+		        });
+		        //create empty LatLngBounds object
+		        allBounds = new google.maps.LatLngBounds();
+		        app.Places.locationViewModel.list = new app.Places.List;
+		        var pos, userCords, streetView, tempPlaceHolder = [];
 
-				var mapOptions = {
-					mapTypeId: google.maps.MapTypeId.ROADMAP,
-					zoomControl: true,
-					zoomControlOptions: {
-						position: google.maps.ControlPosition.LEFT_BOTTOM
-					},
-					mapTypeControl: false,
-					streetViewControl: false,
-					scroolwheel: false,
-					zoom: 15,
-					center: new google.maps.LatLng(0, -20), // only blue sea
-					panCtrl: false,
-					zoomCtrl: true,
-					zoomCtrlOptions: {
-						style: google.maps.ZoomControlStyle.LARGE,
-						position: google.maps.ControlPosition.RIGHT_CENTER
-					},
-					scaleControl: false
-				}
+		        var mapOptions = {
+		            mapTypeId: google.maps.MapTypeId.ROADMAP,
+		            zoomControl: true,
+		            zoomControlOptions: {
+		                position: google.maps.ControlPosition.LEFT_BOTTOM
+		            },
+		            mapTypeControl: false,
+		            streetViewControl: false,
+		            scroolwheel: false,
+		            zoom: 15,
+		            center: new google.maps.LatLng(0, -20), // only blue sea
+		            panCtrl: false,
+		            zoomCtrl: true,
+		            zoomCtrlOptions: {
+		                style: google.maps.ZoomControlStyle.LARGE,
+		                position: google.maps.ControlPosition.RIGHT_CENTER
+		            },
+		            scaleControl: false
+		        }
 
-				//Fire up
+		        //Fire up
 
-				app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
-				map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-				//                service = new google.maps.places.PlacesService(map);
+		        app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
+		        map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+		        //                service = new google.maps.places.PlacesService(map);
 
-				//var directionsService = new google.maps.DirectionsService;
-				//var directionsDisplay = new google.maps.DirectionsRenderer;
-				//directionsDisplay.setMap(map);
-				//var origin_input = document.getElementById('origin-input');
-				//var destination_input = document.getElementById('destination-input');
-				//var modes = document.getElementById('mode-selector');
+		        //var directionsService = new google.maps.DirectionsService;
+		        //var directionsDisplay = new google.maps.DirectionsRenderer;
+		        //directionsDisplay.setMap(map);
+		        //var origin_input = document.getElementById('origin-input');
+		        //var destination_input = document.getElementById('destination-input');
+		        //var modes = document.getElementById('mode-selector');
 
-				//map.controls[google.maps.ControlPosition.TOP_LEFT].push(origin_input);
-				//map.controls[google.maps.ControlPosition.TOP_LEFT].push(destination_input);
+		        //map.controls[google.maps.ControlPosition.TOP_LEFT].push(origin_input);
+		        //map.controls[google.maps.ControlPosition.TOP_LEFT].push(destination_input);
 
-				geocoder = new google.maps.Geocoder();
-				app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
-				streetView = map.getStreetView();
-			},
-			show: function () {
-				kendo.mobile.application.showLoading();
-				app.adMobService.viewModel.removeBanner();
-				//app.adMobService.viewModel.prepareInterstitial();
-				if (app.isOnline()) {
-					if (document.getElementById("myAvatar")) {
-						document.getElementById("myAvatar").src = app.Users.currentUser.data.PictureUrl;
-					}
-				} else {
-					if (document.getElementById("myAvatar")) {
-						document.getElementById("myAvatar").src = "styles/images/avatar.png"
-					}
-				}
-				//TO DO: update location and get local partners??
-				if (app.isNullOrEmpty(app.Places.locationViewModel) || !app.Places.locationViewModel.get("isGoogleMapsInitialized")) {
-					app.Places.locationViewModel = new LocationViewModel();
-					//TO DO: Clean up map locations
-					app.notify.showShortTop("Map reload!");
-				}
-				//resize the map in case the orientation has been changed while showing other tab
-				google.maps.event.trigger(map, "resize");
-			},
-			hide: function () {
-				//hide loading mask if user changed the tab as it is only relevant to location tab
-				kendo.mobile.application.hideLoading();
-			},
-			locationViewModel: new LocationViewModel(),
-			//packPartner: function (item) {
-			//	var result = new Object;
-			//	result.name = item.Place;
-			//	result.vicinity = item.Address;
-			//	result.isSelectedClass = true;
-			//	result.rating = 5;
-			//	var lat, lng;
-			//	if (item.Location) {
-			//		lat = item.Location.latitude;
-			//		lng = item.Location.longitude;
-			//	} else {
-			//		lat = item.location.lat;
-			//		lng = item.location.lng;
-			//	}
-			//	result.distance = app.Places.locationViewModel.updateDistance(lat, lng);
-			//	result.priceString = '$$';
-			//	result.visibility = "hidden";
-			//	app.Places.locationViewModel.list.put(result.vicinity, result);
-			//	return result;
-			//},
-			//packSearch: function (item) {
-			//	var result = new Object;
-			//	result.name = item.name;
-			//	result.vicinity = item.vicinity;
-			//	result.isSelectedClass = true;
-			//	result.rating = item.rating;
-			//	result.distance = item.distance;
-			//	result.priceString = item.priceString;
-			//	result.visibility = "hidden";
-			//	app.Places.locationViewModel.list.put(result.vicinity, result);
-			//},
-			listShow: function (e) {
-			    var ds2 = new app.Places.List;
-			    var ds3 = new app.Places.List;
-			    //var da = app.Places.locationViewModel.list.array();
-				//find place markers in active list
-				//var markers = app.Places.locationViewModel.markers;
-			    if (e.view.params.keep) {
-					for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
-					    var vitem = app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]);
-					    var bitem = app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i])
-						var thisState;
-						thisState = vitem.details().visibility;
-						var item = vitem.details();
-						    switch (e.view.params.keep) {
-						        case 1:
-						        case "1":
-						            //keep selected (Push and do nothing)
-						            if (thisState === "visible") {
-						                //ds2.add(item.vicinity, item);
-						                ds3.put(vitem.vicinity(), vitem);
-						            } else {
-						                item.clearMapMark(vitem.vicinity());
-						            }
-						            break;
-						        case 2:
-						        case "2":
-						            //delete selected (Do not push and set null)			                    
-						            if (thisState === "hidden") {
-						                //ds2.add(item.vicinity, item);
-						                ds3.put(vitem.vicinity(), vitem);
-						            } else {
-						                item.clearMapMark(vitem.vicinity());
-						            }
-						            break;
-						        default:
-						            alert("No case found " + e.view.params.keep)
-						            break;
-						    }
-						//}
-					}
-					app.Places.locationViewModel.list = ds3;
-					//app.Places.locationViewModel.list = ds3;
-				}
-				else {
-				    //reopen list so dynamically rebuild the List from the markers store
-				    var ds = new app.Places.List;
-				    var ps = new app.Places.List;
-				    for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
-				        var newPartner = app.Places.locationViewModel.list.keys[i];
-                        newPartner = app.Places.locationViewModel.list.get(newPartner)
-				        ps.put(newPartner.vicinity(), newPartner);
-				        ds.add(newPartner.vicinity(), newPartner.details());
-				    };
-				   // da = ds.array();
-				    app.Places.locationViewModel.list = ps;
-				}
-				try {
-					var aList = app.Places.locationViewModel.list.array();
-					list = $("#places-listview").kendoMobileListView({
-							dataSource: aList,
-							template: "<div class='${isSelectedClass}'><div id='placelist' data-role='touch' data-enable-swipe='true' data-swipe='app.Places.locationViewModel.openListSheet'><strong> #: name #</strong><div id='placedetails' ${visibility} style='width:100%; margin-top:-5px'> #: vicinity # -- about #: distance # miles (as the crow flys). <br/></div></div></div>",
-							//<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
-							selectable: "multiple",
-							change: function () {
-                                alert("Change event!")
-							}
-						})
+		        geocoder = new google.maps.Geocoder();
+		        app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
+		        streetView = map.getStreetView();
+		    },
+		    show: function () {
+		        kendo.mobile.application.showLoading();
+		        app.adMobService.viewModel.removeBanner();
+		        //app.adMobService.viewModel.prepareInterstitial();
+		        if (app.isOnline()) {
+		            if (document.getElementById("myAvatar")) {
+		                document.getElementById("myAvatar").src = app.Users.currentUser.data.PictureUrl;
+		            }
+		        } else {
+		            if (document.getElementById("myAvatar")) {
+		                document.getElementById("myAvatar").src = "styles/images/avatar.png"
+		            }
+		        }
+		        //TO DO: update location and get local partners??
+		        if (app.isNullOrEmpty(app.Places.locationViewModel) || !app.Places.locationViewModel.get("isGoogleMapsInitialized")) {
+		            app.Places.locationViewModel = new LocationViewModel();
+		            //TO DO: Clean up map locations
+		            app.notify.showShortTop("Map reload!");
+		        }
+		        //resize the map in case the orientation has been changed while showing other tab
+		        google.maps.event.trigger(map, "resize");
+		    },
+		    hide: function () {
+		        //hide loading mask if user changed the tab as it is only relevant to location tab
+		        kendo.mobile.application.hideLoading();
+		    },
+		    locationViewModel: new LocationViewModel(),
+		    //packPartner: function (item) {
+		    //	var result = new Object;
+		    //	result.name = item.Place;
+		    //	result.vicinity = item.Address;
+		    //	result.isSelectedClass = true;
+		    //	result.rating = 5;
+		    //	var lat, lng;
+		    //	if (item.Location) {
+		    //		lat = item.Location.latitude;
+		    //		lng = item.Location.longitude;
+		    //	} else {
+		    //		lat = item.location.lat;
+		    //		lng = item.location.lng;
+		    //	}
+		    //	result.distance = app.Places.locationViewModel.updateDistance(lat, lng);
+		    //	result.priceString = '$$';
+		    //	result.visibility = "hidden";
+		    //	app.Places.locationViewModel.list.put(result.vicinity, result);
+		    //	return result;
+		    //},
+		    //packSearch: function (item) {
+		    //	var result = new Object;
+		    //	result.name = item.name;
+		    //	result.vicinity = item.vicinity;
+		    //	result.isSelectedClass = true;
+		    //	result.rating = item.rating;
+		    //	result.distance = item.distance;
+		    //	result.priceString = item.priceString;
+		    //	result.visibility = "hidden";
+		    //	app.Places.locationViewModel.list.put(result.vicinity, result);
+		    //},
+		    listShow: function (e) {
+		        var ds2 = new app.Places.List;
+		        var ds3 = new app.Places.List;
+		        //var da = app.Places.locationViewModel.list.array();
+		        //find place markers in active list
+		        //var markers = app.Places.locationViewModel.markers;
+		        if (e.view.params.keep) {
+		            for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
+		                var vitem = app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]);
+		                var bitem = app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i])
+		                var thisState;
+		                thisState = vitem.details().visibility;
+		                var item = vitem.details();
+		                switch (e.view.params.keep) {
+		                    case 1:
+		                    case "1":
+		                        //keep selected (Push and do nothing)
+		                        if (thisState === "visible") {
+		                            //ds2.add(item.vicinity, item);
+		                            ds3.put(vitem.vicinity(), vitem);
+		                        } else {
+		                            item.clearMapMark(vitem.vicinity());
+		                        }
+		                        break;
+		                    case 2:
+		                    case "2":
+		                        //delete selected (Do not push and set null)			                    
+		                        if (thisState === "hidden") {
+		                            //ds2.add(item.vicinity, item);
+		                            ds3.put(vitem.vicinity(), vitem);
+		                        } else {
+		                            item.clearMapMark(vitem.vicinity());
+		                        }
+		                        break;
+		                    default:
+		                        alert("No case found " + e.view.params.keep)
+		                        break;
+		                }
+		                //}
+		            }
+		            app.Places.locationViewModel.list = ds3;
+		            //app.Places.locationViewModel.list = ds3;
+		        }
+		        else {
+		            //reopen list so dynamically rebuild the List from the markers store
+		            var ds = new app.Places.List;
+		            var ps = new app.Places.List;
+		            for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
+		                var newPartner = app.Places.locationViewModel.list.keys[i];
+		                newPartner = app.Places.locationViewModel.list.get(newPartner)
+		                ps.put(newPartner.vicinity(), newPartner);
+		                ds.add(newPartner.vicinity(), newPartner.details());
+		            };
+		            // da = ds.array();
+		            app.Places.locationViewModel.list = ps;
+		        }
+		        try {
+		            var aList = app.Places.locationViewModel.list.array();
+		            list = $("#places-listview").kendoMobileListView({
+		                dataSource: aList,
+		                template: "<div class='${isSelectedClass}'><div id='placelist' data-role='touch' data-enable-swipe='true' data-swipe='app.Places.locationViewModel.openListSheet'><strong> #: name #</strong><div id='placedetails' ${visibility} style='width:100%; margin-top:-5px'> #: vicinity # -- about #: distance # miles (as the crow flys). <br/></div></div></div>",
+		                //<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
+		                selectable: "multiple",
+		                change: function () {
+		                    alert("Change event!")
+		                }
+		            })
 						.data("kendoListView");
-				} catch (ex) {
-					app.showAlert(JSON.stringify(ex));
-				}
-			},
-			onSelected: function (e) {
-				if (!e.dataItem) {
-					return;
-				}
-				var isSelected = e.dataItem.get("visibility");
-				myCity = app.Places.locationViewModel.list.get(e.dataItem.vicinity).City();
-				var newState = isSelected === "hidden" ? "visible" : "hidden";
-				e.dataItem.set("isSelected", newState);
-				if (newState === "visible") {
-					e.dataItem.set("isSelectedClass", "listview-selected");
-					e.dataItem.set("visibility", "visible")
-					app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "visible");
-					var thisPartner = app.Places.locationViewModel.list.get(e.dataItem.vicinity)
-					    thisPartner.checkPlaceDetails();
-					//if (thisPartner.reviews()) {
-                    //    //app.showReviews(thisPartner.reviews(), "Google Reviews", null)
-					//}
-				} else {
-					e.dataItem.set("isSelectedClass", "");
-					e.dataItem.set("visibility", "hidden");
-					app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "hidden");
-				}
-			},
-			memorize: function () {
-				app.notify.memorize();
-			},
-			near: function (callBack) {
-				app.notify.getLocation(function (x) {
-					locality = x;
-					callBack(x)
-				});
-			},
-			iabLoadError: function (event) {
-				app.notify.showShortTop(event.type + ' - ' + event.message);
-				if (bw) {
-					bw.close();
-				}
-			},
-			iabClose: function (event) {
-				//app.notify.showShortTop(event.type);
-				//iabRef.removeEventListener('loadstart', iabLoadStart);
-				//iabRef.removeEventListener('loadstop', iabLoadStop);
-				//iabRef.removeEventListener('loaderror', iabLoadError);
-				if (bw !== null) {
-					bw.removeEventListener('exit', app.Places.iabClose);
-				}
-				app.mobileApp.navigate('views/mapView.html');
-			},
-			browse: function (url) {
-				if (url === null || url === undefined || url.length < 10 || url.button) {
-					var base = new URL("/", "https://en.wikipedia.org");
-					if (app.isNullOrEmpty(myCity))
-						myCity = app.Places.visiting.partner.City;
-					url = new URL("wiki/" + myCity, base);
-				}
-				app.notify.showShortTop("Url.Map Search " + url);
-				bw = window.open(url, "_blank", "location=yes");
-				bw.addEventListener("loaderror", app.Places.iabLoadError);
-				bw.addEventListener("exit", app.Places.iabClose);
-			},
-			//directions: function (start, end) {
-			//	//app.notify.showShortTop("Showing directions from " + JSON.stringify(start) + " to this place " + JSON.stringify(end))
-			//	var directionsDisplay;
-			//	var directionsService = new google.maps.DirectionsService();
-			//	var directionsDisplay = new google.maps.DirectionsRenderer();
-			//	var mapDirections;
-			//	function initialize() {
-			//		directionsDisplay = new google.maps.DirectionsRenderer();
-			//		var mapOptions = {
-			//			zoom: 15,
-			//			center: start
-			//		}
-			//		directionsDisplay.setMap(mapDirections);
-			//		directionsDisplay.setPanel(document.getElementById('right-panel'));
-			//		mapDirections = new google.maps.Map(document.getElementById('map-directions'), mapOptions);
-			//		app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
-			//		app.Places.locationViewModel.set("isGoogleDirectionsInitialized", true);
-			//		//app.notify.showShortTop("Route")
-			//		calcRoute();
-			//	}
-			//	function calcRoute() {
-			//		var request = {
-			//			origin: start,
-			//			destination: end,
-			//			travelMode: 'DRIVING'
-			//		};
-			//		directionsService.route(request, function (result, status) {
-			//			if (status == 'OK') {
-			//				app.notify.showShortTop("Route OK");
-			//				directionsDisplay.setDirections(result);
-			//				app.Places.locationViewModel.trips.push(result)
-			//			}
-			//		});
-			//	}
-			//	initialize();
-			//},
-			List: function () {
-				this.keys = new Array();
-				this.data = new Object();
-				this.put = function (key, value) {
-				    if (this.data[key] == null) {
-				        this.keys.push(key);
-				        this.data[key] = value;
-				        myCity = value.getPartner().City;
-				    }
-				};
-				this.add = function (key, value) {
-				    if (this.data[key] == null) {
-				        this.keys.push(key);
-				        this.data[key] = value;
-				    }
-				};
-				this.delete = function (key) {
-				    var state = false;
-				    for (var i = 0; i < this.keys.length; i++) {
-				        if (key === this.keys[i]) {
-				            delete this.keys[i];
-                            state = true
-				            break;
-				        }
-				    }				    
-				    return state;
-				};
-				this.get = function (key) {
-					return this.data[key];
-				};
-				this.remove = function (key) {
-					this.keys.remove(key);
-					this.data[key] = null;
-				};
-				this.each = function (fn) {
-					if (typeof fn != 'function') {
-						return;
-					}
-					var len = this.keys.length;
-					for (var i = 0; i < len; i++) {
-						var k = this.keys[i];
-						fn(k, this.data[k], i);
-					}
-				};
-				this.entrys = function () {
-					var len = this.keys.length;
-					var entrys = new Array(len);
-					for (var i = 0; i < len; i++) {
-						entrys[i] = {
-							key: this.keys[i],
-							value: this.data[i]
-						};
-					}
-					return entrys;
-				};
-				this.array = function () {
-					var len = this.keys.length;
-					var array = new Array(len);
-					for (var i = 0; i < len; i++) {
-						var key = this.keys[i];
-						array[i] = this.get(key).details();
-					}
-					return array;
-				};
-				this.isEmpty = function () {
-					return this.keys.length == 0;
-				};
-				this.size = function () {
-					return this.keys.length;
-				};
-				this.attribute = function (key, action) {
-					switch (action) {
-						case "visible":
-							this.data[key].details().setVisibility("visible");
-							return this.data[key].details().visibility;
-							break;
-						case "hidden":
-						    this.data[key].details().setVisibility("hidden");
-						    return this.data[key].details().visibility;
-							break;
-					    case "visibility":
-					        return this.data[key].details().visibility;
-					        break;
-						default:
-							return {
-								visible: this.data[key].visibility,
-								isSelectedClass: this.data[key].isSelectedClass
-							};
-					}
-					if (action === "get") {
+		        } catch (ex) {
+		            app.showAlert(JSON.stringify(ex));
+		        }
+		    },
+		    onSelected: function (e) {
+		        if (!e.dataItem) {
+		            return;
+		        }
+		        var isSelected = e.dataItem.get("visibility");
+		        myCity = app.Places.locationViewModel.list.get(e.dataItem.vicinity).City();
+		        var newState = isSelected === "hidden" ? "visible" : "hidden";
+		        e.dataItem.set("isSelected", newState);
+		        if (newState === "visible") {
+		            e.dataItem.set("isSelectedClass", "listview-selected");
+		            e.dataItem.set("visibility", "visible")
+		            app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "visible");
+		            var thisPartner = app.Places.locationViewModel.list.get(e.dataItem.vicinity)
+		            thisPartner.checkPlaceDetails();
+		            //if (thisPartner.reviews()) {
+		            //    //app.showReviews(thisPartner.reviews(), "Google Reviews", null)
+		            //}
+		        } else {
+		            e.dataItem.set("isSelectedClass", "");
+		            e.dataItem.set("visibility", "hidden");
+		            app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "hidden");
+		        }
+		    },
+		    memorize: function () {
+		        app.notify.memorize();
+		    },
+		    near: function (callBack) {
+		        app.notify.getLocation(function (x) {
+		            locality = x;
+		            callBack(x)
+		        });
+		    },
+		    iabLoadError: function (event) {
+		        app.notify.showShortTop(event.type + ' - ' + event.message);
+		        if (bw) {
+		            bw.close();
+		        }
+		    },
+		    iabClose: function (event) {
+		        //app.notify.showShortTop(event.type);
+		        //iabRef.removeEventListener('loadstart', iabLoadStart);
+		        //iabRef.removeEventListener('loadstop', iabLoadStop);
+		        //iabRef.removeEventListener('loaderror', iabLoadError);
+		        if (bw !== null) {
+		            bw.removeEventListener('exit', app.Places.iabClose);
+		        }
+		        app.mobileApp.navigate('views/mapView.html');
+		    },
+		    browse: function (url) {
+		        if (url === null || url === undefined || url.length < 10 || url.button) {
+		            var base = new URL("/", "https://en.wikipedia.org");
+		            if (app.isNullOrEmpty(myCity))
+		                myCity = app.Places.visiting.partner.City;
+		            url = new URL("wiki/" + myCity, base);
+		        }
+		        app.notify.showShortTop("Url.Map Search " + url);
+		        bw = window.open(url, "_blank", "location=yes");
+		        bw.addEventListener("loaderror", app.Places.iabLoadError);
+		        bw.addEventListener("exit", app.Places.iabClose);
+		    },
+		    //directions: function (start, end) {
+		    //	//app.notify.showShortTop("Showing directions from " + JSON.stringify(start) + " to this place " + JSON.stringify(end))
+		    //	var directionsDisplay;
+		    //	var directionsService = new google.maps.DirectionsService();
+		    //	var directionsDisplay = new google.maps.DirectionsRenderer();
+		    //	var mapDirections;
+		    //	function initialize() {
+		    //		directionsDisplay = new google.maps.DirectionsRenderer();
+		    //		var mapOptions = {
+		    //			zoom: 15,
+		    //			center: start
+		    //		}
+		    //		directionsDisplay.setMap(mapDirections);
+		    //		directionsDisplay.setPanel(document.getElementById('right-panel'));
+		    //		mapDirections = new google.maps.Map(document.getElementById('map-directions'), mapOptions);
+		    //		app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
+		    //		app.Places.locationViewModel.set("isGoogleDirectionsInitialized", true);
+		    //		//app.notify.showShortTop("Route")
+		    //		calcRoute();
+		    //	}
+		    //	function calcRoute() {
+		    //		var request = {
+		    //			origin: start,
+		    //			destination: end,
+		    //			travelMode: 'DRIVING'
+		    //		};
+		    //		directionsService.route(request, function (result, status) {
+		    //			if (status == 'OK') {
+		    //				app.notify.showShortTop("Route OK");
+		    //				directionsDisplay.setDirections(result);
+		    //				app.Places.locationViewModel.trips.push(result)
+		    //			}
+		    //		});
+		    //	}
+		    //	initialize();
+		    //},
+		    List: function () {
+		        this.keys = new Array();
+		        this.data = new Object();
+		        this.put = function (key, value) {
+		            if (this.data[key] == null) {
+		                this.keys.push(key);
+		                this.data[key] = value;
+		                myCity = value.getPartner().City;
+		            }
+		        };
+		        this.add = function (key, value) {
+		            if (this.data[key] == null) {
+		                this.keys.push(key);
+		                this.data[key] = value;
+		            }
+		        };
+		        this.delete = function (key) {
+		            var state = false;
+		            for (var i = 0; i < this.keys.length; i++) {
+		                if (key === this.keys[i]) {
+		                    delete this.keys[i];
+		                    state = true
+		                    break;
+		                }
+		            }				    
+		            return state;
+		        };
+		        this.get = function (key) {
+		            return this.data[key];
+		        };
+		        this.remove = function (key) {
+		            this.keys.remove(key);
+		            this.data[key] = null;
+		        };
+		        this.each = function (fn) {
+		            if (typeof fn != 'function') {
+		                return;
+		            }
+		            var len = this.keys.length;
+		            for (var i = 0; i < len; i++) {
+		                var k = this.keys[i];
+		                fn(k, this.data[k], i);
+		            }
+		        };
+		        this.entrys = function () {
+		            var len = this.keys.length;
+		            var entrys = new Array(len);
+		            for (var i = 0; i < len; i++) {
+		                entrys[i] = {
+		                    key: this.keys[i],
+		                    value: this.data[i]
+		                };
+		            }
+		            return entrys;
+		        };
+		        this.array = function () {
+		            var len = this.keys.length;
+		            var array = new Array(len);
+		            for (var i = 0; i < len; i++) {
+		                var key = this.keys[i];
+		                array[i] = this.get(key).details();
+		            }
+		            return array;
+		        };
+		        this.isEmpty = function () {
+		            return this.keys.length == 0;
+		        };
+		        this.size = function () {
+		            return this.keys.length;
+		        };
+		        this.attribute = function (key, action) {
+		            switch (action) {
+		                case "visible":
+		                    this.data[key].details().setVisibility("visible");
+		                    return this.data[key].details().visibility;
+		                    break;
+		                case "hidden":
+		                    this.data[key].details().setVisibility("hidden");
+		                    return this.data[key].details().visibility;
+		                    break;
+		                case "visibility":
+		                    return this.data[key].details().visibility;
+		                    break;
+		                default:
+		                    return {
+		                        visible: this.data[key].visibility,
+		                        isSelectedClass: this.data[key].isSelectedClass
+		                    };
+		            }
+		            if (action === "get") {
 
-					}
+		            }
 
-				}
-			},
-			newPartner: function () {
-			    var service = new google.maps.places.PlacesService(map);
-			    var partnerRow = null;
-			    var dataType = null;
-			    var isSelected = false;
-			    var priceString = "$$";
-			    var empty = "";
-			    var googleData = "";
-			    var space = "%20";
-			    var quote = "%27";
-			    var plus = "+";
-			    var name = "";
-			    var UrlString = "components/activities/view.html?ActivityText=";
-			    var Mark;
-			    var htmlIw;
-			    var options = {
-			        map: map,
-			        position: {
-			            lat: 0,
-			            lng: 0
-			        },
-			        zIndex: 10,
-			        vicinity: "",
-			        icon: {
-			            url: "styles/images/greencircle.png", //place.markerUrl,
-			            scaledSize: new google.maps.Size(30, 30),
-			        }
-			    };
-			    var toCustomHtml = function () {
-			        try {
-			            var a = Address()
-                        var i = infoString()
-                        var n = name()
-                        var p = Phone()
-			        } catch (e) {
-                        app.showError(e.message)
-			        }
-			        var introHtml = '<div><div class="iw-subTitle"><br/>' + n + '</div>' // Title Row
+		        }
+		    },
+		    newPartner: function () {
+		        var service = new google.maps.places.PlacesService(map);
+		        var partnerRow = null;
+		        var dataType = null;
+		        var isSelected = false;
+		        var priceString = "$$";
+		        var empty = "";
+		        var googleData = "";
+		        var space = "%20";
+		        var quote = "%27";
+		        var plus = "+";
+		        var name = "";
+		        var UrlString = "components/activities/view.html?ActivityText=";
+		        var Mark;
+		        var htmlIw;
+		        var options = {
+		            map: map,
+		            position: {
+		                lat: 0,
+		                lng: 0
+		            },
+		            zIndex: 10,
+		            vicinity: "",
+		            icon: {
+		                url: "styles/images/greencircle.png", //place.markerUrl,
+		                scaledSize: new google.maps.Size(30, 30),
+		            }
+		        };
+		        var toCustomHtml = function () {
+		            try {
+		                var a = Address()
+		                var i = infoString()
+		                var n = name()
+		                var p = Phone()
+		            } catch (e) {
+		                app.showError(e.message)
+		            }
+		            var introHtml = '<div><div class="iw-subTitle"><br/>' + n + '</div>' // Title Row
 						+ '<div class="image-with-text"><a data-role="button" class="butn" data-rel="external" href="tel:' + p + '">' //Phone Icon
 						+ '<img src="styles/images/phone2.png" alt="' + p + '" height="auto" width="25%" style="padding:-5px"></a><p><small>' + a + ', ' + i + '</small></div>' //Address etc
 						+ '<div ><br/><a data-role="button" class="butn" href="components/activities/view.html?ActivityText=' + n + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>' + '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText="' + n + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
 
-			        var customList = htmlOptions.url;
-			        for (var i = 0; i < 6; i++) {
-			            var parts = JSON.stringify(customList).split(',');
-			            var showIcon = parts[i].split(':')[0].replace('"', '').replace('"', '').replace('{', '');
-			            var Path = parts[i].split(':')[2].replace('"', '').replace('"', '').replace('}', '');
-			            var Url = parts[i].split(':')[1].replace('"', '').replace('"', '') + ":" + Path;
-			            var itemHtml = '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'' + Url + '\')"><img src="styles/images/' + showIcon + '.png" alt="' + Url + '" height="auto" width="25%" style="padding:5px"></a>';
-			            introHtml = introHtml + itemHtml;
-			        };
-			        return (introHtml+ '</div>').replace("styles/images/website.png", Icon() );
-			    }
-			    var setInfoWindow = function () {
-			        htmlIw = toCustomHtml();
-			        infoWindow.setContent(htmlIw);
-			        infoWindow.open(map, Mark);
-			        myCity = partnerRow.City;
-			        return true;
-			    }
-			    var checkPlaceDetails = function () {
-			        if (googleData !== "") {
-			            setInfoWindow();
-			            return true;
-			        } else {
-			            var place = {
-			                placeId: partnerRow.PlaceId
-			            };
-			            service.getDetails(place, function (result, status) {
-			                if (status !== google.maps.places.PlacesServiceStatus.OK) {
-			                    console.error(status);
-			                    return false;
-			                }
-			                googleData = result;
-			                setInfoWindow();
-			                return true;
-			            }
+		            var customList = htmlOptions.url;
+		            for (var i = 0; i < 6; i++) {
+		                var parts = JSON.stringify(customList).split(',');
+		                var showIcon = parts[i].split(':')[0].replace('"', '').replace('"', '').replace('{', '');
+		                var Path = parts[i].split(':')[2].replace('"', '').replace('"', '').replace('}', '');
+		                var Url = parts[i].split(':')[1].replace('"', '').replace('"', '') + ":" + Path;
+		                var itemHtml = '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'' + Url + '\')"><img src="styles/images/' + showIcon + '.png" alt="' + Url + '" height="auto" width="25%" style="padding:5px"></a>';
+		                introHtml = introHtml + itemHtml;
+		            };
+		            return (introHtml+ '</div>').replace("styles/images/website.png", Icon() );
+		        }
+		        var setInfoWindow = function () {
+		            htmlIw = toCustomHtml();
+		            infoWindow.setContent(htmlIw);
+		            infoWindow.open(map, Mark);
+		            myCity = partnerRow.City;
+		            return true;
+		        }
+		        var checkPlaceDetails = function () {
+		            if (googleData !== "") {
+		                setInfoWindow();
+		                return true;
+		            } else {
+		                var place = {
+		                    placeId: placeId()
+		                };
+		                service.getDetails(place, function (result, status) {
+		                    if (status !== google.maps.places.PlacesServiceStatus.OK) {
+		                        console.error(status);
+		                        return false;
+		                    }
+		                    googleData = result;
+		                    setInfoWindow();
+		                    return true;
+		                }
                         )
-			            return false;
-			        }
-			    };
-			    var initClass = function () {
-			        if (partnerRow.icon !== 'styles/images/avatar.png') {
-			            Mark = new google.maps.Marker(options);
-			            app.Places.locationViewModel.markers.push(Mark);
-			            //extend the bounds to include each marker's position
-			            allBounds.extend(options.position);
-			            //now fit the map to the newly inclusive bounds
-			            map.fitBounds(allBounds);
-			            //alert(JSON.stringify(htmlIw));
-			            google.maps.event.addListener(Mark, 'click', function () {
-			                //Search InfoWindow Popup
-			                checkPlaceDetails();
-			            })
-			        }
-			    };
-			    var htmlOptions = {
-			        "product": "On2See default urls",
-			        "version": 1.1,
-			        "releaseDate": "2016-09-19T00:00:00.000Z",
-			        "approved": true,
-			        "partner": {
-			            "stars": "0",
-			            "rating": "??"
-			        },
-			        "url": {
-			            "facebook": "https://www.facebook.com/",
-			            "youtube": "https://www.youtube.com/watch?v=",
-			            "instagram": "https://www.instagram.com/",
-			            "googleplus": "https://www.google.com/maps/place/name/latlng",
-			            "zomato": "https://www.zomato.com/miami/name-city/photostabtop",
-			            "website": "http://www.google.com/"
-			        }
-			    };
+		                return false;
+		            }
+		        };
+		        var initClass = function () {
+		            if (partnerRow.icon !== 'styles/images/avatar.png') {
+		                Mark = new google.maps.Marker(options);
+		                app.Places.locationViewModel.markers.push(Mark);
+		                //extend the bounds to include each marker's position
+		                allBounds.extend(options.position);
+		                //now fit the map to the newly inclusive bounds
+		                map.fitBounds(allBounds);
+		                //alert(JSON.stringify(htmlIw));
+		                google.maps.event.addListener(Mark, 'click', function () {
+		                    //Search InfoWindow Popup
+		                    checkPlaceDetails();
+		                })
+		            }
+		        };
+		        var htmlOptions = {
+		            "product": "On2See default urls",
+		            "version": 1.1,
+		            "releaseDate": "2016-09-19T00:00:00.000Z",
+		            "approved": true,
+		            "partner": {
+		                "stars": "0",
+		                "rating": "??"
+		            },
+		            "url": {
+		                "facebook": "https://www.facebook.com/",
+		                "youtube": "https://www.youtube.com/watch?v=",
+		                "instagram": "https://www.instagram.com/",
+		                "googleplus": "https://www.google.com/maps/place/name/latlng",
+		                "zomato": "https://www.zomato.com/miami/name-city/photostabtop",
+		                "website": "http://www.google.com/"
+		            },
+		            "uris":
+                        [
+                        {
+                            "uri": {
+                                "name": "facebook",
+                                "path": "https://www.facebook.com/",
+                                "query": "name",
+                                "option": "city",
+                                "space": "-"
+                            },
+
+                            "uri": {
+                                "name": "youtube",
+                                "path": "https://www.youtube.com/watch?v=",
+                                "query": "name",
+                                "space": "-",
+                                "option": "city"
+                            },
+
+                            "uri": {
+                                "name": "instagram",
+                                "path": "https://www.instagram.com/?v=",
+                                "query": "name",
+                                "space": "-",
+                                "option": "city"
+                            },
+
+                            "uri": {
+                                "name": "google",
+                                "path": "https://www.google.com/maps/place/",
+                                "query": "name",
+                                "space": "/",
+                                "option": "latlng"
+                            },
+
+                            "uri": {
+                                "name": "youtube",
+                                "path": "https://www.youtube.com/watch?v=",
+                                "query": "name",
+                                "space": "-",
+                                "option": "city"
+                            },
+
+                            "uri": {
+                                "name": "youtube",
+                                "path": "https://www.youtube.com/watch?v=",
+                                "query": "name",
+                                "space": "-",
+                                "option": "city"
+                            }
+                        }]
+
+		        };
 			    var distance = function () {
 			        var R = 6371; // km
 			        if (partnerRow) {
@@ -1374,11 +1426,11 @@ app.Places = (function () {
 			        }
 			        return partnerRow.Address;
 			    };
-			    var Phone = function () {
-			        if (app.isNullOrEmpty(partnerRow.Phone)) {
-			            partnerRow.Phone = partnerRow.international_phone_number;
+			    var placeId = function () {
+			        if (app.isNullOrEmpty(partnerRow.PlaceId)) {
+			            partnerRow.PlaceId = partnerRow.place_id;
 			        }
-			        return partnerRow.Phone;
+			        return partnerRow.PlaceId;
 			    };
 			    var Phone = function () {
 			        if (app.isNullOrEmpty(partnerRow.Phone) && googleData.international_phone_number) {
@@ -1417,7 +1469,8 @@ app.Places = (function () {
 			        } catch (e) {
 			            starString = ' ... No reviews and <strong>' + gr + ' </strong> stars and price Range: <strong>' + pl + '</strong></small>';
 			        }
-			        if (starString.includes("undefined")) {
+			        var s = starString.indexOf("undefined");
+			        if (s > -1) {
 			            return openString + '.';
 			        } else {
                         return openString + ", " + starString;
@@ -1442,7 +1495,7 @@ app.Places = (function () {
 			            showReviewAlert();
 			        } else {
 			            var place = {
-			                placeId: partnerRow.PlaceId
+			                placeId: placeId()
 			            };
 			            service.getDetails(place, function (result, status) {
 			                if (status !== google.maps.places.PlacesServiceStatus.OK) {
