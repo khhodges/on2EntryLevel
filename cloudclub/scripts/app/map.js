@@ -277,7 +277,7 @@ app.Places = (function () {
 				var query = new Everlive.Query();
 				var point = new Everlive.GeoPoint(position.lng, position.lat);
 				//query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 8, 'miles').ne('Icon', 'styles/images/avatar.png');
-				query.where().nearSphere('Location', point, 8, 'miles').ne('Icon', 'styles/images/avatar.png');
+				query.where().nearSphere('Location', point, 1800, 'miles').ne('Icon', 'styles/images/avatar.png');
 				var partners = app.everlive.data('Places');
 				partners.get(query).then(function (data) {
 					app.Places.locationViewModel.list = new app.Places.List;
@@ -305,7 +305,11 @@ app.Places = (function () {
 				geocoder.geocode({
 					'location': latLng
 				}, function (results, status) {
-					if (status === google.maps.GeocoderStatus.OK) {
+					if (status !== google.maps.GeocoderStatus.OK) {
+						console.error(status);
+						return false;
+					}
+					else {
 						myAddress = '';
 						myCity = '';
 						if (results[0]) {
@@ -315,8 +319,6 @@ app.Places = (function () {
 								document.getElementById('addressStatus').innerHTML = myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '</span>';
 							}
 						}
-					} else {
-						window.alert('Geocoder failed due to find Address: ' + status);
 					}
 				});
 			},
@@ -484,7 +486,11 @@ app.Places = (function () {
 						keyword: app.Places.locationViewModel.find
 					};
 					service.nearbySearch(request, function (results, status) {
-						if (status == google.maps.places.PlacesServiceStatus.OK) {
+						if (status !== google.maps.places.PlacesServiceStatus.OK) {
+							console.error(status);
+							return false;
+						}
+						else {
 							//if length = 0 offer search by country or search by region
 							//map.panTo(results[0].geometry.location);
 							for (var i = 0; i < results.length; i++) {
@@ -493,9 +499,6 @@ app.Places = (function () {
 								partnerV.setPlaceRow(place);
 								app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV);
 							}
-						} else {
-							// Do Place search
-							app.notify.showShortTop("Nothing was found in the area shown.");
 						}
 					});
 				} else {
@@ -608,6 +611,7 @@ app.Places = (function () {
 				},
 					function (results, status) {
 						if (status !== google.maps.GeocoderStatus.OK) {
+							console.error(status);
 							app.notify.showShortTop("Map.Unable to find anything.");
 							return;
 						}
@@ -1028,10 +1032,7 @@ app.Places = (function () {
 					e.dataItem.set("visibility", "visible")
 					app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "visible");
 					var thisPartner = app.Places.locationViewModel.list.get(e.dataItem.vicinity)
-					thisPartner.checkPlaceDetails();
-					//if (thisPartner.reviews()) {
-					//    //app.showReviews(thisPartner.reviews(), "Google Reviews", null)
-					//}
+					showReviews();
 				} else {
 					e.dataItem.set("isSelectedClass", "");
 					e.dataItem.set("visibility", "hidden");
@@ -1211,6 +1212,7 @@ app.Places = (function () {
 				var partnerRow = null;
 				var dataType = null;
 				var isSelected = false;
+				var googleDataFetch;
 				var priceString = "$$";
 				var empty = "";
 				var googleData = "";
@@ -1234,60 +1236,110 @@ app.Places = (function () {
 						scaledSize: new google.maps.Size(30, 30),
 					}
 				};
+				var displayList = function (parts) {
+					var showIcon = parts.name;
+					var Path = parts.path;
+					var Url = Path + name();//parts.query;
+					var itemHtml = '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
+						+ Url + '\')"><img src="styles/images/'
+						+ showIcon + '.png" alt="'
+						+ Url + '" height="auto" width="25%" style="padding:5px"></a>';
+					return itemHtml;
+				};
+				//return (introHtml + '</div>').replace("styles/images/website.png", Icon());
+				//}
+				//}
 				var toCustomHtml = function () {
 					try {
 						var a = Address()
 						var i = infoString()
 						var n = name()
 						var p = Phone()
+						var w = Website()
+						var customList = htmlOptions.uris;
+						var customOptions = htmlOptions.defaultOptions.display;
+						var standardOptions = htmlOptions.defaultOptions.standard;
+						var workingList = new Array();
+						for (var k = 0; k < customOptions.length; k++) {
+							var option = customOptions[k];
+							workingList = workingList.concat(htmlOptions.defaultOptions[option]);
+						}
+						var introHtml = '<div><div class="iw-subTitle"><br/>'
+							+ n + '</div>' // Title Row
+							+ '<div class="image-with-text"><a data-role="button" class="butn" data-rel="external" href="tel:'
+							+ p + '">'
+							+ '<img src="styles/images/phone2.png" alt="'
+							+ p + '" height="auto" width="25%" style="padding:-5px"></a><p><small>' //Phone Icon address and info next
+							+ a + ', ' + i + '</small></div><div class="iw-subTitle" style="padding-top:22px">Social Media Links</div><div>' //Address etc
 					} catch (e) {
 						app.showError(e.message)
 					}
-					var introHtml = '<div><div class="iw-subTitle"><br/>' + n + '</div>' // Title Row
-						+ '<div class="image-with-text"><a data-role="button" class="butn" data-rel="external" href="tel:' + p + '">' //Phone Icon
-						+ '<img src="styles/images/phone2.png" alt="' + p + '" height="auto" width="25%" style="padding:-5px"></a><p><small>' + a + ', ' + i + '</small></div>' //Address etc
-
-					var fixed = '<div ><br/><a data-role="button" class="butn" href="components/activities/view.html?ActivityText=' + n + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
-						+ '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText="' + n + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
-					if (introHtml.length < 200) { introHtml = introHtml + '<br/><br/>' + fixed; }
-					var customList = htmlOptions.url;
-					for (var i = 0; i < 6; i++) {
-						var parts = JSON.stringify(customList).split(',');
-						var showIcon = parts[i].split(':')[0].replace('"', '').replace('"', '').replace('{', '');
-						var Path = parts[i].split(':')[2].replace('"', '').replace('"', '').replace('}', '');
-						var Url = parts[i].split(':')[1].replace('"', '').replace('"', '') + ":" + Path;
-						var itemHtml = '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\'' + Url + '\')"><img src="styles/images/' + showIcon + '.png" alt="' + Url + '" height="auto" width="25%" style="padding:5px"></a>';
-						introHtml = introHtml + itemHtml;
-					};
-					return (introHtml + '</div>').replace("styles/images/website.png", Icon());
-				}
+					for (var l = 0; l < standardOptions.length; l++) {
+						var parts = standardOptions[l];
+						switch (parts) {
+							case "events":
+								introHtml = introHtml + '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText='
+									+ n + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+								break;
+							case "activities":
+								introHtml = introHtml + '<a data-role="button" class="butn" href="components/activities/view.html?ActivityText='
+									+ n + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+								break;
+							case "website":
+								introHtml = introHtml + '<a data-role="button" class="butn" onclick={"click", app.helper.cameraRoute('
+									+ n + ')"}><img src="styles/images/default.png" alt="'
+									+ n + ' website" height="auto" width="25%" style="padding:5px"></a>'
+								break;
+							case "camera":
+								introHtml = introHtml + '<a data-role="button" class="butn" onclick="app.helper.cameraRoute('
+									+ n + ')"><img src="styles/images/camera.png" alt="camera" height="auto" width="25%" style="padding:5px"></a>'
+								break;
+							default:
+								break;
+						}
+					}
+					for (var m = 0; m < workingList.length; m++) {
+						var htmlItems = customList[workingList[m]];
+						if(htmlItems)introHtml = introHtml + displayList(htmlItems);
+					}
+					return introHtml;
+				};
 				var setInfoWindow = function () {
 					htmlIw = toCustomHtml();
 					infoWindow.setContent(htmlIw);
 					infoWindow.open(map, Mark);
 					myCity = partnerRow.City;
 					return true;
-				}
-				var checkPlaceDetails = function () {
-					if (googleData !== "") {
-						setInfoWindow();
-						return true;
+				};
+				var checkInfoWindow = function () {
+					if (googleDataFetch === true) {
+						htmlIw = toCustomHtml();
+						infoWindow.setContent(htmlIw);
+						infoWindow.open(map, Mark);
+						myCity = partnerRow.City;
 					} else {
 						var place = {
 							placeId: placeId()
 						};
+						googleDataFetch = true;
 						service.getDetails(place, function (result, status) {
 							if (status !== google.maps.places.PlacesServiceStatus.OK) {
 								console.error(status);
 								return false;
 							}
 							googleData = result;
-							setInfoWindow();
+							htmlIw = toCustomHtml();
+							infoWindow.setContent(htmlIw);
+							infoWindow.open(map, Mark);
+							myCity = partnerRow.City;
 							return true;
 						}
-                        )
-						return false;
+						)
 					}
+				};
+				var Website = function () {
+					if (app.isNullOrEmpty(partnerRow.Website) && googleData.website) partnerRow.Website = googleData.website;
+					return partnerRow.Website;
 				};
 				var initClass = function () {
 					if (partnerRow.icon !== 'styles/images/avatar.png') {
@@ -1299,27 +1351,10 @@ app.Places = (function () {
 						map.fitBounds(allBounds);
 						//alert(JSON.stringify(htmlIw));
 						google.maps.event.addListener(Mark, 'click', function () {
+							checkInfoWindow();
 							//Search InfoWindow Popup
-							checkPlaceDetails();
+							//setInfoWindow();
 						})
-					}
-				};
-				var htmlOptions = {
-					"product": "On2See default urls",
-					"version": 1.1,
-					"releaseDate": "2016-09-19T00:00:00.000Z",
-					"approved": true,
-					"partner": {
-						"stars": "0",
-						"rating": "??"
-					},
-					"url": {
-						"facebook": "https://www.facebook.com/",
-						"youtube": "https://www.youtube.com/watch?v=",
-						"instagram": "https://www.instagram.com/",
-						"googleplus": "https://www.google.com/maps/place/name/latlng",
-						"zomato": "https://www.zomato.com/miami/name-city/photostabtop",
-						"website": "http://www.google.com/"
 					}
 				};
 				var distance = function () {
@@ -1403,6 +1438,9 @@ app.Places = (function () {
 						var rl = googleData.reviews.length;
 						var gr = googleData.rating;
 						var pl = googleData.price_level;
+						if(!rl) rl = 0;
+						if(!gr) gr = 0;
+						if(!pl) pl = 0;
 
 					} catch (e) {
 						return ' about <strong>' + distance() + '</strong> miles (ATCF).';
@@ -1423,7 +1461,7 @@ app.Places = (function () {
 					if (s > -1) {
 						return openString + '.';
 					} else {
-                        return openString + ", " + starString;
+						return openString + ", " + starString;
 					}
 				}
 				var showReviewAlert = function () {
@@ -1440,23 +1478,35 @@ app.Places = (function () {
 					app.showReviews(text, "Mixed Reviews from the Net for " + partnerRow.Place);
 					return text;
 				}
-				this.checkPlaceDetails = function () {
-					if (googleData !== "") {
-						showReviewAlert();
-					} else {
+				this.checkPlaceDetails = function (callback) {
+					if (googleDataFetch === true) {
+						if (callBack !== null) {
+							callback();
+						} else {
+							return true;
+						}
+					}
+					else {
 						var place = {
 							placeId: placeId()
 						};
+						googleDataFetch = true;
 						service.getDetails(place, function (result, status) {
 							if (status !== google.maps.places.PlacesServiceStatus.OK) {
 								console.error(status);
 								return false;
 							}
 							googleData = result;
-							showReviewAlert();
-						})
+							if (app.isNullOrEmpty(callBack)) {
+								return true;
+							} else {
+								callback();
+							}
+						}
+						)
 					}
 				}
+
 				this.vicinity = function () {
 					if (app.isNullOrEmpty(partnerRow.Address)) {
 						partnerRow.Address = partnerRow.vicinity;
@@ -1555,12 +1605,6 @@ app.Places = (function () {
 					}
 					return partnerRow.Location;
 				}
-				this.Website = function () {
-					if (app.isNullOrEmpty(partnerRow.Website)) {
-						partnerRow.Website = partnerRow.WebSite;
-					}
-					return partnerRow.Website;
-				}
 				this.details = function () {
 					return {
 						name: name(),
@@ -1573,7 +1617,7 @@ app.Places = (function () {
 						//phone: this.Phone(this),
 						vicinity: Address(),
 						distance: distance(),
-                        listString: listString(),
+						listString: listString(),
 						//rating: this.rating(this), //htmlOptions.partner.rating,
 						clearMapMark: function (key) {
 							Mark.setMap(null);
