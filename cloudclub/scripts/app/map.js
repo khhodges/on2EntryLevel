@@ -277,7 +277,7 @@ app.Places = (function () {
 				var query = new Everlive.Query();
 				var point = new Everlive.GeoPoint(position.lng, position.lat);
 				//query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 8, 'miles').ne('Icon', 'styles/images/avatar.png');
-				query.where().nearSphere('Location', point, 1800, 'miles').ne('Icon', 'styles/images/avatar.png');
+				query.where().nearSphere('Location', point, 800, 'miles').ne('Icon', 'styles/images/avatar.png');
 				var partners = app.everlive.data('Places');
 				partners.get(query).then(function (data) {
 					app.Places.locationViewModel.list = new app.Places.List;
@@ -724,6 +724,10 @@ app.Places = (function () {
 								//newPlace=this.geolocation;
 								var lat = this.attributes.valueOf()["data-lat"].value;
 								var lng = this.attributes.valueOf()["data-lng"].value
+								if (locality.lat - lat <.0001 && locality.lng - lng <.00001) {
+								    app.notify.showShortTop("Directions not required, first drag the map pointer to a different place.");
+								    return;
+								}
 								//app.notify.showShortTop(lat+", "+lng);
 								//map.panTo({lat: position.latitude,lng: position.longitude});
 								if (locality) {
@@ -1239,11 +1243,11 @@ app.Places = (function () {
 				var displayList = function (parts) {
 					var showIcon = parts.name;
 					var Path = parts.path;
-					var Url = Path + name();//parts.query;
+					var Url = Path + resolveString(resolveString(name(),"'","%27"),"&","%26");//parts.query;
 					var itemHtml = '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
-						+ Url + '\')"><img src="styles/images/'
+						+ Url + '\');"><img src="styles/images/'
 						+ showIcon + '.png" alt="'
-						+ Url + '" height="auto" width="25%" style="padding:5px"></a>';
+						+ showIcon + '" height="auto" width="25%" style="padding:5px"></a>';
 					return itemHtml;
 				};
 				//return (introHtml + '</div>').replace("styles/images/website.png", Icon());
@@ -1258,6 +1262,7 @@ app.Places = (function () {
 						var w = Website()
 						var customList = htmlOptions.uris;
 						var customOptions = htmlOptions.defaultOptions.display;
+						if (partnerOptions.defaultOptions) customOptions = partnerOptions.defaultOptions.display;
 						var standardOptions = htmlOptions.defaultOptions.standard;
 						var workingList = new Array();
 						for (var k = 0; k < customOptions.length; k++) {
@@ -1304,13 +1309,13 @@ app.Places = (function () {
 					}
 					return introHtml;
 				};
-				var setInfoWindow = function () {
-					htmlIw = toCustomHtml();
-					infoWindow.setContent(htmlIw);
-					infoWindow.open(map, Mark);
-					myCity = partnerRow.City;
-					return true;
-				};
+				//var setInfoWindow = function () {
+				//	htmlIw = toCustomHtml();
+				//	infoWindow.setContent(htmlIw);
+				//	infoWindow.open(map, Mark);
+				//	myCity = partnerRow.City;
+				//	return true;
+				//};
 				var checkInfoWindow = function () {
 					if (googleDataFetch === true) {
 						htmlIw = toCustomHtml();
@@ -1338,8 +1343,12 @@ app.Places = (function () {
 					}
 				};
 				var Website = function () {
-					if (app.isNullOrEmpty(partnerRow.Website) && googleData.website) partnerRow.Website = googleData.website;
-					return partnerRow.Website;
+				    if (app.isNullOrEmpty(partnerRow.Website) && googleData.website) partnerRow.Website = googleData.website;
+				    return partnerRow.Website;
+				};
+				var partnerOptions = function () {
+				    if (app.isNullOrEmpty(partnerRow.partnerOptions) && googleData) partnerRow.partnerOptions = htmlOptions;
+				    return partnerRow.partnerOptions;
 				};
 				var initClass = function () {
 					if (partnerRow.icon !== 'styles/images/avatar.png') {
@@ -1579,11 +1588,28 @@ app.Places = (function () {
 					}
 					if (partnerRow.Html) {
 						try {
-							htmlOptions = JSON.parse(partnerRow.Html);
+							partnerRow.partnerOptions = JSON.parse(partnerRow.Html);
 						}
-						catch (e) {
-							console.log(partnerRow.Html + " Default Partner Options " + e.message)
-						}
+					    catch (e) {
+					        partnerRow.partnerOptions = {
+					        "product": "On2See partners urls",
+                            "version": 1.1,
+                            "releaseDate": "2016-09-19T00:00:00.000Z",
+                            "approved": true,
+                            "partner": {
+                                "stars": "5",
+                                "rating": "$$"
+                            },
+                              "defaultOptions": {
+                                  "standard": ["events", "activities", "camera", "website"],
+                                  "search": ["google", "twitter", "bing", "googleMaps"],
+                                  "food": ["zomato", "yelp"],
+                                  "display": ["search","food"],
+                                  "jobs": ["angiesList", "homeAdviser"]
+                              },
+                          "customOptions": ["home","events","zomato", "yelp", "google", "twitter", "bing", "googleMaps"],
+                          }
+						    }
 					}
 					initClass(this);//alert(JSON.stringify("options"));
 				}
