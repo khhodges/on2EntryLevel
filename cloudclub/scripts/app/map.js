@@ -277,7 +277,7 @@ app.Places = (function () {
 				var query = new Everlive.Query();
 				var point = new Everlive.GeoPoint(position.lng, position.lat);
 				//query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 8, 'miles').ne('Icon', 'styles/images/avatar.png');
-				query.where().nearSphere('Location', point, 800, 'miles').ne('Icon', 'styles/images/avatar.png');
+				query.where().nearSphere('Location', point, 8, 'miles').ne('Icon', 'styles/images/avatar.png');
 				var partners = app.everlive.data('Places');
 				partners.get(query).then(function (data) {
 					app.Places.locationViewModel.list = new app.Places.List;
@@ -1036,7 +1036,7 @@ app.Places = (function () {
 					e.dataItem.set("visibility", "visible")
 					app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "visible");
 					var thisPartner = app.Places.locationViewModel.list.get(e.dataItem.vicinity)
-					showReviews();
+					thisPartner.checkInfoWindow();
 				} else {
 					e.dataItem.set("isSelectedClass", "");
 					e.dataItem.set("visibility", "hidden");
@@ -1260,17 +1260,20 @@ app.Places = (function () {
 						var n = name()
 						var p = Phone()
 						var w = Website()
+						var programmedOptions;
 						var customList = htmlOptions.uris;
 						var customOptions = htmlOptions.defaultOptions.display;
 						if (partnerOptions.defaultOptions) customOptions = partnerOptions.defaultOptions.display;
+						if (partnerOptions.url) programmedOptions = partnerOptions.url;
 						var standardOptions = htmlOptions.defaultOptions.standard;
 						var workingList = new Array();
 						for (var k = 0; k < customOptions.length; k++) {
 							var option = customOptions[k];
 							workingList = workingList.concat(htmlOptions.defaultOptions[option]);
 						}
-						var introHtml = '<div><div class="iw-subTitle"><br/>'
-							+ n + '</div>' // Title Row
+						var introHtml = '<div><div class="iw-subTitle"><br/><a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
+						+ w + '\');"><u>'
+							+ n + '</u></a></div>' // Title Row
 							+ '<div class="image-with-text"><a data-role="button" class="butn" data-rel="external" href="tel:'
 							+ p + '">'
 							+ '<img src="styles/images/phone2.png" alt="'
@@ -1280,48 +1283,59 @@ app.Places = (function () {
 						app.showError(e.message)
 					}
 					for (var l = 0; l < standardOptions.length; l++) {
-						var parts = standardOptions[l];
-						switch (parts) {
-							case "events":
-								introHtml = introHtml + '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText='
+					    var parts = standardOptions[l];
+					    switch (parts) {
+					        case "events":
+					            introHtml = introHtml + '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText='
 									+ n + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
-								break;
-							case "activities":
-								introHtml = introHtml + '<a data-role="button" class="butn" href="components/activities/view.html?ActivityText='
+					            break;
+					        case "activities":
+					            if(programmedOptions){
+					            introHtml = introHtml + '<a data-role="button" class="butn" href="components/activities/view.html?ActivityText='
 									+ n + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
-								break;
-							case "website":
-								introHtml = introHtml + '<a data-role="button" class="butn" onclick={"click", app.helper.cameraRoute('
-									+ n + ')"}><img src="styles/images/default.png" alt="'
+                                    }
+					            break;
+					        case "partner":
+					            introHtml = introHtml + '<a data-role="button" class="butn" href="components/partners/view.html?ActivityText='
+									+ n + '"><img src="' + 'data:image/png;base64,' + appSettings.bavatar + '" alt="'
 									+ n + ' website" height="auto" width="25%" style="padding:5px"></a>'
-								break;
-							case "camera":
-								introHtml = introHtml + '<a data-role="button" class="butn" onclick="app.helper.cameraRoute('
-									+ n + ')"><img src="styles/images/camera.png" alt="camera" height="auto" width="25%" style="padding:5px"></a>'
-								break;
-							default:
-								break;
-						}
+					            break;
+					        case "camera":
+					            introHtml = introHtml + '<a data-role="button" class="butn" onclick="app.helper.cameraRoute()"><img src="styles/images/camera.png" alt="camera" height="auto" width="25%" style="padding:5px"></a>'
+					            break;
+					        default:
+					            break;
+					    }
 					}
-					for (var m = 0; m < workingList.length; m++) {
-						var htmlItems = customList[workingList[m]];
-						if(htmlItems)introHtml = introHtml + displayList(htmlItems);
+					if (programmedOptions) {
+					    for (var h = 0; h < programmedOptions.length; h++) {
+					        var link = programmedOptions[h];
+					        if (link.icon === "styles/images/default-image.jpg") link.icon = "styles/images/" + link.name + ".png";
+					        introHtml = introHtml + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
+                                + link.path + '\');"><img src="' + link.icon + '" alt="' + link.name + '" height="auto" width="25%" style="padding:5px"></a>'
+					    }
+					} else {
+					    for (var m = 0; m < workingList.length; m++) {
+					        var htmlItem = customList[workingList[m]];
+					        if (htmlItem) introHtml = introHtml + displayList(htmlItem);
+					    }
 					}
 					return introHtml;
 				};
-				//var setInfoWindow = function () {
-				//	htmlIw = toCustomHtml();
-				//	infoWindow.setContent(htmlIw);
-				//	infoWindow.open(map, Mark);
-				//	myCity = partnerRow.City;
-				//	return true;
-				//};
-				var checkInfoWindow = function () {
-					if (googleDataFetch === true) {
-						htmlIw = toCustomHtml();
-						infoWindow.setContent(htmlIw);
-						infoWindow.open(map, Mark);
-						myCity = partnerRow.City;
+				var setInfoWindow = function () {
+					htmlIw = toCustomHtml();
+					infoWindow.setContent(htmlIw);
+					infoWindow.open(map, Mark);
+					myCity = partnerRow.City;
+					return true;
+				};
+				this.checkInfoWindow = function () {
+				    checkInfoWindow(showReviewAlert);
+				    if (placeId() === undefined) app.notify.showShortTop(name() + " is missing a PlaceID");
+				};
+				var checkInfoWindow = function (callback) {
+				    if (googleDataFetch === true || placeId()===undefined) {
+				        callback();
 					} else {
 						var place = {
 							placeId: placeId()
@@ -1333,10 +1347,7 @@ app.Places = (function () {
 								return false;
 							}
 							googleData = result;
-							htmlIw = toCustomHtml();
-							infoWindow.setContent(htmlIw);
-							infoWindow.open(map, Mark);
-							myCity = partnerRow.City;
+                            callback()
 							return true;
 						}
 						)
@@ -1347,8 +1358,8 @@ app.Places = (function () {
 				    return partnerRow.Website;
 				};
 				var partnerOptions = function () {
-				    if (app.isNullOrEmpty(partnerRow.partnerOptions) && googleData) partnerRow.partnerOptions = htmlOptions;
-				    return partnerRow.partnerOptions;
+				    if (app.isNullOrEmpty(partnerOptions)) partnerOptions = htmlOptions;
+				    return partnerOptions;
 				};
 				var initClass = function () {
 					if (partnerRow.icon !== 'styles/images/avatar.png') {
@@ -1358,11 +1369,12 @@ app.Places = (function () {
 						allBounds.extend(options.position);
 						//now fit the map to the newly inclusive bounds
 						map.fitBounds(allBounds);
-						//alert(JSON.stringify(htmlIw));
 						google.maps.event.addListener(Mark, 'click', function () {
-							checkInfoWindow();
-							//Search InfoWindow Popup
-							//setInfoWindow();
+						    if (Mark.icon.url === "styles/images/xstar.png") {
+						        app.showAlert("Star");
+						    } else {
+						        checkInfoWindow(setInfoWindow);
+						    }
 						})
 					}
 				};
@@ -1481,41 +1493,39 @@ app.Places = (function () {
 					} else {
 						for (var i = 0; i < list.length; i++) {
 							text = text + '\n' + list[i].author_name + ', (' + list[i].time + '),\n ' + list[i].rating + ' Stars, ' + list[i].text + '\n';
-							// var text2 = '<a class="twitter-timeline"  href="https://twitter.com/hashtag/wpbf25news" data-widget-id="782567336305983488">#wpbf25news Tweets</a>    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>'
 						}
 					}
 					app.showReviews(text, "Mixed Reviews from the Net for " + partnerRow.Place);
 					return text;
 				}
-				this.checkPlaceDetails = function (callback) {
-					if (googleDataFetch === true) {
-						if (callBack !== null) {
-							callback();
-						} else {
-							return true;
-						}
-					}
-					else {
-						var place = {
-							placeId: placeId()
-						};
-						googleDataFetch = true;
-						service.getDetails(place, function (result, status) {
-							if (status !== google.maps.places.PlacesServiceStatus.OK) {
-								console.error(status);
-								return false;
-							}
-							googleData = result;
-							if (app.isNullOrEmpty(callBack)) {
-								return true;
-							} else {
-								callback();
-							}
-						}
-						)
-					}
-				}
-
+				//this.checkPlaceDetails = function (callback) {
+				//	if (googleDataFetch === true) {
+				//		if (callBack !== null) {
+				//			callback();
+				//		} else {
+				//			return true;
+				//		}
+				//	}
+				//	else {
+				//		var place = {
+				//			placeId: placeId()
+				//		};
+				//		googleDataFetch = true;
+				//		service.getDetails(place, function (result, status) {
+				//			if (status !== google.maps.places.PlacesServiceStatus.OK) {
+				//				console.error(status);
+				//				return false;
+				//			}
+				//			googleData = result;
+				//			if (app.isNullOrEmpty(callBack)) {
+				//				return true;
+				//			} else {
+				//				callback();
+				//			}
+				//		}
+				//		)
+				//	}
+				//}
 				this.vicinity = function () {
 					if (app.isNullOrEmpty(partnerRow.Address)) {
 						partnerRow.Address = partnerRow.vicinity;
@@ -1554,7 +1564,7 @@ app.Places = (function () {
 					options.position = { lng: partnerRow.geometry.location.lng(), lat: partnerRow.geometry.location.lat() };
 					options.vicinity = partnerRow.vicinity;
 					try {
-						initClass(this);
+						initClass();
 					} catch (e) {
 						app.notify.showShortTop(partnerRow.vicinity + e.message);
 						return;
@@ -1588,7 +1598,7 @@ app.Places = (function () {
 					}
 					if (partnerRow.Html) {
 						try {
-							partnerRow.partnerOptions = JSON.parse(partnerRow.Html);
+							partnerOptions = JSON.parse(partnerRow.Html);
 						}
 					    catch (e) {
 					        partnerRow.partnerOptions = {
@@ -1606,12 +1616,12 @@ app.Places = (function () {
                                   "food": ["zomato", "yelp"],
                                   "display": ["search","food"],
                                   "jobs": ["angiesList", "homeAdviser"]
-                              },
-                          "customOptions": ["home","events","zomato", "yelp", "google", "twitter", "bing", "googleMaps"],
+                             },
+                             "customOptions": ["home","events","zomato", "yelp", "google", "twitter", "bing", "googleMaps"],
                           }
-						    }
+					    }
 					}
-					initClass(this);//alert(JSON.stringify("options"));
+					initClass();
 				}
 				this.City = function () {
 					if (app.isNullOrEmpty(partnerRow.City)) {
@@ -1634,17 +1644,12 @@ app.Places = (function () {
 				this.details = function () {
 					return {
 						name: name(),
-						//location: this.location(),
-						//website: this.Website(),
 						isSelectedClass: isSelectedClass(),
 						visibility: visible,
-						//google: null,
 						setVisibility: function (v) { visible = v; },
-						//phone: this.Phone(this),
 						vicinity: Address(),
 						distance: distance(),
 						listString: listString(),
-						//rating: this.rating(this), //htmlOptions.partner.rating,
 						clearMapMark: function (key) {
 							Mark.setMap(null);
 							app.Places.locationViewModel.list.delete(key);
