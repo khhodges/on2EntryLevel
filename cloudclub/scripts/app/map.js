@@ -258,16 +258,18 @@ app.Places = (function () {
 				//if (!app.isNullOrEmpty(app.cdr)) {
 				//	position = new google.maps.LatLng(app.cdr.latitude, app.cdr.longitude);
 				//}
-				Selfie = {
-					Picture: null,
-					name: "My Private Feed",
-					Value: null,
-					Active: true,
-					Notes: 'Selfie',
-					Text: '',
-					Title: 'Selfie',
-					location: position
-				};
+				try {
+					Selfie = {
+						Picture: null,
+						name: "My Private Feed",
+						Value: null,
+						Active: true,
+						Notes: 'Selfie',
+						Text: '',
+						Title: 'Selfie',
+						location: position
+					};
+				} catch (e) { app.Error(JSON.stringify(e)) }
 				app.Places.visiting = Selfie;
 				map.panTo(position);
 				that._putMarker(position);
@@ -724,9 +726,9 @@ app.Places = (function () {
 								//newPlace=this.geolocation;
 								var lat = this.attributes.valueOf()["data-lat"].value;
 								var lng = this.attributes.valueOf()["data-lng"].value
-								if (locality.lat - lat <.0001 && locality.lng - lng <.00001) {
-								    app.notify.showShortTop("Directions not required, first drag the map pointer to a different place.");
-								    return;
+								if (locality.lat - lat < .0001 && locality.lng - lng < .00001) {
+									app.notify.showShortTop("Directions not required, first drag the map pointer to a different place.");
+									return;
 								}
 								//app.notify.showShortTop(lat+", "+lng);
 								//map.panTo({lat: position.latitude,lng: position.longitude});
@@ -1243,7 +1245,7 @@ app.Places = (function () {
 				var displayList = function (parts) {
 					var showIcon = parts.name;
 					var Path = parts.path;
-					var Url = Path + resolveString(resolveString(name(),"'","%27"),"&","%26");//parts.query;
+					var Url = Path + resolveString(resolveString(name(), "'", "%27"), "&", "%26");//parts.query;
 					var itemHtml = '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
 						+ Url + '\');"><img src="styles/images/'
 						+ showIcon + '.png" alt="'
@@ -1260,19 +1262,23 @@ app.Places = (function () {
 						var n = name()
 						var p = Phone()
 						var w = Website()
+						var p = picture()
 						var programmedOptions;
 						var customList = htmlOptions.uris;
 						var customOptions = htmlOptions.defaultOptions.display;
-						if (partnerOptions.defaultOptions) customOptions = partnerOptions.defaultOptions.display;
-						if (partnerOptions.url) programmedOptions = partnerOptions.url;
 						var standardOptions = htmlOptions.defaultOptions.standard;
+						if (partnerOptions) {
+							customOptions = partnerOptions.defaultOptions.display;
+							programmedOptions = partnerOptions.url;
+							standardOptions = partnerOptions.defaultOptions.standard;
+						}
 						var workingList = new Array();
 						for (var k = 0; k < customOptions.length; k++) {
 							var option = customOptions[k];
 							workingList = workingList.concat(htmlOptions.defaultOptions[option]);
 						}
 						var introHtml = '<div><div class="iw-subTitle"><br/><a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
-						+ w + '\');"><u>'
+							+ w + '\');"><u>'
 							+ n + '</u></a></div>' // Title Row
 							+ '<div class="image-with-text"><a data-role="button" class="butn" data-rel="external" href="tel:'
 							+ p + '">'
@@ -1283,42 +1289,42 @@ app.Places = (function () {
 						app.showError(e.message)
 					}
 					for (var l = 0; l < standardOptions.length; l++) {
-					    var parts = standardOptions[l];
-					    switch (parts) {
-					        case "events":
-					            introHtml = introHtml + '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText='
+						var parts = standardOptions[l];
+						switch (parts) {
+							case "events":
+								introHtml = introHtml + '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText='
 									+ n + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
-					            break;
-					        case "activities":
-					            if(programmedOptions){
-					            introHtml = introHtml + '<a data-role="button" class="butn" href="components/activities/view.html?ActivityText='
-									+ n + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
-                                    }
-					            break;
-					        case "partner":
-					            introHtml = introHtml + '<a data-role="button" class="butn" href="components/partners/view.html?ActivityText='
-									+ n + '"><img src="' + 'data:image/png;base64,' + appSettings.bavatar + '" alt="'
+								break;
+							case "activities":
+								if (programmedOptions) {
+									introHtml = introHtml + '<a data-role="button" class="butn" href="components/activities/view.html?ActivityText='
+										+ n + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+								}
+								break;
+							case "partner":
+								introHtml = introHtml + '<a data-role="button" class="butn" href="components/partners/view.html?partner='
+									+ n + '"><img src="'+app.helper.resolvePictureUrl(picture())+'" alt="'
 									+ n + ' website" height="auto" width="25%" style="padding:5px"></a>'
-					            break;
-					        case "camera":
-					            introHtml = introHtml + '<a data-role="button" class="butn" onclick="app.helper.cameraRoute()"><img src="styles/images/camera.png" alt="camera" height="auto" width="25%" style="padding:5px"></a>'
-					            break;
-					        default:
-					            break;
-					    }
+								break;
+							case "camera":
+								introHtml = introHtml + '<a data-role="button" class="butn" onclick="app.helper.cameraRoute()"><img src="styles/images/camera.png" alt="camera" height="auto" width="25%" style="padding:5px"></a>'
+								break;
+							default:
+								break;
+						}
 					}
 					if (programmedOptions) {
-					    for (var h = 0; h < programmedOptions.length; h++) {
-					        var link = programmedOptions[h];
-					        if (link.icon === "styles/images/default-image.jpg") link.icon = "styles/images/" + link.name + ".png";
-					        introHtml = introHtml + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
+						for (var h = 0; h < programmedOptions.length; h++) {
+							var link = programmedOptions[h];
+							if (link.icon === "styles/images/default-image.jpg") link.icon = "styles/images/" + link.name + ".png";
+							introHtml = introHtml + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
                                 + link.path + '\');"><img src="' + link.icon + '" alt="' + link.name + '" height="auto" width="25%" style="padding:5px"></a>'
-					    }
+						}
 					} else {
-					    for (var m = 0; m < workingList.length; m++) {
-					        var htmlItem = customList[workingList[m]];
-					        if (htmlItem) introHtml = introHtml + displayList(htmlItem);
-					    }
+						for (var m = 0; m < workingList.length; m++) {
+							var htmlItem = customList[workingList[m]];
+							if (htmlItem) introHtml = introHtml + displayList(htmlItem);
+						}
 					}
 					return introHtml;
 				};
@@ -1330,12 +1336,12 @@ app.Places = (function () {
 					return true;
 				};
 				this.checkInfoWindow = function () {
-				    checkInfoWindow(showReviewAlert);
-				    if (placeId() === undefined) app.notify.showShortTop(name() + " is missing a PlaceID");
+					checkInfoWindow(showReviewAlert);
+					if (placeId() === undefined) app.notify.showShortTop(name() + " is missing a PlaceID");
 				};
 				var checkInfoWindow = function (callback) {
-				    if (googleDataFetch === true || placeId()===undefined) {
-				        callback();
+					if (googleDataFetch === true || placeId() === undefined) {
+						callback();
 					} else {
 						var place = {
 							placeId: placeId()
@@ -1354,12 +1360,12 @@ app.Places = (function () {
 					}
 				};
 				var Website = function () {
-				    if (app.isNullOrEmpty(partnerRow.Website) && googleData.website) partnerRow.Website = googleData.website;
-				    return partnerRow.Website;
+					if (app.isNullOrEmpty(partnerRow.Website) && googleData.website) partnerRow.Website = googleData.website;
+					return partnerRow.Website;
 				};
 				var partnerOptions = function () {
-				    if (app.isNullOrEmpty(partnerOptions)) partnerOptions = htmlOptions;
-				    return partnerOptions;
+					if (app.isNullOrEmpty(partnerOptions)) partnerOptions = htmlOptions;
+					return partnerOptions;
 				};
 				var initClass = function () {
 					if (partnerRow.icon !== 'styles/images/avatar.png') {
@@ -1370,11 +1376,11 @@ app.Places = (function () {
 						//now fit the map to the newly inclusive bounds
 						map.fitBounds(allBounds);
 						google.maps.event.addListener(Mark, 'click', function () {
-						    if (Mark.icon.url === "styles/images/xstar.png") {
-						        app.showAlert("Star");
-						    } else {
-						        checkInfoWindow(setInfoWindow);
-						    }
+							if (Mark.icon.url === "styles/images/xstar.png") {
+								app.showAlert("Star");
+							} else {
+								checkInfoWindow(setInfoWindow);
+							}
 						})
 					}
 				};
@@ -1426,6 +1432,9 @@ app.Places = (function () {
 					}
 					return partnerRow.Location.longitude;
 				};
+				var picture = function (){
+					return partnerRow.Icon;
+				}
 				var Address = function () {
 					if (app.isNullOrEmpty(partnerRow.Address && googleData !== "")) {
 						partnerRow.Address = googleData.formatted_address;
@@ -1459,9 +1468,9 @@ app.Places = (function () {
 						var rl = googleData.reviews.length;
 						var gr = googleData.rating;
 						var pl = googleData.price_level;
-						if(!rl) rl = 0;
-						if(!gr) gr = 0;
-						if(!pl) pl = 0;
+						if (!rl) rl = 0;
+						if (!gr) gr = 0;
+						if (!pl) pl = 0;
 
 					} catch (e) {
 						return ' about <strong>' + distance() + '</strong> miles (ATCF).';
@@ -1600,26 +1609,26 @@ app.Places = (function () {
 						try {
 							partnerOptions = JSON.parse(partnerRow.Html);
 						}
-					    catch (e) {
-					        partnerRow.partnerOptions = {
-					        "product": "On2See partners urls",
-                            "version": 1.1,
-                            "releaseDate": "2016-09-19T00:00:00.000Z",
-                            "approved": true,
-                            "partner": {
-                                "stars": "5",
-                                "rating": "$$"
-                            },
-                              "defaultOptions": {
-                                  "standard": ["events", "activities", "camera", "website"],
-                                  "search": ["google", "twitter", "bing", "googleMaps"],
-                                  "food": ["zomato", "yelp"],
-                                  "display": ["search","food"],
-                                  "jobs": ["angiesList", "homeAdviser"]
-                             },
-                             "customOptions": ["home","events","zomato", "yelp", "google", "twitter", "bing", "googleMaps"],
-                          }
-					    }
+						catch (e) {
+							partnerRow.partnerOptions = {
+								"product": "On2See partners urls",
+								"version": 1.1,
+								"releaseDate": "2016-09-19T00:00:00.000Z",
+								"approved": true,
+								"partner": {
+									"stars": "5",
+									"rating": "$$"
+								},
+								"defaultOptions": {
+									"standard": ["events", "activities", "camera", "website"],
+									"search": ["google", "twitter", "bing", "googleMaps"],
+									"food": ["zomato", "yelp"],
+									"display": ["search", "food"],
+									"jobs": ["angiesList", "homeAdviser"]
+								},
+								"customOptions": ["home", "events", "zomato", "yelp", "google", "twitter", "bing", "googleMaps"],
+							}
+						}
 					}
 					initClass();
 				}
