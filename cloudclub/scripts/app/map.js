@@ -1504,7 +1504,7 @@ app.Places = (function () {
 						text = "No reviews available for this location....";
 					} else {
 						for (var i = 0; i < list.length; i++) {
-							text = text + '\n' + list[i].author_name + ', (' + list[i].time + '),\n ' + list[i].rating + ' Stars, ' + list[i].text + '\n';
+							text = text + '\n' + list[i].author_name + ', (' + (new Date(list[i].time)).toDateString() + '),\n ' + list[i].rating + ' Stars, ' + list[i].text + '\n';
 						}
 					}
 					app.showReviews(text, "Mixed Reviews from the Net for " + partnerRow.Place);
