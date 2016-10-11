@@ -1267,7 +1267,7 @@ app.Places = (function () {
 						var customList = htmlOptions.uris;
 						var customOptions = htmlOptions.defaultOptions.display;
 						var standardOptions = htmlOptions.defaultOptions.standard;
-						if (partnerOptions) {
+						if (partnerOptions && partnerOptions.defaultOptions && partnerOptions.defaultOptions.display) {
 							customOptions = partnerOptions.defaultOptions.display;
 							programmedOptions = partnerOptions.url;
 							standardOptions = partnerOptions.defaultOptions.standard;
@@ -1468,9 +1468,12 @@ app.Places = (function () {
 						var rl = googleData.reviews.length;
 						var gr = googleData.rating;
 						var pl = googleData.price_level;
+						var tp = googleData.types[0];
 						if (!rl) rl = 0;
 						if (!gr) gr = 0;
 						if (!pl) pl = 0;
+						if(!tp) tp = "food";
+						app.notify.showShortTop(tp);
 
 					} catch (e) {
 						return ' about <strong>' + distance() + '</strong> miles (ATCF).';

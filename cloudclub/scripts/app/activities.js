@@ -20,20 +20,20 @@ app.Activities = (function () {
 	var filterOne = {
 		logic: 'or',
 		filters: [{
-				logic: 'and',
-				filters: [
-					{
-						field: "Title",
-						operator: "eq",
-						value: "My Private Feed"
-					},
-					{
-						field: "UserId",
-						operator: "eq",
-						value: myId
-					}
-					]
-				}, {
+			logic: 'and',
+			filters: [
+				{
+					field: "Title",
+					operator: "eq",
+					value: "My Private Feed"
+				},
+				{
+					field: "UserId",
+					operator: "eq",
+					value: myId
+				}
+			]
+		}, {
 				logic: 'and',
 				filters: [
 					{
@@ -46,28 +46,30 @@ app.Activities = (function () {
 						operator: "neq",
 						value: undefined
 					},
-								//{ field: "Title", operator: "startswith", value: "The Whale's Rib Raw Bar"}
-							]
-				}
+					//{ field: "Title", operator: "startswith", value: "The Whale's Rib Raw Bar"}
+				]
+			}
 		]
 	};
 	var show = function (e) {
-			//app.showAlert(thePartner);
-		//app.showAlert("Show starting "+ app.Places.visiting.name +" b7 " + )
+		//3 cases: [2] all from one partner (thePartner), [1] one selected item (theText), [0] all from one user (online)
 		if (e.view.params.ActivityText) {
-			app.Places.visiting.name = e.view.params.ActivityText;
+			thePartner = e.view.params.ActivityText;
+			app.Activities.activities._filter.filters[1].filters[0].value = thePartner;
+			app.Places.visiting.name = thePartner;
+		} else {
+			thePartner = app.Places.visiting.name;
 		}
-
-		thePartner = app.Places.visiting.name;
-		theText = e.view.params.Text;
-		myId = app.Users.currentUser.data.Id;
-		//app.showAlert("Show starting "+ thePartner +" by " + myId);
-		app.Activities.activities._filter.filters[0].filters[1].value = myId;
-		if (thePartner !== "My Private Feed") {
+		if (e.view.params.theText) {
+			theText = e.view.params.Text;
+			app.Activities.activities._filter.filters[2].filters[0].value = theText;
+		}
+		if (app.isOnline() && e.view.params.ActivityText === 'My Private Feed') {
+			myId = app.Users.currentUser.data.Id;
+			//app.showAlert("Show starting "+ thePartner +" by " + myId);
+			app.Activities.activities._filter.filters[0].filters[1].value = myId;
 			app.Activities.activities._filter.filters[0].filters[0].value = '';
-		}
-		app.Activities.activities._filter.filters[1].filters[0].value = thePartner;
-		app.Activities.activities._filter.filters[1].filters[2].value = theText;
+		}	
 		app.Activities.activities.fetch(function () {
 			//app.Activities.activities = this.data();
 			//console.log(data.items)
@@ -163,15 +165,15 @@ app.Activities = (function () {
 				var id = this.get('Picture');
 				var el = new Everlive(appSettings.everlive.appId);
 				el.Files.getById(id).then(function (data) {
-						// get url from data
-						var url = data.result.Uri;
-						var size = "/resize=w:200,h:200,fill:cover/";
-						var base = "https://bs1.cdn.telerik.com/image/v1/";
-						//navigator.notification.alert(url);
-						// convert to responsive url
-						url = base + appSettings.everlive.appId + size + url;
-						return url;
-					}),
+					// get url from data
+					var url = data.result.Uri;
+					var size = "/resize=w:200,h:200,fill:cover/";
+					var base = "https://bs1.cdn.telerik.com/image/v1/";
+					//navigator.notification.alert(url);
+					// convert to responsive url
+					url = base + appSettings.everlive.appId + size + url;
+					return url;
+				}),
 					function (error) {
 						navigator.notification.alert(JSON.stringify(error));
 					}
@@ -192,10 +194,10 @@ app.Activities = (function () {
 					PictureUrl: app.helper.resolveProfilePictureUrl(user.Picture),
 					urlPictureUrl: app.helper.resolveBackgroundPictureUrl(user.Picture, 'bg')
 				} : {
-					DisplayName: app.Users.currentUser.data.DisplayName,
-					PictureUrl: app.helper.resolveProfilePictureUrl(app.Users.currentUser.data.Picture),
-					urlPictureUrl: app.helper.resolveBackgroundPictureUrl(app.Users.currentUser.data.Picture, 'bg')
-				};
+						DisplayName: app.Users.currentUser.data.DisplayName,
+						PictureUrl: app.helper.resolveProfilePictureUrl(app.Users.currentUser.data.Picture),
+						urlPictureUrl: app.helper.resolveBackgroundPictureUrl(app.Users.currentUser.data.Picture, 'bg')
+					};
 			},
 			isVisible: function () {
 				var currentUserId;
@@ -231,65 +233,57 @@ app.Activities = (function () {
 			filter: {
 				logic: 'or',
 				filters: [{
-						logic: 'and',
-						filters: [
-							{
-								field: "Title",
-								operator: "eq",
-								value: "My Private Feed"
-							},
-							{
-								field: "UserId",
-								operator: "eq",
-								value: myId
-							},
-							//{
-							//	field: "UserId",
-							//	operator: "eq",
-							//	value: ""
-							//} //add user setting
-								]
-							}, {
-						logic: 'and',
+					// My Private Feed [0]
+					logic: 'and',
+					filters: [
+						{
+							field: "Title",
+							operator: "eq",
+							value: "My Private Feed"
+						},
+						{
+							field: "UserId",
+							operator: "eq",
+							value: myId
+						},
+					]
+				}, {
+						// Partner List
 						filters: [
 							{
 								field: "Title",
 								operator: "startswith",
 								value: thePartner
-							},
-							{
-								field: "Title",
-								operator: "neq",
-								value: undefined
-							},
-							{
-								field: "Text",
-								operator: "contains",
-								value: theText
-							},
-											]
-							}
-																		 ]
+							}]
+					}, {
+						//Selected ActivityText
+						filters: [{
+							field: "Text",
+							operator: "eq",
+							value: theText
+						}]
+					}
+				]
 			}
 		});
 		//var myDataSource = app.Activities.activities;
 		return {
 			activities: activitiesDataSource
 		};
-	}());
+	} ());
 	var afterShow = function () {
-			app.showAlert("After Show starting")
-			var myDataSource = app.Activities.activities;
-			myDataSource.fetch(function () {
-				app.Activities.activities = this.data();
-				//console.log(data.items)
-				$('#activities-listview').kendoMobileListView({
-					dataSource: app.Activities,
-					template: kendo.template($('#activityTemplate').html())
-				});
+		app.showAlert("After Show starting")
+		var myDataSource = app.Activities.activities;
+		myDataSource.fetch(function () {
+			app.Activities.activities = this.data();
+			//console.log(data.items)
+			$('#activities-listview').kendoMobileListView({
+				dataSource: app.Activities,
+				template: kendo.template($('#activityTemplate').html())
 			});
-		}
-		// Activities view model
+		});
+	}
+	// Activities view model
 
 	var activitiesViewModel = (function () {
 		// Navigate to activityView When some activity is selected
@@ -352,10 +346,10 @@ app.Activities = (function () {
 				app.mobileApp.showLoading();
 				// Save image as base64 to everlive
 				app.everlive.Files.create({
-						Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
-						ContentType: "image/jpeg",
-						base64: $baseImage
-					})
+					Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+					ContentType: "image/jpeg",
+					base64: $baseImage
+				})
 					.then(function (promise) {
 						selected = promise.result.Id;
 
@@ -469,6 +463,6 @@ app.Activities = (function () {
 			//afterShow: afterShow,
 			crop: crop
 		};
-	}());
+	} ());
 	return activitiesViewModel;
-}());
+} ());

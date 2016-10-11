@@ -286,7 +286,7 @@ app.activities = kendo.observable({
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
 		if (app.isOnline()) {
 			if (e.view.params.ActivityText) {
-				app.mobileApp.navigate('views/activitiesView.html?activity=' + e.view.params.ActivityText + '&User=' + e.view.params.User);
+				app.mobileApp.navigate('views/activitiesView.html?ActivityText=' + e.view.params.ActivityText + '&User=' + e.view.params.User);
 			} else {
 				app.mobileApp.navigate('views/activitiesView.html?public=true');
 			}

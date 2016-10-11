@@ -12,11 +12,11 @@ var htmlOptions = {
 		"rating": "??"
 	},
 	"defaultOptions": {
-		"standard": ["home", "events", "activities", "camera", "website"],
+		"standard": ["camera","events", "activities"],
 		"search": ["google", "twitter", "bing", "googleMaps"],
 		"food": ["zomato", "yelp"],
-		"display": ["search","food","jobs"],
-		"jobs": ["angiesList", "homeAdviser"]
+		"display": ["search","jobs"],
+		"jobs": ["angiesList", "homeAdvisor"]
 	},
 	"url": {
 		"facebook": "https://www.facebook.com/",
@@ -28,6 +28,41 @@ var htmlOptions = {
 	},
 	"uris":
 	{
+		"angiesList": {
+			"name": "angiesList",
+			"path": "https://www.angieslist.com/research/",
+			"query": "type",
+			"option": "",
+			"space": ""
+		},
+		"linkedIn": {
+			"name": "linkedIn",
+			"path": "https://www.linkedin.com/in/",
+			"query": "name",
+			"option": "",
+			"space": ""
+		},
+		"homeAdvisor": {
+			"name": "homeadvisor",
+			"path": "http://www.homeadvisor.com/",
+			"query": "name",
+			"option": "",
+			"space": ""
+		},
+		"spokeo": {
+			"name": "spokeo",
+			"path": "https://www.spokeo.com/",
+			"query": "name",
+			"option": "",
+			"space": ""
+		},
+		"pintrest": {
+			"name": "pintrest",
+			"path": "https://www.pintrest.com/",
+			"query": "name",
+			"option": "",
+			"space": ""
+		},
 		"facebook": {
 			"name": "facebook",
 			"path": "https://www.facebook.com/search/top/?q=",
