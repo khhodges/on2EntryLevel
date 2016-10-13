@@ -79,6 +79,12 @@ app.activities = kendo.observable({
 				dir: 'desc'
 			},
 			change: function (e) {
+			        if (e.items && e.items.length > 0) {
+			            $('#no-activities-span').hide();
+			        } else {
+			            $('#no-activities-span').show();
+			        }
+			    
 				var data = this.data();
 				for (var i = 0; i < data.length; i++) {
 					var dataItem = data[i];
@@ -283,7 +289,17 @@ app.activities = kendo.observable({
 	}
 
 	parent.set('onShow', function (e) {
-		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
+	    var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : {
+	        logic: 'and', filters: [{
+	            "field": "UserId",
+	            "operator": "neq",
+	            "value": undefined
+	        }, {
+	            "field": "Title",
+	            "operator": "neq",
+	            "value": 'My Private Feed'
+	        }]
+	    }
 		if (app.isOnline()) {
 			if (e.view.params.ActivityText) {
 				app.mobileApp.navigate('views/activitiesView.html?ActivityText=' + e.view.params.ActivityText + '&User=' + e.view.params.User);
@@ -293,7 +309,6 @@ app.activities = kendo.observable({
 		} else {
 			var d = new Date();
 			d.setDate(d.getDate() - 60);
-			app.notify.showShortTop("Filtering by " + e.view.params.ActivityText + " and " + d)
 			if ((param === null || param === undefined) && e.view.params.ActivityText) {
 				param = {
 					logic: 'and',
@@ -315,9 +330,11 @@ app.activities = kendo.observable({
 						field: 'Text',
 						operator: 'contains',
 						value: e.view.params.Text
-					}
+		}
+		app.notify.showShortTop("Filtering Posting Text " + e.view.params.Text)
 		fetchFilteredData(param, nameFilter);}
 		else {
+		    app.notify.showShortTop("Filtering Posting Feed by " + d)
 			fetchFilteredData(param);
         }
 	})

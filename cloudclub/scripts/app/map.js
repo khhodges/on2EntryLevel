@@ -614,7 +614,7 @@ app.Places = (function () {
 					function (results, status) {
 						if (status !== google.maps.GeocoderStatus.OK) {
 							console.error(status);
-							app.notify.showShortTop("Map.Unable to find anything.");
+							app.notify.showShortTop("Enter a new search term.");
 							return;
 						}
 						map.panTo(results[0].geometry.location);

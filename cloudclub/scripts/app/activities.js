@@ -15,6 +15,11 @@ app.Activities = (function () {
 		$activityTitle = $('#activityTitle');
 		$newEventText.on('keydown', app.helper.autoSizeTextarea);
 		validator.hideMessages();
+		app.Activities.activities._filter.filters[0].filters[0].value = 'My Private Feed';
+		if (app.isOnline()) {
+		    myId = app.Users.currentUser.data.Id;
+		    app.Activities.activities._filter.filters[0].filters[1].value = myId;
+		}
 		//$(document.body).css("visibility", "visible");
 	};
 	var filterOne = {
