@@ -431,12 +431,16 @@ app.Places = (function () {
 										app.Places.updatePartnerLocation();
 										break;
 									case 3:
-										var markersList = app.Places.locationViewModel.markers;
+										var markersList = app.Places.locationViewModel.list;
 										for (var i = 0; i < markersList.length; i++) {
-											var mark = markersList[i];
-											if (mark.icon.url === 'styles/images/redcircle.png' || mark.icon.url === 'styles/images/greencircle.png') {
-												mark.setMap(null);
+											var thePartner = markersList[i];
+											if (thePartner && thePartner.Mark.icon.url === 'styles/images/redcircle.png' || mark.icon.url === 'styles/images/greencircle.png') {
+												var Details = thePartner.details();
+												Details.clearLowMark();
+												//mark.setMap(null);
 												//TO DO: Fix list
+											}else{
+												app.showAlert("Line438");
 											}
 											//app.notify.showShortTop(JSON.stringify(mark))
 										}
@@ -1345,7 +1349,7 @@ app.Places = (function () {
 							+ '<img src="styles/images/phone2.png" alt="'
 							+ p + '" height="auto" width="25%" style="padding:-5px"></a><p><small>' //Phone Icon address and info next
 							+ a + ', ' + i + '</small></div><div class="iw-subTitle" style="padding-top:22px">Social Media Links</div><div>' //Address etc
-					
+
 					} catch (e) {
 						app.showError(e.message)
 					}
@@ -1562,7 +1566,7 @@ app.Places = (function () {
 					var list = googleData.reviews;
 					var text = "";
 					if (!list) {
-						text = "No Google Map reviews available for "+ partnerRow.Place;
+						text = "No Google Map reviews available for " + partnerRow.Place;
 					} else {
 						for (var i = 0; i < list.length; i++) {
 							text = text + '\n' + list[i].author_name + ', (' + (new Date(list[i].time * 1000)).toDateString() + '),\n ' + list[i].rating + ' Stars, ' + list[i].text + '\n';
@@ -1725,10 +1729,15 @@ app.Places = (function () {
 						vicinity: Address(),
 						distance: distance(),
 						listString: listString(),
+						clearLowMarks: function () {
+							Mark.setMap(null);
+							app.Places.locationViewModel.list.delete(Address());
+						},
 						clearMapMark: function () {
-							app.showConfirm("Do you want to remove "+name()+" at " + Address() + listString(), "Remove Place", function (e) {
-							if (e === 2) return;
-						});
+							app.showConfirm("Do you want to remove " + name() 
+							+ " at " + Address() + listString(), "Remove Place", function (e) {
+								if (e === 2) return;
+							});
 							Mark.setMap(null);
 							app.Places.visiting.e.dataItem.set("isSelectedClass", "listview-hidden");
 							app.Places.visiting.e.dataItem.set("visibility", "hidden");
