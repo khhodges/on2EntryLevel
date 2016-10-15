@@ -7,8 +7,9 @@ var app = app || {};
 app.Places = (function () {
 	'use strict'
 	var infoWindow, markers, place, result, myCity, newPlace, here, request, home, bw, lat1, lng1, allBounds, theZoom = 15,
-		service, myAddress, Selfie, list = {}, homePosition, update = false;
+		service, myAddress, Selfie, list = {}, homePosition, update = false, myEvent;
 	var HEAD = appSettings.HEAD;
+
 	/**
 	 * The Google Map CenterControl adds a control to the map that recenters the map on
 	 * current location.
@@ -361,6 +362,8 @@ app.Places = (function () {
 						'winphoneEnableCancelButton': true, // default false
 						//'addDestructiveButtonWithLabel' : 'Delete it'                
 					});
+				} else {
+					app.Places.logExceptions(app.mobileApp.navigate("#views/listView.html?keep=2"));
 				}
 			},
 			openActionSheet: function () {
@@ -381,7 +384,7 @@ app.Places = (function () {
 						'winphoneEnableCancelButton': true, // default false
 						//'addDestructiveButtonWithLabel' : 'Delete it'                
 					});
-				}
+				} else { app.mobileApp.navigate("views/listView.html"); }
 			},
 			showListSheet: function (options) {
 				if (!this.checkSimulator()) {
@@ -465,7 +468,7 @@ app.Places = (function () {
 				//app.notify.showShortTop(window.navigator.simulator);
 				if (window.navigator.simulator === true || window.cordova === undefined) {
 					app.notify.showShortTop('This plugin is not available in the simulator.');
-					app.mobileApp.navigate("views/listView.html");
+
 					return true;
 				} else {
 					return false;
@@ -953,96 +956,153 @@ app.Places = (function () {
 			//	result.visibility = "hidden";
 			//	app.Places.locationViewModel.list.put(result.vicinity, result);
 			//},
+			/*			logExceptions: function (func,event1) {
+							var orignal = func;
+							var decorated = function () {
+								try {
+									orignal.apply(this, event1);
+								} catch (exception) {
+									//printStackTrace(exception);
+									throw exception;
+								}
+							}
+							return decorated;
+						},*/
+			/*			listShow: function (e) {
+							try {
+								myEvent = e;
+								(app.Places.logExceptions(function (e) {
+									app.Places.listShow2(e)
+								},e))();
+							} catch (exc) {
+								JSON.stringify(exc);
+							}
+						},*/
+			listShow3: function (result) {
+				if (result === 1) { return };
+				if (result === 2) {
+					var thisPartner = app.Places.visiting;
+					var Details = thisPartner.details();
+					//app.showAlert("Delete this item "+ Details.vicinity);
+					Details.clearMapMark();
+				}
+
+			},
 			listShow: function (e) {
-				var ds2 = new app.Places.List;
-				var ds3 = new app.Places.List;
-				//var da = app.Places.locationViewModel.list.array();
-				//find place markers in active list
-				//var markers = app.Places.locationViewModel.markers;
-				if (e.view.params.keep) {
-					for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
-						var vitem = app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]);
-						var bitem = app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i])
-						var thisState;
-						thisState = vitem.details().visibility;
-						var item = vitem.details();
-						switch (e.view.params.keep) {
-							case 1:
-							case "1":
-								//keep selected (Push and do nothing)
-								if (thisState === "visible") {
-									//ds2.add(item.vicinity, item);
-									ds3.put(vitem.vicinity(), vitem);
-								} else {
-									item.clearMapMark(vitem.vicinity());
-								}
-								break;
-							case 2:
-							case "2":
-								//delete selected (Do not push and set null)			                    
-								if (thisState === "hidden") {
-									//ds2.add(item.vicinity, item);
-									ds3.put(vitem.vicinity(), vitem);
-								} else {
-									item.clearMapMark(vitem.vicinity());
-								}
-								break;
-							default:
-								alert("No case found " + e.view.params.keep)
-								break;
-						}
-						//}
-					}
-					app.Places.locationViewModel.list = ds3;
-					//app.Places.locationViewModel.list = ds3;
-				}
-				else {
-					//reopen list so dynamically rebuild the List from the markers store
-					var ds = new app.Places.List;
-					var ps = new app.Places.List;
-					for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
-						var newPartner = app.Places.locationViewModel.list.keys[i];
-						newPartner = app.Places.locationViewModel.list.get(newPartner)
-						ps.put(newPartner.vicinity(), newPartner);
-						ds.add(newPartner.vicinity(), newPartner.details());
-					};
-					// da = ds.array();
-					app.Places.locationViewModel.list = ps;
-				}
 				try {
-					var aList = app.Places.locationViewModel.list.array();
-					list = $("#places-listview").kendoMobileListView({
-						dataSource: aList,
-						template: "<div class='${isSelectedClass}'><div id='placelist' data-role='touch' data-enable-swipe='true' data-swipe='app.Places.locationViewModel.openListSheet'><strong> #: name #</strong><div id='placedetails' ${visibility} style='width:100%; margin-top:-5px'> #: vicinity # -- about #: distance # miles (as the crow flys). <br/></div></div></div>",
-						//<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
-						selectable: "multiple",
-						change: function () {
-							alert("Change event!")
+					//var e = myEvent;
+					var ds2 = new app.Places.List;
+					var ds3 = new app.Places.List;
+					//var da = app.Places.locationViewModel.list.array();
+					//find place markers in active list
+					//var markers = app.Places.locationViewModel.markers;
+					if (e.view.params.keep) {
+						for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
+							var vitem = app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]);
+							//var bitem = app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i])
+							var thisState;
+							thisState = vitem.details().visibility;
+							var item = vitem.details();
+							switch (e.view.params.keep) {
+								case 1:
+								case "1":
+									//keep selected (Push and do nothing)
+									if (thisState === "visible") {
+										//ds2.add(item.vicinity, item);
+										ds3.put(vitem.vicinity(), vitem);
+									} else {
+										item.clearMapMark(vitem.vicinity());
+									}
+									break;
+								case 2:
+								case "2":
+									//delete selected (Do not push and set null)			                    
+									if (thisState === "hidden") {
+										//ds2.add(item.vicinity, item);
+										ds3.put(vitem.vicinity(), vitem);
+									} else {
+										item.clearMapMark(vitem.vicinity());
+									}
+									break;
+								default:
+									alert("No case found " + e.view.params.keep)
+									break;
+							}
+							//}
 						}
-					})
-						.data("kendoListView");
-				} catch (ex) {
-					app.showAlert(JSON.stringify(ex));
+						app.Places.locationViewModel.list = ds3;
+						//app.Places.locationViewModel.list = ds3;
+						var ps = new app.Places.List;
+						for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
+							var newPartner = app.Places.locationViewModel.list.keys[i];
+							newPartner = app.Places.locationViewModel.list.get(newPartner)
+							if (newPartner) ps.put(newPartner.vicinity(), newPartner);
+							//ds.add(newPartner.vicinity(), newPartner.details());
+						}
+					}
+					else {
+						//reopen list so dynamically rebuild the List from the markers store
+						//var ds = new app.Places.List;
+						var ps = new app.Places.List;
+						for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
+							var newPartner = app.Places.locationViewModel.list.keys[i];
+							newPartner = app.Places.locationViewModel.list.get(newPartner)
+							if (newPartner) ps.put(newPartner.vicinity(), newPartner);
+							//ds.add(newPartner.vicinity(), newPartner.details());
+						};
+						// da = ds.array();
+						app.Places.locationViewModel.list = ps;
+					}
+					try {
+						var aList = app.Places.locationViewModel.list.array();
+						list = $("#places-listview").kendoMobileListView({
+							dataSource: aList,
+							template: "<div class='${isSelectedClass}'><div id='placelist'"
+							+ "data-role='touch' data-enable-swipe='true'"
+							//+" data-swipe='app.Places.locationViewModel.openListSheet'"
+							+ "><strong> #: name #</strong><div id='placedetails' ${visibility} "
+							+ "style='width:100%; margin-top:-5px'> #: vicinity # -- about "
+							+ " #: distance # mile(s) (as the crow flys). <br/></div></div></div>",
+							//<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
+							selectable: "multiple",
+							change: function () {
+								alert("Change event!")
+							}
+						})
+							.data("kendoListView");
+						//app.showAlert(JSON.stringify(aList));
+						$("#places-listview").on("data-swipe", "li", app.Places.locationViewModel.openListSheet)
+					} catch (ex) {
+						app.showAlert(JSON.stringify(ex));
+					}
+				}
+				catch (e) {
+					app.showAlert(JSON.stringify(e));
 				}
 			},
 			onSelected: function (e) {
 				if (!e.dataItem) {
 					return;
 				}
-				var isSelected = e.dataItem.get("visibility");
-				myCity = app.Places.locationViewModel.list.get(e.dataItem.vicinity).City();
-				var newState = isSelected === "hidden" ? "visible" : "hidden";
-				e.dataItem.set("isSelected", newState);
-				if (newState === "visible") {
-					e.dataItem.set("isSelectedClass", "listview-selected");
-					e.dataItem.set("visibility", "visible")
-					app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "visible");
-					var thisPartner = app.Places.locationViewModel.list.get(e.dataItem.vicinity)
-					thisPartner.checkInfoWindow();
-				} else {
-					e.dataItem.set("isSelectedClass", "");
-					e.dataItem.set("visibility", "hidden");
-					app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "hidden");
+				try {
+					var isSelected = e.dataItem.get("visibility");
+					var newState = isSelected === "hidden" ? "visible" : "hidden";
+					e.dataItem.set("isSelected", newState);
+					if (newState === "visible") {
+						e.dataItem.set("isSelectedClass", "listview-selected");
+						e.dataItem.set("visibility", "visible")
+						app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "visible");
+						app.Places.visiting = app.Places.locationViewModel.list.get(e.dataItem.vicinity);
+						app.Places.visiting.e = e;
+						app.Places.visiting.checkInfoWindow();
+					} else {
+						e.dataItem.set("isSelectedClass", "");
+						e.dataItem.set("visibility", "hidden");
+						app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "hidden");
+					}
+				}
+				catch (e) {
+					JSON.stringify(e)
 				}
 			},
 			memorize: function () {
@@ -1122,7 +1182,7 @@ app.Places = (function () {
 				this.keys = new Array();
 				this.data = new Object();
 				this.put = function (key, value) {
-					if (this.data[key] == null) {
+					if (!app.isNullOrEmpty(key) || !app.isNullOrEmpty(value)) {
 						this.keys.push(key);
 						this.data[key] = value;
 						myCity = value.getPartner().City;
@@ -1285,6 +1345,7 @@ app.Places = (function () {
 							+ '<img src="styles/images/phone2.png" alt="'
 							+ p + '" height="auto" width="25%" style="padding:-5px"></a><p><small>' //Phone Icon address and info next
 							+ a + ', ' + i + '</small></div><div class="iw-subTitle" style="padding-top:22px">Social Media Links</div><div>' //Address etc
+					
 					} catch (e) {
 						app.showError(e.message)
 					}
@@ -1303,7 +1364,7 @@ app.Places = (function () {
 								break;
 							case "partner":
 								introHtml = introHtml + '<a data-role="button" class="butn" href="components/partners/view.html?partner='
-									+ n + '"><img src="'+app.helper.resolvePictureUrl(picture())+'" alt="'
+									+ n + '"><img src="' + app.helper.resolvePictureUrl(picture()) + '" alt="'
 									+ n + ' website" height="auto" width="25%" style="padding:5px"></a>'
 								break;
 							case "camera":
@@ -1432,7 +1493,7 @@ app.Places = (function () {
 					}
 					return partnerRow.Location.longitude;
 				};
-				var picture = function (){
+				var picture = function () {
 					return partnerRow.Icon;
 				}
 				var Address = function () {
@@ -1472,7 +1533,7 @@ app.Places = (function () {
 						if (!rl) rl = 0;
 						if (!gr) gr = 0;
 						if (!pl) pl = 0;
-						if(!tp) tp = "food";
+						if (!tp) tp = "food";
 						app.notify.showShortTop(tp);
 
 					} catch (e) {
@@ -1501,13 +1562,15 @@ app.Places = (function () {
 					var list = googleData.reviews;
 					var text = "";
 					if (!list) {
-						text = "No reviews available for this location....";
+						text = "No Google Map reviews available for "+ partnerRow.Place;
 					} else {
 						for (var i = 0; i < list.length; i++) {
-							text = text + '\n' + list[i].author_name + ', (' + (new Date(list[i].time)).toDateString() + '),\n ' + list[i].rating + ' Stars, ' + list[i].text + '\n';
+							text = text + '\n' + list[i].author_name + ', (' + (new Date(list[i].time * 1000)).toDateString() + '),\n ' + list[i].rating + ' Stars, ' + list[i].text + '\n';
 						}
 					}
-					app.showReviews(text, "Mixed Reviews from the Net for " + partnerRow.Place);
+					//app.Places.visiting = app.Places.locationViewModel.list.get(googleData.formatted_address);
+					app.showReviews(text, "Google Reviews for " + partnerRow.Place, function (result) { app.Places.listShow3(result) });
+					myCity = app.Places.locationViewModel.getComponent(googleData.address_components, "locality");
 					return text;
 				}
 				//this.checkPlaceDetails = function (callback) {
@@ -1637,7 +1700,7 @@ app.Places = (function () {
 				}
 				this.City = function () {
 					if (app.isNullOrEmpty(partnerRow.City)) {
-						partnerRow.City = partnerRow.name;
+						partnerRow.City = googleData.City;
 					}
 					return partnerRow.City;
 				}
@@ -1662,9 +1725,14 @@ app.Places = (function () {
 						vicinity: Address(),
 						distance: distance(),
 						listString: listString(),
-						clearMapMark: function (key) {
+						clearMapMark: function () {
+							app.showConfirm("Do you want to remove "+name()+" at " + Address() + listString(), "Remove Place", function (e) {
+							if (e === 2) return;
+						});
 							Mark.setMap(null);
-							app.Places.locationViewModel.list.delete(key);
+							app.Places.visiting.e.dataItem.set("isSelectedClass", "listview-hidden");
+							app.Places.visiting.e.dataItem.set("visibility", "hidden");
+							app.Places.locationViewModel.list.delete(Address());
 						}
 					}
 				}

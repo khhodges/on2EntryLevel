@@ -16,6 +16,13 @@
     color: #000;
     height:150px;
 }
+.place-list-view li .listview-hidden,
+.listview-hidden {
+    border-color: #1a77b6;
+    background-color: #a3eaf1;
+    color: #000;
+    height:0px;
+}
 /* LOCATION VIEW STYLES */
 .map {
     position: absolute;

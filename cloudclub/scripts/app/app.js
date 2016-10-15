@@ -11,8 +11,8 @@ var app = (function (win) {
 	    }, title, 'OK');
 	};
 	var showReviews = function (message, title, callback) {
-	    navigator.notification.alert(message, callback || function () {
-	    }, title, 'Done');
+	    navigator.notification.confirm(message, callback || function () {
+	    }, title, ['Keep','Remove']);
 	};
 
 	var showError = function (message) {
@@ -37,7 +37,7 @@ var app = (function (win) {
 
 	// Global confirm dialog
 	var showConfirm = function (message, title, callback) {
-		navigator.notification.confirm(message, callback || function () {
+		navigator.notification.confirm(message, callback() || function () {
 		}, title, ['OK', 'Cancel']);
 	};
 
