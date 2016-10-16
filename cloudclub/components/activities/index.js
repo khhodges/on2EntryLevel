@@ -1,8 +1,8 @@
 'use strict';
 
 app.activities = kendo.observable({
-	onShow: function () {},
-	afterShow: function () {}
+	onShow: function () { },
+	afterShow: function () { }
 });
 
 // START_CUSTOM_CODE_activities
@@ -79,12 +79,12 @@ app.activities = kendo.observable({
 				dir: 'desc'
 			},
 			change: function (e) {
-			        if (e.items && e.items.length > 0) {
-			            $('#no-activities-span').hide();
-			        } else {
-			            $('#no-activities-span').show();
-			        }
-			    
+				if (e.items && e.items.length > 0) {
+					$('#no-activities-span').hide();
+				} else {
+					$('#no-activities-span').show();
+				}
+
 				var data = this.data();
 				for (var i = 0; i < data.length; i++) {
 					var dataItem = data[i];
@@ -158,7 +158,7 @@ app.activities = kendo.observable({
 			//kjhh
 			onPrompt: function (results) {
 				//alert("You selected button number " + results.buttonIndex + " and entered " + results.input1);
-				if(results===3){
+				if (results === 3) {
 					return;
                 }
 				if (results === 2) {
@@ -190,7 +190,7 @@ app.activities = kendo.observable({
 						'First Register or Logon.', // message
 						activitiesModel.onPrompt, // callback to invoke
 						'Authentication Required', // title
-														   ['Login', 'Register', 'Continue'] // buttonLabels
+						['Login', 'Register', 'Continue'] // buttonLabels
 						//'User Name address ...'                 // defaultText
 					);
 				}
@@ -289,20 +289,20 @@ app.activities = kendo.observable({
 	}
 
 	parent.set('onShow', function (e) {
-	    var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : {
-	        logic: 'and', filters: [{
-	            "field": "UserId",
-	            "operator": "neq",
-	            "value": undefined
-	        }, {
-	            "field": "Title",
-	            "operator": "neq",
-	            "value": 'My Private Feed'
-	        }]
-	    }
+		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : {
+			logic: 'and', filters: [{
+				"field": "UserId",
+				"operator": "neq",
+				"value": undefined
+			}, {
+					"field": "Title",
+					"operator": "neq",
+					"value": 'My Private Feed'
+				}]
+		}
 		if (app.isOnline()) {
 			if (e.view.params.ActivityText) {
-				app.mobileApp.navigate('views/activitiesView.html?ActivityText=' + e.view.params.ActivityText + '&User=' + e.view.params.User);
+				app.mobileApp.navigate('views/activitiesView.html?ActivityText=' + e.view.params.ActivityText + '&User=' + e.view.params.User +'&Text='+e.view.params.Text);
 			} else {
 				app.mobileApp.navigate('views/activitiesView.html?public=true');
 			}
@@ -313,28 +313,30 @@ app.activities = kendo.observable({
 				param = {
 					logic: 'and',
 					filters: [{
-							"field": "CreatedAt",
-							"operator": "gt",
-							"value": d
-							}, {
+						"field": "CreatedAt",
+						"operator": "gt",
+						"value": d
+					}, {
 							"field": "Title",
 							"operator": "startswith",
 							"value": e.view.params.ActivityText
-							}
+						}
 					]
 				}
 			}
 		}
 		var nameFilter = null;
-		if(e.view.params.Text){ nameFilter={
-						field: 'Text',
-						operator: 'contains',
-						value: e.view.params.Text
+		if (e.view.params.Text) {
+			nameFilter = {
+				field: 'Text',
+				operator: 'contains',
+				value: e.view.params.Text
+			}
+			app.notify.showShortTop("Filtering by " + e.view.params.Text)
+			fetchFilteredData(nameFilter);
 		}
-		app.notify.showShortTop("Filtering Posting Text " + e.view.params.Text)
-		fetchFilteredData(param, nameFilter);}
 		else {
-		    app.notify.showShortTop("Filtering Posting Feed by " + d)
+			app.notify.showShortTop("Filtering by " + JSON.stringify(params))
 			fetchFilteredData(param);
         }
 	})

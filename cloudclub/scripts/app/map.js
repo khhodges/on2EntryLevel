@@ -431,18 +431,11 @@ app.Places = (function () {
 										app.Places.updatePartnerLocation();
 										break;
 									case 3:
-										var markersList = app.Places.locationViewModel.list;
+										var markersList = app.Places.locationViewModel.list.array();
 										for (var i = 0; i < markersList.length; i++) {
-											var thePartner = markersList[i];
-											if (thePartner && thePartner.Mark.icon.url === 'styles/images/redcircle.png' || mark.icon.url === 'styles/images/greencircle.png') {
+											var thePartner = app.Places.locationViewModel.list.get(markersList[i].vicinity);
 												var Details = thePartner.details();
 												Details.clearLowMark();
-												//mark.setMap(null);
-												//TO DO: Fix list
-											}else{
-												app.showAlert("Line438");
-											}
-											//app.notify.showShortTop(JSON.stringify(mark))
 										}
 										break;
 									case 4:
@@ -719,11 +712,7 @@ app.Places = (function () {
 					var feedRoute = document.getElementById("myFeedLink");
 					if (feedRoute) {
 						feedRoute.addEventListener("click", function () {
-							if (app.isOnline()) { //}app.isOnline()) {
-								app.mobileApp.navigate("views/activitiesView.html?ActivityText=My Private Feed&User=" + app.Users.currentUser.data.Id);
-							} else {
 								app.mobileApp.navigate("components/notifications/view.html");
-							}
 						});
 					}
 					var goHome = document.getElementById("goHome");
@@ -821,7 +810,11 @@ app.Places = (function () {
 			updatePartnerLocation: function () {
 				if (app.Places.locationViewModel.list && app.Places.locationViewModel.list.keys.length) {
 					for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
+						try{
 						app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]).clearMark();
+							}catch(e){
+								
+                            }
 					}
 				}
 				update = true;
@@ -1729,9 +1722,12 @@ app.Places = (function () {
 						vicinity: Address(),
 						distance: distance(),
 						listString: listString(),
-						clearLowMarks: function () {
-							Mark.setMap(null);
-							app.Places.locationViewModel.list.delete(Address());
+						clearLowMark: function () {							
+						if (Mark.icon.url !== 'styles/images/orangecircle.png') 
+							{
+								Mark.setMap(null);
+								app.Places.locationViewModel.list.delete(Address());
+								}
 						},
 						clearMapMark: function () {
 							app.showConfirm("Do you want to remove " + name() 

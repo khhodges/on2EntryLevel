@@ -65,9 +65,11 @@ app.Activities = (function () {
 		} else {
 			thePartner = app.Places.visiting.name;
 		}
-		if (e.view.params.theText) {
+		if (e.view.params.Text) {
 			theText = e.view.params.Text;
 			app.Activities.activities._filter.filters[2].filters[0].value = theText;
+			app.Activities.activities._filter.filters[0] = {};
+			app.Activities.activities._filter.filters[1] = {};
 		}
 		if (app.isOnline() && e.view.params.ActivityText === 'My Private Feed') {
 			myId = app.Users.currentUser.data.Id;
