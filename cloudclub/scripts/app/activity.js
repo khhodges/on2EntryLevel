@@ -6,21 +6,21 @@ var app = app || {};
 
 app.Activity = (function () {
 	'use strict'
-    
+
 	var $commentsContainer,
 		$enterComment,
-		listScroller, 
+		listScroller,
 		$newComment,
 		showComment,
 		stars,
 		thePictureUrl,
 		validator;
-    
+
 	var activityViewModel = (function () {
 		var activityUid,
 			activity,
 			$activityPicture;
-        
+
 		var init = function () {
 			$commentsContainer = $('#comments-listview');
 			$activityPicture = $('#picture');
@@ -30,7 +30,7 @@ app.Activity = (function () {
 			$newComment.on('keydown', app.helper.autoSizeTextarea);
 			$newComment.on('keydown', validator.hideMessages());
 		};
-        
+
 		var show = function (e) {
 			$commentsContainer.empty();
 			validator.hideMessages();
@@ -39,42 +39,52 @@ app.Activity = (function () {
 			listScroller.reset();
 			if (e.view.params.ActivityText) {
 				activity = app.Activities.activities.getByUid(e.view.params.ActivityText);
-			}else {
+			} else {
 				activityUid = e.view.params.uid;
 				// Get current activity (based on item uid) from Activities model
 				activity = app.Activities.activities.getByUid(activityUid);
 			}
 			app.everlive.Files.getById(activity.Picture).then(
-				function(data) {
+				function (data) {
 					//alert(JSON.stringify(data));
 					thePictureUrl = data.result.Uri
-				}, 
-				function(error) {
+				},
+				function (error) {
 					app.showAlert("Picture File not found. Please try again.");
 				});
-			
-			$activityPicture[0].style.display = activity.Picture ? 'block' : 'none';			
-			
+
+			$activityPicture[0].style.display = activity.Picture ? 'block' : 'none';
+
 			app.notify.showShortTop("Activity.Checking for Comments ...")
-			
+
 			//app.mobileApp.showLoading();
 			app.Comments.comments.filter({
-											 field: 'ActivityId',
-											 operator: 'eq',
-											 value: activity.Id
-										 });
+				field: 'ActivityId',
+				operator: 'eq',
+				value: activity.Id
+			});
 			app.mobileApp.hideLoading();
 			kendo.bind(e.view.element, activity, kendo.mobile.ui);
 			app.adMobService.viewModel.showBannerBottom();
 		};
-        
+        var callbackDelete = function (confirmed) {
+			if(confirmed===undefined)app.showAlert("Delete cannot be performed at this time.");
+			if (confirmed === true || confirmed === 1) {
+				app.notify.showShortTop("Activity.removed");
+				activities.remove(activity);
+				activities.one('sync', function () {
+					app.mobileApp.navigate('#:back');
+				});
+				activities.sync();
+			}
+		};
 		var removeActivity = function () {
 			var activities = app.Activities.activities;
 			var activity = activities.getByUid(activityUid);
-            
-			app.showConfirm(
+			navigator.notification.confirm(appSettings.messages.removeActivityConfirm, callbackDelete(), 'Delete POST Activity', ['Delete', 'Cancel']);
+			/*app.showConfirm(
 				appSettings.messages.removeActivityConfirm,
-				'Delete Activity',
+				'Delete POST Activity',
 				function (confirmed) {
 					if (confirmed === true || confirmed === 1) {
 						app.notify.showShortTop("Activity.removed");
@@ -84,31 +94,31 @@ app.Activity = (function () {
 						});
 						activities.sync();
 					}
-				}
-				);
+				}*/
+			//);
 		};
-		
+
 		var saveComment = function () {
 			// Validating of the required fields
 			if (validator.validate()) {
 				$enterComment.style.display = 'none';
-				
+
 				// Adding new comment to Comments model
 				var comments = app.Comments.comments;
 				var comment = comments.add();
-                
+
 				comment.Comment = $newComment.val() + " Stars: " + stars;
 
 				comment.UserId = app.Users.currentUser.get('data').Id;
 				comment.ActivityId = app.Activity.activity().Id;
-                
+
 				app.notify.showShortTop("Updating Comments ...")
-				
+
 				comments.sync();
 				$newComment.Val = "";
-				
+
 				document.getElementById("one").style.visibility = "hidden";
-				document.getElementById("two").style.visibility = "hidden";				
+				document.getElementById("two").style.visibility = "hidden";
 				document.getElementById("three").style.visibility = "hidden";
 				document.getElementById("four").style.visibility = "hidden";
 				document.getElementById("five").style.visibility = "hidden";
@@ -129,31 +139,31 @@ app.Activity = (function () {
 				$enterComment.style.display = 'block';
 				document.getElementById('newComment').value = "";
 			}
-		};  
-		
-		var addStar = function() {
+		};
+
+		var addStar = function () {
 			if (document.getElementById("one").style.visibility === "hidden") {
 				document.getElementById("one").style.visibility = "visible";
 				stars = 1;
-			}else {
+			} else {
 				if (document.getElementById("two").style.visibility === "hidden") {
 					document.getElementById("two").style.visibility = "visible";
 					stars = 2;
-				}else {
+				} else {
 					if (document.getElementById("three").style.visibility === "hidden") {
 						document.getElementById("three").style.visibility = "visible";
 						stars = 3;
-					}else {
+					} else {
 						if (document.getElementById("four").style.visibility === "hidden") {
 							document.getElementById("four").style.visibility = "visible";
 							stars = 4;
-						}else {
+						} else {
 							if (document.getElementById("five").style.visibility === "hidden") {
 								document.getElementById("five").style.visibility = "visible";
 								stars = 5;
-							}else {
+							} else {
 								document.getElementById("one").style.visibility = "hidden";
-								document.getElementById("two").style.visibility = "hidden";				
+								document.getElementById("two").style.visibility = "hidden";
 								document.getElementById("three").style.visibility = "hidden";
 								document.getElementById("four").style.visibility = "hidden";
 								document.getElementById("five").style.visibility = "hidden";
@@ -164,7 +174,7 @@ app.Activity = (function () {
 				}
 			}
 		}
-		
+
 		var share = function () {
 			var activities = app.Activities.activities;
 			var activity = activities.getByUid(activityUid);
@@ -181,7 +191,7 @@ app.Activity = (function () {
 			var name = app.Users.currentUser.data.DisplayName;
 			var link = thePictureUrl;
 			var options = {
-				message: message +". From " + name, // not supported on some apps (Facebook, Instagram)
+				message: message + ". From " + name, // not supported on some apps (Facebook, Instagram)
 				subject: activity.Title, // fi. for email
 				files: ['', ''], // an array of filenames either locally or remotely
 				url: link,
@@ -191,12 +201,12 @@ app.Activity = (function () {
 				window.plugins.toast.showLongBottom("Share options now being loaded for, " + message + ", " + name + ", " + link + ", please wait...");
 				//app.myShare(options);
 				//message,subject,files,url,sucess,error
-				app.share("The following posting is shared by " + name +": " + message, activity.Title, files, link);
+				app.share("The following posting is shared by " + name + ": " + message, activity.Title, files, link);
 			} else {
 				app.showAlert("Share options now being loaded for, " + message + ", " + name + ", " + link + ", please wait...");
 			}
 		}
-		
+
 		return {
 			init: init,
 			show: show,
@@ -208,19 +218,19 @@ app.Activity = (function () {
 			},
 			addStar: addStar,
 			share: share,
-			updatePictureUrl: function(urId){
+			updatePictureUrl: function (urId) {
 				app.everlive.Files.getById(urId).then(
-				function(data) {
-					//alert(JSON.stringify(data));
-					thePictureUrl = data.result.Uri
-				}, 
-				function(error) {
-					app.showAlert("Picture File not found. Please try again.");
-				});
+					function (data) {
+						//alert(JSON.stringify(data));
+						thePictureUrl = data.result.Uri
+					},
+					function (error) {
+						app.showAlert("Picture File not found. Please try again.");
+					});
             }
 		};
-	}()
+	} ()
 	);
-    
+
 	return activityViewModel;
-}());
+} ());

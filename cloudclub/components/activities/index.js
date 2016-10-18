@@ -308,7 +308,7 @@ app.activities = kendo.observable({
 			}
 		} else {
 			var d = new Date();
-			d.setDate(d.getDate() - 60);
+			d.setDate(d.getDate() - 120);
 			if ((param === null || param === undefined) && e.view.params.ActivityText) {
 				param = {
 					logic: 'and',
@@ -336,8 +336,16 @@ app.activities = kendo.observable({
 			fetchFilteredData(nameFilter);
 		}
 		else {
-			app.notify.showShortTop("Filtering by " + JSON.stringify(params))
-			fetchFilteredData(param);
+			if(e.view.params.ActivityText === 'My Activity Text'){
+			app.notify.showShortTop("Filtering by " + e.view.params.ActivityText)
+			fetchFilteredData(param);}
+			else{var partnerFilter = {
+				field: 'Title',
+				operator: 'startswith',
+				value: e.view.params.ActivityText
+			}
+			app.notify.showShortTop("Filtering by " + e.view.params.ActivityText)
+			fetchFilteredData(partnerFilter);}
         }
 	})
 })(app.activities);

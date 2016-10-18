@@ -15,7 +15,8 @@ var htmlOptions = {
 		"standard": ["camera","events", "activities"],
 		"search": ["google", "twitter", "bing", "googleMaps"],
 		"food": ["zomato", "yelp"],
-		"display": ["search","jobs"],
+		"general":["yelp","instagram"],
+		"display": ["search","general"],
 		"jobs": ["angiesList", "homeAdvisor"]
 	},
 	"url": {

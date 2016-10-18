@@ -16,15 +16,12 @@ app.Activities = (function () {
 		$newEventText.on('keydown', app.helper.autoSizeTextarea);
 		validator.hideMessages();
 		app.Activities.activities._filter.filters[0].filters[0].value = 'My Private Feed';
-		if (app.isOnline()) {
-		    myId = app.Users.currentUser.data.Id;
-		    app.Activities.activities._filter.filters[0].filters[1].value = myId;
-		}
 		//$(document.body).css("visibility", "visible");
 	};
 	var filterOne = {
 		logic: 'or',
 		filters: [{
+			// My Private Feed [0]
 			logic: 'and',
 			filters: [
 				{
@@ -36,50 +33,55 @@ app.Activities = (function () {
 					field: "UserId",
 					operator: "eq",
 					value: myId
-				}
+				},
 			]
 		}, {
-				logic: 'and',
+				// Partner List
 				filters: [
 					{
 						field: "Title",
 						operator: "startswith",
 						value: thePartner
-					},
-					{
-						field: "Title",
-						operator: "neq",
-						value: undefined
-					},
-					//{ field: "Title", operator: "startswith", value: "The Whale's Rib Raw Bar"}
-				]
+					}]
+			}, {
+				//Selected ActivityText
+				filters: [{
+					field: "Text",
+					operator: "eq",
+					value: theText
+				}]
 			}
 		]
 	};
+	if (app.isOnline()) {
+		//app.showAlert(JSON.stringify(app.Activities.activities._filter))
+		myId = app.Users.currentUser.data.Id;
+		app.Activities.activities._filter.filters[0].filters[1].value = myId;
+		filterOne.filters[0].filters[1].value = myId;
+	}
 	var show = function (e) {
-		//3 cases: [2] all from one partner (thePartner), [1] one selected item (theText), [0] all from one user (online)
 		if (e.view.params.ActivityText) {
-			thePartner = e.view.params.ActivityText;
-			app.Activities.activities._filter.filters[1].filters[0].value = thePartner;
-			app.Places.visiting.name = thePartner;
-		} else {
-			thePartner = app.Places.visiting.name;
+			/*			app.Activities.activities._filter = filterOne;
+				3 cases: 
+				[2] all from one partner (thePartner), {field: "Title", operator: "startswith",value: e.view.params.ActivityText}
+				[1] one selected item (theText), {field: "Text", operator: "eq",value: e.view.params.Text}
+				[0] all from one user (online) {field:} {field: "UserId", operator: "eq", myId}
+			*/
+			if (e.view.params.ActivityText) {
+				thePartner = e.view.params.ActivityText;
+				app.Activities.activities._filter={field: "Title", operator: "startswith",value: e.view.params.ActivityText}
+			} else {
+				thePartner = app.Places.visiting.name;
+			}
+			if (e.view.params.Text && e.view.params.Text !== "undefined") {
+				theText = e.view.params.Text;
+				app.Activities.activities._filter={field: "Text", operator: "eq",value: e.view.params.Text};
+			}
+			if (app.isOnline() && e.view.params.ActivityText === 'My Private Feed') {
+				app.Activities.activities._filter={field: "UserId", operator: "eq", value: app.Users.currentUser.data.Id};
+			} 
 		}
-		if (e.view.params.Text) {
-			theText = e.view.params.Text;
-			app.Activities.activities._filter.filters[2].filters[0].value = theText;
-			app.Activities.activities._filter.filters[0] = {};
-			app.Activities.activities._filter.filters[1] = {};
-		}
-		if (app.isOnline() && e.view.params.ActivityText === 'My Private Feed') {
-			myId = app.Users.currentUser.data.Id;
-			//app.showAlert("Show starting "+ thePartner +" by " + myId);
-			app.Activities.activities._filter.filters[0].filters[1].value = myId;
-			app.Activities.activities._filter.filters[0].filters[0].value = '';
-		}	
 		app.Activities.activities.fetch(function () {
-			//app.Activities.activities = this.data();
-			//console.log(data.items)
 			$('#activities-listview').kendoMobileListView({
 				dataSource: app.Activities.activities,
 				template: kendo.template($('#activityTemplate').html())
@@ -90,7 +92,7 @@ app.Activities = (function () {
 		if (app.Places.visiting.name) {
 			theName = app.Places.visiting.name
 		}
-		filterValue = e.view.params.User;
+		//filterValue = e.view.params.User;
 		if (e.view.params.camera === 'ON') {
 			//app.showAlert("camera is ON!")
 			e.view.params.camera = 'OFF';

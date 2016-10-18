@@ -203,7 +203,7 @@ app.Places = (function () {
 			//			google.maps.event.addListener(partner.Mark, 'click', function () {
 			//				infoWindow.setContent(htmlString);
 			//				infoWindow.open(map, partner.Mark);
-			//				app.Places.visiting = place;
+			//				app.Places.visiting = partner;
 			//				myCity = place.City;
 			//			});
 			//		} catch (e) {
@@ -1384,6 +1384,7 @@ app.Places = (function () {
 							if (htmlItem) introHtml = introHtml + displayList(htmlItem);
 						}
 					}
+					app.Places.visiting = app.Places.locationViewModel.list.get(a);
 					return introHtml;
 				};
 				var setInfoWindow = function () {
