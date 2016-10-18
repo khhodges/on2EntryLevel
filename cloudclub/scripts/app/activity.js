@@ -67,22 +67,11 @@ app.Activity = (function () {
 			kendo.bind(e.view.element, activity, kendo.mobile.ui);
 			app.adMobService.viewModel.showBannerBottom();
 		};
-        var callbackDelete = function (confirmed) {
-			if(confirmed===undefined)app.showAlert("Delete cannot be performed at this time.");
-			if (confirmed === true || confirmed === 1) {
-				app.notify.showShortTop("Activity.removed");
-				activities.remove(activity);
-				activities.one('sync', function () {
-					app.mobileApp.navigate('#:back');
-				});
-				activities.sync();
-			}
-		};
+
 		var removeActivity = function () {
 			var activities = app.Activities.activities;
 			var activity = activities.getByUid(activityUid);
-			navigator.notification.confirm(appSettings.messages.removeActivityConfirm, callbackDelete(), 'Delete POST Activity', ['Delete', 'Cancel']);
-			/*app.showConfirm(
+			app.showConfirm(
 				appSettings.messages.removeActivityConfirm,
 				'Delete POST Activity',
 				function (confirmed) {
@@ -94,8 +83,8 @@ app.Activity = (function () {
 						});
 						activities.sync();
 					}
-				}*/
-			//);
+				}
+			);
 		};
 
 		var saveComment = function () {
