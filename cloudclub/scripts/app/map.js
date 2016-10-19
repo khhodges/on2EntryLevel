@@ -614,7 +614,7 @@ app.Places = (function () {
 					function (results, status) {
 						if (status !== google.maps.GeocoderStatus.OK) {
 							console.error(status);
-							app.notify.showShortTop("Enter a new search term.");
+							app.notify.showShortTop("Please enter another search term.");
 							return;
 						}
 						map.panTo(results[0].geometry.location);
@@ -723,7 +723,7 @@ app.Places = (function () {
 								var lat = this.attributes.valueOf()["data-lat"].value;
 								var lng = this.attributes.valueOf()["data-lng"].value
 								if (locality.lat - lat < .0001 && locality.lng - lng < .00001) {
-									app.notify.showShortTop("Directions not required, first drag the map pointer to a different place.");
+									app.notify.showShortTop("The destination and start are the same. Directions are not required until the inspector location is first dragged to some new location.");
 									return;
 								}
 								//app.notify.showShortTop(lat+", "+lng);
@@ -840,7 +840,7 @@ app.Places = (function () {
 			},
 			initLocation: function () {
 				//common variables 
-				app.notify.showLongBottom("Please wait while the Community map data is loaded...");
+				app.notify.showLongBottom("Please wait while the Community map data is loaded... then click the markers to quickly search social media for the selected location.");
 				if (typeof google === "undefined") {
 					return;
 				}
@@ -912,7 +912,7 @@ app.Places = (function () {
 				if (app.isNullOrEmpty(app.Places.locationViewModel) || !app.Places.locationViewModel.get("isGoogleMapsInitialized")) {
 					app.Places.locationViewModel = new LocationViewModel();
 					//TO DO: Clean up map locations
-					app.notify.showShortTop("Map reload!");
+					app.notify.showShortTop("Map was refreshed and reloaded!");
 				}
 				//resize the map in case the orientation has been changed while showing other tab
 				google.maps.event.trigger(map, "resize");
@@ -1134,7 +1134,7 @@ app.Places = (function () {
 						myCity = app.Places.visiting.partner.City;
 					url = new URL("wiki/" + myCity, base);
 				}
-				app.notify.showShortTop("Url.Map Search " + url);
+				app.notify.showShortTop("Url.Map Searching " + url);
 				bw = window.open(url, "_blank", "location=yes");
 				bw.addEventListener("loaderror", app.Places.iabLoadError);
 				bw.addEventListener("exit", app.Places.iabClose);
@@ -1532,7 +1532,7 @@ app.Places = (function () {
 						if (!gr) gr = 0;
 						if (!pl) pl = 0;
 						if (!tp) tp = "food";
-						app.notify.showShortTop(tp);
+						//app.notify.showShortTop(tp);
 
 					} catch (e) {
 						return ' about <strong>' + distance() + '</strong> miles (ATCF).';
@@ -1639,7 +1639,7 @@ app.Places = (function () {
 					try {
 						initClass();
 					} catch (e) {
-						app.notify.showShortTop(partnerRow.vicinity + e.message);
+						app.notify.showShortTop("Please try again: "+ partnerRow.vicinity + e.message);
 						return;
 					}
 				};

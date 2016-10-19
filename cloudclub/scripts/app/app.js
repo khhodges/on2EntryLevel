@@ -181,7 +181,7 @@ var app = (function (win) {
 		logout: function () {
 			app.helper.doLogout()
 				.then(function (lo) {
-					app.notify.showShortTop("You are logged out.");
+					app.notify.showShortTop("You are now logged out.");
 					app.Users.currentUser.data = null;
 					app.helper.navigateHome();
 					var logonB = document.getElementById("logonButton");
@@ -190,7 +190,7 @@ var app = (function (win) {
 					logonB.style.display = "";
 				},
 				function (err) {
-					app.notify.showShortTop("You are not loggon on: " + err.message);
+					app.notify.showShortTop("Please Register first then try again: " + err.message);
 					app.Users.currentUser.data = null;
 					app.helper.navigateHome();
 					var logonB = document.getElementById("logonButton");
@@ -212,7 +212,7 @@ var app = (function (win) {
 		},
 		cameraRoute: function (e) {
 			if (app.isNullOrEmpty(app.Places.visiting)) {
-				app.notify.showShortTop("Please login.")
+				app.notify.showShortTop("Please login to use the camera functions.")
 				app.mobileApp.navigate("#welcome");
 			}
 			else {
@@ -239,7 +239,7 @@ var app = (function (win) {
 
 		openExternalInAppBrowser: function (url) {
 			var winB = window.open(url, "_blank");
-			app.notify.showShortTop("url.on2t Click 'Done' or 'X' to return to the App");
+			app.notify.showShortTop("Openingg url.on2t Click 'Done' or 'X' to return to the App");
 		},
 
 		isAnalytics: function () {
@@ -387,10 +387,10 @@ var app = (function (win) {
 		onPrompt: function (results) {
 			//alert("You selected button number " + results + " and entered " + results);
 			if (results === 3) {
-				app.notify.showShortTop("Continue on this page without community POST features.");
+				app.notify.showShortTop("You and continue on a Read-Only basis, without the camera community POST features...");
 			}
 			if (results === 2) {
-				app.notify.showShortTop("Registration authorizes access to many extended personal, community and local notification features.");
+				app.notify.showShortTop("Registration authorizes access to camera Posting and other private, personal, community and local notification features features.");
 				app.mobileApp.navigate('views/signupView.html');
 			}
 			if (results === 1) {
@@ -417,7 +417,7 @@ var app = (function (win) {
 				};
 
 				data.rawUpdate(attributes, filter, function (data) {
-					app.notify.showShortTop("You have sucesfully linked the new notification.");
+					app.notify.showShortTop("You have sucesfully registered a local notifications.");
 				}, function (err) {
 					app.notify.showShortTop("Notification failed, please try again.");
 				});
@@ -447,7 +447,7 @@ var app = (function (win) {
 				};
 
 				data.rawUpdate(attributes, filter, function (data) {
-					app.notify.showShortTop("You have sucesfully remembered this place in your favorites list.");
+					app.notify.showShortTop("You have sucesfully added this place to your favorites list.");
 				}, function (err) {
 					app.notify.showShortTop("You have already endorced this place. Visit your favourites to see the full list.");
 				});
@@ -463,7 +463,7 @@ var app = (function (win) {
 				app.notify.showShortTop("To protect your privacy you cannot broadcast from your Private Data Feed!");
 				return;
 			}
-			app.notify.showShortTop("Start Public Broadcast Message to local Cloud Club Members.");
+			app.notify.showShortTop("Public Broadcast Message sent to local Cloud Club Members.");
 			if (true) { //TO DO: check if notification activity exists to prevent second attempt
 				var notify = {
 					"Message": activity.Text // upgrade required,
@@ -480,7 +480,7 @@ var app = (function (win) {
 					notify,
 					function (data) {
 						var createdAt = app.formatDate(data.result.CreatedAt);
-						app.notify.showShortTop("Notification sent: " + createdAt);
+						app.notify.showShortTop("Notification sent to local users: " + createdAt);
 						//update notification assets Activity reference and status
 						//everlive = el
 
@@ -691,7 +691,7 @@ var app = (function (win) {
 	});
 
 	var cropImage = function (image) {
-		app.notify.showShortTop("Croping image ...");
+		app.notify.showShortTop("Croping size of large image ...");
 
 		var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
 		var starter = document.getElementById(image);
@@ -717,7 +717,7 @@ var app = (function (win) {
 	}
 
 	var createImage = function (baseImage) {
-		app.notify.showShortTop("Image.Uploading image ...");
+		app.notify.showShortTop("Please wait...Image is uploading  ...");
 
 		app.everlive.Files.create({
 			Filename: Math.random().toString(36).substring(2, 15) + ".jpg",

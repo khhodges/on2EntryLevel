@@ -76,7 +76,7 @@ app.Activity = (function () {
 				'Delete POST Activity',
 				function (confirmed) {
 					if (confirmed === true || confirmed === 1) {
-						app.notify.showShortTop("Activity.removed");
+						app.notify.showLongBottom("Activity.removal undeway, please wait to return to the prior page...");
 						activities.remove(activity);
 						activities.one('sync', function () {
 							app.mobileApp.navigate('#:back');
