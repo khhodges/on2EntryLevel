@@ -76,12 +76,14 @@ app.Activity = (function () {
 				'Delete POST Activity',
 				function (confirmed) {
 					if (confirmed === true || confirmed === 1) {
-						app.notify.showLongBottom("Activity.removal undeway, please wait to return to the prior page...");
+						app.notify.showLongBottom("Activity.removal undeway, please wait until returned to the updated posting list on the previous page...");						
+						app.mobileApp.showLoading();
 						activities.remove(activity);
 						activities.one('sync', function () {
 							app.mobileApp.navigate('#:back');
 						});
-						activities.sync();
+						activities.sync();												
+						app.mobileApp.hideLoading();
 					}
 				}
 			);

@@ -1360,7 +1360,7 @@ app.Places = (function () {
 								}
 								break;
 							case "partner":
-								introHtml = introHtml + '<a data-role="button" class="butn" href="components/partners/view.html?partner='
+								introHtml = introHtml + '<a data-role="button" class="butn" href="components/partners/details.html?partner='
 									+ n + '"><img src="' + app.helper.resolvePictureUrl(picture()) + '" alt="'
 									+ n + ' website" height="auto" width="25%" style="padding:5px"></a>'
 								break;

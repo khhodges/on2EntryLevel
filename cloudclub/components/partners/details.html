@@ -1,34 +1,58 @@
 <div data-role="view" data-title="Details" data-model="app.home.homeModel" data-bind="events: { show: detailsShow }" id="homeModelDetailsView">
-    <header data-role="header">
-        <div data-role="navbar" class="header-text">
-            <a data-role="backbutton" data-align="left">Back</a>
-            <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;">Detail</span>
-            <a data-role="button" data-align="right" data-bind="events: { click: likeClick}">Join In</a>
-        </div>
-    </header>
-
-    <div class="image-with-text">
-        <img data-bind="attr: { src: currentItem.ImageUrl, href: currentItem.Website}" data-style="inset" style="padding: 0 0 0 15px" width="35%" height="auto">
-        <h3 data-bind="text: currentItem.Place"></h3>
-        <p data-bind="text: currentItem.Description"></p>
-        <div class="iw-title"></div>
-        <div class="iw-content"></div>
-
-        <p class="editableListItem">
-            <span>
+	<header data-role="header">
+		<div data-role="navbar" class="header-text"> <a data-role="backbutton" data-align="left">Back</a> <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;">Detail</span>			<a data-role="button" data-align="right" data-bind="events: { click: likeClick}">Join In</a> </div>
+	</header>
+	<div class="image-with-text"> <img data-bind="attr: { src: currentItem.ImageUrl, href: currentItem.Website}" data-style="inset" style="padding: 0 0 0 15px"
+			width="35%" height="auto">
+		<h3 data-bind="text: currentItem.Place"></h3>
+		<p data-bind="text: currentItem.Description"></p>
+		<!--<div class="iw-title"></div>
+		<div class="iw-content"></div>
+		<p class="editableListItem"> <span>
                 <img src="styles/images/googleMap.png" alt="Google" height="auto" width="25%" data-bind="attr:{href:currentItem.url}">
-            </span><span data-bind="html: currentItem.Address"></span>
-        </p>
-        <p class="editableListItem"><span><img src="styles/images/phone2.png" alt="phone" height="auto" width="25%" data-bind="events: { click: onSaveClick }"></span><span data-bind="html: currentItem.Phone"></span></p>
-        <p class="editableListItem">
-            <span>
+            </span><span data-bind="html: currentItem.Address"></span> </p>
+		<p class="editableListItem"><span><img src="styles/images/phone2.png" alt="phone" height="auto" width="25%" data-bind="events: { click: onSaveClick }"></span>
+			<span
+				data-bind="html: currentItem.Phone"></span>
+		</p>
+		<p class="editableListItem"> <span>
                 <img src="styles/images/facebook2.png" alt="Facebook" height="auto" width="25%">
-            </span><span data-bind="html: currentItem.Email"></span>
-        </p>
-        <p class="editableListItem"><span><img src="styles/images/icon.png" alt="On2See" height="auto" width="25%"></span><span data-bind="html: currentItem.Location"></span></p>
-    </div>
-
-    <!-- START_CUSTOM_CODE_homeModel -->
-    <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
-    <!-- END_CUSTOM_CODE_homeModel -->
+            </span><span data-bind="html: currentItem.Email"></span> </p>
+		<p class="editableListItem"><span><img src="styles/images/icon.png" alt="On2See" height="auto" width="25%"></span><span data-bind="html: currentItem.Location"></span></p>-->
+		<h3><span >Tip Calculator:</span></h3><h3>Bill amount : $ <input type="text" id="bill" class="amount-field" width="50%"> <br/><br/> Tip Percentage: <input type="range"
+				min="0" max="100" value="0" step="2.5" onchange="tipCalculate(this.value, 'bill')" class="range-style"> <span id="slideval">0%</span>
+		<h3>Tip to leave = 
+    <span id="tipamount" class="tip-amount">$0.00</span>&nbsp;Total = 
+    <span id="fullamount" class="tip-amount">$0.00</span>
+  </h3><h3><span id="dateRef"></h3> </div>
+</div>
+<script>
+	function tipCalculate (slider, bill){
+  var now = document.getElementById('dateRef');
+  var tip = document.getElementById('tipamount');
+  var full = document.getElementById('fullamount');
+  var slideval = document.getElementById('slideval');
+  var bill = document.getElementById(bill).value;
+  var prcnt = slider * .01;
+  var d = new Date();
+  dateRef.innerHTML = 'Date: '+ d.toString();
+  
+  if (bill == null || bill == '') {
+    tip.innerHTML = 'Please enter charged amount';
+    return false;
+  }
+  if(isNaN(bill)) {
+    tip.innerHTML = 'Please enter numbers only';
+    return false;
+  }
+  if(bill >= 0){
+    tip.innerHTML = '$' + (bill * prcnt) .toFixed(2);
+  slideval.innerHTML = slider + '%';
+  full.innerHTML = '$' + (bill * (1+prcnt)) .toFixed(2);
+  }
+}
+</script>
+<!-- START_CUSTOM_CODE_homeModel -->
+<!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+<!-- END_CUSTOM_CODE_homeModel -->
 </div>
