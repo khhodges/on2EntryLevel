@@ -1316,6 +1316,7 @@ app.Places = (function () {
 					try {
 						var a = Address()
 						var i = infoString()
+                        var id = myId()
 						var n = name()
 						var p = Phone()
 						var w = Website()
@@ -1360,8 +1361,8 @@ app.Places = (function () {
 								}
 								break;
 							case "partner":
-								introHtml = introHtml + '<a data-role="button" class="butn" href="components/partners/details.html?partner='
-									+ n + '"><img src="' + app.helper.resolvePictureUrl(picture()) + '" alt="'
+								introHtml = introHtml + '<a data-role="button" class="butn" href="components/partners/view.html?uid='
+									+ id + '"><img src="' + app.helper.resolvePictureUrl(picture()) + '" alt="'
 									+ n + ' website" height="auto" width="25%" style="padding:5px"></a>'
 								break;
 							case "camera":
@@ -1472,10 +1473,16 @@ app.Places = (function () {
 					return visible;
 				};
 				var name = function () {
-					if (app.isNullOrEmpty(partnerRow.Place)) {
-						partnerRow.Place = partnerRow.name;
-					}
-					return partnerRow.Place;
+				    if (app.isNullOrEmpty(partnerRow.Place)) {
+				        partnerRow.Place = partnerRow.name;
+				    }
+				    return partnerRow.Place;
+				};
+				var myId = function () {
+				    if (app.isNullOrEmpty(partnerRow.Id) && dataType ==="Partner") {
+				        app.showError("Partner has no Id!");
+				    }
+				    return partnerRow.Id;
 				};
 				var lat = function () {
 					if (!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.latitude)) {

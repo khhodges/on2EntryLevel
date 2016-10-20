@@ -230,9 +230,14 @@ app.activities = kendo.observable({
 				);
 			},
 			detailsShow: function (e) {
-				var item = e.view.params.uid,
-					dataSource = activitiesModel.get('dataSource'),
-					itemModel = dataSource.getByUid(item);
+			    var dataSource = activitiesModel.get('dataSource');
+			    if (e.view.params.partner) {
+			        id = e.view.params.partner;
+			        itemModel = dataSource.getById(id);
+			    }else{
+			        var item = e.view.params.uid;					
+			        itemModel = dataSource.getByUid(item);
+                }
 				itemModel.PictureUrl = processImage(itemModel.Picture);
 
 				if (!itemModel.Text) {

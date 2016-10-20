@@ -1,6 +1,9 @@
-<div data-role="view" data-title="Details" data-model="app.home.homeModel" data-bind="events: { show: detailsShow }" id="homeModelDetailsView">
+<div data-role="view" data-title="Club Details" data-model="app.home.homeModel" data-bind="events: { show: detailsShow }" id="homeModelDetailsView">
 	<header data-role="header">
-		<div data-role="navbar" class="header-text"> <a data-role="backbutton" data-align="left">Back</a> <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;">Detail</span>			<a data-role="button" data-align="right" data-bind="events: { click: likeClick}">Join In</a> </div>
+		<div data-role="navbar" class="header-text"> 
+        <a data-role="button" href="#views/mapView.html" data-align="left">Home</a> 
+        <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;">Club Detail</span>			
+        <a data-role="button" data-align="right" data-bind="events: { click: likeClick}">Join Up</a> </div>
 	</header>
 	<div class="image-with-text"> <img data-bind="attr: { src: currentItem.ImageUrl, href: currentItem.Website}" data-style="inset" style="padding: 0 0 0 15px"
 			width="35%" height="auto">
