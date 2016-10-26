@@ -1,61 +1,181 @@
 <div data-role="view" data-title="Club Details" data-model="app.home.homeModel" data-bind="events: { show: detailsShow }" id="homeModelDetailsView">
 	<header data-role="header">
-		<div data-role="navbar" class="header-text"> 
-        <a data-role="button" href="#views/mapView.html" data-align="left">Home</a> 
-        <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;">Club Detail</span>			
-        <a data-role="button" data-align="right" data-bind="events: { click: likeClick}">Join Up</a> </div>
+		<div data-role="navbar" class="header-text">
+			<a data-role="button" href="#views/mapView.html" data-align="left">Home</a>
+			<span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;">Club Detail</span>
+			<a data-role="button" data-align="right" data-bind="events: { click: likeClick}">Join Up</a>
+		</div>
 	</header>
-	<div class="image-with-text"> <img data-bind="attr: { src: currentItem.ImageUrl, href: currentItem.Website}" data-style="inset" style="padding: 0 0 0 15px"
-			width="35%" height="auto">
+	<div class="image-with-text">
+		<img data-bind="attr: { src: currentItem.ImageUrl, href: currentItem.Website}" data-style="inset" style="padding: 0 0 0 15px"
+			 width="35%" height="auto">
 		<h3 data-bind="text: currentItem.Place"></h3>
 		<p data-bind="text: currentItem.Description"></p>
-		<!--<div class="iw-title"></div>
-		<div class="iw-content"></div>
-		<p class="editableListItem"> <span>
-                <img src="styles/images/googleMap.png" alt="Google" height="auto" width="25%" data-bind="attr:{href:currentItem.url}">
-            </span><span data-bind="html: currentItem.Address"></span> </p>
-		<p class="editableListItem"><span><img src="styles/images/phone2.png" alt="phone" height="auto" width="25%" data-bind="events: { click: onSaveClick }"></span>
-			<span
-				data-bind="html: currentItem.Phone"></span>
-		</p>
-		<p class="editableListItem"> <span>
-                <img src="styles/images/facebook2.png" alt="Facebook" height="auto" width="25%">
-            </span><span data-bind="html: currentItem.Email"></span> </p>
-		<p class="editableListItem"><span><img src="styles/images/icon.png" alt="On2See" height="auto" width="25%"></span><span data-bind="html: currentItem.Location"></span></p>-->
-		<h3><span >Tip Calculator:</span></h3><h3>Bill amount : $ <input type="text" id="bill" class="amount-field" width="50%"> <br/><br/> Tip Percentage: <input type="range"
-				min="0" max="100" value="0" step="2.5" onchange="tipCalculate(this.value, 'bill')" class="range-style"> <span id="slideval">0%</span>
-		<h3>Tip to leave = 
-    <span id="tipamount" class="tip-amount">$0.00</span>&nbsp;Total = 
-    <span id="fullamount" class="tip-amount">$0.00</span>
-  </h3><h3><span id="dateRef"></h3> </div>
-</div>
-<script>
-	function tipCalculate (slider, bill){
-  var now = document.getElementById('dateRef');
-  var tip = document.getElementById('tipamount');
-  var full = document.getElementById('fullamount');
-  var slideval = document.getElementById('slideval');
-  var bill = document.getElementById(bill).value;
-  var prcnt = slider * .01;
-  var d = new Date();
-  dateRef.innerHTML = 'Date: '+ d.toString();
-  
-  if (bill == null || bill == '') {
-    tip.innerHTML = 'Please enter charged amount';
-    return false;
-  }
-  if(isNaN(bill)) {
-    tip.innerHTML = 'Please enter numbers only';
-    return false;
-  }
-  if(bill >= 0){
-    tip.innerHTML = '$' + (bill * prcnt) .toFixed(2);
-  slideval.innerHTML = slider + '%';
-  full.innerHTML = '$' + (bill * (1+prcnt)) .toFixed(2);
-  }
-}
-</script>
-<!-- START_CUSTOM_CODE_homeModel -->
-<!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
-<!-- END_CUSTOM_CODE_homeModel -->
+		<div id="splitter">
+			<div id="collapsible" data-style="inset" data-role="collapsible" data-animation="true">
+				<h3 data-style="inset">
+					Tip Calculator:
+				</h3>
+				<p>
+					<b> Bill: $
+						<input type="number" value="30.00" min="0" max="50000" style="width: 30%;"  id="bill" onchange="tipCalculate('slideval', 'bill')"> <br/> Rate:
+						<input type="number" value="15" min="0" max="50" style="width: 30%;"  id="slideval" onchange="tipCalculate(this.value, 'bill')">% <br/><br/>Tip: <span id="tipamount" class="tip-amount">$0.00</span>&nbsp;Total: <span id="fullamount" class="tip-amount">$0.00</span> <br/><span id="dateRef"></span> </b>
+				</p>
+			</div>
+
+			<div hidden id="collapsible" data-style="inset" data-role="collapsible" data-animation="true">
+				<h3>
+					Diary:
+				</h3>
+				<div id="authorize-div" style="display: none">
+					<span>Authorize access to Google Calendar API</span>
+					<!--Button for the user to click to initiate auth sequence -->
+					<button id="authorize-button" onclick="handleAuthClick(event)">
+						Authorize
+					</button>
+				</div>
+				<pre id="output"></pre>
+			</div>
+		</div>
+
+	</div>
+	<script type="text/javascript">
+		// Your Client ID can be retrieved from your project in the Google
+		// Developer Console, https://console.developers.google.com
+		var CLIENT_ID = '508581667442-003egcp4sild1bms13n45e342pgsrki5.apps.googleusercontent.com';
+
+		var SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
+
+		/**
+		 * Check if current user has authorized this application.
+		 */
+		function checkAuth() {
+			if(gapi.auth){
+			gapi.auth.authorize({
+									'client_id': CLIENT_ID,
+									'scope': SCOPES.join(' '),
+									'immediate': true
+								}, handleAuthResult);
+			}else{
+				app.showShortTop("Calendar not available");
+            }
+		
+		}
+		
+		/**
+		 * Handle response from authorization server.
+		 *
+		 * @param {Object} authResult Authorization result.
+		 */
+		function handleAuthResult(authResult) {
+			var authorizeDiv = document.getElementById('authorize-div');
+			if (authResult && !authResult.error) {
+				// Hide auth UI, then load client library.
+				authorizeDiv.style.display = 'none';
+				loadCalendarApi();
+			} else {
+				// Show auth UI, allowing the user to initiate authorization by
+				// clicking authorize button.
+				authorizeDiv.style.display = 'inline';
+			}
+		}
+		
+		/**
+		 * Initiate auth flow in response to user clicking authorize button.
+		 *
+		 * @param {Event} event Button click event.
+		 */
+		function handleAuthClick(event) {
+			gapi.auth.authorize(
+				{client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+				handleAuthResult);
+			return false;
+		}
+		
+		/**
+		 * Load Google Calendar client library. List upcoming events
+		 * once client library is loaded.
+		 */
+		function loadCalendarApi() {
+			gapi.client.load('calendar', 'v3', listUpcomingEvents);
+		}
+		
+		/**
+		 * Print the summary and start datetime/date of the next ten events in
+		 * the authorized user's calendar. If no events are found an
+		 * appropriate message is printed.
+		 */
+		function listUpcomingEvents() {
+			var request = gapi.client.calendar.events.list({
+															   'calendarId': 'primary',
+															   'timeMin': (new Date()).toISOString(),
+															   'showDeleted': false,
+															   'singleEvents': true,
+															   'maxResults': 10,
+															   'orderBy': 'startTime'
+														   });
+		
+			request.execute(function(resp) {
+				var events = resp.items;
+				appendPre('Upcoming events:');
+		
+				if (events.length > 0) {
+					for (i = 0; i < events.length; i++) {
+						var event = events[i];
+						var when = event.start.dateTime;
+						if (!when) {
+							when = event.start.date;
+						}
+						appendPre(event.summary + ' (' + when + ')')
+					}
+				} else {
+					appendPre('No upcoming events found.');
+				}
+			});
+		}
+		
+		/**
+		 * Append a pre element to the body containing the given message
+		 * as its text node.
+		 *
+		 * @param {string} message Text to be placed in pre element.
+		 */
+		function appendPre(message) {
+			var pre = document.getElementById('output');
+			var textContent = document.createTextNode(message + '\n');
+			pre.appendChild(textContent);
+		}
+		
+	</script>
+	<script src="https://apis.google.com/js/client.js?onload=checkAuth">
+	</script>
+
+	<script>
+		function tipCalculate () {
+			var tip = document.getElementById('tipamount');
+			var full = document.getElementById('fullamount');
+			var slideval = document.getElementById('slideval').value;
+			var bill = document.getElementById('bill').value;
+			var prcnt = slideval * .01;
+			var d = new Date();
+			dateRef.innerHTML = 'On: ' + d.toString().replace(/GMT.*/g, "");
+		
+			if (bill === null || bill === '') {
+				tip.innerHTML = 'Please enter charged amount';
+				return false;
+			}
+			if (isNaN(bill)) {
+				tip.innerHTML = 'Please enter numbers only';
+				return false;
+			}
+			if (bill >= 0) {
+				tip.innerHTML = '$' + (bill * prcnt) .toFixed(2);
+				//slideval.innerHTML = prcnt*100 + '%';
+				full.innerHTML = '$' + (bill * (1 + prcnt)) .toFixed(2);
+			}
+		}
+	</script>
+	<!-- START_CUSTOM_CODE_homeModel -->
+	<!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+	<!-- END_CUSTOM_CODE_homeModel -->
 </div>
