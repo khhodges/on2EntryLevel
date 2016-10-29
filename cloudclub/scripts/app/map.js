@@ -434,8 +434,8 @@ app.Places = (function () {
 										var markersList = app.Places.locationViewModel.list.array();
 										for (var i = 0; i < markersList.length; i++) {
 											var thePartner = app.Places.locationViewModel.list.get(markersList[i].vicinity);
-												var Details = thePartner.details();
-												Details.clearLowMark();
+											var Details = thePartner.details();
+											Details.clearLowMark();
 										}
 										break;
 									case 4:
@@ -712,7 +712,7 @@ app.Places = (function () {
 					var feedRoute = document.getElementById("myFeedLink");
 					if (feedRoute) {
 						feedRoute.addEventListener("click", function () {
-								app.mobileApp.navigate("components/notifications/view.html");
+							app.mobileApp.navigate("components/notifications/view.html");
 						});
 					}
 					var goHome = document.getElementById("goHome");
@@ -810,11 +810,11 @@ app.Places = (function () {
 			updatePartnerLocation: function () {
 				if (app.Places.locationViewModel.list && app.Places.locationViewModel.list.keys.length) {
 					for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
-						try{
-						app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]).clearMark();
-							}catch(e){
-								
-                            }
+						try {
+							app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]).clearMark();
+						} catch (e) {
+
+						}
 					}
 				}
 				update = true;
@@ -1130,9 +1130,10 @@ app.Places = (function () {
 			browse: function (url) {
 				if (url === null || url === undefined || url.length < 10 || url.button) {
 					var base = new URL("/", "https://en.wikipedia.org");
-					if (app.isNullOrEmpty(myCity))
+					if (app.isNullOrEmpty(myCity)) {
 						myCity = app.Places.visiting.partner.City;
-					url = new URL("wiki/" + myCity, base);
+						url = new URL("wiki/" + myCity, base);
+					}
 				}
 				app.notify.showShortTop("Url.Map Searching " + url);
 				bw = window.open(url, "_blank", "location=yes");
@@ -1392,7 +1393,9 @@ app.Places = (function () {
 					htmlIw = toCustomHtml();
 					infoWindow.setContent(htmlIw);
 					infoWindow.open(map, Mark);
-					myCity = partnerRow.City;
+					if (partnerRow.City) {
+						myCity = partnerRow.City;
+					}
 					return true;
 				};
 				this.checkInfoWindow = function () {
@@ -1473,16 +1476,16 @@ app.Places = (function () {
 					return visible;
 				};
 				var name = function () {
-				    if (app.isNullOrEmpty(partnerRow.Place)) {
-				        partnerRow.Place = partnerRow.name;
-				    }
-				    return partnerRow.Place;
+					if (app.isNullOrEmpty(partnerRow.Place)) {
+						partnerRow.Place = partnerRow.name;
+					}
+					return partnerRow.Place;
 				};
 				var myId = function () {
-				    if (app.isNullOrEmpty(partnerRow.Id) && dataType ==="Partner") {
-				        app.showError("Partner has no Id!");
-				    }
-				    return partnerRow.Id;
+					if (app.isNullOrEmpty(partnerRow.Id) && dataType === "Partner") {
+						app.showError("Partner has no Id!");
+					}
+					return partnerRow.Id;
 				};
 				var lat = function () {
 					if (!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.latitude)) {
@@ -1646,7 +1649,7 @@ app.Places = (function () {
 					try {
 						initClass();
 					} catch (e) {
-						app.notify.showShortTop("Please try again: "+ partnerRow.vicinity + e.message);
+						app.notify.showShortTop("Please try again: " + partnerRow.vicinity + e.message);
 						return;
 					}
 				};
@@ -1730,18 +1733,17 @@ app.Places = (function () {
 						vicinity: Address(),
 						distance: distance(),
 						listString: listString(),
-						clearLowMark: function () {							
-						if (Mark.icon.url !== 'styles/images/orangecircle.png') 
-							{
+						clearLowMark: function () {
+							if (Mark.icon.url !== 'styles/images/orangecircle.png') {
 								Mark.setMap(null);
 								app.Places.locationViewModel.list.delete(Address());
-								}
+							}
 						},
 						clearMapMark: function () {
-							app.showConfirm("Do you want to remove " + name() 
-							+ " at " + Address() + listString(), "Remove Place", function (e) {
-								if (e === 2) return;
-							});
+							app.showConfirm("Do you want to remove " + name()
+								+ " at " + Address() + listString(), "Remove Place", function (e) {
+									if (e === 2) return;
+								});
 							Mark.setMap(null);
 							app.Places.visiting.e.dataItem.set("isSelectedClass", "listview-hidden");
 							app.Places.visiting.e.dataItem.set("visibility", "hidden");
