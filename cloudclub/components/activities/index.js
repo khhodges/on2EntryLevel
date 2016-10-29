@@ -231,6 +231,7 @@ app.activities = kendo.observable({
 			},
 			detailsShow: function (e) {
 			    var dataSource = activitiesModel.get('dataSource');
+				var itemModel;
 			    if (e.view.params.partner) {
 			        id = e.view.params.partner;
 			        itemModel = dataSource.getById(id);

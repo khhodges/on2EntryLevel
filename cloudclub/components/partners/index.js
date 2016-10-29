@@ -74,7 +74,7 @@ app.home = kendo.observable({
 		            dataItem['ImageUrl'] =
 						processImage(dataItem['Image']);
 		            //flattenLocationProperties(dataItem);
-                    if(data.length ===1)app.mobileApp.navigate("components/partners/details.html?uid="+uid)
+                    if(data.length ===1)app.mobileApp.navigate("#components/partners/details.html?uid="+uid)
 		        }
 		    },
 		    error: function (e) {
