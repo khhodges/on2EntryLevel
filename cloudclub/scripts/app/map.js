@@ -6,7 +6,7 @@ var app = app || {};
 
 app.Places = (function () {
 	'use strict'
-	var infoWindow, markers, place, result, myCity, newPlace, here, request, home, bw, lat1, lng1, allBounds, theZoom = 15,
+	var infoWindow, markers, place, result, myCity, myState, newPlace, here, request, home, bw, lat1, lng1, allBounds, theZoom = 15,
 		service, myAddress, Selfie, list = {}, homePosition, update = false, myEvent;
 	var HEAD = appSettings.HEAD;
 
@@ -296,13 +296,15 @@ app.Places = (function () {
 					});
 			},
 			getComponent: function (address_components, component) {
-				for (var i = 0; i < address_components.length; i++) {
-					if (address_components[i].types[0] === component) {
-						myCity = address_components[i].long_name;
-						if (myCity === undefined) myCity = "New York";
-						return myCity;
-					}
-				}
+			    for (var i = 0; i < address_components.length; i++) {
+			        if (address_components[i].types[0] === "locality") {
+			            myCity = address_components[i].long_name;
+			        }
+			        if (address_components[i].types[0] === "administrative_area_level_1") {
+			            myState = address_components[i].long_name;
+			        }
+			    }
+			    return myCity;
 			},
 			getAddress: function (latLng, marker) {
 				geocoder.geocode({
@@ -315,6 +317,7 @@ app.Places = (function () {
 					else {
 						myAddress = '';
 						myCity = '';
+						myState = '';
 						if (results[0]) {
 							myAddress = results[0].formatted_address;
 							myCity = app.Places.locationViewModel.getComponent(results[0].address_components, "locality");
@@ -1300,12 +1303,41 @@ app.Places = (function () {
 						scaledSize: new google.maps.Size(30, 30),
 					}
 				};
+				var items;
+				var addressComponent = function (component) {
+				    var result = items.filter
+                      (function (item) {
+                          return (item.types[0] === component)
+                      }
+                      )
+				    if (result.length === 1) {
+				        result = result[0].long_name
+				        return result;
+				    } else {
+				        app.showError("Place not found!")
+				    }
+				}
+				//var state = function () { items.filter(function (item) { return (item.types[0] === "administrative_area_level_1") }) }
 				var displayList = function (parts) {
-					var showIcon = parts.name;
-					var Path = parts.path;
-					var Url = Path + resolveString(resolveString(name(), "'", "%27"), "&", "%26");//parts.query;
+				    var showIcon = parts.name;
+				    var Path = parts.path;
+				    var term = name();
+				    if (parts.query === "search") term = app.Places.locationViewModel.find;
+				    var searchTerm = resolveString(resolveString(term, "'", "%27"), "&", "%26");
+				    searchTerm = resolveString(searchTerm, " ", parts.space);
+				    if (Path.includes("#:name#")) {
+				        Path = resolveString(Path, "#:name#", searchTerm)
+				    }else{
+				        Path = Path + searchTerm;//parts.query;
+				    }
+				    if (Path.includes("#:city#")) {
+				        Path = resolveString(Path, "#:city#", addressComponent("locality"))
+				    }
+				    if (Path.includes("#:state#")) {
+				        Path = resolveString(Path, "#:state#", addressComponent("administrative_area_level_1"))
+				    }
 					var itemHtml = '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
-						+ Url + '\');"><img src="styles/images/'
+						+ Path + '\');"><img src="styles/images/'
 						+ showIcon + '.png" alt="'
 						+ showIcon + '" height="auto" width="25%" style="padding:5px"></a>';
 					return itemHtml;
@@ -1352,17 +1384,17 @@ app.Places = (function () {
 						var parts = standardOptions[l];
 						switch (parts) {
 							case "events":
-								introHtml = introHtml + '<a data-role="button" class="butn" href="components/notifications/view.html?ActivityText='
+								introHtml = introHtml + '<a data-role="button" class="butn" href="#components/notifications/view.html?ActivityText='
 									+ n + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
 								break;
 							case "activities":
 								if (programmedOptions) {
-									introHtml = introHtml + '<a data-role="button" class="butn" href="components/activities/view.html?ActivityText='
+									introHtml = introHtml + '<a data-role="button" class="butn" href="#components/activities/view.html?ActivityText='
 										+ n + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
 								}
 								break;
 							case "partner":
-								introHtml = introHtml + '<a data-role="button" class="butn" href="components/partners/view.html?uid='
+								introHtml = introHtml + '<a data-role="button" class="butn" href="#components/partners/view.html?uid='
 									+ id + '"><img src="' + app.helper.resolvePictureUrl(picture()) + '" alt="'
 									+ n + ' website" height="auto" width="25%" style="padding:5px"></a>'
 								break;
@@ -1416,6 +1448,7 @@ app.Places = (function () {
 								return false;
 							}
 							googleData = result;
+							items = googleData.address_components;
                             callback()
 							return true;
 						}

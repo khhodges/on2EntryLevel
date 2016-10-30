@@ -15,7 +15,7 @@ var htmlOptions = {
 		"standard": ["camera","events", "activities"],
 		"search": ["google", "twitter", "bing", "facebook"],
 		"food": ["zomato", "yelp"],
-		"general":["yelp","linkedIn"],
+		"general":["yellowpages","wikipedia"],
 		"display": ["search","general"],
 		"jobs": ["angiesList", "homeAdvisor"]
 	},
@@ -34,84 +34,84 @@ var htmlOptions = {
 			"path": "https://www.angieslist.com/research/",
 			"query": "type",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"linkedIn": {
 			"name": "linkedIn",
 			"path": "https://www.linkedin.com/in/",
 			"query": "name",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"homeAdvisor": {
 			"name": "homeadvisor",
 			"path": "http://www.homeadvisor.com/",
 			"query": "name",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"spokeo": {
 			"name": "spokeo",
 			"path": "https://www.spokeo.com/",
 			"query": "name",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"pintrest": {
 			"name": "pintrest",
 			"path": "https://www.pintrest.com/",
 			"query": "name",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"facebook": {
 			"name": "facebook",
 			"path": "https://www.facebook.com/search/top/?q=",
 			"query": "name-",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"google+": {
 			"name": "google+",
 			"path": "https://https://plus.google.com/",
 			"query": "name-",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"home": {
 			"name": "default",
 			"path": "Website",
 			"query": "",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"events": {
 			"name": "events",
 			"path": "Website",
 			"query": "",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"activity": {
 			"name": "activity",
 			"path": "Website",
 			"query": "",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"yahoo": {
 			"name": "yahoo",
-			"path": "https://www.facebook.com/search/top/?q=",
+			"path": "https://www.yahoo.com/search/top/?q=",
 			"query": "name-",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"bing": {
 			"name": "bing",
 			"path": "https://www.bing.com/search?q=",
 			"query": "name",
 			"option": "",
-			"space": ""
+			"space": " "
 		},
 		"yelp": {
 			"name": "yelp",
@@ -121,11 +121,18 @@ var htmlOptions = {
 			"space": "-"
 		},
 		"twitter": {
-			"name": "twitter",
-			"path": "https://www.twitter.com/search/?q=",
-			"query": "name-",
-			"option": "",
-			"space": ""
+		    "name": "twitter",
+		    "path": "https://www.twitter.com/search/?q=",
+		    "query": "name-",
+		    "option": "",
+		    "space": "-"
+		},
+		"yellowpages": {//http://www.yellowpages.com/search?search_terms=Gimler+Plumbing+Inc&geo_location_terms=Pompano+Beach%2C+FL
+		    "name": "yellowpages",
+		    "path": "http://m.yp.com/search?search_term=#:name#&search_location=#:city#%2C#:state#",
+		    "query": "name-",
+		    "option": "",
+		    "space": "-"
 		},
 		"youtube": {
 			"name": "youtube",
@@ -156,11 +163,18 @@ var htmlOptions = {
 			"option": "city"
 		},
 		"google": {
-			"name": "google",
-			"path": "https://www.google.com/#q=",
-			"query": "name",
-			"space": "",
-			"option": ""
+		    "name": "google",
+		    "path": "https://www.google.com/#q=",
+		    "query": "name",
+		    "space": " ",
+		    "option": ""
+		},
+		"wikipedia": {
+		    "name": "wikipedia",
+		    "path": "https://en.wikipedia.org/wiki/",
+		    "query": "search",
+		    "space": " ",
+		    "option": ""
 		}
 	}
 }
