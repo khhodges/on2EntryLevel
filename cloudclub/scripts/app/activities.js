@@ -313,11 +313,13 @@ app.Activities = (function () {
 			var canvas = document.getElementById("canvas");
 			if (starter.naturalWidth > starter.naturalHeight) {
 				sx = (starter.naturalWidth - starter.naturalHeight) / 2;
+				sx = Math.floor(sx);
 				starterWidth = starter.naturalHeight;
 				starterHeight = starter.naturalHeight;
 				sy = 0;
 			} else {
 				sy = (-starter.naturalWidth + starter.naturalHeight) / 2;
+				sx = Math.floor(sx);
 				starterWidth = starter.naturalWidth;
 				starterHeight = starter.naturalWidth;
 				sx = 0;
