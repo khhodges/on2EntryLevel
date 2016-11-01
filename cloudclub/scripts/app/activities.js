@@ -319,7 +319,7 @@ app.Activities = (function () {
 				sy = 0;
 			} else {
 				sy = (-starter.naturalWidth + starter.naturalHeight) / 2;
-				sx = Math.floor(sx);
+				sy = Math.floor(sy);
 				starterWidth = starter.naturalWidth;
 				starterHeight = starter.naturalWidth;
 				sx = 0;
