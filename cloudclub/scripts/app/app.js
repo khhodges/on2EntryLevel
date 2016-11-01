@@ -78,19 +78,19 @@ var app = (function (win) {
 			app.cdr.distance = (21 - zoom) * 2;
 			//localStorage.setItem("cdr", cdr.latitude + ":" + cdr.longitude);
 		},
-			function (error) {
-				app.notify.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
-				//default map coordinates
-				//app.notify.showShortTop("Map.Unable to determine current location. Cannot connect to GPS satellite.");
-				if (localStorage.getItem("cdr")) {
-					app.cdr = localStorage.getItem("cdr");
-				} else {
-					app.cdr = new google.maps.LatLng(40.71, -74.01);
-				}
-			}, {
-				timeout: 20000,
-				enableHighAccuracy: true
-			});
+							   function (error) {
+								   app.notify.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
+								   //default map coordinates
+								   //app.notify.showShortTop("Map.Unable to determine current location. Cannot connect to GPS satellite.");
+								   if (localStorage.getItem("cdr")) {
+									   app.cdr = localStorage.getItem("cdr");
+								   } else {
+									   app.cdr = new google.maps.LatLng(40.71, -74.01);
+								   }
+							   }, {
+								   timeout: 20000,
+								   enableHighAccuracy: true
+							   });
 		if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
 			$('.ui-header > *').css('margin-top', function (index, curValue) {
 				return parseInt(curValue, 10) + 0 + 'px';
@@ -135,9 +135,9 @@ var app = (function (win) {
 		if (cordova.plugins) {
 			// set some global defaults for all local notifications
 			cordova.plugins.notification.local.setDefaults({
-				ongoing: false, // see http://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setOngoing(boolean)
-				autoClear: true
-			});
+															   ongoing: false, // see http://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setOngoing(boolean)
+															   autoClear: true
+														   });
 
 			cordova.plugins.notification.local.on("click", function (notification) {
 				navigator.notification.alert(JSON.stringify(notification), null, 'Notification background click', 'Close');
@@ -165,13 +165,13 @@ var app = (function (win) {
 
 	// Initialize Everlive SDK
 	var el = new Everlive({
-		//offlineStorage: true,
-		appId: appSettings.everlive.appId,
-		scheme: appSettings.everlive.scheme
-		//authentaction: {
-		//    persist:true
-		//}
-	});
+							  //offlineStorage: true,
+							  appId: appSettings.everlive.appId,
+							  scheme: appSettings.everlive.scheme
+							  //authentaction: {
+							  //    persist:true
+							  //}
+						  });
 
 	var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
@@ -189,15 +189,15 @@ var app = (function (win) {
 					logoffB.style.display = "none";
 					logonB.style.display = "";
 				},
-				function (err) {
-					app.notify.showShortTop("Please Register first then try again: " + err.message);
-					app.Users.currentUser.data = null;
-					app.helper.navigateHome();
-					var logonB = document.getElementById("logonButton");
-					var logoffB = document.getElementById("logoffButton");
-					logoffB.style.display = "none";
-					logonB.style.display = "";
-				});
+					  function (err) {
+						  app.notify.showShortTop("Please Register first then try again: " + err.message);
+						  app.Users.currentUser.data = null;
+						  app.helper.navigateHome();
+						  var logonB = document.getElementById("logonButton");
+						  var logoffB = document.getElementById("logoffButton");
+						  logoffB.style.display = "none";
+						  logonB.style.display = "";
+					  });
 		},
 		activityRoute: function (e) {
 			// app.showAlert(JSON.stringify(e))
@@ -214,9 +214,9 @@ var app = (function (win) {
 			if (app.isNullOrEmpty(app.Places.visiting)) {
 				app.notify.showShortTop("Please login to use the camera functions.")
 				app.mobileApp.navigate("#welcome");
-			}
-			else {
-				if (app.Places.visiting.name === undefined) app.Places.visiting.name = app.Places.visiting.details().name;
+			} else {
+				if (app.Places.visiting.name === undefined)
+					app.Places.visiting.name = app.Places.visiting.details().name;
 				//app.showAlert(JSON.stringify(app.Places.visiting.name))
 				if (app.isOnline()) {
 					//app.showAlert(app.Places.locationViewModel.myCamera);
@@ -286,9 +286,9 @@ var app = (function (win) {
 					url = base + appSettings.everlive.appId + size + url;
 					return url;
 				}),
-				function (error) {
-					navigator.notification.alert(JSON.stringify(error));
-				};
+			function (error) {
+				navigator.notification.alert(JSON.stringify(error));
+			};
 		},
 
 		// Return absolute user profile picture url
@@ -382,7 +382,7 @@ var app = (function (win) {
 				'Authentication Required', // title
 				['Login', 'Register', 'Continue']             // buttonLabels
 				//'User Name address ...'                 // defaultText
-			)
+				)
 		},
 		onPrompt: function (results) {
 			//alert("You selected button number " + results + " and entered " + results);
@@ -487,16 +487,16 @@ var app = (function (win) {
 						//if does not exist add to log
 						var data = el.data('Notifications');
 						data.create({
-							'Place': app.Places.visiting.name,
-							'Reference': activity.Id,
-							'Status': true
-						},
-							function (data) {
-								app.notify.showShortTop("Notification log " + data.result.Id + " saved!");
-							},
-							function (error) {
-								app.notify.showShortTop("Notification - Not saved due to " + error.message);
-							});
+										'Place': app.Places.visiting.name,
+										'Reference': activity.Id,
+										'Status': true
+									},
+									function (data) {
+										app.notify.showShortTop("Notification log " + data.result.Id + " saved!");
+									},
+									function (error) {
+										app.notify.showShortTop("Notification - Not saved due to " + error.message);
+									});
 					},
 					function (error) {
 						app.showError(JSON.stringify("Notification not sent due to " + error.message));
@@ -536,53 +536,53 @@ var app = (function (win) {
 
 		showMessageWithoutSound: function () {
 			this.notify({
-				id: 1,
-				title: 'I\'m the title!',
-				text: 'Sssssh!',
-				sound: null,
-				at: this.getNowPlus10Seconds()
-			});
+							id: 1,
+							title: 'I\'m the title!',
+							text: 'Sssssh!',
+							sound: null,
+							at: this.getNowPlus10Seconds()
+						});
 		},
 
 		showMessageWithDefaultSound: function () {
 			this.notify({
-				id: '2', // you don't have to use an int by the way.. '1a' or just 'a' would be fine
-				title: 'Sorry for the noise',
-				text: 'Unless you have sound turned off',
-				at: this.getNowPlus10Seconds()
-			});
+							id: '2', // you don't have to use an int by the way.. '1a' or just 'a' would be fine
+							title: 'Sorry for the noise',
+							text: 'Unless you have sound turned off',
+							at: this.getNowPlus10Seconds()
+						});
 		},
 
 		showMessageWithData: function () {
 			this.notify({
-				id: 3,
-				text: 'I have data, click me to see it',
-				json: JSON.stringify({
-					test: 123
-				}),
-				at: this.getNowPlus10Seconds()
-			});
+							id: 3,
+							text: 'I have data, click me to see it',
+							json: JSON.stringify({
+													 test: 123
+												 }),
+							at: this.getNowPlus10Seconds()
+						});
 		},
 
 		showMessageWithBadge: function () {
 			this.notify({
-				id: 4,
-				title: 'Your app now has a badge',
-				text: 'Clear it by clicking the \'Cancel all\' button',
-				badge: 1,
-				at: this.getNowPlus10Seconds()
-			});
+							id: 4,
+							title: 'Your app now has a badge',
+							text: 'Clear it by clicking the \'Cancel all\' button',
+							badge: 1,
+							at: this.getNowPlus10Seconds()
+						});
 		},
 
 		showMessageWithSoundEveryMinute: function () {
 			this.notify({
-				id: 5,
-				title: 'I will bother you every minute',
-				text: '.. until you cancel all notifications',
-				every: 'minute',
-				autoClear: false,
-				at: this.getNowPlus10Seconds()
-			});
+							id: 5,
+							title: 'I will bother you every minute',
+							text: '.. until you cancel all notifications',
+							every: 'minute',
+							autoClear: false,
+							at: this.getNowPlus10Seconds()
+						});
 		},
 
 		cancelAll: function () {
@@ -685,10 +685,10 @@ var app = (function (win) {
 
 	// Initialize KendoUI mobile application
 	var mobileApp = new kendo.mobile.Application(document.body, {
-		transition: 'slide',
-		statusBarStyle: statusBarStyle,
-		skin: 'flat'
-	});
+													 transition: 'slide',
+													 statusBarStyle: statusBarStyle,
+													 skin: 'flat'
+												 });
 
 	var cropImage = function (image) {
 		app.notify.showShortTop("Croping size of large image ...");
@@ -698,11 +698,13 @@ var app = (function (win) {
 		var canvas = document.getElementById("canvas");
 		if (starter.naturalWidth > starter.naturalHeight || starter.naturalWidth === starter.naturalHeight) {
 			sx = (starter.naturalWidth - starter.naturalHeight) / 2;
+			sx = Math.floor(sx);
 			starterWidth = starter.naturalHeight;
 			starterHeight = starter.naturalHeight;
 			sy = 0;
 		} else {
 			sy = (-starter.naturalWidth + starter.naturalHeight) / 2;
+			sy = Math.floor(sy);
 			starterWidth = starter.naturalWidth;
 			starterHeight = starter.naturalWidth;
 			sx = 0;
@@ -720,10 +722,10 @@ var app = (function (win) {
 		app.notify.showShortTop("Please wait...Image is uploading  ...");
 
 		app.everlive.Files.create({
-			Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
-			ContentType: "image/jpeg",
-			base64: baseImage
-		})
+									  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+									  ContentType: "image/jpeg",
+									  base64: baseImage
+								  })
 			.then(function (promise) {
 				return promise;
 			})
@@ -740,13 +742,13 @@ var app = (function (win) {
 		}, function () {
 			app.notify.showShortTop("Camers.No selection was detected.");
 		}, {
-				//kjhh best result including iphone rotation
-				quality: 100,
-				destinationType: navigator.camera.DestinationType.FILE_URI,
-				sourceType: navigator.camera.PictureSourceType.CAMERA,
-				encodingType: navigator.camera.EncodingType.JPEG,
-				correctOrientation: true
-			});
+										//kjhh best result including iphone rotation
+										quality: 100,
+										destinationType: navigator.camera.DestinationType.FILE_URI,
+										sourceType: navigator.camera.PictureSourceType.CAMERA,
+										encodingType: navigator.camera.EncodingType.JPEG,
+										correctOrientation: true
+									});
 	}
 
 	var simplify = function (object) {
@@ -813,4 +815,4 @@ var app = (function (win) {
 			}
 		}
 	};
-} (window));
+}(window));
