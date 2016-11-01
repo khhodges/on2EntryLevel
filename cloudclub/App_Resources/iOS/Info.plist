@@ -61,5 +61,9 @@
     <true/>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>NSCameraUsageDescription</key>
+    <string>Add photos to Post with local community messages</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Select photos from camera roll to include with community messages</string>
   </dict>
 </plist>
