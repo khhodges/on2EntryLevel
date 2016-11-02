@@ -485,11 +485,16 @@ var app = (function (win) {
 						//everlive = el
 
 						//if does not exist add to log
+						var thisPlace = {
+					            "longitude": -80.07,
+					            "latitude": 26.3
+					        };
 						var data = el.data('Notifications');
 						data.create({
-										'Place': app.Places.visiting.name,
+										'Place': app.Places.visiting.details().name,
 										'Reference': activity.Id,
-										'Status': true
+										'Status': true,
+										'Location': thisPlace
 									},
 									function (data) {
 										app.notify.showShortTop("Notification log " + data.result.Id + " saved!");

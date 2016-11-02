@@ -1,11 +1,11 @@
 'use strict';
 
 app.notifications = kendo.observable({
-	onShow: function () {
-	},
-	afterShow: function () {
-	}
-});
+										 onShow: function () {
+										 },
+										 afterShow: function () {
+										 }
+									 });
 
 // START_CUSTOM_CODE_notifications
 // Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
@@ -25,9 +25,9 @@ app.notifications = kendo.observable({
 
 			if (paramFilter && searchFilter) {
 				dataSource.filter({
-					logic: 'and',
-					filters: [paramFilter, searchFilter]
-				});
+									  logic: 'and',
+									  filters: [paramFilter, searchFilter]
+								  });
 			} else if (paramFilter || searchFilter) {
 				dataSource.filter(paramFilter || searchFilter);
 			} else {
@@ -39,7 +39,7 @@ app.notifications = kendo.observable({
 				var empty1x1png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQI12NgYAAAAAMAASDVlMcAAAAASUVORK5CYII=';
 				img = 'data:image/png;base64,' + empty1x1png;
 			} else if (img.slice(0, 4) !== 'http' &&
-				img.slice(0, 2) !== '//' && img.slice(0, 5) !== 'data:') {
+					   img.slice(0, 2) !== '//' && img.slice(0, 5) !== 'data:') {
 				var setup = dataProvider.setup || {};
 				img = setup.scheme + ':' + setup.url + setup.appId + '/Files/' + img + '/Download';
 			}
@@ -50,7 +50,7 @@ app.notifications = kendo.observable({
 			var propName, propValue,
 				isLocation = function (value) {
 					return propValue && typeof propValue === 'object' &&
-						propValue.longitude && propValue.latitude;
+											   propValue.longitude && propValue.latitude;
 				};
 
 			for (propName in dataItem) {
@@ -58,8 +58,8 @@ app.notifications = kendo.observable({
 					propValue = dataItem[propName];
 					if (isLocation(propValue)) {
 						dataItem[propName] =
-							kendo.format('Latitude: {0}, Longitude: {1}',
-								propValue.latitude, propValue.longitude);
+						kendo.format('Latitude: {0}, Longitude: {1}',
+									 propValue.latitude, propValue.longitude);
 					}
 				}
 			}
@@ -70,17 +70,26 @@ app.notifications = kendo.observable({
 				typeName: 'Notifications',
 				dataProvider: dataProvider,
 				read: {
-					headers: {
-						"X-Everlive-Expand": {
-							"Reference": {
-								"TargetTypeName": "Activities",
-								"ReturnAs": "EventDetails",
-								"Fields": { "Title": 1, "Text": 1, "Picture": 1 },
-								//"Filter":{"Activities.Title":{"startswith":"The Whale's Rib Raw Bar"}}
-							}
+						headers: {
+								"X-Everlive-Expand": {
+											"Reference": {
+														"TargetTypeName": "Activities",
+														"ReturnAs": "EventDetails",
+														"Fields": { "Title": 1, "Text": 1, "Picture": 1 },
+														//"Filter":{"Activities.Title":{"startswith":"The Whale's Rib Raw Bar"}}
+													}
+										}
+								,"X-Everlive-Filter": JSON.stringify({
+																		 "Location": {
+										"$nearSphere": {
+																					 "longitude":-80.07,
+																					 "latitude":26.3
+																				 },
+									"$maxDistanceInMiles":40
+								}
+							})
 						}
 					}
-				}
 			},
 			sort: { field: 'Date', dir: 'desc' },
 			//filter: {field:'Date', operator;'gt', value:new Date.getDate()-10},
@@ -89,7 +98,7 @@ app.notifications = kendo.observable({
 				for (var i = 0; i < data.length; i++) {
 					var dataItem = data[i];
 					dataItem['PictureUrl'] =
-						processImage(dataItem['Picture']);
+					processImage(dataItem['Picture']);
 
 					flattenLocationProperties(dataItem);
 				}
@@ -101,53 +110,53 @@ app.notifications = kendo.observable({
 			},
 			schema: {
 				model: {
-					fields: {
-						'Reference': {
-							field: 'EventDetails.Title',
-							defaultValue: 'xxxxx'
-						},
-						'Place': {
-							field: 'EventDetails.Text',
-							defaultValue: 'xxxxx'
-						},
-						'Picture': {
-							field: 'EventDetails.Picture',
-							defaultValue: 'xxxxx'
-						},
-						'ActivityId': {
-							field: 'EventDetails.Id',
-							defaultValue: 'xxxxx'
-						},
-						'Date': {
-							field: 'CreatedAt',
-							defaultValue: 'xxxxx'
-						},
+						fields: {
+								'Reference': {
+											field: 'EventDetails.Title',
+											defaultValue: 'xxxxx'
+										},
+								'Place': {
+											field: 'EventDetails.Text',
+											defaultValue: 'xxxxx'
+										},
+								'Picture': {
+											field: 'EventDetails.Picture',
+											defaultValue: 'xxxxx'
+										},
+								'ActivityId': {
+											field: 'EventDetails.Id',
+											defaultValue: 'xxxxx'
+										},
+								'Date': {
+											field: 'CreatedAt',
+											defaultValue: 'xxxxx'
+										},
+							}
 					}
-				}
 			},
 			//serverFiltering: true,
 		},
 		dataSource = new kendo.data.DataSource(dataSourceOptions),
 		notificationsModel = kendo.observable({
-			dataSource: dataSource,
-			itemClick: function (e) {
-														  app.mobileApp.navigate('#components/activities/view.html?ActivityText=' + e.dataItem.Reference.split('&')[0] + '&Text=' + e.dataItem.Place);
-			},
-			detailsShow: function (e) {
-				var item = e.view.params.uid,
-					dataSource = notificationsModel.get('dataSource'),
-					itemModel = dataSource.getByUid(item);
-				itemModel.PictureUrl = processImage(itemModel.Picture);
+												  dataSource: dataSource,
+												  itemClick: function (e) {
+													  app.mobileApp.navigate('#components/activities/view.html?ActivityText=' + e.dataItem.Reference.split('&')[0] + '&Text=' + e.dataItem.Place);
+												  },
+												  detailsShow: function (e) {
+													  var item = e.view.params.uid,
+														  dataSource = notificationsModel.get('dataSource'),
+														  itemModel = dataSource.getByUid(item);
+													  itemModel.PictureUrl = processImage(itemModel.Picture);
 
-				if (!itemModel.Reference) {
-					itemModel.Reference = String.fromCharCode(160);
-				}
+													  if (!itemModel.Reference) {
+														  itemModel.Reference = String.fromCharCode(160);
+													  }
 
-				notificationsModel.set('currentItem', null);
-				notificationsModel.set('currentItem', itemModel);
-			},
-			currentItem: null
-		});
+													  notificationsModel.set('currentItem', null);
+													  notificationsModel.set('currentItem', itemModel);
+												  },
+												  currentItem: null
+											  });
 
 	if (typeof dataProvider.sbProviderReady === 'function') {
 		dataProvider.sbProviderReady(function dl_sbProviderReady() {
@@ -160,21 +169,21 @@ app.notifications = kendo.observable({
 	parent.set('onShow', function (e) {
 		app.notify.showShortTop("Please wait for all the latest Notification data to load...");
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
-		//var d = new Date();
-		//d.setDate(d.getDate() - 60);
-		//d=d.toDateString();
-		//app.notify.showShortTop("Filtering by " + e.view.params.ActivityText)
-		//if ((param === null || param === undefined) && e.view.params.ActivityText) {
-		//	param = {
-		//		filter: {
-		//					"field": "EventsDetails.Title",
-		//					"operator": "startswith",
-		//					"value": e.view.params.ActivityText
-		//				}
-
-		//	}
-		//} 
-
+/*		var d = new Date();
+		d.setDate(d.getDate() - 60);
+		d = d.toDateString();
+		app.notify.showShortTop("Filtering by " + e.view.params.ActivityText)
+		if ((param === null || param === undefined) && app.Places.visiting) {
+			if (typeof app.Places.visiting.details === "function")  {				
+				param = {
+					filter: {
+						"field": "Place",
+						"operator": "startswith",
+						"value": app.Places.visiting.details().name 
+					}
+				}
+			}
+		} */
 		fetchFilteredData(param);
 	});
 })(app.notifications);

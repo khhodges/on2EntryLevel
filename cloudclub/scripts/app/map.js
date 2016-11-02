@@ -627,7 +627,7 @@ app.Places = (function () {
 					});
 			},
 			toggleLoading: function () {
-				app.showAlert("Loading "+this._isLoading)
+				//app.showAlert("Loading "+this._isLoading)
 				if (this._isLoading) {
 					kendo.mobile.application.showLoading();
 				} else {

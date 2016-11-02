@@ -89,11 +89,11 @@ app.Activities = (function () {
 			kendo.bind($("#view-all-activities", app.Activities));
 		});
 		theName = "My Private Feed";
-		if (app.Places.visiting) {
+		try {
 			theName = app.Places.visiting.details().name
-		}else{
+		}catch (ex) {
 			app.notify.showShortTop("Using Private Feed");
-        }
+		}
 		//filterValue = e.view.params.User;
 		if (e.view.params.camera === 'ON') {
 			//app.showAlert("camera is ON!")
