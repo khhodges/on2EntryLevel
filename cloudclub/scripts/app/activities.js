@@ -89,9 +89,11 @@ app.Activities = (function () {
 			kendo.bind($("#view-all-activities", app.Activities));
 		});
 		theName = "My Private Feed";
-		if (app.Places.visiting.name) {
-			theName = app.Places.visiting.name
-		}
+		if (app.Places.visiting) {
+			theName = app.Places.visiting.details().name
+		}else{
+			app.notify.showShortTop("Using Private Feed");
+        }
 		//filterValue = e.view.params.User;
 		if (e.view.params.camera === 'ON') {
 			//app.showAlert("camera is ON!")
@@ -373,8 +375,8 @@ app.Activities = (function () {
 						activity.Picture = selected;
 						app.Places.locationViewModel.lastPicture = selected;
 						activity.Title = "My Private Feed"; //app.Users.currentUser.get('data').DisplayName;
-						if (app.Places.visiting.name)
-							activity.Title = app.Places.visiting.name;
+						if (app.Places.visiting.details().name)
+							activity.Title = app.Places.visiting.details().name;
 						navigator.geolocation.getCurrentPosition(
 							function (position) {
 								activity.Location = {

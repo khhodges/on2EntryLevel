@@ -627,10 +627,11 @@ app.Places = (function () {
 					});
 			},
 			toggleLoading: function () {
+				app.showAlert("Loading "+this._isLoading)
 				if (this._isLoading) {
-					//kendo.mobile.application.showLoading();
+					kendo.mobile.application.showLoading();
 				} else {
-					//kendo.mobile.application.hideLoading();
+					kendo.mobile.application.hideLoading();
 				}
 			},
 			currentLocation: function (marker) {

@@ -308,7 +308,7 @@ app.activities = kendo.observable({
 		}
 		if (app.isOnline()) {
 			if (e.view.params.ActivityText) {
-				app.mobileApp.navigate('views/activitiesView.html?ActivityText=' + e.view.params.ActivityText + '&User=' + e.view.params.User +'&Text='+e.view.params.Text);
+				app.mobileApp.navigate('views/activitiesView.html?ActivityText=' + e.view.params.ActivityText+'&Text='+e.view.params.Text);// + '&User=' + e.view.params.User );
 			} else {
 				app.mobileApp.navigate('views/activitiesView.html?public=true');
 			}
@@ -338,19 +338,19 @@ app.activities = kendo.observable({
 				operator: 'contains',
 				value: e.view.params.Text
 			}
-			app.notify.showShortTop("Filtering by " + e.view.params.Text)
+			//app.notify.showShortTop("Filtering by " + e.view.params.Text)
 			fetchFilteredData(nameFilter);
 		}
 		else {
 			if(e.view.params.ActivityText === 'My Activity Text'){
-			app.notify.showShortTop("Filtering by " + e.view.params.ActivityText)
+			//app.notify.showShortTop("Filtering by " + e.view.params.ActivityText)
 			fetchFilteredData(param);}
 			else{var partnerFilter = {
 				field: 'Title',
 				operator: 'startswith',
 				value: e.view.params.ActivityText
 			}
-			app.notify.showShortTop("Filtering by " + e.view.params.ActivityText)
+			//app.notify.showShortTop("Filtering by " + e.view.params.ActivityText)
 			fetchFilteredData(partnerFilter);}
         }
 	})

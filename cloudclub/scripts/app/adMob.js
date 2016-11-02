@@ -96,7 +96,7 @@ if (/(android)/i.test(navigator.userAgent)) { // for android & amazon-fireos
 
         checkSimulator: function() {
             if (window.navigator.simulator === true || app.helper.getLevel() === 1) {
-                app.notify.showShortTop('Advertisments are not used if you upgrade your subscription for a small one-time charge. Visit your \'Account page\' to find out more.');
+                //app.notify.showShortTop('Advertisments are not used if you upgrade your subscription for a small one-time charge. Visit your \'Account page\' to find out more.');
                 return true;
             } else if (window.AdMob === undefined) {
                 app.notify.showShortTop('When you are not logged in some features are not available.');
