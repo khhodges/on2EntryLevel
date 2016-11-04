@@ -158,6 +158,7 @@ app.home = kendo.observable({
 		        app.notify.memorize(dataSource.Id);
 		    },
 		    detailsShow: function (e) {
+				app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
 		        var item = e.view.params.uid,
 					dataSource = homeModel.get('dataSource'),
 					itemModel = dataSource.getByUid(item);
@@ -266,6 +267,7 @@ app.home = kendo.observable({
     }
 
     parent.set('onShow', function (e) {
+		app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
         var param = e.view.params.filter ? JSON.parse(decodeURIComponent(e.view.params.filter)) : null;
         if (e.view.params.uid) {
             uid = e.view.params.uid;

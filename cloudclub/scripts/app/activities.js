@@ -60,13 +60,20 @@ app.Activities = (function () {
 		filterOne.filters[0].filters[1].value = myId;
 	}
 	var show = function (e) {
+		app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
 		if (e.view.params.ActivityText) {
 			/*			app.Activities.activities._filter = filterOne;
 				3 cases: 
 				[2] all from one partner (thePartner), {field: "Title", operator: "startswith",value: e.view.params.ActivityText}
 				[1] one selected item (theText), {field: "Text", operator: "eq",value: e.view.params.Text}
 				[0] all from one user (online) {field:} {field: "UserId", operator: "eq", myId}
-			*/
+				*/
+			try {
+				var theName = app.Places.visiting.details().name
+			}catch (ex) {
+				app.notify.showShortTop("Using Public Feeds");
+				app.Activities.activities._filter={field: "Title", operator: "doesnotcontain",value: "My Private Feed"}
+			}
 			if (e.view.params.ActivityText) {
 				thePartner = e.view.params.ActivityText;
 				app.Activities.activities._filter={field: "Title", operator: "startswith",value: e.view.params.ActivityText}
@@ -88,12 +95,6 @@ app.Activities = (function () {
 			});
 			kendo.bind($("#view-all-activities", app.Activities));
 		});
-		theName = "My Private Feed";
-		try {
-			theName = app.Places.visiting.details().name
-		}catch (ex) {
-			app.notify.showShortTop("Using Private Feed");
-		}
 		//filterValue = e.view.params.User;
 		if (e.view.params.camera === 'ON') {
 			//app.showAlert("camera is ON!")

@@ -104,6 +104,9 @@ app.Places = (function () {
 		//	products: appSettings.products
 		//});
 		var resolveString = function (name, find, replace) {
+			if(!name){
+				//app.notify.showShortTop("Please provide setup link "+name+", "+find+", "+replace)
+				return name;}
 			var length = name.split(find).length - 1;
 			var theString;
 			theString = name;
@@ -172,7 +175,7 @@ app.Places = (function () {
 			//		var htmlString = app.Places.locationViewModel.getButtons(place);
 			//		var position = place.geometry.location;
 			//		place.markerUrl = 'styles/images/on2see-icon-120x120.png';
-			//		place.openString = '</strong> stars, about <strong>' + place.distance + '</strong> miles (ATCF).';
+			//		place.openString = '</strong> stars, about <strong>' + place.distance + '</strong> miles from your present location, as the crow flys...';
 			//		place.zIndex = 5;
 			//		if (place.avatar) {
 			//			place.markerUrl = place.avatar;
@@ -288,6 +291,7 @@ app.Places = (function () {
 						var partner = data.result[i];
 						var partnerV = new app.Places.newPartner();
 						partnerV.setPartnerRow(partner);
+						app.Places.visiting = partnerV;
 						app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV);
 					}
 				},
@@ -900,6 +904,7 @@ app.Places = (function () {
 				streetView = map.getStreetView();
 			},
 			show: function () {
+				app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
 				kendo.mobile.application.showLoading();
 				app.adMobService.viewModel.removeBanner();
 				//app.adMobService.viewModel.prepareInterstitial();
@@ -988,6 +993,12 @@ app.Places = (function () {
 					Details.clearMapMark();
 				}
 
+			},
+			visitingShow: function(e){
+				var myId = e.view.params.uid;
+				var me = app.Places.visiting;
+				//var myDetails = me.datails();
+				//app.notify.showShortTop("Visiting show " + app.Places.visiting.details().name)
 			},
 			listShow: function (e) {
 				try {
@@ -1095,6 +1106,7 @@ app.Places = (function () {
 						app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "visible");
 						app.Places.visiting = app.Places.locationViewModel.list.get(e.dataItem.vicinity);
 						app.Places.visiting.e = e;
+						myCity = e.dataItem.city;
 						app.Places.visiting.checkInfoWindow();
 					} else {
 						e.dataItem.set("isSelectedClass", "");
@@ -1134,10 +1146,8 @@ app.Places = (function () {
 			browse: function (url) {
 				if (url === null || url === undefined || url.length < 10 || url.button) {
 					var base = new URL("/", "https://en.wikipedia.org");
-					if (app.isNullOrEmpty(myCity)) {
-						myCity = app.Places.visiting.partner.City;
+					if (app.isNullOrEmpty(myCity))myCity = "Boca Raton, Florida";//app.Places.visiting.details().city() +", "+app.Places.visiting.details().state() ;
 						url = new URL("wiki/" + myCity, base);
-					}
 				}
 				app.notify.showShortTop("Url.Map Searching " + url);
 				bw = window.open(url, "_blank", "location=yes");
@@ -1306,6 +1316,7 @@ app.Places = (function () {
 				};
 				var items;
 				var addressComponent = function (component) {
+					var items = googleData.address_components;
 				    var result = items.filter
                       (function (item) {
                           return (item.types[0] === component)
@@ -1326,15 +1337,15 @@ app.Places = (function () {
 				    if (parts.query === "search") term = app.Places.locationViewModel.find;
 				    var searchTerm = resolveString(resolveString(term, "'", "%27"), "&", "%26");
 				    searchTerm = resolveString(searchTerm, " ", parts.space);
-				    if (Path.includes("#:name#")) {
+				    if (Path.indexOf("#:name#") >0) {
 				        Path = resolveString(Path, "#:name#", searchTerm)
 				    }else{
 				        Path = Path + searchTerm;//parts.query;
 				    }
-				    if (Path.includes("#:city#")) {
+				    if (Path.indexOf("#:city#")>0) {
 				        Path = resolveString(Path, "#:city#", addressComponent("locality"))
 				    }
-				    if (Path.includes("#:state#")) {
+				    if (Path.indexOf("#:state#")>0) {
 				        Path = resolveString(Path, "#:state#", addressComponent("administrative_area_level_1"))
 				    }
 					var itemHtml = '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
@@ -1354,7 +1365,7 @@ app.Places = (function () {
 						var n = name()
 						var p = Phone()
 						var w = Website()
-						var p = picture()
+						//var p = picture()
 						var programmedOptions;
 						var customList = htmlOptions.uris;
 						var customOptions = htmlOptions.defaultOptions.display;
@@ -1395,7 +1406,7 @@ app.Places = (function () {
 								}
 								break;
 							case "partner":
-								introHtml = introHtml + '<a data-role="button" class="butn" href="#components/partners/view.html?uid='
+								introHtml = introHtml + '<a data-role="button" class="butn" href="#views/placesView.html?uid='
 									+ id + '"><img src="' + app.helper.resolvePictureUrl(picture()) + '" alt="'
 									+ n + ' website" height="auto" width="25%" style="padding:5px"></a>'
 								break;
@@ -1460,6 +1471,9 @@ app.Places = (function () {
 					if (app.isNullOrEmpty(partnerRow.Website) && googleData.website) partnerRow.Website = googleData.website;
 					return partnerRow.Website;
 				};
+				var Description = function(){
+					return partnerRow.Description;
+				}
 				var partnerOptions = function () {
 					if (app.isNullOrEmpty(partnerOptions)) partnerOptions = htmlOptions;
 					return partnerOptions;
@@ -1544,6 +1558,18 @@ app.Places = (function () {
 					}
 					return partnerRow.Address;
 				};
+				var State = function () {
+					if (app.isNullOrEmpty(partnerRow.State && googleData !== "")) {
+						partnerRow.State = addressComponent("administrative_area_level_1");
+					}
+					return partnerRow.State;
+				};
+				var City = function () {
+					if (app.isNullOrEmpty(partnerRow.City && googleData !== "")) {
+						partnerRow.City = addressComponent("locality");
+					}
+					return partnerRow.City;
+				};
 				var placeId = function () {
 					if (app.isNullOrEmpty(partnerRow.PlaceId)) {
 						partnerRow.PlaceId = partnerRow.place_id;
@@ -1564,7 +1590,7 @@ app.Places = (function () {
 					return app.helper.resolveProfilePictureUrl(partnerRow.Icon);
 				}
 				var listString = function () {
-					return ' about' + distance() + ' miles (As The Crow Flies).';
+					return ' about ' + distance() + ' miles (As The Crow Flies).';
 				}
 				var infoString = function () {
 					try {
@@ -1609,6 +1635,10 @@ app.Places = (function () {
 						for (var i = 0; i < list.length; i++) {
 							text = text + '\n' + list[i].author_name + ', (' + (new Date(list[i].time * 1000)).toDateString() + '),\n ' + list[i].rating + ' Stars, ' + list[i].text + '\n';
 						}
+					}
+					if (app.Places.locationViewModel.checkSimulator()) {
+						text = text +'\n'+ JSON.stringify(googleData);
+						app.Places.browse("http://jsoneditoronline.org/?json="+JSON.stringify(googleData));
 					}
 					//app.Places.visiting = app.Places.locationViewModel.list.get(googleData.formatted_address);
 					app.showReviews(text, "Google Reviews for " + partnerRow.Place, function (result) { app.Places.listShow3(result) });
@@ -1740,12 +1770,6 @@ app.Places = (function () {
 					}
 					initClass();
 				}
-				this.City = function () {
-					if (app.isNullOrEmpty(partnerRow.City)) {
-						partnerRow.City = googleData.City;
-					}
-					return partnerRow.City;
-				}
 				this.PlaceId = function () {
 					if (app.isNullOrEmpty(partnerRow.PlaceId)) {
 						partnerRow.PlaceId = partnerRow.place_id;
@@ -1760,7 +1784,13 @@ app.Places = (function () {
 				}
 				this.details = function () {
 					return {
+						description:Description(),
+						website:Website(),
+						phone:Phone(),
+						icon:Icon(),
 						name: name(),
+						city: City,
+						state: State,
 						isSelectedClass: isSelectedClass(),
 						visibility: visible,
 						setVisibility: function (v) { visible = v; },

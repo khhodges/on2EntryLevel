@@ -26,7 +26,6 @@ app.Activity = (function () {
 			$activityPicture = $('#picture');
 			validator = $('#enterComment').kendoValidator().data('kendoValidator');
 			$newComment = $('#newComment');
-
 			$newComment.on('keydown', app.helper.autoSizeTextarea);
 			$newComment.on('keydown', validator.hideMessages());
 		};
