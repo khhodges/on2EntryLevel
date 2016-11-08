@@ -78,19 +78,19 @@ var app = (function (win) {
 			app.cdr.distance = (21 - zoom) * 2;
 			//localStorage.setItem("cdr", cdr.latitude + ":" + cdr.longitude);
 		},
-							   function (error) {
-								   app.notify.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
-								   //default map coordinates
-								   //app.notify.showShortTop("Map.Unable to determine current location. Cannot connect to GPS satellite.");
-								   if (localStorage.getItem("cdr")) {
-									   app.cdr = localStorage.getItem("cdr");
-								   } else {
-									   app.cdr = new google.maps.LatLng(40.71, -74.01);
-								   }
-							   }, {
-								   timeout: 20000,
-								   enableHighAccuracy: true
-							   });
+			function (error) {
+				app.notify.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
+				//default map coordinates
+				//app.notify.showShortTop("Map.Unable to determine current location. Cannot connect to GPS satellite.");
+				if (localStorage.getItem("cdr")) {
+					app.cdr = localStorage.getItem("cdr");
+				} else {
+					app.cdr = new google.maps.LatLng(40.71, -74.01);
+				}
+			}, {
+				timeout: 20000,
+				enableHighAccuracy: true
+			});
 		if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
 			$('.ui-header > *').css('margin-top', function (index, curValue) {
 				return parseInt(curValue, 10) + 0 + 'px';
@@ -135,9 +135,9 @@ var app = (function (win) {
 		if (cordova.plugins) {
 			// set some global defaults for all local notifications
 			cordova.plugins.notification.local.setDefaults({
-															   ongoing: false, // see http://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setOngoing(boolean)
-															   autoClear: true
-														   });
+				ongoing: false, // see http://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setOngoing(boolean)
+				autoClear: true
+			});
 
 			cordova.plugins.notification.local.on("click", function (notification) {
 				navigator.notification.alert(JSON.stringify(notification), null, 'Notification background click', 'Close');
@@ -165,17 +165,61 @@ var app = (function (win) {
 
 	// Initialize Everlive SDK
 	var el = new Everlive({
-							  //offlineStorage: true,
-							  appId: appSettings.everlive.appId,
-							  scheme: appSettings.everlive.scheme
-							  //authentaction: {
-							  //    persist:true
-							  //}
-						  });
+		//offlineStorage: true,
+		appId: appSettings.everlive.appId,
+		scheme: appSettings.everlive.scheme
+		//authentaction: {
+		//    persist:true
+		//}
+	});
 
 	var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
 	var AppHelper = {
+		/**
+ * Detecting vertical squash in loaded image.
+ * Fixes a bug which squash image vertically while drawing into canvas for some images.
+ * This is a bug in iOS6 devices. This function from https://github.com/stomita/ios-imagefile-megapixel
+ * 
+ */
+		detectVerticalSquash: function (img) {
+			var iw = img.naturalWidth, ih = img.naturalHeight;
+			var canvas = document.createElement('canvas');
+			canvas.width = 1;
+			canvas.height = ih;
+			var ctx = canvas.getContext('2d');
+			ctx.drawImage(img, 0, 0);
+			var data = ctx.getImageData(0, 0, 1, ih).data;
+			// search image edge pixel position in case it is squashed vertically.
+			var sy = 0;
+			var ey = ih;
+			var py = ih;
+			while (py > sy) {
+				var alpha = data[(py - 1) * 4 + 3];
+				if (alpha === 0) {
+					ey = py;
+				} else {
+					sy = py;
+				}
+				py = (ey + sy) >> 1;
+			}
+			var ratio = (py / ih);
+			return (ratio === 0) ? 1 : ratio;
+		},
+
+		/**
+		 * A replacement for context.drawImage
+		 * (args are for source and destination).
+		 */
+		drawImageIOSFix: function (ctx, img, sx, sy, sw, sh, dx, dy, dw, dh) {
+			var vertSquashRatio = app.helper.detectVerticalSquash(img);
+			// Works only if whole image is displayed:
+			// ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh / vertSquashRatio);
+			// The following works correct also when only a part of the image is displayed:
+			ctx.drawImage(img, sx * vertSquashRatio, sy * vertSquashRatio,
+				sw * vertSquashRatio, sh * vertSquashRatio,
+				dx, dy, dw, dh);
+		},
 
 		// Logout user
 		logout: function () {
@@ -189,15 +233,15 @@ var app = (function (win) {
 					logoffB.style.display = "none";
 					logonB.style.display = "";
 				},
-					  function (err) {
-						  app.notify.showShortTop("Please Register first then try again: " + err.message);
-						  app.Users.currentUser.data = null;
-						  app.helper.navigateHome();
-						  var logonB = document.getElementById("logonButton");
-						  var logoffB = document.getElementById("logoffButton");
-						  logoffB.style.display = "none";
-						  logonB.style.display = "";
-					  });
+				function (err) {
+					app.notify.showShortTop("Please Register first then try again: " + err.message);
+					app.Users.currentUser.data = null;
+					app.helper.navigateHome();
+					var logonB = document.getElementById("logonButton");
+					var logoffB = document.getElementById("logoffButton");
+					logoffB.style.display = "none";
+					logonB.style.display = "";
+				});
 		},
 		activityRoute: function (e) {
 			// app.showAlert(JSON.stringify(e))
@@ -286,9 +330,9 @@ var app = (function (win) {
 					url = base + appSettings.everlive.appId + size + url;
 					return url;
 				}),
-			function (error) {
-				navigator.notification.alert(JSON.stringify(error));
-			};
+				function (error) {
+					navigator.notification.alert(JSON.stringify(error));
+				};
 		},
 
 		// Return absolute user profile picture url
@@ -382,7 +426,7 @@ var app = (function (win) {
 				'Authentication Required', // title
 				['Login', 'Register', 'Continue']             // buttonLabels
 				//'User Name address ...'                 // defaultText
-				)
+			)
 		},
 		onPrompt: function (results) {
 			//alert("You selected button number " + results + " and entered " + results);
@@ -486,22 +530,22 @@ var app = (function (win) {
 
 						//if does not exist add to log
 						var thisPlace = {
-					            "longitude": -80.07,
-					            "latitude": 26.3
-					        };
+							"longitude": -80.07,
+							"latitude": 26.3
+						};
 						var data = el.data('Notifications');
 						data.create({
-										'Place': app.Places.visiting.details().name,
-										'Reference': activity.Id,
-										'Status': true,
-										'Location': thisPlace
-									},
-									function (data) {
-										app.notify.showShortTop("Notification log " + data.result.Id + " saved!");
-									},
-									function (error) {
-										app.notify.showShortTop("Notification - Not saved due to " + error.message);
-									});
+							'Place': app.Places.visiting.details().name,
+							'Reference': activity.Id,
+							'Status': true,
+							'Location': thisPlace
+						},
+							function (data) {
+								app.notify.showShortTop("Notification log " + data.result.Id + " saved!");
+							},
+							function (error) {
+								app.notify.showShortTop("Notification - Not saved due to " + error.message);
+							});
 					},
 					function (error) {
 						app.showError(JSON.stringify("Notification not sent due to " + error.message));
@@ -541,53 +585,53 @@ var app = (function (win) {
 
 		showMessageWithoutSound: function () {
 			this.notify({
-							id: 1,
-							title: 'I\'m the title!',
-							text: 'Sssssh!',
-							sound: null,
-							at: this.getNowPlus10Seconds()
-						});
+				id: 1,
+				title: 'I\'m the title!',
+				text: 'Sssssh!',
+				sound: null,
+				at: this.getNowPlus10Seconds()
+			});
 		},
 
 		showMessageWithDefaultSound: function () {
 			this.notify({
-							id: '2', // you don't have to use an int by the way.. '1a' or just 'a' would be fine
-							title: 'Sorry for the noise',
-							text: 'Unless you have sound turned off',
-							at: this.getNowPlus10Seconds()
-						});
+				id: '2', // you don't have to use an int by the way.. '1a' or just 'a' would be fine
+				title: 'Sorry for the noise',
+				text: 'Unless you have sound turned off',
+				at: this.getNowPlus10Seconds()
+			});
 		},
 
 		showMessageWithData: function () {
 			this.notify({
-							id: 3,
-							text: 'I have data, click me to see it',
-							json: JSON.stringify({
-													 test: 123
-												 }),
-							at: this.getNowPlus10Seconds()
-						});
+				id: 3,
+				text: 'I have data, click me to see it',
+				json: JSON.stringify({
+					test: 123
+				}),
+				at: this.getNowPlus10Seconds()
+			});
 		},
 
 		showMessageWithBadge: function () {
 			this.notify({
-							id: 4,
-							title: 'Your app now has a badge',
-							text: 'Clear it by clicking the \'Cancel all\' button',
-							badge: 1,
-							at: this.getNowPlus10Seconds()
-						});
+				id: 4,
+				title: 'Your app now has a badge',
+				text: 'Clear it by clicking the \'Cancel all\' button',
+				badge: 1,
+				at: this.getNowPlus10Seconds()
+			});
 		},
 
 		showMessageWithSoundEveryMinute: function () {
 			this.notify({
-							id: 5,
-							title: 'I will bother you every minute',
-							text: '.. until you cancel all notifications',
-							every: 'minute',
-							autoClear: false,
-							at: this.getNowPlus10Seconds()
-						});
+				id: 5,
+				title: 'I will bother you every minute',
+				text: '.. until you cancel all notifications',
+				every: 'minute',
+				autoClear: false,
+				at: this.getNowPlus10Seconds()
+			});
 		},
 
 		cancelAll: function () {
@@ -690,13 +734,13 @@ var app = (function (win) {
 
 	// Initialize KendoUI mobile application
 	var mobileApp = new kendo.mobile.Application(document.body, {
-													 transition: 'slide',
-													 statusBarStyle: statusBarStyle,
-													 skin: 'flat'
-												 });
+		transition: 'slide',
+		statusBarStyle: statusBarStyle,
+		skin: 'flat'
+	});
 
 	var cropImage = function (image) {
-		app.notify.showShortTop("Croping size of large image ...");
+		app.notify.showShortTop("Croping large image ...");
 
 		var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
 		var starter = document.getElementById(image);
@@ -718,30 +762,36 @@ var app = (function (win) {
 		dy = 0;
 		canvasWidth = canvas.width;
 		canvasHeight = canvas.height;
-		var ctx = canvas.getContext("2d");			
-		if (!navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
-				app.showShortTop("Crop action");
-				ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-			} else {
-				app.showShortTop("iOS 7 crop");
-				drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-			}
-			$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
-			if($baseImafe.indexOf(appSettings.empty1x1png >0)){
-				app.showShortTop("Special Crop action");
-				drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-				$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
-			}
+		var ctx = canvas.getContext("2d");
+		app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+		$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+		/*			if (!navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
+						textMessage ="Crop action";
+						ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+					} else {
+						textMessage = "iOS 7 crop";
+						app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+					}
+					$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+					if($baseImafe.indexOf(appSettings.empty1x1png >0)){
+						textMessage = "Special Crop action";
+						app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+						$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+					}
+					var sb = document.getElementById("saveButton");
+					if(sb.style.display === "none"){ textMessage = "You can update any items including or excluding the Avatar";
+					sb.style.display = ""}
+					app.notify.show(textMessage);*/
 	}
 
 	var createImage = function (baseImage) {
 		app.notify.showShortTop("Please wait...Image is uploading  ...");
 
 		app.everlive.Files.create({
-									  Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
-									  ContentType: "image/jpeg",
-									  base64: baseImage
-								  })
+			Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+			ContentType: "image/jpeg",
+			base64: baseImage
+		})
 			.then(function (promise) {
 				return promise;
 			})
@@ -758,13 +808,13 @@ var app = (function (win) {
 		}, function () {
 			app.notify.showShortTop("Camers.No selection was detected.");
 		}, {
-										//kjhh best result including iphone rotation
-										quality: 100,
-										destinationType: navigator.camera.DestinationType.FILE_URI,
-										sourceType: navigator.camera.PictureSourceType.CAMERA,
-										encodingType: navigator.camera.EncodingType.JPEG,
-										correctOrientation: true
-									});
+				//kjhh best result including iphone rotation
+				quality: 100,
+				destinationType: navigator.camera.DestinationType.FILE_URI,
+				sourceType: navigator.camera.PictureSourceType.CAMERA,
+				encodingType: navigator.camera.EncodingType.JPEG,
+				correctOrientation: true
+			});
 	}
 
 	var simplify = function (object) {
@@ -831,4 +881,4 @@ var app = (function (win) {
 			}
 		}
 	};
-}(window));
+} (window));

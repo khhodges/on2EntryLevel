@@ -61,6 +61,7 @@ app.Activities = (function () {
 	}
 	var show = function (e) {
 		app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
+		$("#scroller").data("kendoMobileScroller").reset();
 		if (e.view.params.ActivityText) {
 			/*			app.Activities.activities._filter = filterOne;
 				3 cases: 
@@ -236,6 +237,7 @@ app.Activities = (function () {
 			change: function (e) {
 				if (e.items && e.items.length > 0) {
 					$('#no-activities-span').hide();
+					$("#scroller").data("kendoMobileScroller").reset();
 				} else {
 					$('#no-activities-span').show();
 				}
@@ -334,7 +336,8 @@ app.Activities = (function () {
 			canvasWidth = canvas.width;
 			canvasHeight = canvas.height;
 			var ctx = canvas.getContext("2d");
-			ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+			app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);	
+			//ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
 			$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
 		}
 		var saveActivity = function () {
@@ -378,7 +381,7 @@ app.Activities = (function () {
 						activity.Picture = selected;
 						app.Places.locationViewModel.lastPicture = selected;
 						activity.Title = "My Private Feed"; //app.Users.currentUser.get('data').DisplayName;
-						if (app.Places.visiting.details().name)
+						if (typeof app.Places.visiting.details === "function")
 							activity.Title = app.Places.visiting.details().name;
 						navigator.geolocation.getCurrentPosition(
 							function (position) {
@@ -424,6 +427,7 @@ app.Activities = (function () {
 			selected = imageURI;
 			var picture = document.getElementById("picture");
 			picture.src = selected;
+			$enterEvent.style.display = 'block';
 		}
 		var error = function () {
 			app.notify.showShortTop("No selection was detected.");
