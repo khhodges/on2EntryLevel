@@ -165,19 +165,24 @@ app.Update = (function () {
 			canvasWidth = canvas.width;
 			canvasHeight = canvas.height;
 			var ctx = canvas.getContext("2d");
+			var textMessage;
 			if (!navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
-				app.showShortTop("Crop action");
+				textMessage ="Crop action";
 				ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
 			} else {
-				app.showShortTop("iOS 7 crop");
+				textMessage = "iOS 7 crop";
 				drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
 			}
 			$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
 			if($baseImafe.indexOf(appSettings.empty1x1png >0)){
-				app.showShortTop("Special Crop action");
+				textMessage = "Special Crop action";
 				drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
 				$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
 			}
+			var sb = document.getElementById("saveButton");
+			if(sb.style.display === "none"){ textMessage = "You can update any items including or excluding the Avatar";
+			sb.style.display = ""}
+			app.notify.show(textMessage);
 		}
 		var pickImage = function () {
 			function success(imageURI) {

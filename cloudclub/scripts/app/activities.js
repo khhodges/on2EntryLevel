@@ -71,7 +71,7 @@ app.Activities = (function () {
 			try {
 				var theName = app.Places.visiting.details().name
 			}catch (ex) {
-				app.notify.showShortTop("Using Public Feeds");
+				app.notify.showShortTop("Using the Public Feeds");
 				app.Activities.activities._filter={field: "Title", operator: "doesnotcontain",value: "My Private Feed"}
 			}
 			if (e.view.params.ActivityText) {
@@ -99,7 +99,9 @@ app.Activities = (function () {
 		if (e.view.params.camera === 'ON') {
 			//app.showAlert("camera is ON!")
 			e.view.params.camera = 'OFF';
-			document.getElementById('activityTitle').innerText = app.Users.currentUser.data.DisplayName + ' concerning ' + theName;
+			if(theName === undefined) theName = "My Full Feed";
+			app.notify.showShortTop(JSON.stringify(app.Activities.activities._filter))
+			document.getElementById('activityTitle').innerText = "Author: "+app.Users.currentUser.data.DisplayName + ', Subject: ' + theName;
 			app.Activities.addActivity();
 		}
 	};
