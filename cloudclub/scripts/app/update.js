@@ -165,24 +165,27 @@ app.Update = (function () {
 			canvasWidth = canvas.width;
 			canvasHeight = canvas.height;
 			var ctx = canvas.getContext("2d");
-			var textMessage;
-			if (!navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
+			//var textMessage;
+			app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+			$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+
+/*			if (!navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
 				textMessage ="Crop action";
 				ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
 			} else {
 				textMessage = "iOS 7 crop";
-				drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+				app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
 			}
 			$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
 			if($baseImafe.indexOf(appSettings.empty1x1png >0)){
 				textMessage = "Special Crop action";
-				drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+				app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
 				$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
 			}
 			var sb = document.getElementById("saveButton");
 			if(sb.style.display === "none"){ textMessage = "You can update any items including or excluding the Avatar";
 			sb.style.display = ""}
-			app.notify.show(textMessage);
+			app.notify.show(textMessage);*/
 		}
 		var pickImage = function () {
 			function success(imageURI) {
