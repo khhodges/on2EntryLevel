@@ -1,8 +1,8 @@
 'use strict';
 
 (function() {
-	var scheme = 'http';
-		if(window.navigator.simulator) scheme = 'http';
+	var scheme = 'https';
+		if(window.navigator.simulator) scheme = 'https';
 		var provider = app.data.defender = //app.everlive
         new Everlive({
             offlineStorage: true,

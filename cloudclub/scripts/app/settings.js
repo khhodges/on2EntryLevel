@@ -617,7 +617,7 @@ var appSettings = {
     },
 	everlive: {
 		appId: '3t5oa8il0d0y02eq', // Put your Backend Services API key here
-		scheme: 'http'
+		scheme: 'https'
 	},
 	views: {
 		init: 'index.html',

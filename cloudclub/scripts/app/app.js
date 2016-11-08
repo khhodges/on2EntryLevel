@@ -718,9 +718,20 @@ var app = (function (win) {
 		dy = 0;
 		canvasWidth = canvas.width;
 		canvasHeight = canvas.height;
-		var ctx = canvas.getContext("2d");
-		ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-		$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+		var ctx = canvas.getContext("2d");			
+		if (!navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
+				app.showShortTop("Crop action");
+				ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+			} else {
+				app.showShortTop("iOS 7 crop");
+				drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+			}
+			$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+			if($baseImafe.indexOf(appSettings.empty1x1png >0)){
+				app.showShortTop("Special Crop action");
+				drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+				$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+			}
 	}
 
 	var createImage = function (baseImage) {

@@ -995,12 +995,14 @@ app.Places = (function () {
 
 			},
 			visitingShow: function(e){
+				app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
 				var myId = e.view.params.uid;
 				var me = app.Places.visiting;
 				//var myDetails = me.datails();
 				//app.notify.showShortTop("Visiting show " + app.Places.visiting.details().name)
 			},
 			listShow: function (e) {
+				app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
 				try {
 					//var e = myEvent;
 					var ds2 = new app.Places.List;
@@ -1679,6 +1681,10 @@ app.Places = (function () {
 					}
 					return partnerRow.Address;
 				};
+				this.likeClick = function () {
+					app.notify.memorize(myId);
+					app.notify.showShortTop("You are now added to this partners Loyalty Club");
+		    	};
 				this.rating = function () {
 					return htmlIw.rating;
 				};

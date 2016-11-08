@@ -30,54 +30,54 @@ app.Update = (function () {
 			//Update Avatar Image??
 			updateAvatar();
 			Everlive.$.Users.update(dataSource)
-				.then(function () {				
+				.then(function () {
 					analytics.TrackFeature('Update.User');
 					app.notify.showShortTop("Update successful");
 				},
-					  function (err) {
-						  app.showError(err.message);
-					  });
+				function (err) {
+					app.showError(err.message);
+				});
 		};
-		
+
 		var updateAvatar = function () {
 			var everlive = new Everlive(appSettings.everlive.appId);
-			
+
 			everlive.Files.updateContent(app.Users.currentUser.data.Picture, {
-											 Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
-											 ContentType: "image/jpeg",
-											 base64: $baseImage
-										 },
-			
-										 function(data) {
-											var sb = document.getElementById("saveButton");
-											sb.style.display = "none";
-											app.notify.showShortTop("Update saved, it can take several hours to cache the new image across the Internet!");
-										 },
-			
-										 function(error) {
-											 app.showAlert("No Image changes were needed!");
-										 }
-				)
-			
+				Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+				ContentType: "image/jpeg",
+				base64: $baseImage
+			},
+
+				function (data) {
+					var sb = document.getElementById("saveButton");
+					sb.style.display = "none";
+					app.notify.showShortTop("Update saved, it can take several hours to cache the new image across the Internet!");
+				},
+
+				function (error) {
+					app.showAlert("No Image changes were needed!");
+				}
+			)
+
 		}
 
 		// Executed after update view initialization
 		// init form validator
 		var init = function () {
 			var sb = document.getElementById("saveButton");
-				sb.style.display = "none";
-		    // Get a reference to our sensitive element
-		    try {
-		        if (!app.Users.isOnline()) {
-		            app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
-		            app.mobileApp.navigate('#welcome');
-		            return;
-		        }
-		    } catch (e) {
-		        app.notify.showShortTop('User.Direction. Please login to access these features.' + e.message);
-		        app.mobileApp.navigate('#welcome');
-		        return;
-		    }
+			sb.style.display = "none";
+			// Get a reference to our sensitive element
+			try {
+				if (!app.Users.isOnline()) {
+					app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
+					app.mobileApp.navigate('#welcome');
+					return;
+				}
+			} catch (e) {
+				app.notify.showShortTop('User.Direction. Please login to access these features.' + e.message);
+				app.mobileApp.navigate('#welcome');
+				return;
+			}
 
 			updateImage = document.getElementById("updateImage");
 			picture = document.getElementById("updateImage");
@@ -101,34 +101,34 @@ app.Update = (function () {
 
 		// Executed after show of the update view
 		var show = function () {
-			
+
 			var sb = document.getElementById("saveButton");
-				sb.style.display = "none";
-		    try {
-		        if (!app.Users.isOnline()) {
-		            app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
-		            app.mobileApp.navigate('#welcome');
-		            return;
-		        }
-		    } catch (e) {
-		        app.notify.showShortTop('User.Direction. Please login to access these features.' + e.message);
-		        app.mobileApp.navigate('#welcome');
-		        return;
-		    }
-		    analytics.TrackFeature('Update.Show');
+			sb.style.display = "none";
+			try {
+				if (!app.Users.isOnline()) {
+					app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
+					app.mobileApp.navigate('#welcome');
+					return;
+				}
+			} catch (e) {
+				app.notify.showShortTop('User.Direction. Please login to access these features.' + e.message);
+				app.mobileApp.navigate('#welcome');
+				return;
+			}
+			analytics.TrackFeature('Update.Show');
 			//$updateInfo.prop('rows', 1);
 
 			dataSource = kendo.observable({
-											  Username: app.Users.currentUser.data.Username,
-											  Password: '',
-											  DisplayName: app.Users.currentUser.data.DisplayName,
-											  Email: app.Users.currentUser.data.Email,
-											  Gender: app.Users.currentUser.data.Gender,
-											  Level: app.Users.currentUser.data.Level, 
-											  Friends: app.Users.currentUser.data.Friends,
-											  BirthDate: app.Users.currentUser.data.BirthDate,
-											  PictureUrl: 'url("' + app.Users.currentUser.data.PictureUrl + '");',
-											  aPictureUrl: app.Users.currentUser.data.PictureUrl
+				Username: app.Users.currentUser.data.Username,
+				Password: '',
+				DisplayName: app.Users.currentUser.data.DisplayName,
+				Email: app.Users.currentUser.data.Email,
+				Gender: app.Users.currentUser.data.Gender,
+				Level: app.Users.currentUser.data.Level,
+				Friends: app.Users.currentUser.data.Friends,
+				BirthDate: app.Users.currentUser.data.BirthDate,
+				PictureUrl: 'url("' + app.Users.currentUser.data.PictureUrl + '");',
+				aPictureUrl: app.Users.currentUser.data.PictureUrl
 										  });
 			kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);
 		};
@@ -144,7 +144,7 @@ app.Update = (function () {
 			var selected = sel.options[sel.selectedIndex].value;
 			sel.style.color = (selected === 0) ? '#b6c5c6' : '#34495e';
 		}
-		
+
 		var crop = function () {
 			var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
 			var starter = document.getElementById("updateImage");
@@ -165,26 +165,37 @@ app.Update = (function () {
 			canvasWidth = canvas.width;
 			canvasHeight = canvas.height;
 			var ctx = canvas.getContext("2d");
-			ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+			if (!navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
+				app.showShortTop("Crop action");
+				ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+			} else {
+				app.showShortTop("iOS 7 crop");
+				drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+			}
 			$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+			if($baseImafe.indexOf(appSettings.empty1x1png >0)){
+				app.showShortTop("Special Crop action");
+				drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+				$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+			}
 		}
 		var pickImage = function () {
-			function success(imageURI) {				
+			function success(imageURI) {
 				analytics.TrackFeature('Avatar.Success');
 				//TO DO: crop Image to a Square
 				var selected = imageURI;
 				updateImage.src = selected;
-				picture.src = selected;				
+				picture.src = selected;
 				var sb = document.getElementById("saveButton");
 				sb.style.display = "";
 			}
-			var error = function () {								
+			var error = function () {
 				analytics.TrackFeature('Avatar.Error');
 				app.showError("No selection was detected.");
 			}
 			var config = {
 				//kjhh best result including iphone rotation
-				quality: 100, 
+				quality: 100,
 				destinationType: navigator.camera.DestinationType.FILE_URI,
 				sourceType: navigator.camera.PictureSourceType.CAMERA,
 				encodingType: navigator.camera.EncodingType.JPEG,
@@ -202,8 +213,8 @@ app.Update = (function () {
 			crop: crop,
             userData: dataSource
 		};
-	}()
+	} ()
 	);
 
 	return updateViewModel;
-}());
+} ());
