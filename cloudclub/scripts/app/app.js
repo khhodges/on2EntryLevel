@@ -176,6 +176,16 @@ var app = (function (win) {
 	var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
 	var AppHelper = {
+	    english: function () {
+	        app.notify.showShortTop("English selected");
+	        appSettings.messages = appSettings.english;
+	        document.getElementById("introduction").innerText = "Hello " +  appSettings.messages.welcome;
+	    },
+	    spanish: function () {
+	        app.notify.showShortTop("Spanish selected ");
+	        appSettings.messages = appSettings.spanish;
+	        document.getElementById("introduction").innerText = "Hello " +  appSettings.messages.welcome;
+	},
 		/**
  * Detecting vertical squash in loaded image.
  * Fixes a bug which squash image vertically while drawing into canvas for some images.
@@ -534,8 +544,9 @@ var app = (function (win) {
 							"latitude": 26.3
 						};
 						var data = el.data('Notifications');
+						var place = "Sent from "+ activity.Title;
 						data.create({
-							'Place': app.Places.visiting.details().name,
+							'Place': place,
 							'Reference': activity.Id,
 							'Status': true,
 							'Location': thisPlace
@@ -857,7 +868,7 @@ var app = (function (win) {
 		welcome: function () {
 			var action = document.getElementById("setupBtn");
 			if (app.isOnline()) {
-				document.getElementById("introduction").innerText = "Hello " + app.Users.currentUser.data.displayName;
+			    document.getElementById("introduction").innerText = "Hello " + app.Users.currentUser.data.displayName + appSettings.messages.welcome;
 				action.addEventListener("click", function () {
 					app.mobileApp.navigate("views/updateView.html")
 				});
@@ -865,12 +876,12 @@ var app = (function (win) {
 				action.innerText = "Settings";
 			}
 			if (localStorage.getItem("access_token")) {
-				document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username");
+				document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + appSettings.messages.welcome;
 				action.addEventListener("click", function () {
 					app.mobileApp.navigate("#welcome")
 				});
 				//button text Logon
-				document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username");
+				document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + appSettings.messages.welcome;
 				action.innerText = "Logon";
 			} else {
 				action.addEventListener("click", function () {

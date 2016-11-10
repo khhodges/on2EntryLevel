@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 	<head>
@@ -53,35 +53,33 @@
 			<!--View content will render here-->
 		</div>
 		<!--WELCOME VIEW -->
-		<div data-role="view" id="blank" data-show="app.welcome()">
-			<header data-role="header">
-				<div data-role="navbar">
-					<span data-role="view-title">Cloud Club</span>
-					<a id="setupBtn" style="display:none" data-role="button" data-align="left">Set Up</a>
-					<a id="continueButton" style="display:none" data-role="button" href="#views/mapView.html" data-align="right">Hot Spots</a>
-				</div>
-			</header>
-			<h2 class="app-name">
-				Cloud Club Application>
-			</h2>
-			<p data-role="listview" data-style="inset">
-				<span id=introduction>Welcome:</span><br/> Please enjoy this advanced mobile community application with integrated access to all social media.
-			</p>
-			<p>No login required for visitors searching for social media on local Hot Spots and community activity.</p>
-			<p>
-				For advanced search, loyalty clubs points and instant notifications on local activities and offers you need to
-				<a href="#welcome">
-					<b>Join Us</b>
-				</a> and stay
-				<a href="#welcome">
-					<b>logged on.</b>
-				</a> Help is found
-				<a href="http://www.on2see.com">
-					<b>here</b>
-				</a>
-			</p>
-			<p>The On2See team.</p>
-		</div>
+        <div data-role="view" id="hello" data-show="app.welcome()">
+            <header data-role="header">
+                <div data-role="navbar">
+                    <span data-role="view-title">Cloud Club</span>
+                    <a id="setupBtn" style="display:none" data-role="button" data-align="left">Set Up</a>
+                    <a id="continueButton" style="display:none" data-role="button" href="#views/mapView.html" data-align="right">Hot Spots</a>
+                </div>
+            </header>
+            <h2 class="app-name">
+                Cloud Club Application>
+            </h2>
+            <div data-role="listview" data-style="inset">
+                				<table style="width:100%; margin-top:15px">
+					<tr style="width:100%">
+						<td style="width:50%">
+							<a data-role="button" data-click="app.helper.english" class="btn-register">&nbsp; English &nbsp; </a>
+						</td>
+						<td style="width:50%">
+							<a data-role="button" data-click="app.helper.spanish" class="btn-continue km-widget km-button">Spanish</a>
+						</td>
+					</tr>
+				</table><br />
+
+                <div id="introduction">
+                </div>
+            </div>
+        </div>
 		<div data-role="view" id="welcome" data-layout="default" class="welcome-scrn form-view" data-model="app.Login" data-init="app.Login.init" data-show="app.Login.show">
 			<div data-role="header"></div>
 			<h2 class="app-name">
