@@ -661,6 +661,27 @@ var appSettings = {
 
 	messages: {
 		mistSimulatorAlert: 'The social login doesn\'t work in the In-Browser Client, you need to deploy the app to a device, or run it in the simulator of the Windows Client or Visual Studio.',
-		removeActivityConfirm: 'This activity will be deleted. This action can not be undone.'
+		removeActivityConfirm: 'This activity will be deleted. This action can not be undone.',
+		removeActivityTitle: 'Delete POST Activity',
+		register: "If you register and login all the comunity POST features are available...",
+		notificationLoad: "Please wait for the latest Notification data to load...",
+		signIn:"Please sign in...",
+		addedToFavorites: "You have sucesfully remembered this place in your favorites list...",
+		continueError: "Network error, please continue...",
+		activityFilter: "Please wait for the selected data to load...",
+		joinMessage:"You have joined this Loyalty Club!",
+		newFavourite: "The location was saved as a new Favourite!",
+		loadComments: "Checking for Comments ...",
+		removeMessage: "Removal undeway, please wait to return to the updated list...",
+		updateComments:"Updating Comments ...",
+		sent: "Message sent ... ",
+		update:"Update successful",
+		savedAvatar: "Update saved, it takes time to cache the new image across the Internet!",
+		tryAgain:"Please try again...",
+		logoff:"You are now logged out.",
+		url:"Opening url, click 'Done' or 'X' to return...",
+		continueAnonomously:"You will continue without the camera community POST features...",
+		register:"Registration enables access to camera Posting and other community and notification features.",
+		registeredOK:"You have sucesfully registered for local notifications.",
 	}
 };

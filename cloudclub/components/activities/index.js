@@ -162,10 +162,10 @@ app.activities = kendo.observable({
 					return;
                 }
 				if (results === 2) {
-					app.notify.showShortTop("If you register and login all many extended community features are available.");
+					app.notify.showShortTop(appSettings.messages.register);
 					app.mobileApp.navigate('views/signupView.html');
 				} else {
-					app.notify.showShortTop("Please sign in.");
+					app.notify.showShortTop(appSettings.messages.signIn);
 					app.mobileApp.navigate('#welcome');
 				}
 			},
@@ -181,9 +181,9 @@ app.activities = kendo.observable({
 						'Id': activitiesModel.get('currentItem').Id
 					};
 					data.rawUpdate(attributes, filter, function (data) {
-						app.notify.showShortTop("You have sucesfully remembered this place in your favorites list.");
+						app.notify.showShortTop(appSettings.messages.addedToFavorites);
 					}, function (err) {
-						app.notify.showShortTop("You have already endorced this place. Visit your favourites to see the full list.");
+						app.notify.showShortTop(appSettings.messages.continueError);
 					});
 				} else {
 					navigator.notification.confirm(
@@ -295,6 +295,7 @@ app.activities = kendo.observable({
 	}
 
 	parent.set('onShow', function (e) {
+		app.notify.showShortTop(appSettings.messages.activityFilter);
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : {
 			logic: 'and', filters: [{
 				"field": "UserId",

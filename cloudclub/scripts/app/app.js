@@ -79,7 +79,7 @@ var app = (function (win) {
 			//localStorage.setItem("cdr", cdr.latitude + ":" + cdr.longitude);
 		},
 			function (error) {
-				app.notify.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
+				//app.notify.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
 				//default map coordinates
 				//app.notify.showShortTop("Map.Unable to determine current location. Cannot connect to GPS satellite.");
 				if (localStorage.getItem("cdr")) {
@@ -225,7 +225,7 @@ var app = (function (win) {
 		logout: function () {
 			app.helper.doLogout()
 				.then(function (lo) {
-					app.notify.showShortTop("You are now logged out.");
+					app.notify.showShortTop(appSettings.messages.logoff);
 					app.Users.currentUser.data = null;
 					app.helper.navigateHome();
 					var logonB = document.getElementById("logonButton");
@@ -234,7 +234,7 @@ var app = (function (win) {
 					logonB.style.display = "";
 				},
 				function (err) {
-					app.notify.showShortTop("Please Register first then try again: " + err.message);
+					//app.notify.showShortTop(appSettings.messages.signin);
 					app.Users.currentUser.data = null;
 					app.helper.navigateHome();
 					var logonB = document.getElementById("logonButton");
@@ -256,7 +256,7 @@ var app = (function (win) {
 		},
 		cameraRoute: function (e) {
 			if (app.isNullOrEmpty(app.Places.visiting)) {
-				app.notify.showShortTop("Please login to use the camera functions.")
+				app.notify.showShortTop(appSettings.messages.signIn)
 				app.mobileApp.navigate("#welcome");
 			} else {
 				if (app.Places.visiting.name === undefined)
@@ -283,7 +283,7 @@ var app = (function (win) {
 
 		openExternalInAppBrowser: function (url) {
 			var winB = window.open(url, "_blank");
-			app.notify.showShortTop("Openingg url.on2t Click 'Done' or 'X' to return to the App");
+			app.notify.showShortTop(appSettings.messages.url);
 		},
 
 		isAnalytics: function () {
@@ -431,14 +431,14 @@ var app = (function (win) {
 		onPrompt: function (results) {
 			//alert("You selected button number " + results + " and entered " + results);
 			if (results === 3) {
-				app.notify.showShortTop("You and continue on a Read-Only basis, without the camera community POST features...");
+				app.notify.showShortTop(appSettings.messages.continueAnonomously);
 			}
 			if (results === 2) {
-				app.notify.showShortTop("Registration authorizes access to camera Posting and other private, personal, community and local notification features features.");
+				app.notify.showShortTop(appSettings.messages.register);
 				app.mobileApp.navigate('views/signupView.html');
 			}
 			if (results === 1) {
-				app.notify.showShortTop("Please sign in.");
+				app.notify.showShortTop(appSettings.messages.signIn);
 				app.mobileApp.navigate('#welcome');
 			}
 		},
@@ -461,12 +461,12 @@ var app = (function (win) {
 				};
 
 				data.rawUpdate(attributes, filter, function (data) {
-					app.notify.showShortTop("You have sucesfully registered a local notifications.");
+					app.notify.showShortTop(appSettings.messages.registeredOK);
 				}, function (err) {
-					app.notify.showShortTop("Notification failed, please try again.");
+					app.notify.showShortTop(appSettings.messages.tryAgain);
 				});
 			} else {
-				app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
+				app.notify.showShortTop(appSettings.messages.tryAgain);
 				app.mobileApp.navigate('#welcome');
 			}
 		},
@@ -491,12 +491,12 @@ var app = (function (win) {
 				};
 
 				data.rawUpdate(attributes, filter, function (data) {
-					app.notify.showShortTop("You have sucesfully added this place to your favorites list.");
+					app.notify.showShortTop(appSettings.messages.joinMeaage);
 				}, function (err) {
-					app.notify.showShortTop("You have already endorced this place. Visit your favourites to see the full list.");
+					app.notify.showShortTop(appSettings.messages.tryAgain);
 				});
 			} else {
-				app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
+				app.notify.showShortTop(appSettings.messages.signIn);
 				app.mobileApp.navigate('#welcome');
 			}
 		},

@@ -54,7 +54,7 @@ app.Activity = (function () {
 
 			$activityPicture[0].style.display = activity.Picture ? 'block' : 'none';
 
-			app.notify.showShortTop("Activity.Checking for Comments ...")
+			app.notify.showShortTop(appSettings.messages.loadComments)
 
 			//app.mobileApp.showLoading();
 			app.Comments.comments.filter({
@@ -72,10 +72,10 @@ app.Activity = (function () {
 			var activity = activities.getByUid(activityUid);
 			app.showConfirm(
 				appSettings.messages.removeActivityConfirm,
-				'Delete POST Activity',
+				appSettings.messages.removeActivityTitle,
 				function (confirmed) {
 					if (confirmed === true || confirmed === 1) {
-						app.notify.showLongBottom("Activity.removal undeway, please wait until returned to the updated posting list on the previous page...");						
+						app.notify.showLongBottom(appSettings.messages.removeMessage);						
 						app.mobileApp.showLoading();
 						activities.remove(activity);
 						activities.one('sync', function () {
@@ -102,7 +102,7 @@ app.Activity = (function () {
 				comment.UserId = app.Users.currentUser.get('data').Id;
 				comment.ActivityId = app.Activity.activity().Id;
 
-				app.notify.showShortTop("Updating Comments ...")
+				app.notify.showShortTop(appSettings.messages.updateComments)
 
 				comments.sync();
 				$newComment.Val = "";

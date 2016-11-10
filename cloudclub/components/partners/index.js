@@ -154,7 +154,7 @@ app.home = kendo.observable({
 		    },
 		    //kjhh
 		    likeClick: function () {
-				app.notify.showShortTop("You are now added to this partners Loyalty Club");
+				app.notify.showShortTop(appSettings.messages.joinMessage);
 		        app.notify.memorize(dataSource.Id);
 		    },
 		    detailsShow: function (e) {
@@ -201,7 +201,7 @@ app.home = kendo.observable({
         },
         onSaveClick: function (e) {
             if (!app.isOnline()) {
-                app.notify.showShortTop("Please register and login");
+                app.notify.showShortTop(appSettings.messages.login);
                 app.mobileApp.navigate('#welcome');
             } else {
                 var addFormData = this.get('addFormData'),
@@ -244,10 +244,10 @@ app.home = kendo.observable({
 
 					        dataSource.sync();
 					        app.notify.memorize(dataSource.Id);
-					        app.notify.showShortTop("A new location has been added to your Favourites!");
+					        app.notify.showShortTop(appSettings.messages.newFavourite);
 					    } else {
 					        app.notify.memorize(data.result.Id);
-					        app.notify.showShortTop("This location has been added to your Favourites!");
+					        app.notify.showShortTop(appSettings.messages.newFavourite);
 					    }
 					},
 						function (error) {

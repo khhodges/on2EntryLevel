@@ -99,7 +99,7 @@ if (/(android)/i.test(navigator.userAgent)) { // for android & amazon-fireos
                 //app.notify.showShortTop('Advertisments are not used if you upgrade your subscription for a small one-time charge. Visit your \'Account page\' to find out more.');
                 return true;
             } else if (window.AdMob === undefined) {
-                app.notify.showShortTop('When you are not logged in some features are not available.');
+                //app.notify.showShortTop(appSettings.messages....);
                 return true;
             } else {
                 return false;

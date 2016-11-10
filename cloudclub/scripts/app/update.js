@@ -19,6 +19,7 @@ app.Update = (function () {
 
 		// Update user after required fields (NOT username, email and password) in Backend Services
 		var update = function () {
+			
 			dataSource.Gender = parseInt(dataSource.Gender);
 			var birthDate = new Date(dataSource.BirthDate);
 
@@ -32,7 +33,7 @@ app.Update = (function () {
 			Everlive.$.Users.update(dataSource)
 				.then(function () {
 					analytics.TrackFeature('Update.User');
-					app.notify.showShortTop("Update successful");
+					app.notify.showShortTop(appSettings.messages.update);
 				},
 				function (err) {
 					app.showError(err.message);
@@ -51,11 +52,11 @@ app.Update = (function () {
 				function (data) {
 					var sb = document.getElementById("saveButton");
 					sb.style.display = "none";
-					app.notify.showShortTop("Update saved, it can take several hours to cache the new image across the Internet!");
+					app.notify.showShortTop(appSettings.messages.savedAvatar);
 				},
 
 				function (error) {
-					app.showAlert("No Image changes were needed!");
+					app.showAlert(appSettings.messages.tryAgain);
 				}
 			)
 
@@ -69,12 +70,12 @@ app.Update = (function () {
 			// Get a reference to our sensitive element
 			try {
 				if (!app.Users.isOnline()) {
-					app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
+					app.notify.showShortTop(appSettings.messages.signIn);
 					app.mobileApp.navigate('#welcome');
 					return;
 				}
 			} catch (e) {
-				app.notify.showShortTop('User.Direction. Please login to access these features.' + e.message);
+				app.notify.showShortTop(appSettings.messages.signIn);
 				app.mobileApp.navigate('#welcome');
 				return;
 			}
