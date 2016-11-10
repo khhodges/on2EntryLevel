@@ -107,12 +107,12 @@ app.Update = (function () {
 			sb.style.display = "none";
 			try {
 				if (!app.Users.isOnline()) {
-					app.notify.showShortTop('User.Redirection. You must register and login to access these features.');
+				    app.notify.showShortTop(appSettings.messages.signIn);
 					app.mobileApp.navigate('#welcome');
 					return;
 				}
 			} catch (e) {
-				app.notify.showShortTop('User.Direction. Please login to access these features.' + e.message);
+				app.notify.showShortTop(appSettings.messages.signIn);
 				app.mobileApp.navigate('#welcome');
 				return;
 			}

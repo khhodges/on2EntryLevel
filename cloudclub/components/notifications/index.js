@@ -167,7 +167,7 @@ app.notifications = kendo.observable({
 	}
 
 	parent.set('onShow', function (e) {
-		app.notify.showShortTop(appSettings.messages.notificationLoad)
+		app.notify.showShortTop(appSettings.messages.dataLoad)
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
 /*		var d = new Date();
 		d.setDate(d.getDate() - 60);

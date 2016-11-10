@@ -72,7 +72,7 @@ app.Activities = (function () {
 			try {
 				var theName = app.Places.visiting.details().name
 			}catch (ex) {
-				app.notify.showShortTop("Using the Public Feeds");
+				app.notify.showShortTop(appSettings.messages.dataLoad);
 				app.Activities.activities._filter={field: "Title", operator: "doesnotcontain",value: "My Private Feed"}
 			}
 			if (e.view.params.ActivityText) {
@@ -196,7 +196,7 @@ app.Activities = (function () {
 			User: function () {
 				var userId = this.get('UserId');
 				if (userId === undefined) {
-					app.notify.showShortTop("userID is null");
+					app.notify.showShortTop(appSettings.messages.tryAgain);
 					userId = app.Users.currentUser.data.Id;
 				}
 
@@ -288,7 +288,7 @@ app.Activities = (function () {
 		};
 	} ());
 	var afterShow = function () {
-		app.showAlert("After Show starting")
+		//app.showAlert("After Show starting")
 		var myDataSource = app.Activities.activities;
 		myDataSource.fetch(function () {
 			app.Activities.activities = this.data();
@@ -361,7 +361,7 @@ app.Activities = (function () {
 				app.showAlert("First take a photo with your camera and then add a message to match!", "Informational");
 			}
 			if (validator.validate() && (selected !== undefined)) {
-				app.notify.showShortTop("Activities.Uploading image... please wait");
+				app.notify.showShortTop(appSettings.messages.updating);
 				app.mobileApp.showLoading();
 				// Save image as base64 to everlive
 				app.everlive.Files.create({
@@ -400,7 +400,7 @@ app.Activities = (function () {
 							},
 							function (error) {
 								position = new google.maps.LatLng(0, -20);
-								app.notify.showShortTop("Map.Unable to determine current location. Cannot connect to GPS satellite.");
+								app.notify.showShortTop(appSettings.messages.mapError);
 								return position;
 							}, {
 								timeout: 30000,
@@ -430,7 +430,7 @@ app.Activities = (function () {
 			$enterEvent.style.display = 'block';
 		}
 		var error = function () {
-			app.notify.showShortTop("No selection was detected.");
+			app.notify.showShortTop(appSettings.messages.tryAgain);
 			$enterEvent.style.display = 'none';
 			validator.hideMessages();
 			document.getElementById('addButton').innerText = "Post";

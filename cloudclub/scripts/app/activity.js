@@ -102,7 +102,7 @@ app.Activity = (function () {
 				comment.UserId = app.Users.currentUser.get('data').Id;
 				comment.ActivityId = app.Activity.activity().Id;
 
-				app.notify.showShortTop(appSettings.messages.updateComments)
+				app.notify.showShortTop(appSettings.messages.updating)
 
 				comments.sync();
 				$newComment.Val = "";

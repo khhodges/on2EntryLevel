@@ -162,7 +162,7 @@ app.activities = kendo.observable({
 					return;
                 }
 				if (results === 2) {
-					app.notify.showShortTop(appSettings.messages.register);
+					app.notify.showShortTop(appSettings.messages.registerOption);
 					app.mobileApp.navigate('views/signupView.html');
 				} else {
 					app.notify.showShortTop(appSettings.messages.signIn);

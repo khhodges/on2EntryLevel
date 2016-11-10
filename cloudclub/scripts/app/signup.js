@@ -57,26 +57,26 @@ app.Signup = (function () {
                         dataSource)
                         .then(function () {
                             //console.log("Congratulations! You are now registered!", "The Loyalty Club");
-                            app.notify.showShortTop("Congratulations! You are now registered!", "The Loyalty Club");
+                            app.notify.showShortTop(appSettings.messages.registration);
                             app.mobileApp.navigate('#welcome');
                             registerDevice();
                         },
                             function (err) {
-                                app.showError("Please try again: "+err.message);
+                                app.showError(appSettings.messages.tryAgain + err.message);
                             });
                 })
             }, "image/jpeg");
         }
         var registerDevice = function () {
-            app.notify.showShortTop("Start registration for event notifications.");
+            //app.notify.showShortTop("Start registration for event notifications.");
             if (!registered) {
                 registered = true;
                 console.log("Register for device notifications");
                 app.everlive.push.register(devicePushSettings, function () {
-                    app.notify.showShortTop("Success! You can also receive local event notifications.");
+                    app.notify.showShortTop(appSettings.messages.registerOK);
                     //console.log("Success! You can also receive local event notifications.");
                 }, function (err) {
-                    app.notify.showShortTop("Notification Register Request: " + err.message);
+                    app.notify.showShortTop(appSettings.messages.tryAgain + err.message);
                     //console.log("Notification Register Request: " + err.message);
                 })
             }
@@ -196,7 +196,7 @@ app.Signup = (function () {
         var addImage = function () {
             var success = function (data) {
                 if (!app.helper.checkSimulator()) {
-                    app.notify.showShortTop("Image.Uploading image ...");
+                    app.notify.showShortTop(appSettings.messages.updating);
                     everlive.Files.create({
                         Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
                         ContentType: "image/jpeg",

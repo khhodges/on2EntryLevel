@@ -503,11 +503,11 @@ var app = (function (win) {
 
 		broadcast: function () {
 			var activity = app.Activity.activity();
-			if (activity.Title === "My Private Feed") {
-				app.notify.showShortTop("To protect your privacy you cannot broadcast from your Private Data Feed!");
-				return;
-			}
-			app.notify.showShortTop("Public Broadcast Message sent to local Cloud Club Members.");
+			//if (activity.Title === "My Private Feed") {
+			//	app.notify.showShortTop("To protect your privacy you cannot broadcast from your Private Data Feed!");
+			//	return;
+			//}
+			app.notify.showShortTop(appSettings.messages.broadcast);
 			if (true) { //TO DO: check if notification activity exists to prevent second attempt
 				var notify = {
 					"Message": activity.Text // upgrade required,
@@ -524,7 +524,7 @@ var app = (function (win) {
 					notify,
 					function (data) {
 						var createdAt = app.formatDate(data.result.CreatedAt);
-						app.notify.showShortTop("Notification sent to local users: " + createdAt);
+						app.notify.showShortTop(appSettings.messages.broadcast + createdAt);
 						//update notification assets Activity reference and status
 						//everlive = el
 
@@ -541,17 +541,17 @@ var app = (function (win) {
 							'Location': thisPlace
 						},
 							function (data) {
-								app.notify.showShortTop("Notification log " + data.result.Id + " saved!");
+								app.notify.showShortTop(appSettings.messages.saved + data.result.Id );
 							},
 							function (error) {
-								app.notify.showShortTop("Notification - Not saved due to " + error.message);
+								app.notify.showShortTop(appSettings.messages.tryAgain + error.message);
 							});
 					},
 					function (error) {
-						app.showError(JSON.stringify("Notification not sent due to " + error.message));
+					    app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
 					})
 			} else {
-				app.notify.showShortTop("This alert was already sent out!");
+			    app.notify.showShortTop(appSettings.messages.continueError);
 			}
 		},
 
@@ -740,7 +740,7 @@ var app = (function (win) {
 	});
 
 	var cropImage = function (image) {
-		app.notify.showShortTop("Croping large image ...");
+		app.notify.showShortTop(appSettings.messages.wait);
 
 		var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
 		var starter = document.getElementById(image);
@@ -785,7 +785,7 @@ var app = (function (win) {
 	}
 
 	var createImage = function (baseImage) {
-		app.notify.showShortTop("Please wait...Image is uploading  ...");
+		app.notify.showShortTop(appSettings.messages.updating);
 
 		app.everlive.Files.create({
 			Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
@@ -801,12 +801,12 @@ var app = (function (win) {
 		takePicture2(console.log("Callback"));
 	}
 	var takePicture2 = function (callback) {
-		app.notify.showShortTop("Camera.Using camera ...");
+		//app.notify.showShortTop("Camera.Using camera ...");
 
 		navigator.camera.getPicture(function (imageURI) {
 			callback(imageURI);
 		}, function () {
-			app.notify.showShortTop("Camers.No selection was detected.");
+			app.notify.showShortTop(appSettings.messages.tryAgain);
 		}, {
 				//kjhh best result including iphone rotation
 				quality: 100,

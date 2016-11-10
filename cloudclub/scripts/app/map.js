@@ -621,7 +621,7 @@ app.Places = (function () {
 					function (results, status) {
 						if (status !== google.maps.GeocoderStatus.OK) {
 							console.error(status);
-							app.notify.showShortTop("Please enter another search term.");
+							app.notify.showShortTop(appSettings.messages.tryAgain);
 							return;
 						}
 						map.panTo(results[0].geometry.location);
@@ -740,7 +740,7 @@ app.Places = (function () {
 								var lat = this.attributes.valueOf()["data-lat"].value;
 								var lng = this.attributes.valueOf()["data-lng"].value
 								if (locality.lat - lat < .0001 && locality.lng - lng < .00001) {
-									app.notify.showShortTop("The destination and start are the same. Directions are not required until the inspector location is first dragged to some new location.");
+									app.notify.showShortTop(appSettings.messages.directions);
 									return;
 								}
 								//app.notify.showShortTop(lat+", "+lng);
@@ -930,7 +930,7 @@ app.Places = (function () {
 				if (app.isNullOrEmpty(app.Places.locationViewModel) || !app.Places.locationViewModel.get("isGoogleMapsInitialized")) {
 					app.Places.locationViewModel = new LocationViewModel();
 					//TO DO: Clean up map locations
-					app.notify.showShortTop("Map was refreshed and reloaded!");
+					//app.notify.showShortTop("Map was refreshed and reloaded!");
 				}
 				//resize the map in case the orientation has been changed while showing other tab
 				google.maps.event.trigger(map, "resize");
@@ -1160,7 +1160,7 @@ app.Places = (function () {
 					if (app.isNullOrEmpty(myCity))myCity = "Boca Raton, Florida";//app.Places.visiting.details().city() +", "+app.Places.visiting.details().state() ;
 						url = new URL("wiki/" + myCity, base);
 				}
-				app.notify.showShortTop("Url.Map Searching " + url);
+				app.notify.showShortTop(appSettings.messages.url);
 				bw = window.open(url, "_blank", "location=yes");
 				bw.addEventListener("loaderror", app.Places.iabLoadError);
 				bw.addEventListener("exit", app.Places.iabClose);
@@ -1692,7 +1692,7 @@ app.Places = (function () {
 				};
 				this.likeClick = function () {
 					app.notify.memorize(myId);
-					app.notify.showShortTop("You are now added to this partners Loyalty Club");
+					app.notify.showShortTop(appSettings.messages.membership);
 		    	};
 				this.rating = function () {
 					return htmlIw.rating;
@@ -1728,7 +1728,7 @@ app.Places = (function () {
 					try {
 						initClass();
 					} catch (e) {
-						app.notify.showShortTop("Please try again: " + partnerRow.vicinity + e.message);
+						app.notify.showShortTop(appSettings.messages.tryAgain + partnerRow.vicinity + e.message);
 						return;
 					}
 				};
