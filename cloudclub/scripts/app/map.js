@@ -479,6 +479,7 @@ app.Places = (function () {
 				}
 			},
 			onPlaceSearch: function () {
+			    app.notify.showShortTop(appSettings.messages.searchAgain);
 				app.Places.locationViewModel.clearMap();
 				// Create the PlaceService and send the request.
 				// Handle the callback with an anonymous function.
@@ -645,7 +646,7 @@ app.Places = (function () {
 				var url = "styles/images/avatar.png";
 				if (app.Users.currentUser.data)
 					url = app.Users.currentUser.data.PictureUrl;
-				return '<p>' + '<div class="user-avatar" style="margin-left:5px"> <a id="avatarLink" data-role="button" class="butn" style="padding:5px"> <img id="myAvatar" src=' 
+				return '<h3>Your Own Map Inspector</h3><p>' + '<div class="user-avatar" style="margin-left:5px"> <a id="avatarLink" data-role="button" class="butn" style="padding:5px"> <img id="myAvatar" src=' 
 				+ url + ' alt="On2See" height="auto" width="25%"></a></div>' 
 				+ '<a id="cameraLink" data-role="button" class="butn" style="padding:5px; margin-left:-15px"> <img src="styles/images/camera.png" alt="On2See" height="auto" width="25%"></a>' 
 				+ '<a id="myFeedLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/feed.png" alt="My Private Feed" height="auto" width="25%"/></a>' 
@@ -653,7 +654,7 @@ app.Places = (function () {
 				+ lng + ' class="butn" style="padding:5px"><img src="styles/images/goHome.png" alt="Go Home" height="auto" width="25%"/></a>' 
 				+ '<a id="saveAddressLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/contacts.png" alt="Go Home" height="auto" width="25%"/></a>' 
 				+ '<a id="calendarLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/calendar.png" alt="Go Home" height="auto" width="25%"/></a>' + '</p>' 
-				+ '<h3>Drag to locate the Inspector</h3>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>' 
+				+ '<h4>'+appSettings.messages.inspectorHelp+'</h4>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>' 
 				+ app.helper.formatDate(new Date()) + '</span>' + '<br/><span id="dateTime">' + '</span>' + '</p>'
 			},
 			_putMarker: function (position) {
@@ -857,7 +858,7 @@ app.Places = (function () {
 			},
 			initLocation: function () {
 				//common variables 
-				app.notify.showLongBottom("Please wait while the Community map data is loaded... then click the markers to quickly search social media for the selected location.");
+				app.notify.showLongBottom(appSettings.messages.mapMessage);
 				if (typeof google === "undefined") {
 					return;
 				}
@@ -1011,6 +1012,7 @@ app.Places = (function () {
 				//app.notify.showShortTop("Visiting show " + app.Places.visiting.details().name)
 			},
 			listShow: function (e) {
+                app.notify.showLongBottom(appSettings.messages.listHelp)
 				app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
 				try {
 					//var e = myEvent;
@@ -1451,6 +1453,7 @@ app.Places = (function () {
 					if (partnerRow.City) {
 						myCity = partnerRow.City;
 					}
+                    app.notify.showLongBottom(appSettings.messages.infoWindow)
 					return true;
 				};
 				this.checkInfoWindow = function () {

@@ -153,7 +153,7 @@ app.Signup = (function () {
             });
             kendo.bind($('#signup-form'), dataSource, kendo.mobile.ui);
             if (!app.helper.checkSimulator()) {
-                window.plugins.toast.showLongBottom("Check 'I agree' after reading the Club Notes, the fill all fields to register, later add your own Avatar by updating your settings page and using the camera to take a selfie...");
+                app.notify.showLongBottom(appSettings.messages.registrationHelp);
             }
         };
 
