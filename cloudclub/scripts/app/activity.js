@@ -169,11 +169,11 @@ app.Activity = (function () {
 			var activities = app.Activities.activities;
 			var activity = activities.getByUid(activityUid);
 			var comments;
-			comments = "\n COMMENTS: \n";
 			var message = activity.Text;
-			if (app.Comments.comments !== undefined) {
+			if (app.Comments.comments.data.length >0) {
+			 	comments = "\n COMMENTS: \n";
 				app.Comments.comments.data().forEach(function (entry) {
-					comments = comments + entry.CreatedAt + ": " + entry.Comment + "... " + entry.User.DisplayName + "\n";
+					comments = comments + entry.CreatedAt + ": " + entry.Comment + "... " + entry.UserId.DisplayName + "\n";
 				});
 				message = message + comments;
 			}

@@ -181,8 +181,13 @@ var app = (function (win) {
 	        appSettings.messages = appSettings.english;
 	        document.getElementById("introduction").innerText = "Hello " +  appSettings.messages.welcome;
 	    },
+	    portuguese: function () {
+	        app.notify.showShortTop("Português selecionado - este é um recurso de teste Beta, por favor agitar sobre erros e enviar feedback, graças!");
+	        appSettings.messages = appSettings.portuguese;
+	        document.getElementById("introduction").innerText = "Hello " +  appSettings.messages.welcome;
+	    },
 	    spanish: function () {
-	        app.notify.showShortTop("Spanish selected ");
+	        app.notify.showShortTop("Seleccionado español - esta es una característica de la versión beta de prueba, por favor agitar con errores para proporcionar comentarios, gracias!");
 	        appSettings.messages = appSettings.spanish;
 	        document.getElementById("introduction").innerText = "Hello " +  appSettings.messages.welcome;
 	},
