@@ -176,21 +176,41 @@ var app = (function (win) {
 	var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
 	var AppHelper = {
-	    english: function () {
-	        app.notify.showShortTop("English selected");
-	        appSettings.messages = appSettings.english;
-	        document.getElementById("introduction").innerText = "Hello " +  appSettings.messages.welcome;
-	    },
-	    portuguese: function () {
-	        app.notify.showShortTop("Português selecionado - este é um recurso de teste Beta, por favor agitar sobre erros e enviar feedback, graças!");
-	        appSettings.messages = appSettings.portuguese;
-	        document.getElementById("introduction").innerText = "Hello " +  appSettings.messages.welcome;
-	    },
-	    spanish: function () {
-	        app.notify.showShortTop("Seleccionado español - esta es una característica de la versión beta de prueba, por favor agitar con errores para proporcionar comentarios, gracias!");
-	        appSettings.messages = appSettings.spanish;
-	        document.getElementById("introduction").innerText = "Hello " +  appSettings.messages.welcome;
-	},
+		english: function () {
+			appSettings.messages = appSettings.english;
+			app.notify.showShortTop(appSettings.messages.language);
+			document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + appSettings.messages.welcome;
+		},
+		portuguese: function () {
+			appSettings.messages = appSettings.portuguese;
+			app.notify.showShortTop(appSettings.messages.language);
+			document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + appSettings.messages.welcome;
+		},
+		french: function () {
+			appSettings.messages = appSettings.french;
+			app.notify.showShortTop(appSettings.messages.language);
+			document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + appSettings.messages.welcome;
+		},
+		german: function () {
+			appSettings.messages = appSettings.german;
+			app.notify.showShortTop(appSettings.messages.language);
+			document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + appSettings.messages.welcome;
+		},
+		spanish: function () {
+			appSettings.messages = appSettings.spanish;
+			app.notify.showShortTop(appSettings.messages.language);
+			document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + (appSettings.messages.welcome).replace("http://www.on2see.com","<a href='http://www.on2see.com'>on2see.com</a>");
+		},
+		more: function () {
+			if (document.getElementById("moreLanguages").hidden) {
+				document.getElementById("moreLanguages").hidden = false;
+				document.getElementById("more").innerText = "Less...";
+			}
+			else {
+				document.getElementById("moreLanguages").hidden = true;
+				document.getElementById("more").innerText = "More...";
+			}
+		},
 		/**
  * Detecting vertical squash in loaded image.
  * Fixes a bug which squash image vertically while drawing into canvas for some images.
@@ -549,7 +569,7 @@ var app = (function (win) {
 							"latitude": 26.3
 						};
 						var data = el.data('Notifications');
-						var place = "Sent from "+ activity.Title;
+						var place = "Sent from " + activity.Title;
 						data.create({
 							'Place': place,
 							'Reference': activity.Id,
@@ -557,17 +577,17 @@ var app = (function (win) {
 							'Location': thisPlace
 						},
 							function (data) {
-								app.notify.showShortTop(appSettings.messages.saved + data.result.Id );
+								app.notify.showShortTop(appSettings.messages.saved + data.result.Id);
 							},
 							function (error) {
 								app.notify.showShortTop(appSettings.messages.tryAgain + error.message);
 							});
 					},
 					function (error) {
-					    app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
+						app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
 					})
 			} else {
-			    app.notify.showShortTop(appSettings.messages.continueError);
+				app.notify.showShortTop(appSettings.messages.continueError);
 			}
 		},
 
@@ -873,7 +893,7 @@ var app = (function (win) {
 		welcome: function () {
 			var action = document.getElementById("setupBtn");
 			if (app.isOnline()) {
-			    document.getElementById("introduction").innerText = "Hello " + app.Users.currentUser.data.displayName + appSettings.messages.welcome;
+				document.getElementById("introduction").innerText = "Hello " + app.Users.currentUser.data.displayName + appSettings.messages.welcome;
 				action.addEventListener("click", function () {
 					app.mobileApp.navigate("views/updateView.html")
 				});

@@ -54,6 +54,18 @@
             </li>
             <li class="select-wrp">
                 <label>
+                    Language:
+                    <select id="updateLanguagePicker" data-bind="value: Language" onchange="app.Update.onSelectChange(this)">
+                        <option value="0" selected>Change your language</option>
+                        <option value="1">English</option>
+                        <option value="2">Le Français</option>
+                        <option value="2">Deutsch</option>
+                        <option value="2">Português</option>
+                        <option value="2">Español</option>
+                    </select>
+                </label>
+            <li class="select-wrp">
+                <label>
                     Gender:
                     <select id="updateGenderPicker" data-bind="value: Gender" onchange="app.Update.onSelectChange(this)">
                         <option value="0" selected>Include your gender</option>

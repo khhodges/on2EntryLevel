@@ -38,13 +38,13 @@
   "iOSStatusBarStyle": "Default",
   "AndroidHardwareAcceleration": "true",
   "FrameworkVersion": "4.0.0",
-  "BundleVersion": "1.1.9",
+  "BundleVersion": "1.2.0",
   "iOSDisplayName": "",
   "iOSDeviceFamily": [
     "1"
   ],
   "iOSBackgroundMode": [],
-  "AndroidVersionCode": "29",
+  "AndroidVersionCode": "30",
   "DisplayName": "Cloud Club",
   "Author": "kjhh",
   "Description": "Provide basic services for safe sharing",
