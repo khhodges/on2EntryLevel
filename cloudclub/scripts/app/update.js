@@ -69,7 +69,7 @@ app.Update = (function () {
 			sb.style.display = "none";
 			// Get a reference to our sensitive element
 			try {
-				if (!app.Users.isOnline()) {
+				if (!app.isOnline()) {
 					app.notify.showShortTop(appSettings.messages.signIn);
 					app.mobileApp.navigate('#welcome');
 					return;
@@ -102,11 +102,11 @@ app.Update = (function () {
 
 		// Executed after show of the update view
 		var show = function () {
-
+		    var myJSON = JSON.parse(app.Users.currentUser.data.JSON);
 			var sb = document.getElementById("saveButton");
 			sb.style.display = "none";
 			try {
-				if (!app.Users.isOnline()) {
+				if (!app.isOnline()) {
 				    app.notify.showShortTop(appSettings.messages.signIn);
 					app.mobileApp.navigate('#welcome');
 					return;
@@ -132,6 +132,19 @@ app.Update = (function () {
 				aPictureUrl: app.Users.currentUser.data.PictureUrl
 										  });
 			kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);
+		    try {
+		        var favorites =myJSON.url;
+		        var fui = $("#favorites-listview").kendoMobileListView({
+		            dataSource: favorites,
+		            template: kendo.template($('#favoriteTemplate').html()),
+		            change: function () {
+		                alert("Change event!")
+		            }
+		        })
+                    .data("kendoListView");
+		    } catch (ex) {
+		        app.showAlert(JSON.stringify(ex));
+		    }
 		};
 
 		// Executed after hide of the update view

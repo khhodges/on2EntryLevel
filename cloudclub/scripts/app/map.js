@@ -645,16 +645,21 @@ app.Places = (function () {
 				var lng = marker.position.lng().toString();
 				var url = "styles/images/avatar.png";
 				if (app.Users.currentUser.data)
-					url = app.Users.currentUser.data.PictureUrl;
-				return '<h3>Your Own Map Inspector</h3><p>' + '<div class="user-avatar" style="margin-left:5px"> <a id="avatarLink" data-role="button" class="butn" style="padding:5px"> <img id="myAvatar" src=' 
-				+ url + ' alt="On2See" height="auto" width="25%"></a></div>' 
-				+ '<a id="cameraLink" data-role="button" class="butn" style="padding:5px; margin-left:-15px"> <img src="styles/images/camera.png" alt="On2See" height="auto" width="25%"></a>' 
-				+ '<a id="myFeedLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/feed.png" alt="My Private Feed" height="auto" width="25%"/></a>' 
-				+ '<a id="goHome" data-role="button" data-lat=' + lat + ' data-lng=' 
-				+ lng + ' class="butn" style="padding:5px"><img src="styles/images/goHome.png" alt="Go Home" height="auto" width="25%"/></a>' 
-				+ '<a id="saveAddressLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/contacts.png" alt="Go Home" height="auto" width="25%"/></a>' 
-				+ '<a id="calendarLink" data-role="button" class="butn" style="padding:5px"><img src="styles/images/calendar.png" alt="Go Home" height="auto" width="25%"/></a>' + '</p>' 
-				+ '<h4>'+appSettings.messages.inspectorHelp+'</h4>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>' 
+				    url = app.Users.currentUser.data.PictureUrl;
+				return '<h3>'+appSettings.messages.inspectorTitle+'</h3>'
+                + '<a id="privateFeed" data-role="button" class="butn" style="padding:5px"><img src="styles/images/iconSee.png" alt="privateFeed" height="auto" width="40px"/></a>'
+				+ '<a id="cameraLink" data-role="button" class="butn" style="padding:5px"> <img src="styles/images/camera.png" alt="cameraLink" height="auto" width="40px"></a>'
+				+ '<a id="eventFeed" data-role="button" class="butn" style="padding:5px"><img src="styles/images/feed.png" alt="eventFeed" height="auto" width="40px"/></a>'
+				+ '<a id="goHome" data-role="button" data-lat=' + lat + ' data-lng='+ lng + ' class="butn" style="padding:5px"><img src="styles/images/goHome.png" alt="Go Home" height="auto" width="40px"/></a>'				
+                + '<a id="myFacebook" data-role="button" class="butn" style="padding:5px"><img src="styles/images/facebook.png" alt="myFacebook" height="auto" width="40px"/></a>'
+				+ '<a id="myTwitter" data-role="button" class="butn" style="padding:5px"><img src="styles/images/twitter.png" alt="myTwitter" height="auto" width="40px"/></a>'
+				+ '<a id="myLinkedIn" data-role="button" class="butn" style="padding:5px"><img src="styles/images/linkedIn.png" alt="myGoogle+" height="auto" width="40px"/></a>'
+				+ '<a id="myGoogle+" data-role="button" class="butn" style="padding:5px"><img src="styles/images/google+.png" alt="myGoogle+" height="auto" width="40px"/></a>'
+                + '<br/><div class="user-avatar" style="margin:20px -10px 0px 5px;">'
+                    + '<a id="avatarLink" data-role="button" class="butn"> <img id="myAvatar" src='
+				+ url + ' alt="On2See"></a></div>'
+                    
+				+ '<h4>' + appSettings.messages.inspectorHelp + '</h4>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>'
 				+ app.helper.formatDate(new Date()) + '</span>' + '<br/><span id="dateTime">' + '</span>' + '</p>'
 			},
 			_putMarker: function (position) {
@@ -702,16 +707,9 @@ app.Places = (function () {
 				});
 
 				google.maps.event.addListener(infoWindow, 'closeclick', function () {
-					//app.showAlert("InfoWindo ready 570");
-					//that._lastMarker.setDraggable(false);
-					//if(map.getZoom()===17) map.setZoom(theZoom);
 					map.fitBounds(allBounds);
 					map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-					//var listButton = document.getElementById("listButton")
-					//listButton.addEventListener("click",app.Places.listViewOpen);
-					//listButton.style.display = '';
 				});
-
 				google.maps.event.addListener(infoWindow, 'domready', function () {
 					var avatarRoute = document.getElementById("avatarLink");
 					if (avatarRoute) {
@@ -727,7 +725,7 @@ app.Places = (function () {
 					if (activityRoute) {
 						activityRoute.addEventListener("click", app.helper.cameraRoute);
 					}
-					var feedRoute = document.getElementById("myFeedLink");
+					var feedRoute = document.getElementById("eventFeed");
 					if (feedRoute) {
 						feedRoute.addEventListener("click", function () {
 							app.mobileApp.navigate("components/notifications/view.html");
@@ -737,21 +735,17 @@ app.Places = (function () {
 					if (goHome) {
 						goHome.addEventListener("click",
 							function () {
-								//newPlace=this.geolocation;
 								var lat = this.attributes.valueOf()["data-lat"].value;
 								var lng = this.attributes.valueOf()["data-lng"].value
 								if (locality.lat - lat < .0001 && locality.lng - lng < .00001) {
 									app.notify.showShortTop(appSettings.messages.directions);
 									return;
 								}
-								//app.notify.showShortTop(lat+", "+lng);
-								//map.panTo({lat: position.latitude,lng: position.longitude});
 								if (locality) {
 									app.Places.browse("https://maps.google.com?saddr=" + locality.lat + "," + locality.lng + "&daddr=" + lat + "," + lng)
-								} //app.Places.directions(locality, newPlace);
+								}
 							})
 					};
-
 					var saveAddressLink = document.getElementById("saveAddressLink");
 					if (saveAddressLink) {
 						saveAddressLink.addEventListener("click",
@@ -771,6 +765,41 @@ app.Places = (function () {
 								app.mobileApp.navigate("components/aboutView/view.html")
 							}
 						)
+					}
+					var myGooglePlus = document.getElementById("myGoogle+");
+					if (myGooglePlus) {
+					    myGooglePlus.addEventListener('click', function () {
+					       // app.showAlert("myGooglePlus")
+					        app.Places.browse("http://plus.google.com")
+					    })
+					}
+					var myLinkedIn = document.getElementById("myLinkedIn");
+					if (myLinkedIn) {
+					    myLinkedIn.addEventListener('click', function () {
+					        //app.showAlert("myLinkedIn")
+					        app.Places.browse("http://www.linkedin.com")
+					    })
+					}
+					var privateFeed = document.getElementById("privateFeed");
+					if (privateFeed) {
+					    privateFeed.addEventListener('click', function () {
+					        //app.showAlert("privateFeed")
+					        app.mobileApp.navigate("#components/activities/view.html?ActivityText=My Private Feed")
+					    })
+					}
+					var myTwitter = document.getElementById("myTwitter");
+					if (myTwitter) {
+					    myTwitter.addEventListener('click', function () {
+					        //app.showAlert("myTwitter")
+					        app.Places.browse("http://www.twitter.com")
+					    })
+					}
+					var myFacebook = document.getElementById("myFacebook");
+					if (myFacebook) {
+					    myFacebook.addEventListener('click', function () {
+					        //app.showAlert("myFacebook")
+					        app.Places.browse("http://www.facebook.com")
+					    })
 					}
 				});
 

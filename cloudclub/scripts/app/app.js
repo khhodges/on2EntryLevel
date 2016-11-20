@@ -50,23 +50,24 @@ var app = (function (win) {
 		return !isNullOrEmpty(key) && !regEx.test(key);
 	};
 
+
 	// Handle device back button tap
 	var onBackKeyDown = function (e) {
-		e.preventDefault();
+		//e.preventDefault();
 
-		navigator.notification.confirm('Do you really want to exit?', function (confirmed) {
-			var exit = function () {
-				navigator.app.exitApp();
-			};
+		//navigator.notification.confirm('Do you really want to exit?', function (confirmed) {
+		//	var exit = function () {
+		//		navigator.app.exitApp();
+		//	};
 
-			if (confirmed === true || confirmed === 1) {
-				// Stop EQATEC analytics monitor on app exit
-				if (analytics.isAnalytics()) {
-					analytics.Stop();
-				}
-				AppHelper.logout().then(exit, exit);
-			}
-		}, 'Exit', ['OK', 'Cancel']);
+		//	if (confirmed === true || confirmed === 1) {
+		//		// Stop EQATEC analytics monitor on app exit
+		//		if (analytics.isAnalytics()) {
+		//			analytics.Stop();
+		//		}
+		//		AppHelper.logout().then(exit, exit);
+		//	}
+		//}, 'Exit', ['OK', 'Cancel']);
 	};
 
 	var onDeviceReady = function () {
@@ -163,6 +164,15 @@ var app = (function (win) {
 	// Handle "deviceready" event
 	document.addEventListener('deviceready', onDeviceReady, false);
 
+    //Handle "resume" event
+	document.addEventListener("resume", onResume, false);
+
+	function onResume() {
+	    // Handle the resume event
+	    app.notify.showShortTop("Resume Event");
+	    ActiveBrowser.Refresh();
+	}
+
 	// Initialize Everlive SDK
 	var el = new Everlive({
 		//offlineStorage: true,
@@ -174,43 +184,52 @@ var app = (function (win) {
 	});
 
 	var emptyGuid = '00000000-0000-0000-0000-000000000000';
-
+    
+	var name;
 	var AppHelper = {
-		english: function () {
-			appSettings.messages = appSettings.english;
-			app.notify.showShortTop(appSettings.messages.language);
-			document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + appSettings.messages.welcome;
-		},
-		portuguese: function () {
-			appSettings.messages = appSettings.portuguese;
-			app.notify.showShortTop(appSettings.messages.language);
-			document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + appSettings.messages.welcome;
-		},
-		french: function () {
-			appSettings.messages = appSettings.french;
-			app.notify.showShortTop(appSettings.messages.language);
-			document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + appSettings.messages.welcome;
-		},
-		german: function () {
-			appSettings.messages = appSettings.german;
-			app.notify.showShortTop(appSettings.messages.language);
-			document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + appSettings.messages.welcome;
-		},
-		spanish: function () {
-			appSettings.messages = appSettings.spanish;
-			app.notify.showShortTop(appSettings.messages.language);
-			document.getElementById("introduction").innerText = "Hello " + localStorage.getItem("username") + (appSettings.messages.welcome).replace("http://www.on2see.com","<a href='http://www.on2see.com'>on2see.com</a>");
-		},
-		more: function () {
-			if (document.getElementById("moreLanguages").hidden) {
-				document.getElementById("moreLanguages").hidden = false;
-				document.getElementById("more").innerText = "Less...";
-			}
-			else {
-				document.getElementById("moreLanguages").hidden = true;
-				document.getElementById("more").innerText = "More...";
-			}
-		},
+	    name: function () {
+	        name = localStorage.getItem("username");
+	        if (!name || name === undefined) {
+	            name = "Guest ";
+	        }
+	        name = name + "<br/>"+ (appSettings.messages.welcome).replace("http://www.on2see.com", "<a href='http://www.on2see.com'>on2see.com</a>");
+	        return name;
+	    },
+	    english: function () {
+	        appSettings.messages = appSettings.english;
+	        //app.notify.showShortTop(appSettings.messages.language);
+	        document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
+	    },
+	    portuguese: function () {
+	        appSettings.messages = appSettings.portuguese;
+	        app.notify.showShortTop(appSettings.messages.language);
+	        document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
+	    },
+	    french: function () {
+	        appSettings.messages = appSettings.french;
+	        app.notify.showShortTop(appSettings.messages.language);
+	        document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
+	    },
+	    german: function () {
+	        appSettings.messages = appSettings.german;
+	        app.notify.showShortTop(appSettings.messages.language);
+	        document.getElementById("introduction").innerHTML = "Hello"  + app.helper.name();
+	    },
+	    spanish: function () {
+	        appSettings.messages = appSettings.spanish;
+	        app.notify.showShortTop(appSettings.messages.language);
+	        document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
+	    },
+	    more: function () {
+	        if (document.getElementById("moreLanguages").hidden) {
+	            document.getElementById("moreLanguages").hidden = false;
+	            document.getElementById("more").innerText = "Less...";
+	        }
+	        else {
+	            document.getElementById("moreLanguages").hidden = true;
+	            document.getElementById("more").innerText = "More...";
+	        }
+	    },
 		/**
  * Detecting vertical squash in loaded image.
  * Fixes a bug which squash image vertically while drawing into canvas for some images.
