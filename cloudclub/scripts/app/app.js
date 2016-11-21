@@ -169,8 +169,8 @@ var app = (function (win) {
 
 	function onResume() {
 	    // Handle the resume event
-	    app.notify.showShortTop("Resume Event");
-	    ActiveBrowser.Refresh();
+	    //app.notify.showShortTop("Resume Event");
+	    //ActiveBrowser.Refresh();
 	}
 
 	// Initialize Everlive SDK
