@@ -14,12 +14,15 @@ app.Update = (function () {
 		var validator;
 		var updateImage;
 		var picture;
-		var $saveButton;
 		var $baseImage;
+		var favorites;
+		var fui;
+		var changed = false;
+		var sb;
 
 		// Update user after required fields (NOT username, email and password) in Backend Services
 		var update = function () {
-			
+
 			dataSource.Gender = parseInt(dataSource.Gender);
 			var birthDate = new Date(dataSource.BirthDate);
 
@@ -28,8 +31,15 @@ app.Update = (function () {
 			}
 
 			dataSource.BirthDate = birthDate;
+			app.Users.currentUser.data.jsonList.url = app.Users.currentUser.data.jsonDirectory;
+			dataSource.JSON = JSON.stringify(app.Users.currentUser.data.jsonList);
+			//hide save to prevent reuse
+			sb = document.getElementById("saveButton");
+			sb.style.display = "none";
 			//Update Avatar Image??
-			updateAvatar();
+			if (changed) {
+				updateAvatar();
+			}
 			Everlive.$.Users.update(dataSource)
 				.then(function () {
 					analytics.TrackFeature('Update.User');
@@ -41,32 +51,34 @@ app.Update = (function () {
 		};
 
 		var updateAvatar = function () {
-			var everlive = new Everlive(appSettings.everlive.appId);
-
-			everlive.Files.updateContent(app.Users.currentUser.data.Picture, {
-				Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
-				ContentType: "image/jpeg",
-				base64: $baseImage
-			},
-
-				function (data) {
-					var sb = document.getElementById("saveButton");
-					sb.style.display = "none";
-					app.notify.showShortTop(appSettings.messages.savedAvatar);
+			try {
+				var everlive = new Everlive(appSettings.everlive.appId);
+				//Update existing image id with new content
+				everlive.Files.updateContent(app.Users.currentUser.data.Picture, {
+					Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
+					ContentType: "image/jpeg",
+					base64: $baseImage
 				},
 
-				function (error) {
-					app.showAlert(appSettings.messages.tryAgain);
-				}
-			)
+					function (data) {
+						var sb = document.getElementById("saveButton");
+						sb.style.display = "none";
+						app.notify.showShortTop(appSettings.messages.savedAvatar);
+					},
+
+					function (error) {
+						app.showAlert(appSettings.messages.tryAgain + ', ' + JSON.stringify(error));
+					}
+				)
+			} catch (e) {
+
+			}
 
 		}
 
 		// Executed after update view initialization
 		// init form validator
 		var init = function () {
-			var sb = document.getElementById("saveButton");
-			sb.style.display = "none";
 			// Get a reference to our sensitive element
 			try {
 				if (!app.isOnline()) {
@@ -84,13 +96,11 @@ app.Update = (function () {
 			picture = document.getElementById("updateImage");
 			$updateForm = $('#update');
 			$formFields = $updateForm.find('input, textarea, select');
-			//$updateInfo = $('#updateInfo');
-			var $saveButton = $('#saveButton');
 			validator = $updateForm.kendoValidator({ validateOnBlur: false }).data('kendoValidator');
 
 			$formFields.on('keyup keypress blur change input', function () {
+				sb = document.getElementById("saveButton");
 				if (validator.validate()) {
-					var sb = document.getElementById("saveButton");
 					sb.style.display = "";
 				} else {
 					sb.style.display = "none";
@@ -102,12 +112,9 @@ app.Update = (function () {
 
 		// Executed after show of the update view
 		var show = function () {
-		    var myJSON = JSON.parse(app.Users.currentUser.data.JSON);
-			var sb = document.getElementById("saveButton");
-			sb.style.display = "none";
 			try {
 				if (!app.isOnline()) {
-				    app.notify.showShortTop(appSettings.messages.signIn);
+					app.notify.showShortTop(appSettings.messages.signIn);
 					app.mobileApp.navigate('#welcome');
 					return;
 				}
@@ -129,34 +136,60 @@ app.Update = (function () {
 				Friends: app.Users.currentUser.data.Friends,
 				BirthDate: app.Users.currentUser.data.BirthDate,
 				PictureUrl: 'url("' + app.Users.currentUser.data.PictureUrl + '");',
-				aPictureUrl: app.Users.currentUser.data.PictureUrl
+				aPictureUrl: app.Users.currentUser.data.PictureUrl,
+				autoBlogState: app.Users.currentUser.data.jsonList.partner.autoBlog,
+				rememberMeState: app.Users.currentUser.data.jsonList.partner.rememberMe
 										  });
 			kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);
-		    try {
-		        var favorites =myJSON.url;
-		        var fui = $("#favorites-listview").kendoMobileListView({
-		            dataSource: favorites,
-		            template: kendo.template($('#favoriteTemplate').html()),
-		            change: function () {
-		                alert("Change event!")
-		            }
-		        })
+			try {
+				favorites = app.Users.currentUser.data.jsonDirectory;
+				$("#favorites-listview").kendoMobileListView({
+					dataSource: favorites,
+					template: kendo.template($('#favoriteTemplate').html()),
+					selectable: "multiple",
+					change: function () {
+						app.showAlert("Change event!")
+					}
+				})
                     .data("kendoListView");
-		    } catch (ex) {
-		        app.showAlert(JSON.stringify(ex));
-		    }
-		};
-
-		// Executed after hide of the update view
-		// disable update button
-		var hide = function () {
-			var sb = document.getElementById("saveButton");
-			sb.style.display = "";
+			} catch (ex) {
+				app.showAlert(JSON.stringify(ex));
+			}
 		};
 
 		var onSelectChange = function (sel) {
-			var selected = sel.options[sel.selectedIndex].value;
-			sel.style.color = (selected === 0) ? '#b6c5c6' : '#34495e';
+			if (sel.button) {
+				sb = document.getElementById("saveButton");
+				sb.style.display = "";
+				var name = sel.button[0].attributes[0].value, state;
+				if (name === "autoBlog") {
+					state = app.Users.currentUser.data.jsonList.partner.autoBlog;
+				} else {
+					state = app.Users.currentUser.data.jsonList.partner.rememberMe;
+				}
+				//app.showAlert(name + ", " + state)
+				var element = document.getElementById(name);
+				if (state === "ON") {
+					app.Users.setItem(name, "selected", "OFF");
+					element.innerText = "OFF";
+					element.className = "btn-login km-widget km-button km-state-active";
+				}
+				else {
+					app.Users.setItem(name, "selected", "ON");
+					element.innerText = "ON";
+					element.className = "btn-register km-widget km-button km-state-active";
+				}
+			}
+			if (!sel.dataItem) {
+				return;
+			};
+			//app.notify.showShortTop(appSettings.messages.settingsMessage);
+			var selected = sel.dataItem.selected;//options[sel.selectedIndex].value;
+			var newState = selected === "OFF" ? "ON" : "OFF";
+			sel.dataItem.set("selected", newState);
+			app.Users.setItem(sel.dataItem.name, "selected", newState);
+			//document.getElementById(sel.dataItem.name).checked = sel.dataItem.selected;
+			//sel.style.color = (selected === 0) ? '#b6c5c6' : '#34495e';
 		}
 
 		var crop = function () {
@@ -183,32 +216,36 @@ app.Update = (function () {
 			app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
 			$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
 
-/*			if (!navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
-				textMessage ="Crop action";
-				ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-			} else {
-				textMessage = "iOS 7 crop";
-				app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-			}
-			$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
-			if($baseImafe.indexOf(appSettings.empty1x1png >0)){
-				textMessage = "Special Crop action";
-				app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-				$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
-			}
-			var sb = document.getElementById("saveButton");
-			if(sb.style.display === "none"){ textMessage = "You can update any items including or excluding the Avatar";
-			sb.style.display = ""}
-			app.notify.show(textMessage);*/
+			/*			if (!navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
+							textMessage ="Crop action";
+							ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+						} else {
+							textMessage = "iOS 7 crop";
+							app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+						}
+						$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+						if($baseImafe.indexOf(appSettings.empty1x1png >0)){
+							textMessage = "Special Crop action";
+							app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+							$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+						}
+						sb = document.getElementById("saveButton");
+						if(sb.style.display === "none"){ textMessage = "You can update any items including or excluding the Avatar";
+						sb.style.display = ""}
+						app.notify.show(textMessage);*/
+		}
+		var checkbox = function () {
+			app.showAlert(JSON.stringify("OK"));
 		}
 		var pickImage = function () {
 			function success(imageURI) {
+				changed = true;
 				analytics.TrackFeature('Avatar.Success');
 				//TO DO: crop Image to a Square
 				var selected = imageURI;
 				updateImage.src = selected;
 				picture.src = selected;
-				var sb = document.getElementById("saveButton");
+				sb = document.getElementById("saveButton");
 				sb.style.display = "";
 			}
 			var error = function () {
@@ -233,7 +270,9 @@ app.Update = (function () {
 			update: update,
 			showImage: pickImage,
 			crop: crop,
-            userData: dataSource
+			userData: function () {
+				return dataSource;
+			}
 		};
 	} ()
 	);

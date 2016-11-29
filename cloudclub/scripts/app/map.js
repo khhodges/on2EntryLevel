@@ -104,9 +104,10 @@ app.Places = (function () {
 		//	products: appSettings.products
 		//});
 		var resolveString = function (name, find, replace) {
-			if(!name){
+			if (!name) {
 				//app.notify.showShortTop("Please provide setup link "+name+", "+find+", "+replace)
-				return name;}
+				return name;
+			}
 			var length = name.split(find).length - 1;
 			var theString;
 			theString = name;
@@ -300,15 +301,15 @@ app.Places = (function () {
 					});
 			},
 			getComponent: function (address_components, component) {
-			    for (var i = 0; i < address_components.length; i++) {
-			        if (address_components[i].types[0] === "locality") {
-			            myCity = address_components[i].long_name;
-			        }
-			        if (address_components[i].types[0] === "administrative_area_level_1") {
-			            myState = address_components[i].long_name;
-			        }
-			    }
-			    return myCity;
+				for (var i = 0; i < address_components.length; i++) {
+					if (address_components[i].types[0] === "locality") {
+						myCity = address_components[i].long_name;
+					}
+					if (address_components[i].types[0] === "administrative_area_level_1") {
+						myState = address_components[i].long_name;
+					}
+				}
+				return myCity;
 			},
 			getAddress: function (latLng, marker) {
 				geocoder.geocode({
@@ -479,7 +480,7 @@ app.Places = (function () {
 				}
 			},
 			onPlaceSearch: function () {
-			    app.notify.showShortTop(appSettings.messages.searchAgain);
+				app.notify.showShortTop(appSettings.messages.searchAgain);
 				app.Places.locationViewModel.clearMap();
 				// Create the PlaceService and send the request.
 				// Handle the callback with an anonymous function.
@@ -645,22 +646,22 @@ app.Places = (function () {
 				var lng = marker.position.lng().toString();
 				var url = "styles/images/avatar.png";
 				if (app.Users.currentUser.data)
-				    url = app.Users.currentUser.data.PictureUrl;
-				return '<h3>'+appSettings.messages.inspectorTitle+'</h3>'
-                + '<a id="privateFeed" data-role="button" class="butn" style="padding:5px"><img src="styles/images/iconSee.png" alt="privateFeed" height="auto" width="20%"/></a>'
-				+ '<a id="cameraLink" data-role="button" class="butn" style="padding:5px"> <img src="styles/images/camera.png" alt="cameraLink" height="auto" width="20%"></a>'
-				+ '<a id="eventFeed" data-role="button" class="butn" style="padding:5px"><img src="styles/images/feed.png" alt="eventFeed" height="auto" width="20%"/></a>'
-				+ '<a id="goHome" data-role="button" data-lat=' + lat + ' data-lng='+ lng + ' class="butn" style="padding:5px"><img src="styles/images/goHome.png" alt="Go Home" height="auto" width="20%"/></a>'				
-                + '<a id="myFacebook" data-role="button" class="butn" style="padding:5px"><img src="styles/images/facebook.png" alt="myFacebook" height="auto" width="20%"/></a>'
-				+ '<a id="myTwitter" data-role="button" class="butn" style="padding:5px"><img src="styles/images/twitter.png" alt="myTwitter" height="auto" width="20%"/></a>'
-				+ '<a id="myLinkedIn" data-role="button" class="butn" style="padding:5px"><img src="styles/images/linkedIn.png" alt="myGoogle+" height="auto" width="20%"/></a>'
-				+ '<a id="myGoogle+" data-role="button" class="butn" style="padding:5px"><img src="styles/images/googleplus.png" alt="myGoogle+" height="auto" width="20%"/></a>'
-                + '<br/><div class="user-avatar" style="margin:20px -10px 0px 5px;">'
+					url = app.Users.currentUser.data.PictureUrl;
+				return '<h3>' + appSettings.messages.inspectorTitle + '</h3>'
+					+ '<a id="privateFeed" data-role="button" class="butn" style="padding:5px"><img src="styles/images/iconSee.png" alt="privateFeed" height="auto" width="20%"/></a>'
+					+ '<a id="cameraLink" data-role="button" class="butn" style="padding:5px"> <img src="styles/images/camera.png" alt="cameraLink" height="auto" width="20%"></a>'
+					+ '<a id="eventFeed" data-role="button" class="butn" style="padding:5px"><img src="styles/images/feed.png" alt="eventFeed" height="auto" width="20%"/></a>'
+					+ '<a id="goHome" data-role="button" data-lat=' + lat + ' data-lng=' + lng + ' class="butn" style="padding:5px"><img src="styles/images/goHome.png" alt="Go Home" height="auto" width="20%"/></a>'
+					+ '<a id="myFacebook" data-role="button" class="butn" style="padding:5px"><img src="styles/images/facebook.png" alt="myFacebook" height="auto" width="20%"/></a>'
+					+ '<a id="myTwitter" data-role="button" class="butn" style="padding:5px"><img src="styles/images/twitter.png" alt="myTwitter" height="auto" width="20%"/></a>'
+					+ '<a id="myLinkedIn" data-role="button" class="butn" style="padding:5px"><img src="styles/images/linkedIn.png" alt="myGoogle+" height="auto" width="20%"/></a>'
+					+ '<a id="myGoogle+" data-role="button" class="butn" style="padding:5px"><img src="styles/images/googleplus.png" alt="myGoogle+" height="auto" width="20%"/></a>'
+					+ '<br/><div class="user-avatar" style="margin:20px -10px 0px 5px;">'
                     + '<a id="avatarLink" data-role="button" class="butn"> <img id="myAvatar" src='
-				+ url + ' alt="On2See"></a></div>'
-                    
-				+ '<h4>' + appSettings.messages.inspectorHelp + '</h4>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>'
-				+ app.helper.formatDate(new Date()) + '</span>' + '<br/><span id="dateTime">' + '</span>' + '</p>'
+					+ url + ' alt="On2See"></a></div>'
+
+					+ '<h4>' + appSettings.messages.inspectorHelp + '</h4>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>'
+					+ app.helper.formatDate(new Date()) + '</span>' + '<br/><span id="dateTime">' + '</span>' + '</p>'
 			},
 			_putMarker: function (position) {
 				//position = { lat: -34.397, lng: 150.644 };
@@ -768,38 +769,43 @@ app.Places = (function () {
 					}
 					var myGooglePlus = document.getElementById("myGoogle+");
 					if (myGooglePlus) {
-					    myGooglePlus.addEventListener('click', function () {
-					       // app.showAlert("myGooglePlus")
-					        app.Places.browse("http://plus.google.com")
-					    })
+						myGooglePlus.addEventListener('click', function () {
+							// app.showAlert("myGooglePlus")
+							app.Places.browse("http://plus.google.com")
+						})
 					}
 					var myLinkedIn = document.getElementById("myLinkedIn");
 					if (myLinkedIn) {
-					    myLinkedIn.addEventListener('click', function () {
-					        //app.showAlert("myLinkedIn")
-					        app.Places.browse("http://www.linkedin.com")
-					    })
+						myLinkedIn.addEventListener('click', function () {
+							//app.showAlert("myLinkedIn")
+							app.Places.browse("http://www.linkedin.com")
+						})
 					}
 					var privateFeed = document.getElementById("privateFeed");
 					if (privateFeed) {
-					    privateFeed.addEventListener('click', function () {
-					        //app.showAlert("privateFeed")
-					        app.mobileApp.navigate("#components/activities/view.html?ActivityText=My Private Feed")
-					    })
+						privateFeed.addEventListener('click', function () {
+							if (!app.isOnline()) {
+								app.mobileApp.navigate("#welcome");
+							}
+							else {
+								//app.showAlert("privateFeed")
+								app.mobileApp.navigate("#views/activitiesView.html?ActivityText=My Private Feed")
+							}
+						})
 					}
 					var myTwitter = document.getElementById("myTwitter");
 					if (myTwitter) {
-					    myTwitter.addEventListener('click', function () {
-					        //app.showAlert("myTwitter")
-					        app.Places.browse("http://www.twitter.com")
-					    })
+						myTwitter.addEventListener('click', function () {
+							//app.showAlert("myTwitter")
+							app.Places.browse("http://www.twitter.com")
+						})
 					}
 					var myFacebook = document.getElementById("myFacebook");
 					if (myFacebook) {
-					    myFacebook.addEventListener('click', function () {
-					        //app.showAlert("myFacebook")
-					        app.Places.browse("http://www.facebook.com")
-					    })
+						myFacebook.addEventListener('click', function () {
+							//app.showAlert("myFacebook")
+							app.Places.browse("http://www.facebook.com")
+						})
 					}
 				});
 
@@ -943,6 +949,9 @@ app.Places = (function () {
 				streetView = map.getStreetView();
 			},
 			show: function () {
+				if (app.Users.currentUser.data && app.Users.currentUser.data.jsonList.partner.rememberMe === "ON") {
+					localStorage.access_token = localStorage.access_token1
+				}
 				app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
 				kendo.mobile.application.showLoading();
 				app.adMobService.viewModel.removeBanner();
@@ -1013,7 +1022,8 @@ app.Places = (function () {
 							}
 							return decorated;
 						},*/
-			/*			listShow: function (e) {
+			/*			
+			listShow: function (e) {
 							try {
 								myEvent = e;
 								(app.Places.logExceptions(function (e) {
@@ -1033,7 +1043,7 @@ app.Places = (function () {
 				}
 
 			},
-			visitingShow: function(e){
+			visitingShow: function (e) {
 				app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
 				var myId = e.view.params.uid;
 				var me = app.Places.visiting;
@@ -1188,8 +1198,8 @@ app.Places = (function () {
 			browse: function (url) {
 				if (url === null || url === undefined || url.length < 10 || url.button) {
 					var base = new URL("/", "https://en.wikipedia.org");
-					if (app.isNullOrEmpty(myCity))myCity = "Boca Raton, Florida";//app.Places.visiting.details().city() +", "+app.Places.visiting.details().state() ;
-						url = new URL("wiki/" + myCity, base);
+					if (app.isNullOrEmpty(myCity)) myCity = "Boca Raton, Florida";//app.Places.visiting.details().city() +", "+app.Places.visiting.details().state() ;
+					url = new URL("wiki/" + myCity, base);
 				}
 				app.notify.showShortTop(appSettings.messages.url);
 				bw = window.open(url, "_blank", "location=yes");
@@ -1234,7 +1244,7 @@ app.Places = (function () {
 			//},
 			List: function () {
 				this.keys = new Array();
-				this.data = new Object();
+				this.data = new Array();
 				this.put = function (key, value) {
 					if (!app.isNullOrEmpty(key) || !app.isNullOrEmpty(value)) {
 						this.keys.push(key);
@@ -1359,37 +1369,37 @@ app.Places = (function () {
 				var items;
 				var addressComponent = function (component) {
 					var items = googleData.address_components;
-				    var result = items.filter
-                      (function (item) {
-                          return (item.types[0] === component)
-                      }
-                      )
-				    if (result.length === 1) {
-				        result = result[0].long_name
-				        return result;
-				    } else {
-				        app.showError("Place not found!")
-				    }
+					var result = items.filter
+						(function (item) {
+							return (item.types[0] === component)
+						}
+						)
+					if (result.length === 1) {
+						result = result[0].long_name
+						return result;
+					} else {
+						app.showError("Place not found!")
+					}
 				}
 				//var state = function () { items.filter(function (item) { return (item.types[0] === "administrative_area_level_1") }) }
 				var displayList = function (parts) {
-				    var showIcon = parts.name;
-				    var Path = parts.path;
-				    var term = name();
-				    if (parts.query === "search") term = app.Places.locationViewModel.find;
-				    var searchTerm = resolveString(resolveString(term, "'", "%27"), "&", "%26");
-				    searchTerm = resolveString(searchTerm, " ", parts.space);
-				    if (Path.indexOf("#:name#") >0) {
-				        Path = resolveString(Path, "#:name#", searchTerm)
-				    }else{
-				        Path = Path + searchTerm;//parts.query;
-				    }
-				    if (Path.indexOf("#:city#")>0) {
-				        Path = resolveString(Path, "#:city#", addressComponent("locality"))
-				    }
-				    if (Path.indexOf("#:state#")>0) {
-				        Path = resolveString(Path, "#:state#", addressComponent("administrative_area_level_1"))
-				    }
+					var showIcon = parts.name;
+					var Path = parts.path;
+					var term = name();
+					if (parts.query === "search") term = app.Places.locationViewModel.find;
+					var searchTerm = resolveString(resolveString(term, "'", "%27"), "&", "%26");
+					searchTerm = resolveString(searchTerm, " ", parts.space);
+					if (Path.indexOf("#:name#") > 0) {
+						Path = resolveString(Path, "#:name#", searchTerm)
+					} else {
+						Path = Path + searchTerm;//parts.query;
+					}
+					if (Path.indexOf("#:city#") > 0) {
+						Path = resolveString(Path, "#:city#", addressComponent("locality"))
+					}
+					if (Path.indexOf("#:state#") > 0) {
+						Path = resolveString(Path, "#:state#", addressComponent("administrative_area_level_1"))
+					}
 					var itemHtml = '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
 						+ Path + '\');"><img src="styles/images/'
 						+ showIcon + '.png" alt="'
@@ -1514,7 +1524,7 @@ app.Places = (function () {
 					if (app.isNullOrEmpty(partnerRow.Website) && googleData.website) partnerRow.Website = googleData.website;
 					return partnerRow.Website;
 				};
-				var Description = function(){
+				var Description = function () {
 					return partnerRow.Description;
 				}
 				var partnerOptions = function () {
@@ -1680,8 +1690,8 @@ app.Places = (function () {
 						}
 					}
 					if (app.Places.locationViewModel.checkSimulator()) {
-						text = text +'\n'+ JSON.stringify(googleData);
-						app.Places.browse("http://jsoneditoronline.org/?json="+JSON.stringify(googleData));
+						text = text + '\n' + JSON.stringify(googleData);
+						app.Places.browse("http://jsoneditoronline.org/?json=" + JSON.stringify(googleData));
 					}
 					//app.Places.visiting = app.Places.locationViewModel.list.get(googleData.formatted_address);
 					app.showReviews(text, "Google Reviews for " + partnerRow.Place, function (result) { app.Places.listShow3(result) });
@@ -1725,7 +1735,7 @@ app.Places = (function () {
 				this.likeClick = function () {
 					app.notify.memorize(myId);
 					app.notify.showShortTop(appSettings.messages.membership);
-		    	};
+				};
 				this.rating = function () {
 					return htmlIw.rating;
 				};
@@ -1831,10 +1841,10 @@ app.Places = (function () {
 				}
 				this.details = function () {
 					return {
-						description:Description(),
-						website:Website(),
-						phone:Phone(),
-						icon:Icon(),
+						description: Description(),
+						website: Website(),
+						phone: Phone(),
+						icon: Icon(),
 						name: name(),
 						city: City,
 						state: State,

@@ -60,6 +60,9 @@ app.Activities = (function () {
 		filterOne.filters[0].filters[1].value = myId;
 	}
 	var show = function (e) {
+		if(!app.isOnline()){
+			app.mobileApp.navigate("#welcome");
+		}
 		app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
 		$("#scroller").data("kendoMobileScroller").reset();
 		if (e.view.params.ActivityText) {
@@ -101,7 +104,7 @@ app.Activities = (function () {
 			//app.showAlert("camera is ON!")
 			e.view.params.camera = 'OFF';
 			if(theName === undefined) theName = "My Full Feed";
-			app.notify.showShortTop(JSON.stringify(app.Activities.activities._filter))
+			//app.notify.showShortTop(JSON.stringify(app.Activities.activities._filter))
 			document.getElementById('activityTitle').innerText = "Author: "+app.Users.currentUser.data.DisplayName + ', Subject: ' + theName;
 			app.Activities.addActivity();
 		}

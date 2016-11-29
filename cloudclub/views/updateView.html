@@ -1,54 +1,47 @@
-<div data-role="view" id="update" data-layout="default" class="update-view" data-model="app.Update" data-init="app.Update.init" data-show="app.Update.show" data-hide="app.Update.hide">
-    <div data-role="header">
-        <div data-role="navbar">
-            Me
-            <!--<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button" ></a>-->
-            <a data-role="backbutton" data-align="left">Back</a>
-            <a id="logoffButton" style="display:" data-role="button" data-click="app.helper.logout" data-align="right">Logout</a>
-            <a id="saveButton" style="display: none" data-align="left" data-role="button" data-click="app.Update.update">Save</a>
-        </div>
-    </div>
-    <form id="update">
-        <ul id="update-form" data-role="listview" data-style="inset">
-            <!--<li class="txtarea-wrp">
+<div 
+	data-role="view" 
+	id="update" 
+	data-layout="default" 
+	class="update-view" 
+	data-model="app.Update" 
+	data-init="app.Update.init"
+	data-show="app.Update.show" 
+	data-afterShow="app.Update.afterShow">
+	<div data-role="header">
+		<div data-role="navbar"> Me
+			<!--<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button" ></a>--><a data-role="backbutton" data-align="left">Back</a> <a id="logoffButton" style="display:" data-role="button" data-click="app.helper.logout"
+				data-align="right">Logout</a> <a id="saveButton" style="display: none" data-align="left" data-role="button" data-click="app.Update.update">Save</a>			</div>
+	</div>
+	<form id="update">
+		<ul id="update-form" data-role="listview" data-style="inset">
+			<!--<li class="txtarea-wrp">
                 <label>
                     Notes: <textarea id="updateInfo" data-bind="value: About" placeholder="Add your own note."></textarea>
                 </label>
             </li>-->
-            <li>
-                <table>
-                    <tr>
-                        <td>
-                            <div id="enterEvent" data-style="inset">
-                                <canvas id="updateCanvas" width="100" height="100" style="border:1px solid #d3d3d3; padding:0px;top:0;bottom: 0;left: 0;right: 0;margin:auto;">
+			<li>
+				<table>
+					<tr>
+						<td>
+							<div id="enterEvent" data-style="inset"> <canvas id="updateCanvas" width="100" height="100" style="border:1px solid #d3d3d3; padding:0px;top:0;bottom: 0;left: 0;right: 0;margin:auto;">
                                     Your browser does not support the HTML5 canvas tag.
-                                </canvas>
-                            </div>
-                            <div hidden>
-                                <img id="updateImage" data-bind="attr: { src: aPictureUrl}" width="100px" onload="app.Update.crop()">
-                            </div>
-                        </td>
-                        <td>
-                            <a class="btn" data-role="button" data-click="app.Update.showImage" style="margin: 20px; padding:10px">
+                                </canvas> </div>
+							<div hidden> <img id="updateImage" data-bind="attr: { src: aPictureUrl}" width="100px" onload="app.Update.crop()"> </div>
+						</td>
+						<td> <a data-role="button" data-click="app.Update.showImage" class="btn-continue" style="margin: 20px; padding:10px">
                                 Change the Avatar!
-                            </a>
-                        </td>
-                    </tr>
-                </table>
-                <div>
-                    <textarea id="newEventText" style="background-color: azure;font-style: italic;" data-bind="text: DisplayName" placeholder="What is this Image?" required validationMessage="Please Title this image!"></textarea>
-                    <!--							<a class="btn" data-align="right" data-role="button" data-bind="click: saveActivity" style="margin: 20px; padding:10px">Save this Image</a>-->
-                </div>
-
-            </li>
-            <li>
-                <label>
+                            </a> </td>
+					</tr>
+				</table>
+				<div> <textarea id="newEventText" style="background-color: azure;font-style: italic;" data-bind="text: DisplayName" placeholder="What is this Image?"
+						required validationMessage="Please Title this image!"></textarea>
+					<!--							<a class="btn" data-align="right" data-role="button" data-bind="click: saveActivity" style="margin: 20px; padding:10px">Save this Image</a>--></div>
+			</li>
+			<li> <label>
                     Joined:
                     <input type="date" id="updateBirthDatePicker" data-bind="value: BirthDate">
-                </label>
-            </li>
-            <li class="select-wrp">
-                <label>
+                </label> </li>
+			<li class="select-wrp"> <label>
                     Language:
                     <select id="updateLanguagePicker" data-bind="value: Language" onchange="app.Update.onSelectChange(this)">
                         <option value="0" selected>Change your language</option>
@@ -58,54 +51,54 @@
                         <option value="2">Português</option>
                         <option value="2">Español</option>
                     </select>
-                </label>
-            <li class="select-wrp">
-                <label>
+                </label></li>
+			<li class="select-wrp"> <label>
                     Gender:
                     <select id="updateGenderPicker" data-bind="value: Gender" onchange="app.Update.onSelectChange(this)">
                         <option value="0" selected>Include your gender</option>
                         <option value="1">Male</option>
                         <option value="2">Female</option>
                     </select>
-                </label>
-            </li>
-            <li class="select-wrp">
-                <label>
+                </label> </li>
+			<li class="select-wrp"> <label>
                     Service Level:
                     <select id="updateLevelPicker" data-bind="value: Level" onchange="app.Update.onSelectChange(this)">
                         <option value="1">Free Local Services</option>
                         <option value="2">Local Services without Ads</option>
-                        <option value="3">With Address Book & Navigation</option>
-                        <option value="4">With Notifications & Calendar</option>
+                        <option value="3">With Address Book & Calendar</option>
+                        <option value="4">With Notifications Services</option>
                     </select>
-                </label>
-            </li>
-            <li>
-                <a class="btn" data-role="button" data-click="app.Update.showImage" style="margin: 20px; padding:10px">
-                    Auto Blog Share is "ON"
-                </a>
-            </li>
-            <li>
-                <a class="btn" data-role="button" data-click="app.Update.showImage" style="margin: 20px; padding:10px">
-                    Auto Remember Me is "ON"
-                </a>
-            </li>
-            <li>
-                <ul id="favorites-listview" data-style="inset" data-role="listview"></ul>
-            </li>
-        </ul>
-
-
-    </form>
+                </label> </li>
+			<li> <label>
+						Auto Blog: 
+					<a id="autoBlog" data-role="button" 
+					class="btn-continue" data-click="app.Update.onSelectChange"
+					style="margin: 20px 20px 20px 50px; padding:10px">
+                    <b><span data-bind="text: autoBlogState"></span></b>
+                </a> </label></li>
+			</li>
+			<li> <label>
+					Remember Me: 
+					<a id="rememberMe" data-role="button" 
+					class="btn-continue" 
+					data-click="app.Update.onSelectChange" style="margin: 20px; padding:10px">
+                    <b><span data-bind="text: rememberMeState"></span></b>
+                </a> </label></li>
+			<li>
+				<ul id="favorites-listview" data-style="inset" data-role="listview" data-click="app.Update.onSelectChange"></ul>
+			</li>
+			</li>
+		</ul>
+	</form>
 </div>
-
 <!-- Activities ListView Template -->
-<script type="text/x-kendo-template" id="favoriteTemplate">
-   
-        <label class="km-label-above">
-            <span><b>#:name#</b></span>
-            <input id="#:name#-path" value="#:path#" type="text" />
-        </label>
-            <img src="styles/images/#: name #.png"/>
-    
-</script>
+<script type="text/x-kendo-template" id="favoriteTemplate"> <label class="km-label-above">
+		<img src="styles/images/#: name #.png" width="40px" height="auto" /> 
+            <span><b><font size=3> #:name# is 
+			#if("OFF" === selected ){#
+			<font size="3" color="red"> #:selected# 
+			#}else{#			
+			<font size="4" color="green"> #:selected# 
+			#}#
+			</b></span>
+        </label> </script>
