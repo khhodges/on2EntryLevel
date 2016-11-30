@@ -647,21 +647,27 @@ app.Places = (function () {
 				var url = "styles/images/avatar.png";
 				if (app.Users.currentUser.data)
 					url = app.Users.currentUser.data.PictureUrl;
-				return '<h3>' + appSettings.messages.inspectorTitle + '</h3>'
-					+ '<a id="privateFeed" data-role="button" class="butn" style="padding:5px"><img src="styles/images/iconSee.png" alt="privateFeed" height="auto" width="20%"/></a>'
-					+ '<a id="cameraLink" data-role="button" class="butn" style="padding:5px"> <img src="styles/images/camera.png" alt="cameraLink" height="auto" width="20%"></a>'
-					+ '<a id="eventFeed" data-role="button" class="butn" style="padding:5px"><img src="styles/images/feed.png" alt="eventFeed" height="auto" width="20%"/></a>'
-					+ '<a id="goHome" data-role="button" data-lat=' + lat + ' data-lng=' + lng + ' class="butn" style="padding:5px"><img src="styles/images/goHome.png" alt="Go Home" height="auto" width="20%"/></a>'
-					+ '<a id="myFacebook" data-role="button" class="butn" style="padding:5px"><img src="styles/images/facebook.png" alt="myFacebook" height="auto" width="20%"/></a>'
-					+ '<a id="myTwitter" data-role="button" class="butn" style="padding:5px"><img src="styles/images/twitter.png" alt="myTwitter" height="auto" width="20%"/></a>'
-					+ '<a id="myLinkedIn" data-role="button" class="butn" style="padding:5px"><img src="styles/images/linkedIn.png" alt="myGoogle+" height="auto" width="20%"/></a>'
-					+ '<a id="myGoogle+" data-role="button" class="butn" style="padding:5px"><img src="styles/images/googleplus.png" alt="myGoogle+" height="auto" width="20%"/></a>'
-					+ '<br/><div class="user-avatar" style="margin:20px -10px 0px 5px;">'
+				var options;
+				if (!app.isOnline()) {
+					options = appSettings.defaultMedia;
+				} else {
+					options = app.Users.currentUser.data.jsonDirectory;
+				}
+				var infoContent = '<h3>' + appSettings.messages.inspectorTitle + '</h3>';
+				for (var i = 0; i < options.length; i++) {
+					if (options[i].selected === 'ON') {
+						var name = options[i].name;
+						infoContent = infoContent + appSettings.infoContent[name];
+					}
+				}
+
+				infoContent = infoContent + '<br/><div class="user-avatar" style="margin:20px -10px 0px 5px;">'
                     + '<a id="avatarLink" data-role="button" class="butn"> <img id="myAvatar" src='
 					+ url + ' alt="On2See"></a></div>'
 
 					+ '<h4>' + appSettings.messages.inspectorHelp + '</h4>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>'
 					+ app.helper.formatDate(new Date()) + '</span>' + '<br/><span id="dateTime">' + '</span>' + '</p>'
+				return infoContent;
 			},
 			_putMarker: function (position) {
 				//position = { lat: -34.397, lng: 150.644 };
@@ -722,9 +728,9 @@ app.Places = (function () {
 							}
 						});
 					}
-					var activityRoute = document.getElementById("cameraLink");
-					if (activityRoute) {
-						activityRoute.addEventListener("click", app.helper.cameraRoute);
+					var camera = document.getElementById("camera");
+					if (camera) {
+						camera.addEventListener("click", app.helper.cameraRoute);
 					}
 					var feedRoute = document.getElementById("eventFeed");
 					if (feedRoute) {
@@ -738,12 +744,14 @@ app.Places = (function () {
 							function () {
 								var lat = this.attributes.valueOf()["data-lat"].value;
 								var lng = this.attributes.valueOf()["data-lng"].value
-								if (locality.lat - lat < .0001 && locality.lng - lng < .00001) {
+								if((lat === "#lat#"||lng==="#lng")||
+								 (locality.lat - lat < .0001 && locality.lng - lng < .00001)) {
 									app.notify.showShortTop(appSettings.messages.directions);
-									return;
-								}
-								if (locality) {
-									app.Places.browse("https://maps.google.com?saddr=" + locality.lat + "," + locality.lng + "&daddr=" + lat + "," + lng)
+									app.Places.browse("https://news.google.com")
+								} else {
+									if (locality) {
+										app.Places.browse("https://maps.google.com?saddr=" + locality.lat + "," + locality.lng + "&daddr=" + lat + "," + lng)
+									}
 								}
 							})
 					};
@@ -774,13 +782,6 @@ app.Places = (function () {
 							app.Places.browse("http://plus.google.com")
 						})
 					}
-					var myLinkedIn = document.getElementById("myLinkedIn");
-					if (myLinkedIn) {
-						myLinkedIn.addEventListener('click', function () {
-							//app.showAlert("myLinkedIn")
-							app.Places.browse("http://www.linkedin.com")
-						})
-					}
 					var privateFeed = document.getElementById("privateFeed");
 					if (privateFeed) {
 						privateFeed.addEventListener('click', function () {
@@ -793,22 +794,20 @@ app.Places = (function () {
 							}
 						})
 					}
-					var myTwitter = document.getElementById("myTwitter");
-					if (myTwitter) {
-						myTwitter.addEventListener('click', function () {
-							//app.showAlert("myTwitter")
-							app.Places.browse("http://www.twitter.com")
-						})
-					}
-					var myFacebook = document.getElementById("myFacebook");
-					if (myFacebook) {
-						myFacebook.addEventListener('click', function () {
-							//app.showAlert("myFacebook")
-							app.Places.browse("http://www.facebook.com")
-						})
+					var defaultSites = appSettings.defaultSites;
+					for (var i = 0; i < defaultSites.length; i++) {
+						var site = defaultSites[i];
+						addDEL(document.getElementById(site));
 					}
 				});
-
+				function addDEL(name) {
+					if (name) {
+						name.addEventListener('click', function () {
+							app.Places.browse("http://www." + name.firstElementChild.alt + ".com")
+						})
+					}
+					else { return }
+				}
 				function updatePosition(lat, lng) {
 					document.getElementById('dragStatus').innerHTML = 'New Lat: ' + lat.toFixed(6) + ' New Lng: ' + lng.toFixed(6);
 				}
@@ -1449,7 +1448,7 @@ app.Places = (function () {
 						switch (parts) {
 							case "events":
 								introHtml = introHtml + '<a data-role="button" class="butn" href="#components/notifications/view.html?ActivityText='
-									+ n + '"><img src="styles/images/feed.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+									+ n + '"><img src="styles/images/events.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
 								break;
 							case "activities":
 								if (programmedOptions) {

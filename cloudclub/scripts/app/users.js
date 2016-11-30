@@ -55,7 +55,12 @@ app.Users = (function () {
 				.then(function (data) {
 					currentUserData = data.result;
 					currentUserData.PictureUrl = app.helper.resolveProfilePictureUrl(currentUserData.Picture);
-					currentUserData.jsonList = JSON.parse(data.result.JSON);
+					if(data.result.JSON === undefined){
+						currentUserData.jsonList = appSettings.userOptions;;
+					}
+					else{
+						currentUserData.jsonList = JSON.parse(data.result.JSON);
+					}
 					var jsonDirectory = currentUserData.jsonList.url;
 					currentUserData.jsonDirectory = jsonDirectory;
 					currentUser.set('data', currentUserData);
@@ -115,11 +120,11 @@ app.Users = (function () {
 				var list = currentUserData.jsonList;
 				switch (name) {
 					case "autoBlog":
-						app.Users.currentUser.data.jsonList.partner.autoBlog = value;
+						list.partner.autoBlog = value;
 						break;
 					case "rememberMe":
-						//app.showAlert(app.Users.currentUser.data.jsonList.partner.rememberMe +" > " + value);
-						app.Users.currentUser.data.jsonList.partner.rememberMe = value;
+						//app.showAlert(list.partner.rememberMe +" > " + value);
+						list.partner.rememberMe = value;
 						if (value = "OFF") {
 							localStorage.setItem("access_token", "");
 						}

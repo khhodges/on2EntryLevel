@@ -919,5 +919,141 @@ var appSettings = {
         url: "Opening media, click 'Done' or 'X' to return...",
         wait: "Please wait...",
         welcome: "\nPlease enjoy this advanced mobile application with community access to integrated and customized social media.\nNo login is needed to search across social media and find local Hot Spots or find community activities. \nFor POSTing and advanced features, loyalty clubs membership and instant notifications you need to Join Up and log on. Additional help is found at http://www.on2see.com \n\n"
-	}
+	},
+	userOptions: {
+		"product": "On2See partners urls",
+		"version": 1.1,
+		"releaseDate": "2016-09-19T00:00:00.000Z",
+		"approved": true,
+		"partner": {
+			"stars": "5",
+			"rating": "$$",
+			"autoBlog": "OFF",
+			"rememberMe": "ON"
+		},
+		"url": [
+			{
+				"name": "facebook",
+				"icon": "styles/images/default-image.jpg",
+				"path": "https://www.facebook.com/muddywatersrestaurant",
+				"selected": "ON"
+			},
+			{
+				"name": "yelp",
+				"icon": "styles/images/default-image.jpg",
+				"path": "https://www.yelp.com/biz/jbyrds-muddy-waters-deerfield-beach",
+				"selected": "OFF"
+			},
+			{
+				"name": "instagram",
+				"icon": "styles/images/default-image.jpg",
+				"path": "https://www.instagram.com/explore/locations/1579177/",
+				"selected": "OFF"
+			},
+			{
+				"name": "googleMap",
+				"icon": "styles/images/default-image.jpg",
+				"path": "https://www.google.com/maps/place/JByrd%27s+Muddy+Waters+Restaurant+%26+Raw+Bar/@26.31823,-80.1360707,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x79892be93ef49914!8m2!3d26.31823!4d-80.133882",
+				"selected": "ON"
+			},
+			{
+				"name": "twitter",
+				"icon": "",
+				"Path": "",
+				"selected": "ON"
+			},
+			{
+				"name": "bing",
+				"icon": "",
+				"Path": "",
+				"selected": "OFF"
+			},
+			{
+				"name": "events",
+				"icon": "",
+				"Path": "",
+				"selected": "OFF"
+			},
+			{
+				"name": "iconSee",
+				"icon": "",
+				"Path": "",
+				"selected": "ON"
+			}
+		],
+		"defaultOptions": {
+			"standard": [
+				"events",
+				"activities",
+				"partner"
+			],
+			"search": [
+				"google",
+				"twitter",
+				"bing",
+				"googleMaps"
+			],
+			"food": [
+				"zomato",
+				"yelp"
+			],
+			"display": [
+				"search",
+				"food"
+			],
+			"jobs": [
+				"angiesList",
+				"homeAdviser",
+				"pintrest",
+				"google"
+			]
+		},
+		"customOptions": [
+			"home",
+			"events",
+			"zomato",
+			"yelp",
+			"google",
+			"twitter",
+			"bing",
+			"googleMaps"
+		]
+	},
+	infoContent: {
+		"iconSee": "<a id='privateFeed' data-role='button' class='butn' style='padding:5px'><img src='styles/images/iconSee.png' alt='privateFeed' height='auto' width='20%'/></a>",
+		"camera": "<a id='camera' data-role='button' class='butn' style='padding:5px'> <img src='styles/images/camera.png' alt='cameraLink' height='auto' width='20%'></a>",
+		"events": "<a id='eventFeed' data-role='button' class='butn' style='padding:5px'><img src='styles/images/events.png' alt='eventFeed' height='auto' width='20%'/></a>",
+		"goHome": "<a id='goHome' data-role='button' data-lat=#lat# data-lng=#lng#class='butn' style='padding:5px'><img src='styles/images/goHome.png' alt='google' height='auto' width='20%'/></a>",
+		"facebook": "<a id='facebook' data-role='button' class='butn' style='padding:5px'><img src='styles/images/facebook.png' alt='facebook' height='auto' width='20%'/></a>",
+		"yelp": "<a id='yelp' data-role='button' class='butn' style='padding:5px'><img src='styles/images/yelp.png' alt='yelp' height='auto' width='20%'/></a>",
+		"instagram": "<a id='instagram' data-role='button' class='butn' style='padding:5px'><img src='styles/images/instagram.png' alt='instagram' height='auto' width='20%'/></a>",
+		"nfl": "<a id='nfl' data-role='button' class='butn' style='padding:5px'><img src='styles/images/nfl.png' alt='nfl' height='auto' width='20%'/></a>",
+		"zomato": "<a id='zomato' data-role='button' class='butn' style='padding:5px'><img src='styles/images/zomato.png' alt='zomato' height='auto' width='20%'/></a>",
+		"ESPN": "<a id='ESPN' data-role='button' class='butn' style='padding:5px'><img src='styles/images/ESPN.png' alt='ESPN' height='auto' width='20%'/></a>",
+		"bloomberg": "<a id='bloomberg' data-role='button' class='butn' style='padding:5px'><img src='styles/images/bloomberg.png' alt='bloomberg' height='auto' width='20%'/></a>",
+		"angiesList": "<a id='angiesList' data-role='button' class='butn' style='padding:5px'><img src='styles/images/angiesList.png' alt='angiesList' height='auto' width='20%'/></a>",
+		"bing": "<a id='bing' data-role='button' class='butn' style='padding:5px'><img src='styles/images/bing.png' alt='bing' height='auto' width='20%'/></a>",
+		"blogger": "<a id='blogger' data-role='button' class='butn' style='padding:5px'><img src='styles/images/blogger.png' alt='blogger' height='auto' width='20%'/></a>",
+		"groupon": "<a id='groupon' data-role='button' class='butn' style='padding:5px'><img src='styles/images/groupon.png' alt='groupon' height='auto' width='20%'/></a>",
+		"googleYouTube": "<a id='googleYouTube' data-role='button' class='butn' style='padding:5px'><img src='styles/images/googleYouTube.png' alt='googleYouTube' height='auto' width='20%'/></a>",
+		"flickr": "<a id='flickr' data-role='button' class='butn' style='padding:5px'><img src='styles/images/flickr.png' alt='flickr' height='auto' width='20%'/></a>",
+		"settings": "<a id='settings' data-role='button' class='butn' style='padding:5px'><img src='styles/images/settings.png' alt='settings' height='auto' width='20%'/></a>",
+		"contacts": "<a id='contacts' data-role='button' class='butn' style='padding:5px'><img src='styles/images/contacts.png' alt='contacts' height='auto' width='20%'/></a>",
+		"pintrest": "<a id='pintrest' data-role='button' class='butn' style='padding:5px'><img src='styles/images/pintrest.png' alt='pintrest' height='auto' width='20%'/></a>",
+		"news": "<a id='news' data-role='button' class='butn' style='padding:5px'><img src='styles/images/news.png' alt='news' height='auto' width='20%'/></a>",
+		"mail-icon": "<a id='mail-icon' data-role='button' class='butn' style='padding:5px'><img src='styles/images/mail-icon.png' alt='mail-icon' height='auto' width='20%'/></a>",
+		"vine": "<a id='vine' data-role='button' class='butn' style='padding:5px'><img src='styles/images/vine.png' alt='vine' height='auto' width='20%'/></a>",
+		"weather": "<a id='weather' data-role='button' class='butn' style='padding:5px'><img src='styles/images/weather.png' alt='weather' height='auto' width='20%'/></a>",
+		"wikipedia": "<a id='wikipedia' data-role='button' class='butn' style='padding:5px'><img src='styles/images/wikipedia.png' alt='wikipedia' height='auto' width='20%'/></a>",
+		"yahoo": "<a id='yahoo' data-role='button' class='butn' style='padding:5px'><img src='styles/images/yahoo.png' alt='yahoo' height='auto' width='20%'/></a>",
+		"yellowpages": "<a id='yellowpages' data-role='button' class='butn' style='padding:5px'><img src='styles/images/yellowpages.png' alt='yellowpages' height='auto' width='20%'/></a>",
+		"calendar": "<a id='calendar' data-role='button' class='butn' style='padding:5px'><img src='styles/images/calendar.png' alt='calendar' height='auto' width='20%'/></a>",
+		"twitter": "<a id='twitter' data-role='button' class='butn' style='padding:5px'><img src='styles/images/twitter.png' alt='twitter' height='auto' width='20%'/></a>",
+		"linkedIn": "<a id='linkedIn' data-role='button' class='butn' style='padding:5px'><img src='styles/images/linkedIn.png' alt='myGoogle+' height='auto' width='20%'/></a>",
+		"googleplus": "<a id='myGoogle+' data-role='button' class='butn' style='padding:5px'><img src='styles/images/googleplus.png' alt='myGoogle+' height='auto' width='20%'/></a>"
+	},
+	"defaultMedia":[
+		{"name":"facebook","selected":"ON"},{"name":"yelp","selected":"ON"},{"name":"bing","selected":"ON"},{"name":"iconSee","selected":"ON"},{"name":"twitter","selected":"ON"},{"name":"instagram","selected":"ON"},{"name":"events","selected":"ON"},{"name":"goHome","selected":"ON"}
+	],
+	"defaultSites":["facebook","bing","twitter","yelp","instagram","yellowpages","linkedIn","wikipedia","yahoo","pintrest","flickr","groupon","angiesList","ESPN","nfl"]
 };
