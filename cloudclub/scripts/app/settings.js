@@ -1035,7 +1035,7 @@ var appSettings = {
 		"bing": "<a id='bing' data-role='button' class='butn' style='padding:5px'><img src='styles/images/bing.png' alt='bing' height='auto' width='20%'/></a>",
 		"blogger": "<a id='blogger' data-role='button' class='butn' style='padding:5px'><img src='styles/images/blogger.png' alt='blogger' height='auto' width='20%'/></a>",
 		"groupon": "<a id='groupon' data-role='button' class='butn' style='padding:5px'><img src='styles/images/groupon.png' alt='groupon' height='auto' width='20%'/></a>",
-		"googleYouTube": "<a id='googleYouTube' data-role='button' class='butn' style='padding:5px'><img src='styles/images/googleYouTube.png' alt='googleYouTube' height='auto' width='20%'/></a>",
+		"youtube": "<a id='youtube' data-role='button' class='butn' style='padding:5px'><img src='styles/images/youtube.png' alt='YouTube' height='auto' width='20%'/></a>",
 		"flickr": "<a id='flickr' data-role='button' class='butn' style='padding:5px'><img src='styles/images/flickr.png' alt='flickr' height='auto' width='20%'/></a>",
 		"settings": "<a id='settings' data-role='button' class='butn' style='padding:5px'><img src='styles/images/settings.png' alt='settings' height='auto' width='20%'/></a>",
 		"contacts": "<a id='contacts' data-role='button' class='butn' style='padding:5px'><img src='styles/images/contacts.png' alt='contacts' height='auto' width='20%'/></a>",
@@ -1049,11 +1049,13 @@ var appSettings = {
 		"yellowpages": "<a id='yellowpages' data-role='button' class='butn' style='padding:5px'><img src='styles/images/yellowpages.png' alt='yellowpages' height='auto' width='20%'/></a>",
 		"calendar": "<a id='calendar' data-role='button' class='butn' style='padding:5px'><img src='styles/images/calendar.png' alt='calendar' height='auto' width='20%'/></a>",
 		"twitter": "<a id='twitter' data-role='button' class='butn' style='padding:5px'><img src='styles/images/twitter.png' alt='twitter' height='auto' width='20%'/></a>",
-		"linkedIn": "<a id='linkedIn' data-role='button' class='butn' style='padding:5px'><img src='styles/images/linkedIn.png' alt='myGoogle+' height='auto' width='20%'/></a>",
-		"googleplus": "<a id='myGoogle+' data-role='button' class='butn' style='padding:5px'><img src='styles/images/googleplus.png' alt='myGoogle+' height='auto' width='20%'/></a>"
+		"linkedIn": "<a id='linkedIn' data-role='button' class='butn' style='padding:5px'><img src='styles/images/linkedIn.png' alt='linkedin' height='auto' width='20%'/></a>",
+		"googleplus": "<a id='myGoogle+' data-role='button' class='butn' style='padding:5px'><img src='styles/images/googleplus.png' alt='myGoogle+' height='auto' width='20%'/></a>",
+		"googleMap": "<a id='googleMap' data-role='button' class='butn' style='padding:5px'><img src='styles/images/googleMap.png' alt='googleMap' height='auto' width='20%'/></a>",
+		"google": "<a id='google' data-role='button' class='butn' style='padding:5px'><img src='styles/images/google.png' alt='Google' height='auto' width='20%'/></a>"
 	},
-	"defaultMedia":[
-		{"name":"facebook","selected":"ON"},{"name":"yelp","selected":"ON"},{"name":"bing","selected":"ON"},{"name":"iconSee","selected":"ON"},{"name":"twitter","selected":"ON"},{"name":"instagram","selected":"ON"},{"name":"events","selected":"ON"},{"name":"goHome","selected":"ON"}
+	"defaultMedia": [
+		{ "name": "facebook", "selected": "ON" }, { "name": "yelp", "selected": "ON" }, { "name": "bing", "selected": "ON" }, { "name": "iconSee", "selected": "ON" }, { "name": "twitter", "selected": "ON" }, { "name": "instagram", "selected": "ON" }, { "name": "events", "selected": "ON" }, { "name": "goHome", "selected": "ON" }
 	],
-	"defaultSites":["facebook","bing","twitter","yelp","instagram","yellowpages","linkedIn","wikipedia","yahoo","pintrest","flickr","groupon","angiesList","ESPN","nfl"]
+	"defaultSites": ["google","youtube", "facebook", "bing", "twitter", "yelp", "instagram", "yellowpages", "linkedIn", "wikipedia", "yahoo", "pintrest", "flickr", "groupon", "angiesList", "ESPN", "nfl", "bloomberg","zomato"]
 };

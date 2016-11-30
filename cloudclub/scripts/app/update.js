@@ -183,6 +183,8 @@ app.Update = (function () {
 			if (!sel.dataItem) {
 				return;
 			};
+			sb = document.getElementById("saveButton");
+			sb.style.display = "";
 			//app.notify.showShortTop(appSettings.messages.settingsMessage);
 			var selected = sel.dataItem.selected;//options[sel.selectedIndex].value;
 			var newState = selected === "OFF" ? "ON" : "OFF";
