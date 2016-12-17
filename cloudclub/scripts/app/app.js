@@ -164,13 +164,13 @@ var app = (function (win) {
 	// Handle "deviceready" event
 	document.addEventListener('deviceready', onDeviceReady, false);
 
-    //Handle "resume" event
+	//Handle "resume" event
 	document.addEventListener("resume", onResume, false);
 
 	function onResume() {
-	    // Handle the resume event
-	    //app.notify.showShortTop("Resume Event");
-	    //ActiveBrowser.Refresh();
+		// Handle the resume event
+		//app.notify.showShortTop("Resume Event");
+		//ActiveBrowser.Refresh();
 	}
 
 	// Initialize Everlive SDK
@@ -184,52 +184,59 @@ var app = (function (win) {
 	});
 
 	var emptyGuid = '00000000-0000-0000-0000-000000000000';
-    
+
 	var name;
 	var AppHelper = {
-	    name: function () {
-	        name = localStorage.getItem("username");
-	        if (!name || name === undefined) {
-	            name = "Guest ";
-	        }
-	        name = name + "<br/>"+ (appSettings.messages.welcome).replace("http://www.on2see.com", "<a href='http://www.on2see.com'>on2see.com</a>");
-	        return name;
-	    },
-	    english: function () {
-	        appSettings.messages = appSettings.english;
-	        //app.notify.showShortTop(appSettings.messages.language);
-	        document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
-	    },
-	    portuguese: function () {
-	        appSettings.messages = appSettings.portuguese;
-	        app.notify.showShortTop(appSettings.messages.language);
-	        document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
-	    },
-	    french: function () {
-	        appSettings.messages = appSettings.french;
-	        app.notify.showShortTop(appSettings.messages.language);
-	        document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
-	    },
-	    german: function () {
-	        appSettings.messages = appSettings.german;
-	        app.notify.showShortTop(appSettings.messages.language);
-	        document.getElementById("introduction").innerHTML = "Hello"  + app.helper.name();
-	    },
-	    spanish: function () {
-	        appSettings.messages = appSettings.spanish;
-	        app.notify.showShortTop(appSettings.messages.language);
-	        document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
-	    },
-	    more: function () {
-	        if (document.getElementById("moreLanguages").hidden) {
-	            document.getElementById("moreLanguages").hidden = false;
-	            document.getElementById("more").innerText = "Less...";
-	        }
-	        else {
-	            document.getElementById("moreLanguages").hidden = true;
-	            document.getElementById("more").innerText = "More...";
-	        }
-	    },
+		name: function () {
+			name = localStorage.getItem("username");
+			if (!name || name === undefined) {
+				name = "Guest ";
+			}
+			name = name + "<br/>" + (appSettings.messages.welcome).replace("http://www.on2see.com", "<a href='http://www.on2see.com'>on2see.com</a>");
+			return name;
+		},
+		english: function () {
+			appSettings.messages = appSettings.english;
+			//app.notify.showShortTop(appSettings.messages.language);
+			document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
+		},
+		portuguese: function () {
+			appSettings.messages = appSettings.portuguese;
+			app.notify.showShortTop(appSettings.messages.language);
+			document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
+		},
+		french: function () {
+			appSettings.messages = appSettings.french;
+			app.notify.showShortTop(appSettings.messages.language);
+			document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
+		},
+		german: function () {
+			appSettings.messages = appSettings.german;
+			app.notify.showShortTop(appSettings.messages.language);
+			document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
+		},
+		dutch: function () {
+			appSettings.messages = appSettings.dutch;
+			app.notify.showShortTop(appSettings.messages.language);
+			document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
+		},
+		spanish: function () {
+			appSettings.messages = appSettings.spanish;
+			app.notify.showShortTop(appSettings.messages.language);
+			document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
+		},
+		more: function () {
+			if (document.getElementsByClassName("rTableRow")[1].attributes.style = "visibility:collapse") {
+				document.getElementsByClassName("rTableRow")[1].attributes.style = "visibility:visible"
+				//document.getElementById("moreLanguages").visibility = visible;
+				document.getElementById("more").innerText = "Less...";
+			}
+			else {
+				//document.getElementById("moreLanguages").visibility = collapse;
+				document.getElementsByClassName("rTableRow")[1].attributes.style = "visibility:collapse"
+				document.getElementById("more").innerText = "More...";
+			}
+		},
 		/**
  * Detecting vertical squash in loaded image.
  * Fixes a bug which squash image vertically while drawing into canvas for some images.

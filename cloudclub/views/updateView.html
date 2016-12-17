@@ -1,16 +1,10 @@
-<div 
-	data-role="view" 
-	id="update" 
-	data-layout="default" 
-	class="update-view" 
-	data-model="app.Update" 
-	data-init="app.Update.init"
-	data-show="app.Update.show" 
-	data-afterShow="app.Update.afterShow">
+<div data-role="view" id="update" data-layout="default" class="update-view" data-model="app.Update" data-init="app.Update.init"
+	data-show="app.Update.show" data-afterShow="app.Update.afterShow">
 	<div data-role="header">
 		<div data-role="navbar"> Me
 			<!--<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button" ></a>--><a data-role="backbutton" data-align="left">Back</a> <a id="logoffButton" style="display:" data-role="button" data-click="app.helper.logout"
-				data-align="right">Logout</a> <a id="saveButton" style="display: none" data-align="left" data-role="button" data-click="app.Update.update">Save</a>			</div>
+				data-align="right">Logout</a> <a id="saveButton" style="display: none" data-align="left" data-role="button" data-click="app.Update.update">Save</a>
+		</div>
 	</div>
 	<form id="update">
 		<ul id="update-form" data-role="listview" data-style="inset">
@@ -30,12 +24,13 @@
 						</td>
 						<td> <a data-role="button" data-click="app.Update.showImage" class="btn-continue" style="margin: 20px; padding:10px">
                                 Change the Avatar!
-                            </a> </td>
+                            </a>
+							<div> <textarea id="newEventText" padding="10px" style="background-color: azure;font-style: italic;" data-bind="text: DisplayName"
+									placeholder="Name the Image?" required validationMessage="Add a Name!"></textarea>
+								<!--<a class="btn" data-align="right" data-role="button" data-bind="click: saveActivity" style="margin: 20px; padding:10px">Save this Image</a>--></div>
+						</td>
 					</tr>
 				</table>
-				<div> <textarea id="newEventText" style="background-color: azure;font-style: italic;" data-bind="text: DisplayName" placeholder="What is this Image?"
-						required validationMessage="Please Title this image!"></textarea>
-					<!--							<a class="btn" data-align="right" data-role="button" data-bind="click: saveActivity" style="margin: 20px; padding:10px">Save this Image</a>--></div>
 			</li>
 			<li> <label>
                     Joined:
@@ -43,23 +38,15 @@
                 </label> </li>
 			<li class="select-wrp"> <label>
                     Language:
-                    <select id="updateLanguagePicker" data-bind="value: Language" onchange="app.Update.onSelectChange(this)">
-                        <option value="0" selected>Change your language</option>
-                        <option value="1">English</option>
+                    <select id="updateGenderPicker" data-bind="value: Language" onchange="app.Update.onSelectChange(this)">
+                        <option value="1" selected >English</option>
                         <option value="2">Le Français</option>
-                        <option value="2">Deutsch</option>
-                        <option value="2">Português</option>
-                        <option value="2">Español</option>
+                        <option value="3">Deutsch</option>
+                        <option value="4">Português</option>
+                        <option value="5">Español</option>
+                        <option value="6">Nederland</option>
                     </select>
                 </label></li>
-			<li class="select-wrp"> <label>
-                    Gender:
-                    <select id="updateGenderPicker" data-bind="value: Gender" onchange="app.Update.onSelectChange(this)">
-                        <option value="0" selected>Include your gender</option>
-                        <option value="1">Male</option>
-                        <option value="2">Female</option>
-                    </select>
-                </label> </li>
 			<li class="select-wrp"> <label>
                     Service Level:
                     <select id="updateLevelPicker" data-bind="value: Level" onchange="app.Update.onSelectChange(this)">
@@ -69,34 +56,31 @@
                         <option value="4">With Notifications Services</option>
                     </select>
                 </label> </li>
-			<li> <label>
-						Auto Blog: 
-					<a id="autoBlog" data-role="button" 
-					class="btn-continue" data-click="app.Update.onSelectChange"
-					style="margin: 20px 20px 20px 50px; padding:10px">
-                    <b><span data-bind="text: autoBlogState"></span></b>
-                </a> </label></li>
-			</li>
-			<li> <label>
-					Remember Me: 
-					<a id="rememberMe" data-role="button" 
-					class="btn-continue" 
-					data-click="app.Update.onSelectChange" style="margin: 20px; padding:10px">
-                    <b><span data-bind="text: rememberMeState"></span></b>
-                </a> </label></li>
-		</ul></form>
-				<ul id="favorites-listview" data-style="inset" data-role="listview" data-click="app.Update.onSelectChange"></ul>
-			
-	
+			<li class="select-wrp"> <label id="switchField">
+                        <span 
+						data-bind="text: autoBlogText"></span>
+                        <input 
+						id="abswitch" 
+						data-bind="value: autoBlogState" 
+						data-role="switch" 
+						type="switch">
+                    </label> </li>
+			<li class="select-wrp"> <label id="switchField">
+					<span  
+					data-bind="text: rememberMeText"></span>
+					<input 
+					id="rmswitch" 
+					data-bind="value: rememberMeState" 
+					data-role="switch" 
+					type="switch">
+                </label> </li>
+		
+
+		</ul>
+		<div class="button-group"> <a class="btn-login" data-role="button" href="#views/mapView.html"> 
+				Cancel
+				</a> <a class="btn-continue" data-role="button" href="#views/mediaView.html"> 
+				Options
+				</a> <a class="btn-register" data-role="button" data-click="app.Update.update">Update</a> </div>
+	</form>
 </div>
-<!-- Activities ListView Template -->
-<script type="text/x-kendo-template" id="favoriteTemplate"> <label class="km-label-above">
-		<img src="styles/images/#: name #.png" width="40px" height="auto" /> 
-            <span><b><font size=3> #:name# is 
-			#if("OFF" === selected ){#
-			<font size="3" color="red"> #:selected# 
-			#}else{#			
-			<font size="4" color="green"> #:selected# 
-			#}#
-			</b></span>
-        </label> </script>

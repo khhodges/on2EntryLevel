@@ -138,25 +138,45 @@ app.Update = (function () {
 				PictureUrl: 'url("' + app.Users.currentUser.data.PictureUrl + '");',
 				aPictureUrl: app.Users.currentUser.data.PictureUrl,
 				autoBlogState: app.Users.currentUser.data.jsonList.partner.autoBlog,
-				rememberMeState: app.Users.currentUser.data.jsonList.partner.rememberMe
+				rememberMeState: app.Users.currentUser.data.jsonList.partner.rememberMe,
+				rememberMeText: appSettings.messages.rememberMe,
+				autoBlogText: appSettings.messages.autoBlog
 										  });
 			kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);
+			// try {
+			// 	favorites = app.Users.currentUser.data.jsonDirectory;
+			// 	$("#favorites-listview").kendoMobileListView({
+			// 		dataSource: favorites,
+			// 		template: kendo.template($('#favoriteTemplate').html()),
+			// 		selectable: "multiple",
+			// 		change: function () {
+			// 			app.showAlert("Change event!")
+			// 		}
+			// 	})
+			//         .data("kendoListView");
+			// } catch (ex) {
+			// 	app.showAlert(JSON.stringify(ex));
+			// }
+		};
+		var showMore = function () {
 			try {
 				favorites = app.Users.currentUser.data.jsonDirectory;
-				$("#favorites-listview").kendoMobileListView({
-					dataSource: favorites,
+				$("#media-listView").kendoMobileListView({
+					dataSource: {
+						data: favorites,
+						group: { field: "group" }
+					},
 					template: kendo.template($('#favoriteTemplate').html()),
-					selectable: "multiple",
+					style: "inset",
 					change: function () {
 						app.showAlert("Change event!")
 					}
 				})
-                    .data("kendoListView");
+					.data("kendoListView");
 			} catch (ex) {
 				app.showAlert(JSON.stringify(ex));
 			}
 		};
-
 		var onSelectChange = function (sel) {
 			if (sel.button) {
 				sb = document.getElementById("saveButton");
@@ -268,6 +288,7 @@ app.Update = (function () {
 		return {
 			init: init,
 			show: show,
+			showMore: showMore,
 			onSelectChange: onSelectChange,
 			update: update,
 			showImage: pickImage,

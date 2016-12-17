@@ -55,32 +55,28 @@
 	<!--WELCOME VIEW -->
 	<div data-role="view" id="hello" data-show="app.helper.english()">
 		<header data-role="header">
-			<div data-role="navbar"> 
-            <span data-role="view-title">Cloud Club</span>
-                <a id="setupBtn" data-role="button" data-align="left" href="#welcome">Sign In</a>				
-            <a id="continueButton" style="display:none" data-role="button" href="#views/mapView.html" data-align="right">Hot Spots</a>				</div>
+			<div data-role="navbar"> <span data-role="view-title">Cloud Club</span> <a id="setupBtn" data-role="button" data-align="left" href="#welcome">Sign In</a>				<a id="continueButton" style="display:none" data-role="button" href="#views/mapView.html" data-align="right">Hot Spots</a>				</div>
 		</header>
 		<h2 class="app-name">
                 Cloud Club Application>
             </h2>
 		<div data-role="listview" data-style="inset">
-			<table style="width:100%; margin-top:15px">
-				<tr style="width:100%">
-					<td style="width:auto"> <a data-role="button" data-click="app.helper.spanish" class="btn-register">Español</a> </td>
-					<td style="width:auto">
-					<a data-role="button" data-click="app.helper.portuguese" class="btn-login km-widget km-button">Português</a> </td>
-					<td
-						style="width:auto"> <a data-role="button" id="more" data-click="app.helper.more" class="btn-continue km-widget km-button">More...</a> </td>
-				</tr>
-				<tr id="moreLanguages" hidden style="width:100%">
-					<td style="width:auto"> <a data-role="button" data-click="app.helper.german" class="btn-register">Deutsch</a> </td>
-					<td style="width:auto">
-					<a data-role="button" data-click="app.helper.french" class="btn-login km-widget km-button">Français</a> </td>
-					<td style="width:auto">
-					<a data-role="button" data-click="app.helper.english" class="btn-continue km-widget km-button">English</a> </td>
-				</tr>
-			</table> <br />
-			<div id="introduction"> </div><br/>The On2See Team<br/><a href="mailto:newpartner@on2see.com" >Send us an Email</a> </div>
+			<div class="rTable">
+				<div class="rTableBody">
+					<div class="rTableRow">
+						<div class="rTableCell"><a class="btn-register" data-role="button" data-click="app.helper.spanish">Español</a></div>
+						<div class="rTableCell"><a class="btn-login km-widget km-button" data-role="button" data-click="app.helper.portuguese">Português</a></div>
+						<div class="rTableCell">
+							<a id="more" class="btn-continue km-widget km-button" data-role="button" data-click="app.helper.dutch">Nederlands</a></div>
+					</div>
+					<div id="moreLanguages" class="rTableRow" hidden>
+						<div hidden class="rTableCell"><a class="btn-register" data-role="button" data-click="app.helper.german">Deutsch</a></div>
+						<div hidden class="rTableCell"><a class="btn-login km-widget km-button" data-role="button" data-click="app.helper.french">Français</a></div>
+						<div hidden class="rTableCell"><a class="btn-continue km-widget km-button" data-role="button" data-click="app.helper.english">English</a></div>
+				</div>
+			</div>
+		</div> <br />
+		<div id="introduction"> </div><br/>The On2See Team<br/><a href="mailto:newpartner@on2see.com">Send us an Email</a> </div>
 	</div>
 	<div data-role="view" id="welcome" data-layout="default" class="welcome-scrn form-view" data-model="app.Login" data-init="app.Login.init"
 		data-show="app.Login.show">
@@ -117,8 +113,7 @@
 					<a data-role="button" href="#views/mapView.html" class="btn-continue km-widget km-button">Hot Spots</a> </td>
 				</tr>
 			</table><br /> <button data-role="button" class="btn-view" href="#components/aboutView/view.html">See how!</button>
-			<!--id="openExternalInAppBrowser"--><br /> <a href="#password">Forgot password?</a><br/> 
-			<span>CC Release 1.2.0 - 11/19/2016</span><br />
+			<!--id="openExternalInAppBrowser"--><br /> <a href="#password">Forgot password?</a><br/> <span>CC Release 1.2.0 - 11/19/2016</span><br />
 			<!--<a href="tel:+19548398525">Call us on +1.954-839-8525</a>--></div>
 	</div>
 	<div data-role="view" id="password" data-title="Reset Password" data-model="app.Signup">

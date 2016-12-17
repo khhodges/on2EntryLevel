@@ -1,4 +1,11 @@
 /*#kendoUiMobileApp*/ 
+.rTable { display: table; width: 100%;} 
+.rTableRow { display: table-row; }
+.rTableHeading { background-color: #ddd; display: table-header-group; }
+.rTableCell, .rTableHead { display: table-cell; padding: 0px 0px; border: 0px solid #999999; }
+.rTableHeading { display: table-header-group; background-color: #ddd; font-weight: bold; }
+.rTableFoot { display: table-footer-group; font-weight: bold; background-color: #ddd; }
+.rTableBody { display: table-row-group; }
 .image-with-text img {
     float: left;
     margin-right: 15px;
