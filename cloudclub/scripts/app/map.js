@@ -655,7 +655,7 @@ app.Places = (function () {
 				}
 				var infoContent = '<h3>' + appSettings.messages.inspectorTitle + '</h3>';
 				for (var i = 0; i < options.length; i++) {
-					if (options[i].selected === 'ON') {
+					if (options[i].selected === true) {
 						var name = options[i].name;
 						infoContent = infoContent + appSettings.infoContent[name];
 					}
@@ -948,7 +948,7 @@ app.Places = (function () {
 				streetView = map.getStreetView();
 			},
 			show: function () {
-				if (app.Users.currentUser.data && app.Users.currentUser.data.jsonList.partner.rememberMe === "ON") {
+				if (app.Users.currentUser.data && app.Users.currentUser.data.jsonList.partner.rememberMe === true) {
 					localStorage.access_token = localStorage.access_token1
 				}
 				app.Places.locationViewModel.set("isGoogleMapsInitialized", true);

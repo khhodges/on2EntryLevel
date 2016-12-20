@@ -140,23 +140,10 @@ app.Update = (function () {
 				autoBlogState: app.Users.currentUser.data.jsonList.partner.autoBlog,
 				rememberMeState: app.Users.currentUser.data.jsonList.partner.rememberMe,
 				rememberMeText: appSettings.messages.rememberMe,
-				autoBlogText: appSettings.messages.autoBlog
+				autoBlogText: appSettings.messages.autoBlog,
+				click:onSelectChange
 										  });
 			kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);
-			// try {
-			// 	favorites = app.Users.currentUser.data.jsonDirectory;
-			// 	$("#favorites-listview").kendoMobileListView({
-			// 		dataSource: favorites,
-			// 		template: kendo.template($('#favoriteTemplate').html()),
-			// 		selectable: "multiple",
-			// 		change: function () {
-			// 			app.showAlert("Change event!")
-			// 		}
-			// 	})
-			//         .data("kendoListView");
-			// } catch (ex) {
-			// 	app.showAlert(JSON.stringify(ex));
-			// }
 		};
 		var showMore = function () {
 			try {
@@ -166,10 +153,15 @@ app.Update = (function () {
 						data: favorites,
 						group: { field: "group" }
 					},
+					change: function (e) {
+						console.log(e.dataItem.title);
+					},
 					template: kendo.template($('#favoriteTemplate').html()),
 					style: "inset",
-					change: function () {
-						app.showAlert("Change event!")
+					click: function () {
+						var index = this.select().index(),
+							dataItem = this.dataSource.view()[index];
+						app.showAlert("id: " + dataItem.id + ", text: " + dataItem.text);
 					}
 				})
 					.data("kendoListView");

@@ -3,8 +3,7 @@
 	<div data-role="header">
 		<div data-role="navbar"> Me
 			<!--<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button" ></a>--><a data-role="backbutton" data-align="left">Back</a> <a id="logoffButton" style="display:" data-role="button" data-click="app.helper.logout"
-				data-align="right">Logout</a> <a id="saveButton" style="display: none" data-align="left" data-role="button" data-click="app.Update.update">Save</a>
-		</div>
+				data-align="right">Logout</a> <a id="saveButton" style="display: none" data-align="left" data-role="button" data-click="app.Update.update">Save</a>			</div>
 	</div>
 	<form id="update">
 		<ul id="update-form" data-role="listview" data-style="inset">
@@ -58,24 +57,13 @@
                 </label> </li>
 			<li class="select-wrp"> <label id="switchField">
                         <span 
-						data-bind="text: autoBlogText"></span>
-                        <input 
-						id="abswitch" 
-						data-bind="value: autoBlogState" 
-						data-role="switch" 
-						type="switch">
-                    </label> </li>
+						data-bind="text: autoBlogText"></span></label> 
+						<input id="abswitch" data-bind="events:{click:click},checked: autoBlogState" data-role="switch" type="switch">				</li>
 			<li class="select-wrp"> <label id="switchField">
 					<span  
-					data-bind="text: rememberMeText"></span>
-					<input 
-					id="rmswitch" 
-					data-bind="value: rememberMeState" 
-					data-role="switch" 
-					type="switch">
-                </label> </li>
-		
-
+					data-bind="text: rememberMeText"></span></label> 
+					<input id="rmswitch" data-bind="checked: rememberMeState" data-role="switch"
+					type="switch"> </li>
 		</ul>
 		<div class="button-group"> <a class="btn-login" data-role="button" href="#views/mapView.html"> 
 				Cancel
