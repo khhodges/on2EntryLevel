@@ -140,25 +140,43 @@ app.Update = (function () {
 				autoBlogState: app.Users.currentUser.data.jsonList.partner.autoBlog,
 				rememberMeState: app.Users.currentUser.data.jsonList.partner.rememberMe,
 				rememberMeText: appSettings.messages.rememberMe,
+				languageState: app.Users.currentUser.data.jsonList.partner.language,
+				languageText: appSettings.messages.language,
 				autoBlogText: appSettings.messages.autoBlog,
-				click:onSelectChange
-										  });
+				onBlogChange: function (e) {
+					sb = document.getElementById("saveButton");
+					sb.style.display = "";
+					app.Users.currentUser.data.jsonList.partner.autoBlog = e.checked;
+				},
+				onRememberChange: function (e) {
+					sb = document.getElementById("saveButton");
+					sb.style.display = "";
+					app.Users.currentUser.data.jsonList.partner.rememberMe = e.checked;
+				}
+			})
 			kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);
 		};
 		var showMore = function () {
+			favorites = app.Users.currentUser.data.jsonDirectory[0];
+			var viewModel = kendo.observable({
+				isChecked: true,
+				onVmChange: function () {
+					var index = this.select().index(),
+						dataItem = this.dataSource.view()[index];
+					app.showAlert("id: " + dataItem.id + ", text: " + dataItem.text);
+				},
+				ds: new kendo.data.DataSource({
+					data: favorites,
+					group: { field: "group" }
+				})
+			});
 			try {
-				favorites = app.Users.currentUser.data.jsonDirectory;
 				$("#media-listView").kendoMobileListView({
-					dataSource: {
-						data: favorites,
-						group: { field: "group" }
-					},
-					change: function (e) {
-						console.log(e.dataItem.title);
-					},
+					dataModel: viewModel,
+					dataSource: viewModel.ds,
 					template: kendo.template($('#favoriteTemplate').html()),
 					style: "inset",
-					click: function () {
+					onLvChange: function () {
 						var index = this.select().index(),
 							dataItem = this.dataSource.view()[index];
 						app.showAlert("id: " + dataItem.id + ", text: " + dataItem.text);
@@ -170,42 +188,10 @@ app.Update = (function () {
 			}
 		};
 		var onSelectChange = function (sel) {
-			if (sel.button) {
-				sb = document.getElementById("saveButton");
-				sb.style.display = "";
-				var name = sel.button[0].attributes[0].value, state;
-				if (name === "autoBlog") {
-					state = app.Users.currentUser.data.jsonList.partner.autoBlog;
-				} else {
-					state = app.Users.currentUser.data.jsonList.partner.rememberMe;
-				}
-				//app.showAlert(name + ", " + state)
-				var element = document.getElementById(name);
-				if (state === "ON") {
-					app.Users.setItem(name, "selected", "OFF");
-					element.innerText = "OFF";
-					element.className = "btn-login km-widget km-button km-state-active";
-				}
-				else {
-					app.Users.setItem(name, "selected", "ON");
-					element.innerText = "ON";
-					element.className = "btn-register km-widget km-button km-state-active";
-				}
-			}
-			if (!sel.dataItem) {
-				return;
-			};
 			sb = document.getElementById("saveButton");
 			sb.style.display = "";
-			//app.notify.showShortTop(appSettings.messages.settingsMessage);
-			var selected = sel.dataItem.selected;//options[sel.selectedIndex].value;
-			var newState = selected === "OFF" ? "ON" : "OFF";
-			sel.dataItem.set("selected", newState);
-			app.Users.setItem(sel.dataItem.name, "selected", newState);
-			//document.getElementById(sel.dataItem.name).checked = sel.dataItem.selected;
-			//sel.style.color = (selected === 0) ? '#b6c5c6' : '#34495e';
-		}
-
+			app.Users.currentUser.data.jsonList.partner.language = sel.value;
+		};
 		var crop = function () {
 			var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
 			var starter = document.getElementById("updateImage");
@@ -281,7 +267,7 @@ app.Update = (function () {
 			init: init,
 			show: show,
 			showMore: showMore,
-			onSelectChange: onSelectChange,
+			onSelectChange: function(){app.showAlert("onSelectChange")},
 			update: update,
 			showImage: pickImage,
 			crop: crop,

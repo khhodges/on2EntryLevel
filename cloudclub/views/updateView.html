@@ -5,7 +5,7 @@
 			<!--<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button" ></a>--><a data-role="backbutton" data-align="left">Back</a> <a id="logoffButton" style="display:" data-role="button" data-click="app.helper.logout"
 				data-align="right">Logout</a> <a id="saveButton" style="display: none" data-align="left" data-role="button" data-click="app.Update.update">Save</a>			</div>
 	</div>
-	<form id="update">
+	<form id="update"><font size=3> 
 		<ul id="update-form" data-role="listview" data-style="inset">
 			<!--<li class="txtarea-wrp">
                 <label>
@@ -31,41 +31,42 @@
 					</tr>
 				</table>
 			</li>
-			<li> <label>
+			<li> <b>
                     Joined:
                     <input type="date" id="updateBirthDatePicker" data-bind="value: BirthDate">
-                </label> </li>
-			<li class="select-wrp"> <label>
+                </b> </li>
+			<li class="select-wrp"> <b><label>
                     Language:
-                    <select id="updateGenderPicker" data-bind="value: Language" onchange="app.Update.onSelectChange(this)">
-                        <option value="1" selected >English</option>
+                    <select id="updateGenderPicker" data-bind="value: languageState" onchange="app.Update.onSelectChange(this)">
+                        <option value="1">English</option>
                         <option value="2">Le Français</option>
                         <option value="3">Deutsch</option>
                         <option value="4">Português</option>
                         <option value="5">Español</option>
                         <option value="6">Nederland</option>
                     </select>
-                </label></li>
-			<li class="select-wrp"> <label>
+                </b></li>
+			<li class="select-wrp"> <b>
                     Service Level:
                     <select id="updateLevelPicker" data-bind="value: Level" onchange="app.Update.onSelectChange(this)">
-                        <option value="1">Free Local Services</option>
-                        <option value="2">Local Services without Ads</option>
-                        <option value="3">With Address Book & Calendar</option>
-                        <option value="4">With Notifications Services</option>
+                        <option value="1">Free Member Services</option>
+                        <option value="2">Member without Ads</option>
+                        <option value="3">Member with Customization Optiond</option>
+                        <option value="4">Partner using Notifications Services</option>
                     </select>
-                </label> </li>
-			<li class="select-wrp"> <label id="switchField">
-                        <span 
-						data-bind="text: autoBlogText"></span></label> 
-						<input id="abswitch" data-bind="events:{click:click},checked: autoBlogState" data-role="switch" type="switch">				</li>
-			<li class="select-wrp"> <label id="switchField">
-					<span  
-					data-bind="text: rememberMeText"></span></label> 
-					<input id="rmswitch" data-bind="checked: rememberMeState" data-role="switch"
-					type="switch"> </li>
+                </b> </li>
+			<li class="select-wrp"> <b><font size=3> <label data-bind="text: autoBlogText"/></font>
+				<font size="3" color="red" data-bind="invisible: autoBlogState"> OFF </font>
+				<font size="4" color="green"  data-bind="visible: autoBlogState"> ON </font>
+      	</b> <input id="#:name#-switch" data-role="switch" data-bind="events: { change: onBlogChange }, checked: autoBlogState"
+					data-on-label="ON" data-off-label="OFF" /> </li>
+			<li class="select-wrp"> <b><font size=3> <label data-bind="text: rememberMeText"/></font>
+				<font size="3" color="red" data-bind="invisible: rememberMeState"> OFF </font>
+				<font size="4" color="green"  data-bind="visible: rememberMeState"> ON </font>
+      	</b> <input id="#:name#-switch" data-role="switch" data-bind="events: { change: onRememberChange }, checked: rememberMeState"
+					data-on-label="ON" data-off-label="OFF" /> </li>
 		</ul>
-		<div class="button-group"> <a class="btn-login" data-role="button" href="#views/mapView.html"> 
+		<div class="button-group" style="margin-top:-25px" > <a class="btn-login" data-role="button" href="#views/example.html"> 
 				Cancel
 				</a> <a class="btn-continue" data-role="button" href="#views/mediaView.html"> 
 				Options

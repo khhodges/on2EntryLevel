@@ -1,25 +1,22 @@
 <div id="media-list" class="view media-view" data-role="view" data-model="app.Update" data-show="app.Update.showMore">
 	<div data-role="header">
 		<div data-role="navbar"> My Media
-			<!--<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button" ></a>--><a data-role="backbutton" data-align="left">Back</a> <a id="logoffButton" style="display:" data-role="button" data-click="app.helper.logout"
-				data-align="right">Logout</a> <a id="saveButton" style="display: none" data-align="left" data-role="button" data-click="app.Update.update">Save</a>			</div>
+			<!--<a data-role="button" href="#appDrawer" data-rel="drawer" data-align="left" data-icon="drawer-button" ></a>-->
+			<a data-role="backbutton" data-align="left">Back</a> 
+			<a id="logoffButton" style="display:" data-role="button" data-click="app.helper.logout"	data-align="right">Logout</a> 
+			<a id="saveButton" style="display: none" data-align="left" data-role="button" data-click="app.Update.update">Save</a>			</div>
 	</div>
-	<div>
+	<div data-model="viewModel">
 		<h3>Select any 8 from these media options to populate your Inspector Window</h3>
-		<div data-role="view" data-model="model" data-bind="source: foo">
-			<ul id="media-listView" data-role="listview"></ul>
+		<div>
+			<ul id="media-listView" data-role="listview" data-template="favoriteTemplate" data-bind="source: ds"></ul>
 		</div>
 	</div>
 	<!-- Activities ListView Template -->
 	<script type="text/x-kendo-template" id="favoriteTemplate"> 
-			<img src="styles/images/#: name #.png" width="40px" height="auto" data-style="inset" /> 
-			<span><b><font size=3> #:name# is</font> 
-			#if(!selected){#
-			<font size="3" color="red"> OFF </font>
-			#}else{#			
-			<font size="4" color="green"> ON </font>
-			#}#
-		</b>
-		<input id="#:name#-switch" data-role="switch" data-bind="events: { change: onSelectChange }, checked: selected" data-on-label="ON" data-off-label="OFF"/>
-</script>
+		<img src="styles/images/#: name #.png" width="40px" height="auto" /> 
+		<b><font size=3> #:name# </font> 
+		<input id="#:name#-switch" data-role="switch" 
+		data-bind="events: { change: onLvChange }, checked: selected" data-on-label="ON" data-off-label="OFF"/>
+	</script>
 </div>

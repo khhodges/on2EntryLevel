@@ -1,0 +1,269 @@
+<div data-role="layout" data-id="main">
+	<header data-role="header">
+		<div data-role="navbar">
+			<span data-role="view-title"></span>
+			<a data-role="backbutton" data-align="left">Back</a>
+			<a data-role="button" data-align="right" href="#welcome">Login</a>
+		</div>
+	</header>
+</div>
+
+<div data-role="layout" data-id="main-nonav">
+	<header data-role="header">
+		<div data-role="navbar">
+			<span data-role="view-title"></span>
+		</div>
+	</header>
+</div>
+<div data-role="view" data-title="Media Options" data-layout="main" data-model="dataModel" >
+	<div data-style="inset"> <span>The is a list view</span>
+
+
+		<ul id="media-listView" data-model="viewModel" data-style="inset" data-role="listview" data-template="favoriteTemplate"
+			data-bind="source: ds"></ul>
+		<script>
+			var viewModel = kendo.observable({
+        ds: new kendo.data.DataSource({
+        	data: [
+    {
+      "group": "1. Social Media",
+      "name": "facebook",
+      "icon": "styles/images/default-image.jpg",
+      "path": "https://www.facebook.com/muddywatersrestaurant",
+      "selected": true
+    },
+    {
+      "group": "1. Social Media",
+      "name": "yelp",
+      "icon": "styles/images/default-image.jpg",
+      "path": "https://www.yelp.com/biz/jbyrds-muddy-waters-deerfield-beach",
+      "selected": false
+    },
+    {
+      "group": "1. Social Media",
+      "name": "instagram",
+      "icon": "styles/images/default-image.jpg",
+      "path": "https://www.instagram.com/explore/locations/1579177/",
+      "selected": true
+    },
+    {
+      "group": "1. Social Media",
+      "name": "googleMap",
+      "icon": "styles/images/default-image.jpg",
+      "path": "https://www.google.com/maps/place/JByrd%27s+Muddy+Waters+Restaurant+%26+Raw+Bar/@26.31823,-80.1360707,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x79892be93ef49914!8m2!3d26.31823!4d-80.133882",
+      "selected": true
+    },
+    {
+      "group": "1. Social Media",
+      "name": "zomato",
+      "icon": "styles/images/default-image.jpg",
+      "path": "https://www.zomato.com/miami/jbyrds-muddy-waters-restaurant-raw-bar-deerfield-beach/menu?utm_source=Google&utm_medium=Local&utm_campaign=GoogleMenus",
+      "selected": false
+    },
+    {
+      "group": "2. Sport",
+      "name": "nfl",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "2. Sport",
+      "name": "ESPN",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "3. News",
+      "name": "bloomberg",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "4. Professional",
+      "name": "linkedIn",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "3. News",
+      "name": "twitter",
+      "icon": "",
+      "Path": "",
+      "selected": true
+    },
+    {
+      "group": "1. Social Media",
+      "name": "googleplus",
+      "icon": "",
+      "Path": "",
+      "selected": true
+    },
+    {
+      "group": "4. Professional",
+      "name": "angiesList",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "3. News",
+      "name": "bing",
+      "icon": "",
+      "Path": "",
+      "selected": true
+    },
+    {
+      "group": "4. Professional",
+      "name": "blogger",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "4. Professional",
+      "name": "groupon",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "1. Social Media",
+      "name": "youtube",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "3. News",
+      "name": "google",
+      "icon": "",
+      "Path": "",
+      "selected": true
+    },
+    {
+      "group": "1. Social Media",
+      "name": "flickr",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "0. Platform",
+      "name": "events",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "0. Platform",
+      "name": "settings",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "5. Enhanced",
+      "name": "contacts",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "1. Social Media",
+      "name": "pintrest",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "5. Enhanced",
+      "name": "notifications",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "5. Enhanced",
+      "name": "mail",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "1. Social Media",
+      "name": "vine",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "0. Platform",
+      "name": "iSee",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "5. Enhanced",
+      "name": "weather",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "4. Professional",
+      "name": "wikipedia",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "3. News",
+      "name": "yahoo",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "4. Professional",
+      "name": "yellowpages",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "5. Enhanced",
+      "name": "calendar",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "0. Platform",
+      "name": "camera",
+      "icon": "",
+      "Path": "",
+      "selected": false
+    }
+  ],
+  group:{field:"group"}
+        }),
+        onSelectChange: function(e){
+        	alert("change");
+        },
+		style: "inset"
+      });
+		</script>
+		<script type="text/x-kendo-template" id="favoriteTemplate"> <b>
+			<font size=3> <label data-bind="text: name"/> is</font>
+			<font size="3" color="red" data-bind="invisible: selected"> OFF </font>
+			<font size="4" color="green"  data-bind="visible: selected"> ON </font>
+		</b> <input id="#:name#-switch" data-role="switch" data-bind="events: { change: onSelectChange }, checked: selected" data-on-label="YES"
+				data-off-label="NO" /> </script>
+	</div>
+</div>
+</div>
