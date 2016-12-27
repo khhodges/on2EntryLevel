@@ -19,6 +19,7 @@ app.Update = (function () {
 		var fui;
 		var changed = false;
 		var sb;
+		var viewModel;
 
 		// Update user after required fields (NOT username, email and password) in Backend Services
 		var update = function () {
@@ -106,7 +107,6 @@ app.Update = (function () {
 					sb.style.display = "none";
 				}
 			});
-
 			//$updateInfo.on('keydown', app.helper.autoSizeTextarea);
 		}
 
@@ -155,34 +155,43 @@ app.Update = (function () {
 				}
 			})
 			kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);
-		};
-		var showMore = function () {
-			favorites = app.Users.currentUser.data.jsonDirectory[0];
-			var viewModel = kendo.observable({
-				isChecked: true,
-				onVmChange: function () {
-					var index = this.select().index(),
-						dataItem = this.dataSource.view()[index];
-					app.showAlert("id: " + dataItem.id + ", text: " + dataItem.text);
+			//favorites = app.Users.currentUser.data.jsonDirectory;
+			//app.showAlert(JSON.stringify("favorites"));
+			viewModel = kendo.observable({
+				onVmChange: function (e) {
+					sb = document.getElementById("saveMedia");
+					sb.style.display = "";
+					//app.showAlert(JSON.stringify(app.Users.currentUser.data.jsonDirectory))
+					//var name = e.data.name,
+					//	dataItem = e.data;
+					//	for(var i=0;i<app.Users.currentUser.data.jsonDirectory.length;i++){
+					//		var item = app.Users.currentUser.data.jsonDirectory[i];
+					//		if(item.name=name){
+								//item.selected=!dataItem.selected;
+					//			break;
+					//		}
+					//	}
+					//app.notify.showShortTop("id: " + name + ", selected: " + dataItem.selected);
 				},
 				ds: new kendo.data.DataSource({
-					data: favorites,
-					group: { field: "group" }
+					data: app.Users.currentUser.data.jsonDirectory,
+					group:{field:"group"}
 				})
 			});
+			//app.showAlert(JSON.stringify("viewModel"));
+			app.Update.viewModel = viewModel;
+			if(!app.Update.viewModel || !app.Update.viewModel.ds) app.showError("No viewModel");
+		};
+		var initMore = function () {
+		};
+		var showMore = function(){
 			try {
 				$("#media-listView").kendoMobileListView({
-					dataModel: viewModel,
-					dataSource: viewModel.ds,
+					dataSource: ds,
 					template: kendo.template($('#favoriteTemplate').html()),
-					style: "inset",
-					onLvChange: function () {
-						var index = this.select().index(),
-							dataItem = this.dataSource.view()[index];
-						app.showAlert("id: " + dataItem.id + ", text: " + dataItem.text);
-					}
+					style: "inset"
 				})
-					.data("kendoListView");
+					.data("kendoMobileListView");
 			} catch (ex) {
 				app.showAlert(JSON.stringify(ex));
 			}
@@ -266,14 +275,16 @@ app.Update = (function () {
 		return {
 			init: init,
 			show: show,
+			initMore:initMore,
 			showMore: showMore,
-			onSelectChange: function(){app.showAlert("onSelectChange")},
+			//onSelectChange: function(){app.showAlert("onSelectChange")},
 			update: update,
 			showImage: pickImage,
 			crop: crop,
 			userData: function () {
 				return dataSource;
-			}
+			},
+			viewModel: viewModel
 		};
 	} ()
 	);

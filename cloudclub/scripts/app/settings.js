@@ -976,64 +976,65 @@ welcome: "\n Controleer genieten van deze geavanceerde mobiele applicatie met de
 		"partner": {
 			"stars": "5",
 			"rating": "$$",
-			"autoBlog": "OFF",
-			"rememberMe": "ON"
+			"autoBlog": false,
+			"rememberMe": true
 		},
 		"url": [
 			{
 				"name": "facebook",
 				"icon": "styles/images/default-image.jpg",
 				"path": "https://www.facebook.com/muddywatersrestaurant",
-				"selected": "ON"
+				"selected": true
 			},
 			{
 				"name": "yelp",
 				"icon": "styles/images/default-image.jpg",
 				"path": "https://www.yelp.com/biz/jbyrds-muddy-waters-deerfield-beach",
-				"selected": "OFF"
+				"selected": false
 			},
 			{
 				"name": "instagram",
 				"icon": "styles/images/default-image.jpg",
 				"path": "https://www.instagram.com/explore/locations/1579177/",
-				"selected": "OFF"
+				"selected": false
 			},
 			{
-				"name": "googleMap",
+				"name": "googleMaps",
 				"icon": "styles/images/default-image.jpg",
 				"path": "https://www.google.com/maps/place/JByrd%27s+Muddy+Waters+Restaurant+%26+Raw+Bar/@26.31823,-80.1360707,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x79892be93ef49914!8m2!3d26.31823!4d-80.133882",
-				"selected": "ON"
+				"selected": true
 			},
 			{
 				"name": "twitter",
 				"icon": "",
 				"Path": "",
-				"selected": "ON"
+				"selected": true
 			},
 			{
 				"name": "bing",
 				"icon": "",
 				"Path": "",
-				"selected": "OFF"
+				"selected": false
 			},
 			{
-				"name": "events",
+				"name": "notifications",
 				"icon": "",
 				"Path": "",
-				"selected": "OFF"
+				"selected": false
 			},
 			{
-				"name": "iconSee",
+				"name": "iSee",
 				"icon": "",
 				"Path": "",
-				"selected": "ON"
+				"selected": true
 			}
 		],
 		"defaultOptions": {
 			"standard": [
-				"events",
+				"notifications",
 				"activities",
-				"partner"
+				"partner",
+				"follow"
 			],
 			"search": [
 				"google",
@@ -1049,16 +1050,16 @@ welcome: "\n Controleer genieten van deze geavanceerde mobiele applicatie met de
 				"search",
 				"food"
 			],
-			"jobs": [
+			"professional": [
 				"angiesList",
 				"homeAdviser",
 				"pintrest",
-				"google"
+				"linkedIn"
 			]
 		},
 		"customOptions": [
-			"home",
-			"events",
+			"iSee",
+			"notifications",
 			"zomato",
 			"yelp",
 			"google",
@@ -1068,9 +1069,9 @@ welcome: "\n Controleer genieten van deze geavanceerde mobiele applicatie met de
 		]
 	},
 	infoContent: {
-		"iconSee": "<a id='privateFeed' data-role='button' class='butn' style='padding:5px'><img src='styles/images/iconSee.png' alt='privateFeed' height='auto' width='20%'/></a>",
+		"iSee": "<a id='iSee' data-role='button' class='butn' style='padding:5px'><img src='styles/images/iSee.png' alt='iSee' height='auto' width='20%'/></a>",
 		"camera": "<a id='camera' data-role='button' class='butn' style='padding:5px'> <img src='styles/images/camera.png' alt='cameraLink' height='auto' width='20%'></a>",
-		"events": "<a id='eventFeed' data-role='button' class='butn' style='padding:5px'><img src='styles/images/events.png' alt='eventFeed' height='auto' width='20%'/></a>",
+		"notifications": "<a id='notifications' data-role='button' class='butn' style='padding:5px'><img src='styles/images/notifications.png' alt='notifications' height='auto' width='20%'/></a>",
 		"goHome": "<a id='goHome' data-role='button' data-lat=#lat# data-lng=#lng#class='butn' style='padding:5px'><img src='styles/images/goHome.png' alt='google' height='auto' width='20%'/></a>",
 		"facebook": "<a id='facebook' data-role='button' class='butn' style='padding:5px'><img src='styles/images/facebook.png' alt='facebook' height='auto' width='20%'/></a>",
 		"yelp": "<a id='yelp' data-role='button' class='butn' style='padding:5px'><img src='styles/images/yelp.png' alt='yelp' height='auto' width='20%'/></a>",
@@ -1089,7 +1090,7 @@ welcome: "\n Controleer genieten van deze geavanceerde mobiele applicatie met de
 		"contacts": "<a id='contacts' data-role='button' class='butn' style='padding:5px'><img src='styles/images/contacts.png' alt='contacts' height='auto' width='20%'/></a>",
 		"pintrest": "<a id='pintrest' data-role='button' class='butn' style='padding:5px'><img src='styles/images/pintrest.png' alt='pintrest' height='auto' width='20%'/></a>",
 		"news": "<a id='news' data-role='button' class='butn' style='padding:5px'><img src='styles/images/news.png' alt='news' height='auto' width='20%'/></a>",
-		"mail-icon": "<a id='mail-icon' data-role='button' class='butn' style='padding:5px'><img src='styles/images/mail-icon.png' alt='mail-icon' height='auto' width='20%'/></a>",
+		"mail": "<a id='mail-icon' data-role='button' class='butn' style='padding:5px'><img src='styles/images/mail.png' alt='mail' height='auto' width='20%'/></a>",
 		"vine": "<a id='vine' data-role='button' class='butn' style='padding:5px'><img src='styles/images/vine.png' alt='vine' height='auto' width='20%'/></a>",
 		"weather": "<a id='weather' data-role='button' class='butn' style='padding:5px'><img src='styles/images/weather.png' alt='weather' height='auto' width='20%'/></a>",
 		"wikipedia": "<a id='wikipedia' data-role='button' class='butn' style='padding:5px'><img src='styles/images/wikipedia.png' alt='wikipedia' height='auto' width='20%'/></a>",
@@ -1099,11 +1100,11 @@ welcome: "\n Controleer genieten van deze geavanceerde mobiele applicatie met de
 		"twitter": "<a id='twitter' data-role='button' class='butn' style='padding:5px'><img src='styles/images/twitter.png' alt='twitter' height='auto' width='20%'/></a>",
 		"linkedIn": "<a id='linkedIn' data-role='button' class='butn' style='padding:5px'><img src='styles/images/linkedIn.png' alt='linkedin' height='auto' width='20%'/></a>",
 		"googleplus": "<a id='myGoogle+' data-role='button' class='butn' style='padding:5px'><img src='styles/images/googleplus.png' alt='myGoogle+' height='auto' width='20%'/></a>",
-		"googleMap": "<a id='googleMap' data-role='button' class='butn' style='padding:5px'><img src='styles/images/googleMap.png' alt='googleMap' height='auto' width='20%'/></a>",
+		"googleMaps": "<a id='googleMaps' data-role='button' class='butn' style='padding:5px'><img src='styles/images/googleMaps.png' alt='googleMaps' height='auto' width='20%'/></a>",
 		"google": "<a id='google' data-role='button' class='butn' style='padding:5px'><img src='styles/images/google.png' alt='Google' height='auto' width='20%'/></a>"
 	},
 	"defaultMedia": [
-		{ "name": "facebook", "selected": "ON" }, { "name": "yelp", "selected": "ON" }, { "name": "bing", "selected": "ON" }, { "name": "iconSee", "selected": "ON" }, { "name": "twitter", "selected": "ON" }, { "name": "instagram", "selected": "ON" }, { "name": "events", "selected": "ON" }, { "name": "goHome", "selected": "ON" }
+		{ "name": "facebook", "selected": true }, { "name": "yelp", "selected": true }, { "name": "bing", "selected": true }, { "name": "iSee", "selected": true }, { "name": "twitter", "selected": true }, { "name": "instagram", "selected": true }, { "name": "notifications", "selected": true }, { "name": "googleMaps", "selected": true }
 	],
 	"defaultSites": ["google","youtube", "facebook", "bing", "twitter", "yelp", "instagram", "yellowpages", "linkedIn", "wikipedia", "yahoo", "pintrest", "flickr", "groupon", "angiesList", "ESPN", "nfl", "bloomberg","zomato"]
 };

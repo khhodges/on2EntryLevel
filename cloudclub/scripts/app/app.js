@@ -561,8 +561,55 @@ var app = (function (win) {
 				app.mobileApp.navigate('#welcome');
 			}
 		},
-
+		openBroadcastSheet: function () {
+			if (!app.Places.locationViewModel.checkSimulator()) {
+				app.notify.showBroadcastSheet({
+					'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+					'title': 'What do you want to do?',
+					'buttonLabels': [
+						'Send World Wide',
+						'Send to Nearby Followers',
+						'Send to All Nearby',
+						'Send to selected Friends'
+					],
+					'addCancelButtonWithLabel': 'Cancel',
+					'androidEnableCancelButton': true, // default false
+					'winphoneEnableCancelButton': true, // default false          
+				});
+			} else { app.notify.broadcast; }
+		},
+		showBroadcastSheet: function (options) {
+			if (!this.checkSimulator()) {
+				window.plugins.actionsheet.show(
+					options,
+					function (buttonIndex) {
+						// wrapping in a timeout so the dialog doesn't freeze the app
+						setTimeout(function () {
+							switch (buttonIndex) {
+								case 1: 
+									app.notify.broadcast;
+									break; //'Send WW',
+								case 2: //Send to Followers    
+									app.mobileApp.navigate("#components/followers/view.html?option=nearby");
+									break;
+								case 3:    
+									app.mobileApp.navigate("#components/followers/view.html?option=all");
+									break;
+								case 4:    
+									app.mobileApp.navigate("#components/followers/view.html?option=selected");
+									break;
+								default:
+									app.notify.showShortTop('You will need to upgrade to use this feature.');
+									break;
+							}
+						}, 0);
+					}
+				);
+			}
+		},
 		broadcast: function () {
+
+			//option sheet
 			var activity = app.Activity.activity();
 			//if (activity.Title === "My Private Feed") {
 			//	app.notify.showShortTop("To protect your privacy you cannot broadcast from your Private Data Feed!");

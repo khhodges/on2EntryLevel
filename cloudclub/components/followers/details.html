@@ -1,0 +1,133 @@
+<div data-role="view" data-title="Details" data-model="app.masterDetailView.masterDetailViewModel" data-bind="events: { show: detailsShow }" id="masterDetailViewModelScreen" class="screen screen--detail">
+    <header data-role="header">
+        <div data-role="navbar" class="header-text">
+            <a data-role="backbutton" data-align="left">Back</a>
+            <span data-bind="text: currentItem['City']"></span>
+            <a data-role="button" data-align="right" data-bind="events: { click: editClick }">Edit</a>
+            <a data-role="button" class="nav-button" data-align="right" data-bind="events: { click: deleteClick }"><i class="km-icon km-delete"></i></a>
+        </div>
+    </header>
+
+    <div class="details-content screen__content screen__content--details">
+        <div class="km-listview-wrapper">
+            <ul class="km-listview km-list km-listinset details-fields">
+                <li>
+                    <h3 data-bind="text: currentItem.Place"></h3></li>
+                <li>
+                    <div data-bind="html: currentItem.Address"></div>
+                </li>
+
+                <li class="detail-content-item">
+
+
+                    <div id="connectField" class="field field--heading">
+
+                        <h2>Connect Using</h2>
+
+                    </div>
+
+
+                </li>
+                <li class="form-content-item">
+                    <div id="hyperlink3Field" class="editableListItem field field--link">
+
+                        <div class="field__label" data-bind="text: strings.masterDetailView.masterDetailViewModel.editableListForm111.hyperlink3.title"></div>
+
+                        <div class="field__content">
+
+                            <a href="#" onclick="app.openLink(app.masterDetailView.masterDetailViewModel.linkBind('|Website'));" data-bind="text:currentItem.Website" class="link"></a>
+
+                        </div>
+                    </div>
+                </li>
+                <li class="form-content-item">
+                    <div id="hyperlink2Field" class="editableListItem field field--link">
+
+                        <div class="field__label" data-bind="text: strings.masterDetailView.masterDetailViewModel.editableListForm111.hyperlink2.title"></div>
+
+                        <div class="field__content">
+
+                            <a href="#" onclick="app.openLink(app.masterDetailView.masterDetailViewModel.linkBind('tel:|Phone'));" data-bind="text:currentItem.Phone" class="link"></a>
+
+                        </div>
+                    </div>
+                </li>
+                <li class="form-content-item">
+                    <div id="hyperlink1Field" class="editableListItem field field--link">
+
+                        <div class="field__label" data-bind="text: strings.masterDetailView.masterDetailViewModel.editableListForm111.hyperlink1.title"></div>
+
+                        <div class="field__content">
+
+                            <a href="#" onclick="app.openLink(app.masterDetailView.masterDetailViewModel.linkBind('mailto:|Email'));" data-bind="text:currentItem.Email" class="link"></a>
+
+                        </div>
+                    </div>
+                </li>
+                <li class="form-content-item">
+                    <div id="hyperlinkField" class="editableListItem field field--link">
+
+                        <div class="field__label" data-bind="text: strings.masterDetailView.masterDetailViewModel.editableListForm111.hyperlink.title"></div>
+
+                        <div class="field__content">
+
+                            <a href="#" onclick="app.openLink(app.masterDetailView.masterDetailViewModel.linkBind('sms:|Phone'));" data-bind="text:currentItem.Place" class="link"></a>
+
+                        </div>
+                    </div>
+                </li>
+                <li class="form-content-item">
+                    <div id="hyperlink4Field" class="editableListItem field field--link">
+
+                        <div class="field__label" data-bind="text: strings.masterDetailView.masterDetailViewModel.editableListForm111.hyperlink4.title"></div>
+
+                        <div class="field__content">
+
+                            <a href="#" onclick="app.openLink(app.masterDetailView.masterDetailViewModel.linkBind('geo:|Location'));" data-bind="text:currentItem.Address" class="link"></a>
+
+                        </div>
+                    </div>
+                </li>
+                <li class="form-content-item">
+                    <div id="hyperlink5Field" class="editableListItem field field--link">
+
+                        <div class="field__label" data-bind="text: strings.masterDetailView.masterDetailViewModel.editableListForm111.hyperlink5.title"></div>
+
+                        <div class="field__content">
+
+                            <a href="#components/home/view.html" class="link" data-bind="text: strings.masterDetailView.masterDetailViewModel.editableListForm111.hyperlink5.linkText"></a>
+
+                        </div>
+                    </div>
+                </li>
+                <li class="detail-content-item">
+
+
+                    <div id="heading1Field" class="field field--heading">
+
+                        <h3>Loyalty Club Following</h3>
+
+                    </div>
+
+
+                </li>
+                <li class="detail-content-item">
+                    <div id="dataListField" name="dataList" class="field field--data-list"><span class="field__label" data-bind="text: strings.masterDetailView.masterDetailViewModel.editableListForm111.dataList.title"></span>
+                        <ul class="dataListField field__content">
+                            <li>
+                                <ul data-bind="source: currentItem.Members" data-template="dataList_Members"></ul>
+                                <script id="dataList_Members" type="text/x-kendo-template">
+                                    <li><span data-bind="text: Email"></span></li>
+                                </script>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- START_CUSTOM_CODE_masterDetailViewModel -->
+    <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+
+    <!-- END_CUSTOM_CODE_masterDetailViewModel -->
+</div>

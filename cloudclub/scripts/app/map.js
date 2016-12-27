@@ -657,6 +657,7 @@ app.Places = (function () {
 				for (var i = 0; i < options.length; i++) {
 					if (options[i].selected === true) {
 						var name = options[i].name;
+						if(!appSettings.infoContent[name])app.showError("<"+name+"> is missing")
 						infoContent = infoContent + appSettings.infoContent[name];
 					}
 				}
@@ -732,16 +733,17 @@ app.Places = (function () {
 					if (camera) {
 						camera.addEventListener("click", app.helper.cameraRoute);
 					}
-					var feedRoute = document.getElementById("eventFeed");
+					var feedRoute = document.getElementById("notifications");
 					if (feedRoute) {
 						feedRoute.addEventListener("click", function () {
 							app.mobileApp.navigate("components/notifications/view.html");
 						});
 					}
-					var goHome = document.getElementById("goHome");
+					var goHome = document.getElementById("googleMaps");
 					if (goHome) {
 						goHome.addEventListener("click",
 							function () {
+								if(this.attributes.valueOf()["data-lat"]){
 								var lat = this.attributes.valueOf()["data-lat"].value;
 								var lng = this.attributes.valueOf()["data-lng"].value
 								if((lat === "#lat#"||lng==="#lng")||
@@ -753,7 +755,7 @@ app.Places = (function () {
 										app.Places.browse("https://maps.google.com?saddr=" + locality.lat + "," + locality.lng + "&daddr=" + lat + "," + lng)
 									}
 								}
-							})
+							}})
 					};
 					var saveAddressLink = document.getElementById("saveAddressLink");
 					if (saveAddressLink) {
@@ -767,7 +769,7 @@ app.Places = (function () {
 							}
 						)
 					}
-					var calendarLink = document.getElementById("calendarLink");
+					var calendarLink = document.getElementById("calendar");
 					if (calendarLink) {
 						calendarLink.addEventListener("click",
 							function () {
@@ -775,14 +777,14 @@ app.Places = (function () {
 							}
 						)
 					}
-					var myGooglePlus = document.getElementById("myGoogle+");
+					var myGooglePlus = document.getElementById("googleplus+");
 					if (myGooglePlus) {
 						myGooglePlus.addEventListener('click', function () {
 							// app.showAlert("myGooglePlus")
 							app.Places.browse("http://plus.google.com")
 						})
 					}
-					var privateFeed = document.getElementById("privateFeed");
+					var privateFeed = document.getElementById("iSee");
 					if (privateFeed) {
 						privateFeed.addEventListener('click', function () {
 							if (!app.isOnline()) {
@@ -1446,9 +1448,13 @@ app.Places = (function () {
 					for (var l = 0; l < standardOptions.length; l++) {
 						var parts = standardOptions[l];
 						switch (parts) {
-							case "events":
+							case "notifications":
 								introHtml = introHtml + '<a data-role="button" class="butn" href="#components/notifications/view.html?ActivityText='
-									+ n + '"><img src="styles/images/events.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+									+ n + '"><img src="styles/images/notifications.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+								break;
+							case "follow":
+								introHtml = introHtml + '<a data-role="button" class="butn" href="#components/follow/view.html?ActivityText='
+									+ n + '"><img src="styles/images/follow.png" alt="Follow" height="auto" width="25%" style="padding:5px"></a>'
 								break;
 							case "activities":
 								if (programmedOptions) {
@@ -1814,13 +1820,13 @@ app.Places = (function () {
 									"rating": "$$"
 								},
 								"defaultOptions": {
-									"standard": ["events", "activities", "camera", "website"],
+									"standard": ["notifications", "activities", "camera", "website"],
 									"search": ["google", "twitter", "bing", "googleMaps"],
 									"food": ["zomato", "yelp"],
 									"display": ["search", "food"],
 									"jobs": ["angiesList", "homeAdviser"]
 								},
-								"customOptions": ["home", "events", "zomato", "yelp", "google", "twitter", "bing", "googleMaps"],
+								"customOptions": ["iSee", "notifications", "zomato", "yelp", "google", "twitter", "bing", "googleMaps"],
 							}
 						}
 					}
