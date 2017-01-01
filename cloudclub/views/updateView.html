@@ -55,15 +55,20 @@
                         <option value="4">Partner using Notifications Services</option>
                     </select>
                 </b> </li>
-			<li class="select-wrp"> <b><font size=3> <label data-bind="text: autoBlogText"/></font>
+			<!--li class="select-wrp" > <b><font size=3> <label data-bind="text: autoBlogText"/></font>
 				<font size="3" color="red" data-bind="invisible: autoBlogState"> OFF </font>
 				<font size="4" color="green"  data-bind="visible: autoBlogState"> ON </font>
       	</b> <input id="#:name#-switch" data-role="switch" data-bind="events: { change: onBlogChange }, checked: autoBlogState"
-					data-on-label="ON" data-off-label="OFF" /> </li>
+					data-on-label="ON" data-off-label="OFF" /> </li-->
 			<li class="select-wrp"> <b><font size=3> <label data-bind="text: rememberMeText"/></font>
 				<font size="3" color="red" data-bind="invisible: rememberMeState"> OFF </font>
 				<font size="4" color="green"  data-bind="visible: rememberMeState"> ON </font>
       	</b> <input id="#:name#-switch" data-role="switch" data-bind="events: { change: onRememberChange }, checked: rememberMeState"
+					data-on-label="ON" data-off-label="OFF" /> </li>
+			<li class="select-wrp"> <b><font size=3> <label data-bind="text: notificationsText"/></font>
+				<font size="3" color="red" data-bind="invisible: notificationsState"> OFF </font>
+				<font size="4" color="green"  data-bind="visible: notificationsState"> ON </font>
+      	</b> <input id="#:name#-switch" data-role="switch" data-bind="events: { change: onNotificationsChange }, checked: notificationsState"
 					data-on-label="ON" data-off-label="OFF" /> </li>
 		</ul>
 		<div class="button-group" style="margin-top:-25px" > <a class="btn-login" data-role="button" href="#views/example.html"> 
@@ -72,4 +77,7 @@
 				Options
 				</a> <a class="btn-register" data-role="button" data-click="app.Update.update">Update</a> </div>
 	</form>
+	<div data-role="view" data-model="app.registerNotify">
+		<p>Hardware: #: hardware #</p>
+	</div>
 </div>

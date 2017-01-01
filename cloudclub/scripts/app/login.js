@@ -56,6 +56,8 @@ app.Login = (function () {
                 $loginUsername.val(localStorage.getItem("username"));
                 //TO DO: test for remember_me in local storage
                 $loginPassword.val(localStorage.getItem("password"));
+				app.notify.showShortTop("Notifications: "+app.registerNotify.Active)
+    			kendo.bind($("#registerNotifyView"), app.registerNotify);
             } else {
                 $loginUsername.val('');
                 $loginPassword.val('');

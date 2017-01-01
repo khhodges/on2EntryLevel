@@ -140,6 +140,8 @@ app.Update = (function () {
 				autoBlogState: app.Users.currentUser.data.jsonList.partner.autoBlog,
 				rememberMeState: app.Users.currentUser.data.jsonList.partner.rememberMe,
 				rememberMeText: appSettings.messages.rememberMe,
+				notificationsState: app.Users.currentUser.data.jsonList.partner.notifications,
+				notificationsText: appSettings.messages.notifyMe,
 				languageState: app.Users.currentUser.data.jsonList.partner.language,
 				languageText: appSettings.messages.language,
 				autoBlogText: appSettings.messages.autoBlog,
@@ -152,6 +154,11 @@ app.Update = (function () {
 					sb = document.getElementById("saveButton");
 					sb.style.display = "";
 					app.Users.currentUser.data.jsonList.partner.rememberMe = e.checked;
+				},
+				onNotificationsChange: function (e) {
+					sb = document.getElementById("saveButton");
+					sb.style.display = "";
+					app.Users.currentUser.data.jsonList.partner.notifications = e.checked;
 				}
 			})
 			kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);

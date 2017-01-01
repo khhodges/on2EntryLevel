@@ -23,7 +23,7 @@
 	<!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
 
 	<!-- END_CUSTOM_CODE_notifications -->
-	<ul data-role="listview" data-auto-bind="false" data-style="inset" data-template="notificationsModelTemplate" data-bind="{ source: notificationsModel.dataSource, events: {click: notificationsModel.itemClick} }" data-pull-to-refresh="true" data-endless-scroll="false">
+	<ul data-role="listview" data-auto-bind="false" data-style="inset" data-template="notificationsModelTemplate" data-bind="{ source: notificationsModel.dataSource, events: {click: notificationsModel.itemClick} }" data-pull-to-refresh="false" data-endless-scroll="false">
 	</ul>
 	<!-- START_CUSTOM_CODE_notificationsModel -->
 	<!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
@@ -37,8 +37,6 @@
 			<p>
 				<small>#: app.formatDate(data['Date']) #</small>
 			</p>
-		
 		</div>
-		<!--p class="editableListItem"><span>Status</span><span>#: data['Status'] #</span></p-->
 	</script>
 </div>

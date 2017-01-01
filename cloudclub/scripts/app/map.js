@@ -286,6 +286,7 @@ app.Places = (function () {
 				//query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 8, 'miles').ne('Icon', 'styles/images/avatar.png');
 				query.where().nearSphere('Location', point, 8, 'miles').ne('Icon', 'styles/images/avatar.png');
 				var partners = app.everlive.data('Places');
+				//query.expand({"Members": {"TargetTypeName": "Users"}});
 				partners.get(query).then(function (data) {
 					app.Places.locationViewModel.list = new app.Places.List;
 					for (var i = 0; i < data.count; i++) {

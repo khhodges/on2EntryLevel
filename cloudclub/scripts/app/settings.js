@@ -628,7 +628,7 @@ var appSettings = {
 	},
 	notification: {
 		//androidProjectNumber:"389531505311"
-		androidProjectNumber: "508581667442"
+		androidProjectNumber: "508581667442"//508581667442
 	},
 	eqatec: {
 		productKey: '3d777b61e0be40f5b61964bb1b05cbbb', // Put your Tekerik Analytics project key here
@@ -945,7 +945,8 @@ welcome: "\n Controleer genieten van deze geavanceerde mobiele applicatie met de
         membership: "You are now added to this partner's CloudClub!",
         mistSimulatorAlert: "The social login doesn\'t work in the In-Browser Client, you need to deploy the app to a device, or run it in the simulator of the Windows Client or Visual Studio.",
         newFavourite: "The location was saved as a new Favourite!",
-        registrationHelp: "Read notes and check 'I agree', fill all fields. You can update your Avatar by updating your settings at any time...",
+        notifyMe:"Smart Notifications",
+		registrationHelp: "Read notes and check 'I agree', fill all fields. You can update your Avatar by updating your settings at any time...",
         registerOption: "If you register and login all the comunity POST features are available...",
         register: "Registration enables access to camera Posting and other community and notification features.",
         registeredOK: "You have sucesfully registered for local notifications.",

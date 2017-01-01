@@ -75,13 +75,12 @@ app.notifications = kendo.observable({
 											"Reference": {
 														"TargetTypeName": "Activities",
 														"ReturnAs": "EventDetails",
-														"Fields": { "Title": 1, "Text": 1, "Picture": 1 },
-														//"Filter":{"Activities.Title":{"startswith":"The Whale's Rib Raw Bar"}}
+														"Fields": { "Title": 1, "Text": 1, "Picture": 1 }
 													}
 										}
 								,"X-Everlive-Filter": JSON.stringify({
 																		 "Location": {
-										"$nearSphere": {
+																		 "$nearSphere": {
 																					 "longitude":-80.07,
 																					 "latitude":26.3
 																				 },
@@ -105,7 +104,7 @@ app.notifications = kendo.observable({
 			},
 			error: function (e) {
 				if (e.xhr) {
-					alert(JSON.stringify(e.xhr));
+					console.log(JSON.stringify(e.xhr));
 				}
 			},
 			schema: {

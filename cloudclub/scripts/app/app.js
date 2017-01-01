@@ -24,6 +24,7 @@ var app = (function (win) {
 	//	 }
 
 	var cdr;
+	var registerNotify;
 
 	win.addEventListener('error', function (e) {
 		e.preventDefault();
@@ -71,6 +72,7 @@ var app = (function (win) {
 	};
 
 	var onDeviceReady = function () {
+		app.PushRegistrar.updatePushNotifications();
 		// Handle "backbutton" event
 		document.addEventListener('backbutton', onBackKeyDown, false);
 		app.notify.getLocation(function (crd) {
@@ -159,6 +161,8 @@ var app = (function (win) {
 				});
 			});
 		}
+
+
 	};
 
 	// Handle "deviceready" event
@@ -168,9 +172,7 @@ var app = (function (win) {
 	document.addEventListener("resume", onResume, false);
 
 	function onResume() {
-		// Handle the resume event
-		//app.notify.showShortTop("Resume Event");
-		//ActiveBrowser.Refresh();
+		checkNotify;
 	}
 
 	// Initialize Everlive SDK
@@ -302,6 +304,73 @@ var app = (function (win) {
 					var logoffB = document.getElementById("logoffButton");
 					logoffB.style.display = "none";
 					logonB.style.display = "";
+				});
+		},
+		getPartnerFollowers(name) {
+			var query = new Everlive.Query();
+			query.where().eq('Place', name);
+			var partner = app.everlive.data('Places');
+			query.expand({ "Members": { "TargetTypeName": "Users", "Fields": { "DisplayName": 1, "Email": 1, "Phone": 1 } } });
+			partner.get(query).then(function (data) {
+				if (!data.result || !data.result[0] || !data.result[0].Members) {
+					app.showAlert("There are no followers to contact using the notification service!")
+				} else {
+					for (var i = 0; i < data.result[0].Members.length; i++) {
+						var follower = data.result[0].Members[i];
+						console.log(follower.Email);
+					}
+					//sendNotificationsAll(data.result[0].Members)
+
+					app.notify.showShortTop(appSettings.messages.broadcast);
+					if (true) { //TO DO: check if notification activity exists to prevent second attempt
+						var notify = {
+							"Message": app.Activity.activity().Text, // upgrade required,
+							"UseLocalTime": true,
+							"Android": {
+								"data": {
+									"title": "Local Update",
+									"message": app.Activity.activity().Text,
+									"smallIcon": "iconcee24",
+									"id": app.Activity.activity().Id
+								}
+							}
+						}
+						app.everlive.push.notifications.create(
+							notify,
+							function (data) {
+								var createdAt = app.formatDate(data.result.CreatedAt);
+								app.notify.showShortTop(appSettings.messages.broadcast + createdAt);
+								//update notification assets Activity reference and status
+								//everlive = el
+
+								//if does not exist add to log
+								var thisPlace = {
+									"longitude": app.cdr.longitude,
+									"latitude": app.cdr.latitude
+								};
+								var data = el.data('Notifications');
+								var place = "Sent from " + app.Activity.activity().Title;
+								data.create({
+									'Place': place,
+									'Reference': app.Activity.activity().Id,
+									'Status': true,
+									'Location': thisPlace
+								},
+									function (data) {
+										app.notify.showShortTop(appSettings.messages.saved + data.result.Id);
+									},
+									function (error) {
+										app.notify.showShortTop(appSettings.messages.tryAgain + error.message);
+									});
+							},
+							function (error) {
+								app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
+							})
+					}
+				}
+			},
+				function (error) {
+					app.showError("Followers error " + JSON.stringify(error))
 				});
 		},
 		activityRoute: function (e) {
@@ -586,16 +655,16 @@ var app = (function (win) {
 						// wrapping in a timeout so the dialog doesn't freeze the app
 						setTimeout(function () {
 							switch (buttonIndex) {
-								case 1: 
+								case 1:
 									app.notify.broadcast;
 									break; //'Send WW',
 								case 2: //Send to Followers    
 									app.mobileApp.navigate("#components/followers/view.html?option=nearby");
 									break;
-								case 3:    
+								case 3:
 									app.mobileApp.navigate("#components/followers/view.html?option=all");
 									break;
-								case 4:    
+								case 4:
 									app.mobileApp.navigate("#components/followers/view.html?option=selected");
 									break;
 								default:
@@ -608,9 +677,19 @@ var app = (function (win) {
 			}
 		},
 		broadcast: function () {
-
+			el.push.unregister(
+			function(obj){
+				app.showAlert("Unregistered "+JSON.stringify(obj))
+			}, 
+			function(obj){
+				app.showAError("Unregistered "+JSON.stringify(obj))
+			});
+			//updateRegistration("Line 719")
 			//option sheet
-			var activity = app.Activity.activity();
+			app.helper.getPartnerFollowers(app.Activity.activity().Title);
+			//app.mobileApp.navigate("components/followers/view.html?Activity="+JSON.stringify(activity));
+		},
+		sendNotificationsAll: function (followers) {
 			//if (activity.Title === "My Private Feed") {
 			//	app.notify.showShortTop("To protect your privacy you cannot broadcast from your Private Data Feed!");
 			//	return;
@@ -618,15 +697,16 @@ var app = (function (win) {
 			app.notify.showShortTop(appSettings.messages.broadcast);
 			if (true) { //TO DO: check if notification activity exists to prevent second attempt
 				var notify = {
-					"Message": activity.Text // upgrade required,
-					// "UseLocalTime": true,
-					// "Android": {
-					//   "data": {
-					//         "title": "Local Update",
-					//         "message": activity.Text,
-					//         "smallIcon": "iconcee24"
-					//     }
-					// }
+					"Message": activity.Text, // upgrade required,
+					"UseLocalTime": true,
+					"Android": {
+						"data": {
+							"title": "Local Update",
+							"message": activity.Text,
+							"smallIcon": "iconcee24",
+							"id": activity.Id
+						}
+					}
 				}
 				app.everlive.push.notifications.create(
 					notify,
@@ -638,8 +718,8 @@ var app = (function (win) {
 
 						//if does not exist add to log
 						var thisPlace = {
-							"longitude": -80.07,
-							"latitude": 26.3
+							"longitude": app.cdr.longitude,
+							"latitude": app.cdr.latitude
 						};
 						var data = el.data('Notifications');
 						var place = "Sent from " + activity.Title;
@@ -659,8 +739,6 @@ var app = (function (win) {
 					function (error) {
 						app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
 					})
-			} else {
-				app.notify.showShortTop(appSettings.messages.continueError);
 			}
 		},
 
@@ -945,9 +1023,17 @@ var app = (function (win) {
 
 	return {
 		data: {},
+		localization: {
+			defaultCulture: 'en',
+			cultures: [{
+				name: "English",
+				code: "en"
+			}]
+		},
 		showAlert: showAlert,
 		showReviews: showReviews,
 		cdr: cdr,
+		registerNotify: registerNotify,
 		showError: showError,
 		showConfirm: showConfirm,
 		isKeySet: isKeySet,
