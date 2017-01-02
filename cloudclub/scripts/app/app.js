@@ -50,7 +50,7 @@ var app = (function (win) {
 		var regEx = /^\$[A-Z_]+\$$/;
 		return !isNullOrEmpty(key) && !regEx.test(key);
 	};
-
+	var notifyStatus;
 
 	// Handle device back button tap
 	var onBackKeyDown = function (e) {
@@ -71,8 +71,47 @@ var app = (function (win) {
 		//}, 'Exit', ['OK', 'Cancel']);
 	};
 
+	//Register Notification
+	var PushRegistrar = {
+		updateRegistration: function () {
+			app.showAlert("Initializing update registration of notifications for " + device.platform + '...');
+			app.everlive.push.updateRegistration(
+				{ Parameters: { "PushToken":app.notifyStatus.PushToken, "LastLoginDate": new Date().toDateString(), "Location": app.cdr } },
+				function (obj) {
+					app.showAlert("Updated Notifications now ON " + JSON.stringify(obj))
+					},
+				function (obj) {
+					app.showAlert(JSON.stringify(obj));
+				}
+			)
+		},
+
+	  checkNotify: function () {
+			app.showAlert("Initializing check of registration for notifications on " + device.platform + '...');
+			app.everlive.push.getRegistration(
+				function (obj) {
+					app.notifyStatus = obj.result;
+					if (app.notifyStatus.PushToken !== "fake_push_token") {
+						app.showAlert("Result - Notifications are ON " + JSON.stringify(obj.result));
+						app.PushRegistrar.updateRegistration();// updateRegistration;
+					} else {
+						app.showAlert("PushToken is wrong, No update underway" + JSON.stringify(obj));
+					}
+					app.showAlert("Check end - Status check: " + JSON.stringify(app.notifyStatus))
+				},
+				function (obj) {
+					notifyStatus = null;
+					app.showAlert("Error result " + obj.message);
+				}
+			)
+		}
+	};
+
+	
+	
 	var onDeviceReady = function () {
-		app.PushRegistrar.updatePushNotifications();
+		app.showAlert(device.platform);
+		app.PushRegistrar.checkNotify();
 		// Handle "backbutton" event
 		document.addEventListener('backbutton', onBackKeyDown, false);
 		app.notify.getLocation(function (crd) {
@@ -184,6 +223,7 @@ var app = (function (win) {
 		//    persist:true
 		//}
 	});
+
 
 	var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
@@ -1074,6 +1114,7 @@ var app = (function (win) {
 				//button text register
 				action.innerText = "Register";
 			}
-		}
+		},
+		PushRegistrar: PushRegistrar
 	};
 } (window));
