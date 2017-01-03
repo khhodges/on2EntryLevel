@@ -59,7 +59,6 @@ app.Signup = (function () {
                             //console.log("Congratulations! You are now registered!", "The Loyalty Club");
                             app.notify.showShortTop(appSettings.messages.registration);
                             app.mobileApp.navigate('#welcome');
-                            registerDevice();
                         },
                             function (err) {
                                 app.showError(appSettings.messages.tryAgain + err.message);
@@ -67,40 +66,40 @@ app.Signup = (function () {
                 })
             }, "image/jpeg");
         }
-        var registerDevice = function () {
-            //app.notify.showShortTop("Start registration for event notifications.");
-            if (!registered) {
-                registered = true;
-                console.log("Register for device notifications");
-                app.everlive.push.register(devicePushSettings, function () {
-                    app.notify.showShortTop(appSettings.messages.registerOK);
-                    //console.log("Success! You can also receive local event notifications.");
-                }, function (err) {
-                    app.notify.showShortTop(appSettings.messages.tryAgain + err.message);
-                    //console.log("Notification Register Request: " + err.message);
-                })
-            }
-            else {
-                console.log("Second request in the same test session.");
-            }
-        }
+        // var registerDevice = function () {
+        //     //app.notify.showShortTop("Start registration for event notifications.");
+        //     if (!registered) {
+        //         registered = true;
+        //         console.log("Register for device notifications");
+        //         app.everlive.push.register(devicePushSettings, function () {
+        //             app.notify.showShortTop(appSettings.messages.registerOK);
+        //             //console.log("Success! You can also receive local event notifications.");
+        //         }, function (err) {
+        //             app.notify.showShortTop(appSettings.messages.tryAgain + err.message);
+        //             //console.log("Notification Register Request: " + err.message);
+        //         })
+        //     }
+        //     else {
+        //         console.log("Second request in the same test session.");
+        //     }
+        // }
 
-        var devicePushSettings = {
-            iOS: {
-                badge: 'true',
-                sound: 'true',
-                alert: 'true'
-            },
-            android: {
-                projectNumber: appSettings.notification.androidProjectNumber
-            },
-            wp8: {
-                channelName: 'EverlivePushChannel'
-            },
-            notificationCallbackIOS: onPushNotificationReceived,
-            notificationCallbackAndroid: onPushNotificationReceived,
-            notificationCallbackWP8: onPushNotificationReceived
-        };
+        // var devicePushSettings = {
+        //     iOS: {
+        //         badge: 'true',
+        //         sound: 'true',
+        //         alert: 'true'
+        //     },
+        //     android: {
+        //         projectNumber: appSettings.notification.androidProjectNumber
+        //     },
+        //     wp8: {
+        //         channelName: 'EverlivePushChannel'
+        //     },
+        //     notificationCallbackIOS: onPushNotificationReceived,
+        //     notificationCallbackAndroid: onPushNotificationReceived,
+        //     notificationCallbackWP8: onPushNotificationReceived
+        // };
         // Executed after Signup view initialization
         // init form validator
         var init = function () {

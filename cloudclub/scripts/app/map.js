@@ -284,7 +284,7 @@ app.Places = (function () {
 				var query = new Everlive.Query();
 				var point = new Everlive.GeoPoint(position.lng, position.lat);
 				//query.where().nearSphere('Location', new Everlive.GeoPoint(app.cdr.longitude, app.cdr.latitude), 8, 'miles').ne('Icon', 'styles/images/avatar.png');
-				query.where().nearSphere('Location', point, 8, 'miles').ne('Icon', 'styles/images/avatar.png');
+				query.where().nearSphere('Location', point, 25, 'miles').ne('Icon', 'styles/images/avatar.png');
 				var partners = app.everlive.data('Places');
 				//query.expand({"Members": {"TargetTypeName": "Users"}});
 				partners.get(query).then(function (data) {
@@ -336,7 +336,7 @@ app.Places = (function () {
 			},
 			getIconUrl: function () {
 				var iconText = this.get('Icon');
-				if (iconText.contains('//')) {
+				if (iconText.indexOf('//') > -1) {
 					return iconText;
 				} else {
 					return app.helper.resolvePictureUrl(iconText);
@@ -658,13 +658,13 @@ app.Places = (function () {
 				for (var i = 0; i < options.length; i++) {
 					if (options[i].selected === true) {
 						var name = options[i].name;
-						if(!appSettings.infoContent[name])app.showError("<"+name+"> is missing")
+						if (!appSettings.infoContent[name]) app.showError("<" + name + "> is missing")
 						infoContent = infoContent + appSettings.infoContent[name];
 					}
 				}
 
 				infoContent = infoContent + '<br/><div class="user-avatar" style="margin:20px -10px 0px 5px;">'
-                    + '<a id="avatarLink" data-role="button" class="butn"> <img id="myAvatar" src='
+					+ '<a id="avatarLink" data-role="button" class="butn"> <img id="myAvatar" src='
 					+ url + ' alt="On2See"></a></div>'
 
 					+ '<h4>' + appSettings.messages.inspectorHelp + '</h4>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>'
@@ -744,19 +744,20 @@ app.Places = (function () {
 					if (goHome) {
 						goHome.addEventListener("click",
 							function () {
-								if(this.attributes.valueOf()["data-lat"]){
-								var lat = this.attributes.valueOf()["data-lat"].value;
-								var lng = this.attributes.valueOf()["data-lng"].value
-								if((lat === "#lat#"||lng==="#lng")||
-								 (locality.lat - lat < .0001 && locality.lng - lng < .00001)) {
-									app.notify.showShortTop(appSettings.messages.directions);
-									app.Places.browse("https://news.google.com")
-								} else {
-									if (locality) {
-										app.Places.browse("https://maps.google.com?saddr=" + locality.lat + "," + locality.lng + "&daddr=" + lat + "," + lng)
+								if (this.attributes.valueOf()["data-lat"]) {
+									var lat = this.attributes.valueOf()["data-lat"].value;
+									var lng = this.attributes.valueOf()["data-lng"].value
+									if ((lat === "#lat#" || lng === "#lng") ||
+										(locality.lat - lat < .0001 && locality.lng - lng < .00001)) {
+										app.notify.showShortTop(appSettings.messages.directions);
+										app.Places.browse("https://news.google.com")
+									} else {
+										if (locality) {
+											app.Places.browse("https://maps.google.com?saddr=" + locality.lat + "," + locality.lng + "&daddr=" + lat + "," + lng)
+										}
 									}
 								}
-							}})
+							})
 					};
 					var saveAddressLink = document.getElementById("saveAddressLink");
 					if (saveAddressLink) {
@@ -1053,7 +1054,7 @@ app.Places = (function () {
 				//app.notify.showShortTop("Visiting show " + app.Places.visiting.details().name)
 			},
 			listShow: function (e) {
-                app.notify.showLongBottom(appSettings.messages.listHelp)
+				app.notify.showLongBottom(appSettings.messages.listHelp)
 				app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
 				try {
 					//var e = myEvent;
@@ -1415,7 +1416,7 @@ app.Places = (function () {
 					try {
 						var a = Address()
 						var i = infoString()
-                        var id = myId()
+						var id = myId()
 						var n = name()
 						var p = Phone()
 						var w = Website()
@@ -1449,13 +1450,13 @@ app.Places = (function () {
 					for (var l = 0; l < standardOptions.length; l++) {
 						var parts = standardOptions[l];
 						switch (parts) {
+							case "events":
 							case "notifications":
 								introHtml = introHtml + '<a data-role="button" class="butn" href="#components/notifications/view.html?ActivityText='
 									+ n + '"><img src="styles/images/notifications.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
 								break;
 							case "follow":
-								introHtml = introHtml + '<a data-role="button" class="butn" href="#components/follow/view.html?ActivityText='
-									+ n + '"><img src="styles/images/follow.png" alt="Follow" height="auto" width="25%" style="padding:5px"></a>'
+								introHtml = introHtml + '<a data-role="button" class="butn" href="#views/clubView.html"><img src="styles/images/follow.png" alt="Follow" height="auto" width="25%" style="padding:5px"></a>'
 								break;
 							case "activities":
 								if (programmedOptions) {
@@ -1478,9 +1479,11 @@ app.Places = (function () {
 					if (programmedOptions) {
 						for (var h = 0; h < programmedOptions.length; h++) {
 							var link = programmedOptions[h];
-							if (link.icon === "styles/images/default-image.jpg") link.icon = "styles/images/" + link.name + ".png";
-							introHtml = introHtml + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
-                                + link.path + '\');"><img src="' + link.icon + '" alt="' + link.name + '" height="auto" width="25%" style="padding:5px"></a>'
+							if (link.icon) {
+								if (link.icon.substring(0, 3) !== "http") link.icon = "styles/images/" + link.name + ".png";
+								introHtml = introHtml + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
+									+ link.path + '\');"><img src="' + link.icon + '" alt="' + link.name + '" height="auto" width="25%" style="padding:5px"></a>'
+							}
 						}
 					} else {
 						for (var m = 0; m < workingList.length; m++) {
@@ -1494,11 +1497,12 @@ app.Places = (function () {
 				var setInfoWindow = function () {
 					htmlIw = toCustomHtml();
 					infoWindow.setContent(htmlIw);
+					map.setZoom(15)
 					infoWindow.open(map, Mark);
 					if (partnerRow.City) {
 						myCity = partnerRow.City;
 					}
-                    app.notify.showLongBottom(appSettings.messages.infoWindow)
+					app.notify.showLongBottom(appSettings.messages.infoWindow)
 					return true;
 				};
 				this.checkInfoWindow = function () {
@@ -1520,7 +1524,7 @@ app.Places = (function () {
 							}
 							googleData = result;
 							items = googleData.address_components;
-                            callback()
+							callback()
 							return true;
 						}
 						)
@@ -1609,8 +1613,13 @@ app.Places = (function () {
 					return partnerRow.Location.longitude;
 				};
 				var picture = function () {
-					return partnerRow.Icon;
-				}
+					var iconText = partnerRow.Icon;
+					if (iconText.indexOf('//') > -1) {
+						return iconText;
+					} else {
+						return app.helper.resolvePictureUrl(iconText);
+					}
+				};
 				var Address = function () {
 					if (app.isNullOrEmpty(partnerRow.Address && googleData !== "")) {
 						partnerRow.Address = googleData.formatted_address;
@@ -1640,14 +1649,19 @@ app.Places = (function () {
 						partnerRow.Phone = googleData.international_phone_number;
 					}
 					return partnerRow.Phone;
-				}
+				};
 				var Icon = function () {
 					if (app.isNullOrEmpty(partnerRow.Icon)) {
 						partnerRow.Icon = "styles/images/default-image.jpg";
 						return partnerRow.Icon;
 					}
-					return app.helper.resolveProfilePictureUrl(partnerRow.Icon);
-				}
+					var iconText = partnerRow.Icon;
+					if (iconText.indexOf('//') > -1) {
+						return iconText;
+					} else {
+						return app.helper.resolvePictureUrl(iconText);
+					}
+				};
 				var listString = function () {
 					return ' about ' + distance() + ' miles (As The Crow Flies).';
 				}

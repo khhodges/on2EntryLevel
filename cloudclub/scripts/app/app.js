@@ -1,6 +1,23 @@
-function onPushNotificationReceived(e) {
+function on2SeePushNotificationReceived(e) {
 	alert("On2See a Local Notification, " + e.message);
 };
+
+function on2SeeprocessPushMessage(message, date) {
+	date = date || new Date().toISOString();
+	var dateStr = app.formatDate(date);
+	app.notify.showShortTop(dateStr + ' : ' + message);
+};
+
+function on2SeeAndroidPushReceived(e) {
+	var message = e.message;
+	var dateCreated = e.payload.customData && e.payload.customData.dateCreated;
+	on2SeeprocessPushMessage(message, dateCreated);
+};
+
+function on2SeeIosPushReceived(e) {
+	on2SeeprocessPushMessage(e.alert, e.dateCreated);
+};
+
 
 var app = (function (win) {
 	'use strict';
@@ -73,44 +90,127 @@ var app = (function (win) {
 
 	//Register Notification
 	var PushRegistrar = {
+		pushSettings: {
+			android: {
+				projectNumber: appSettings.notification.androidProjectNumber
+			},
+			iOS: {
+				badge: "true",
+				sound: "true",
+				alert: "true"
+			},
+			notificationCallbackAndroid: on2SeeAndroidPushReceived,
+			notificationCallbackIOS: on2SeeIosPushReceived
+		},
+		enablePushNotifications: function () {
+			app.notify.showShortTop("Initializing push notifications for " + device.platform + '...');
+			app.PushRegistrar.pushSettings.customParameters = {
+				"LastLoginDate": new Date()
+			};
+
+			app.everlive.push.register(app.PushRegistrar.pushSettings)
+				.then(
+				function (initResult) {
+					if (app.notifyStatus.PushToken === initResult.token) {
+						app.notify.showLongBottom("Notification registered.");// + JSON.stringify(initResult) + "Your device is successfully registered in Backend Services. You can receive push notifications.");
+					} else {
+						app.notify.showShortTop("Push Token updated.");// + app.notifyStatus.PushToken + " to " + initResult.token);
+						app.notifyStatus.PushToken = initResult.token;
+					}
+				},
+				function (err) {
+					app.notify.showShortTop("Notification Error on registration. ");// + JSON.stringify(err))
+					//_onPushErrorOccurred(err.message);
+				});
+		},
 		updateRegistration: function () {
-			app.showAlert("Initializing update registration of notifications for " + device.platform + '...');
+			app.notify.showShortTop("Initializing update registration of notifications for " + device.platform + '...');
 			app.everlive.push.updateRegistration(
-				{ Parameters: { "PushToken":app.notifyStatus.PushToken, "LastLoginDate": new Date().toDateString(), "Location": app.cdr } },
+				{ Parameters: { "PushToken": app.notifyStatus.PushToken, "LastLoginDate": new Date().toDateString(), "Location": app.cdr } },
 				function (obj) {
-					app.showAlert("Updated Notifications now ON " + JSON.stringify(obj))
-					},
+					app.notify.showShortTop("Notification connection updated. ");// + JSON.stringify(obj))
+				},
 				function (obj) {
-					app.showAlert(JSON.stringify(obj));
+					app.notify.showShortTop("Notification connection failure, please continue.");//JSON.stringify(obj));
 				}
 			)
 		},
 
-	  checkNotify: function () {
-			app.showAlert("Initializing check of registration for notifications on " + device.platform + '...');
+		checkNotify: function () {
+			app.notify.showShortTop("Initializing check of registration for notifications on " + device.platform + '...');
 			app.everlive.push.getRegistration(
 				function (obj) {
 					app.notifyStatus = obj.result;
+					localStorage.setItem("PushToken", obj.result.PushToken);
 					if (app.notifyStatus.PushToken !== "fake_push_token") {
-						app.showAlert("Result - Notifications are ON " + JSON.stringify(obj.result));
-						app.PushRegistrar.updateRegistration();// updateRegistration;
+						app.notify.showShortTop("Notification service is ON.");// + JSON.stringify(obj.result));
+						//Must be online first app.PushRegistrar.updateRegistration();// updateRegistration;
 					} else {
-						app.showAlert("PushToken is wrong, No update underway" + JSON.stringify(obj));
+						app.notify.showShortTop("PushToken is not yet set, No notification options underway, login is required. ");// + JSON.stringify(obj));
 					}
-					app.showAlert("Check end - Status check: " + JSON.stringify(app.notifyStatus))
+					//app.notify.showShortTop("Check end - Status check: " + JSON.stringify(app.notifyStatus))
 				},
 				function (obj) {
 					notifyStatus = null;
-					app.showAlert("Error result " + obj.message);
+					app.notify.showShortTop("Error result " + obj.message);
 				}
 			)
+		},
+		create: function (sender, message, reference, recipients) {
+			var filter;
+
+			if (Array.isArray(recipients) && recipients.length > 0) {
+				// filter on the userId field in each device
+				filter = {
+					"UserId": {
+						"$in": recipients
+					}
+				};
+			}
+			// custom data object for Android and iOS
+			var customData = {
+				"dateCreated": new Date(),
+				"reference": reference,
+				"location": {
+					"longitude": app.cdr.longitude,
+					"latitude": app.cdr.latitude
+				}
+			};
+
+			var pushTitle = "CloudClub Message";
+			var pushMessage = sender + ": " + "Hello! " + message;
+
+			// constructing the payload for the notification specifically for each supported mobile platform
+			// following the structure from here: http://docs.telerik.com/platform/backend-services/features/push-notifications/structure
+			var androidPayload = {
+				"data": {
+					"title": pushTitle,
+					"message": pushMessage,
+					"customData": customData
+				}
+			};
+
+			var iosPayload = {
+				"aps": {
+					"alert": pushMessage,
+					"badge": 1,
+					"sound": "default"
+				},
+				"customData": customData
+			};
+			var notificationObject = {
+				"Filter": JSON.stringify(filter),
+				"Android": androidPayload,
+				"IOS": iosPayload
+			};
+			return notificationObject;
 		}
 	};
 
-	
-	
+
+
 	var onDeviceReady = function () {
-		app.showAlert(device.platform);
+		app.notify.showShortTop("Device ready: " + device.platform);
 		app.PushRegistrar.checkNotify();
 		// Handle "backbutton" event
 		document.addEventListener('backbutton', onBackKeyDown, false);
@@ -211,7 +311,7 @@ var app = (function (win) {
 	document.addEventListener("resume", onResume, false);
 
 	function onResume() {
-		checkNotify;
+		app.PushRegistrar.checkNotify;
 	}
 
 	// Initialize Everlive SDK
@@ -353,70 +453,67 @@ var app = (function (win) {
 			query.expand({ "Members": { "TargetTypeName": "Users", "Fields": { "DisplayName": 1, "Email": 1, "Phone": 1 } } });
 			partner.get(query).then(function (data) {
 				if (!data.result || !data.result[0] || !data.result[0].Members) {
-					app.showAlert("There are no followers to contact using the notification service!")
+					app.notify.showShortTop("There are no followers to contact using the notification service!")
 				} else {
+					var followers = new Array(data.result[0].Members.length)
 					for (var i = 0; i < data.result[0].Members.length; i++) {
 						var follower = data.result[0].Members[i];
+						followers.push(follower.Id);
 						console.log(follower.Email);
 					}
 					//sendNotificationsAll(data.result[0].Members)
-
 					app.notify.showShortTop(appSettings.messages.broadcast);
-					if (true) { //TO DO: check if notification activity exists to prevent second attempt
-						var notify = {
-							"Message": app.Activity.activity().Text, // upgrade required,
-							"UseLocalTime": true,
-							"Android": {
-								"data": {
-									"title": "Local Update",
-									"message": app.Activity.activity().Text,
-									"smallIcon": "iconcee24",
-									"id": app.Activity.activity().Id
+					var notify = app.PushRegistrar.create(name, app.Activity.activity().Text, app.Activity.activity().Id, followers)
+					// if (true) { //TO DO: check if notification activity exists to prevent second attempt
+					// 	var notify = {
+					// 		"Message": app.Activity.activity().Text, // upgrade required,
+					// 		"UseLocalTime": true,
+					// 		"Android": {
+					// 			"data": {
+					// 				"title": "Local Update",
+					// 				"message": app.Activity.activity().Text,
+					// 				"smallIcon": "iconcee24",
+					// 				"id": app.Activity.activity().Id
+					// 			}
+					// 		}
+					// 	}
+					app.everlive.push.notifications.create(
+						notify,
+						function (data) {
+							var createdAt = app.formatDate(data.result.CreatedAt);
+							app.notify.showShortTop(appSettings.messages.broadcast + createdAt);
+							var data = el.data('Notifications');
+							var place = "Sent from " + app.Activity.activity().Title;
+							data.create({
+								'Place': place,
+								'Reference': app.Activity.activity().Id,
+								'Status': true,
+								'Location': {
+									"latitude": app.cdr.latitude,
+									"longitude": app.cdr.longitude
 								}
-							}
-						}
-						app.everlive.push.notifications.create(
-							notify,
-							function (data) {
-								var createdAt = app.formatDate(data.result.CreatedAt);
-								app.notify.showShortTop(appSettings.messages.broadcast + createdAt);
-								//update notification assets Activity reference and status
-								//everlive = el
-
-								//if does not exist add to log
-								var thisPlace = {
-									"longitude": app.cdr.longitude,
-									"latitude": app.cdr.latitude
-								};
-								var data = el.data('Notifications');
-								var place = "Sent from " + app.Activity.activity().Title;
-								data.create({
-									'Place': place,
-									'Reference': app.Activity.activity().Id,
-									'Status': true,
-									'Location': thisPlace
-								},
-									function (data) {
-										app.notify.showShortTop(appSettings.messages.saved + data.result.Id);
-									},
-									function (error) {
-										app.notify.showShortTop(appSettings.messages.tryAgain + error.message);
-									});
 							},
-							function (error) {
-								app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
-							})
-					}
+								function (data) {
+									app.notify.showShortTop(appSettings.messages.saved + data.result.Id);
+								},
+								function (error) {
+									app.notify.showShortTop(appSettings.messages.tryAgain + error.message);
+								});
+						},
+						function (error) {
+							app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
+						})
 				}
+
 			},
 				function (error) {
 					app.showError("Followers error " + JSON.stringify(error))
 				});
 		},
 		activityRoute: function (e) {
-			// app.showAlert(JSON.stringify(e))
+			// app.notify.showShortTop(JSON.stringify(e))
 			if (app.isOnline()) {
-				//app.showAlert(app.Places.locationViewModel.myCamera);
+				//app.notify.showShortTop(app.Places.locationViewModel.myCamera);
 				app.mobileApp.navigate('components/activities/view.html');
 				//app.mobileApp.navigate('views/activitiesView.html');
 			} else {
@@ -431,9 +528,9 @@ var app = (function (win) {
 			} else {
 				if (app.Places.visiting.name === undefined)
 					app.Places.visiting.name = app.Places.visiting.details().name;
-				//app.showAlert(JSON.stringify(app.Places.visiting.name))
+				//app.notify.showShortTop(JSON.stringify(app.Places.visiting.name))
 				if (app.isOnline()) {
-					//app.showAlert(app.Places.locationViewModel.myCamera);
+					//app.notify.showShortTop(app.Places.locationViewModel.myCamera);
 					app.mobileApp.navigate('views/activitiesView.html?camera=ON&ActivityText=' + app.Places.visiting.name);
 				} else {
 					app.notify.dialogAlert();
@@ -530,10 +627,14 @@ var app = (function (win) {
 
 		// Return current activity picture url
 		resolvePictureUrl: function (id) {
-			if (id && (id !== emptyGuid && id !== "styles/images/avatar.png")) {
+			if (id && (id !== emptyGuid && id !== "styles/images/avatar.png" && id.substring(0, 4) !== "http")) {
 				return el.Files.getDownloadUrl(id);
 			} else {
-				return 'styles/images/default-image.jpg';
+				if (id.substring(0, 3) !== "http") {
+					return id;
+				} else {
+					return 'styles/images/default-image.jpg';
+				}
 			}
 		},
 
@@ -717,14 +818,6 @@ var app = (function (win) {
 			}
 		},
 		broadcast: function () {
-			el.push.unregister(
-			function(obj){
-				app.showAlert("Unregistered "+JSON.stringify(obj))
-			}, 
-			function(obj){
-				app.showAError("Unregistered "+JSON.stringify(obj))
-			});
-			//updateRegistration("Line 719")
 			//option sheet
 			app.helper.getPartnerFollowers(app.Activity.activity().Title);
 			//app.mobileApp.navigate("components/followers/view.html?Activity="+JSON.stringify(activity));

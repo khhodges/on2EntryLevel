@@ -14,6 +14,8 @@ app.Login = (function () {
         var $loginUsername;
         var $loginPassword;
 
+		var priorUser = undefined, pushToken = undefined;
+
         var isFacebookLogin = app.isKeySet(appSettings.facebook.appId) && app.isKeySet(appSettings.facebook.redirectUri);
         var isGoogleLogin = app.isKeySet(appSettings.google.clientId) && app.isKeySet(appSettings.google.redirectUri);
         var isLiveIdLogin = app.isKeySet(appSettings.liveId.clientId) && app.isKeySet(appSettings.liveId.redirectUri);
@@ -56,7 +58,7 @@ app.Login = (function () {
                 $loginUsername.val(localStorage.getItem("username"));
                 //TO DO: test for remember_me in local storage
                 $loginPassword.val(localStorage.getItem("password"));
-				app.notify.showShortTop("Notification Status: "+JSON.stringify(app.notifyStatus));
+				//app.notify.showShortTop("Notification Status: "+JSON.stringify(app.notifyStatus));
     			kendo.bind($("#registerNotifyView"), app.notifyStatus);
             } else {
                 $loginUsername.val('');
@@ -75,6 +77,12 @@ app.Login = (function () {
             // Authenticate using the username and password
             app.everlive.Users.login(username.trim(), password)
 				.then(function (result) {
+					app.notify.showShortTop("Login "+JSON.stringify(result))
+					try{
+					priorUser = localStorage.getItem("username", username);
+					pushToken = localStorage.getItem("PushToken", pushToken);
+					}catch(e)
+					{ app.showShortTop("Login initialization "+e.message)}
 					localStorage.setItem("access_token1", result.result.access_token);
 					localStorage.setItem("username", username);
 					localStorage.setItem("password", password);
@@ -82,7 +90,12 @@ app.Login = (function () {
 					if (isAnalytics && !app.helper.checkSimulator()) {
 						analytics.TrackFeature('Login.Regular');
 					}
-
+                 if (username !== priorUser || pushToken === 'fake_push_token' || app.isNullOrEmpty(pushToken)) {
+                    // initializing the push notifications
+                    app.PushRegistrar.enablePushNotifications();
+					//app.PushRegistrar.updatePushNotifications();
+                    //pushEnabledForUser = loggedInUser;
+                }
 					app.mobileApp.hideLoading();
 					var logonB = document.getElementById("logonButton");
 					var logoffB = document.getElementById("logoffButton");

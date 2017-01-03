@@ -1,0 +1,15 @@
+
+<div 
+	id="club-list" 
+	class="view place-list" 
+	data-role="view" 
+	data-model="app.clubViewModel" 
+	data-show="app.PushRegistrar.create">
+	<div data-role="header">
+		<div data-role="navbar"> List <a data-role="button" data-align="left" href="#views/mapView.html">Home</a>
+			<a data-role="button" data-align="right"
+				data-icon="globe" data-click="app.Places.browse"></a>
+		</div>
+	</div>
+	<ul id="club-listview" class="club-list-view" data-role="listview" data-click="app.PushRegistrar.onSelected"></ul>
+</div>
