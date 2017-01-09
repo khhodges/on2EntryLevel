@@ -773,7 +773,7 @@ var app = (function (win) {
 					'Id': PartnerId //   the current place, if the place does not exist then register the place??
 				};
 				data.rawUpdate(attributes, filter, function (data) {
-					app.notify.showShortTop(appSettings.messages.joinMessage+JSON.stringify(data));
+					app.notify.showShortTop(appSettings.messages.joinMessage);
 				}, function (err) {
 					app.notify.showShortTop(appSettings.messages.tryAgain+JSON.stringify(err));
 				});
