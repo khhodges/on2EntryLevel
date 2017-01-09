@@ -749,7 +749,7 @@ var app = (function (win) {
 				};
 
 				data.rawUpdate(attributes, filter, function (data) {
-					app.notify.showShortTop(appSettings.messages.registeredOK + JSON.stringify(data));
+					app.notify.showShortTop(appSettings.messages.registeredOK);
 				}, function (err) {
 					app.notify.showShortTop(appSettings.messages.tryAgain+JSON.stringify(err));
 				});
