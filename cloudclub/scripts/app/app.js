@@ -154,7 +154,7 @@ var app = (function (win) {
 				},
 				function (obj) {
 					notifyStatus = null;
-					app.notify.showShortTop("Error result " + obj.message);
+					app.notify.showShortTop("Please login to register this new device for instant notifications from CloudClub.");
 				}
 			)
 		},
@@ -452,7 +452,7 @@ var app = (function (win) {
 					logonB.style.display = "";
 				});
 		},
-		getPartnerFollowers(name, notify) {
+		getPartnerFollowers: function(name, notify) {
 			var clubList;
 			var query = new Everlive.Query();
 			query.where().eq('Place', name);

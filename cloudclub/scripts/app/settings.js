@@ -950,7 +950,7 @@ var appSettings = {
 		registrationHelp: "Read notes and check 'I agree', fill all fields. You can update your Avatar by updating your settings at any time...",
 		registerOption: "If you register and login all the comunity POST features are available...",
 		register: "Registration enables access to camera Posting and other community and notification features.",
-		registeredOK: "You have sucesfully registered for local notifications.",
+		registeredOK: "You have sucesfully registered for local notifications. ",
 		registration: "Congratulations! You are now registered to use CloudClub",
 		rememberMe: "Remember Me:",
 		removeActivityConfirm: "This activity will be deleted. This action can not be undone.",

@@ -259,11 +259,10 @@
       });
 		</script>
 		<script type="text/x-kendo-template" id="favoriteTemplate"> <b>
-			<font size=3> <label data-bind="text: name"/> is</font>
+			<font size=3> <label data-bind="text: name"> is</label></font>
 			<font size="3" color="red" data-bind="invisible: selected"> OFF </font>
 			<font size="4" color="green"  data-bind="visible: selected"> ON </font>
 		</b> <input id="#:name#-switch" data-role="switch" data-bind="events: { change: onSelectChange }, checked: selected" data-on-label="YES"
 				data-off-label="NO" /> </script>
 	</div>
-</div>
 </div>
