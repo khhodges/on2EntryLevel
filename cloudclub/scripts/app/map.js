@@ -217,19 +217,19 @@ app.Places = (function () {
 			//	}
 			//	return;
 			//},
-			//updateDistance: function (lat2, lng2) {
-			//	var R = 6371; // km
-			//	var lat1 = app.cdr.latitude;
-			//	var lng1 = app.cdr.longitude;
-			//	var dLat = (lat2 - lat1) * Math.PI / 180;
-			//	var dLon = (lng2 - lng1) * Math.PI / 180;
-			//	var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-			//		Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-			//		Math.sin(dLon / 2) * Math.sin(dLon / 2);
-			//	var c = 2 * Math.asin(Math.sqrt(a));
-			//	var d = R * c / 1.61; // converted to miles
-			//	return d.toFixed(4);
-			//},
+			updateDistance: function (lat2, lng2) {
+				var R = 6371; // km
+				var lat1 = app.cdr.latitude;
+				var lng1 = app.cdr.longitude;
+				var dLat = (lat2 - lat1) * Math.PI / 180;
+				var dLon = (lng2 - lng1) * Math.PI / 180;
+				var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+					Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+					Math.sin(dLon / 2) * Math.sin(dLon / 2);
+				var c = 2 * Math.asin(Math.sqrt(a));
+				var d = R * c / 1.61; // converted to miles
+				return d.toFixed(4);
+			},
 			//updateStars: function (place) {
 			//	if (app.isNullOrEmpty(place.rating)) {
 			//		place.rating = 1;
@@ -276,6 +276,7 @@ app.Places = (function () {
 					};
 				} catch (e) { app.Error(JSON.stringify(e)) }
 				app.Places.visiting = Selfie;
+				app.Places.center = Selfie;
 				map.panTo(position);
 				that._putMarker(position);
 				locality = position;
@@ -287,6 +288,7 @@ app.Places = (function () {
 				query.where().nearSphere('Location', point, 25, 'miles').ne('Icon', 'styles/images/avatar.png');
 				var partners = app.everlive.data('Places');
 				//query.expand({"Members": {"TargetTypeName": "Users"}});
+				app.notify.showLongBottom("Loading nearby CloudClub Partners within 25 miles onto Google Maps. Click any star to research the Partner.,")
 				partners.get(query).then(function (data) {
 					app.Places.locationViewModel.list = new app.Places.List;
 					for (var i = 0; i < data.count; i++) {
@@ -483,10 +485,30 @@ app.Places = (function () {
 			onPlaceSearch: function () {
 				app.notify.showShortTop(appSettings.messages.searchAgain);
 				app.Places.locationViewModel.clearMap();
+				app.notify.getLocation(
+					app.Places.locationViewModel.onPlaceSearchContinued
+				);
+			},
+			onPlaceSearchContinued: function (position) {
+				//app.showAlert("Position " + JSON.stringify(position));
+				locality.lat = position.latitude;
+				locality.lng = position.longitude;
+				var latLng = new google.maps.LatLng(position.latitude, position.longitude); //Makes a latlng
+				map.panTo(latLng);
+				//map.setZoom(theZoom);
+				//map.fitBounds(allBounds);
+				map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+				var iw = infoWindow;
+				iw.close();
+				var marker = new google.maps.Marker({
+					position: latLng,
+					map: map,
+					title: 'Hello World!'
+				});
 				// Create the PlaceService and send the request.
 				// Handle the callback with an anonymous function.
 				service = new google.maps.places.PlacesService(map);
-				here = map.getBounds();
+				//here = map.getBounds();
 				//comand = app.Places.locationViewModel.find;
 				//if(comand==='?'){app.Places.locationViewModel.openActionSheet();}
 				// Specify location, radius and place types for your Places API search.
@@ -494,7 +516,7 @@ app.Places = (function () {
 					//Perform Address Search
 					request = {
 						location: locality,
-						bounds: here,
+						radius: 5000,
 						keyword: app.Places.locationViewModel.find
 					};
 					service.nearbySearch(request, function (results, status) {
@@ -612,6 +634,7 @@ app.Places = (function () {
 			//		});
 			//	});
 			//},
+
 			onSearchAddress: function () {
 				app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
 				app.Places.locationViewModel.set("isGoogleDirectionsInitialized", false);
@@ -1048,10 +1071,8 @@ app.Places = (function () {
 			},
 			visitingShow: function (e) {
 				app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
-				var myId = e.view.params.uid;
-				var me = app.Places.visiting;
-				//var myDetails = me.datails();
-				//app.notify.showShortTop("Visiting show " + app.Places.visiting.details().name)
+				var name = e.view.params.name;
+				app.helper.getPartnerFollowers(name, false)
 			},
 			listShow: function (e) {
 				app.notify.showLongBottom(appSettings.messages.listHelp)
@@ -1320,24 +1341,20 @@ app.Places = (function () {
 						case "visible":
 							this.data[key].details().setVisibility("visible");
 							return this.data[key].details().visibility;
-							break;
+
 						case "hidden":
 							this.data[key].details().setVisibility("hidden");
 							return this.data[key].details().visibility;
-							break;
+
 						case "visibility":
 							return this.data[key].details().visibility;
-							break;
+
 						default:
 							return {
 								visible: this.data[key].visibility,
 								isSelectedClass: this.data[key].isSelectedClass
 							};
 					}
-					if (action === "get") {
-
-					}
-
 				}
 			},
 			newPartner: function () {
@@ -1355,6 +1372,11 @@ app.Places = (function () {
 				var name = "";
 				var UrlString = "components/activities/view.html?ActivityText=";
 				var Mark;
+				var membersList;
+				var iFollow = function () {
+					var id = app.Users.currentUser.Id;
+					return id.isIn(membersList);
+				}
 				var htmlIw;
 				var options = {
 					map: map,
@@ -1409,9 +1431,6 @@ app.Places = (function () {
 						+ showIcon + '" height="auto" width="25%" style="padding:5px"></a>';
 					return itemHtml;
 				};
-				//return (introHtml + '</div>').replace("styles/images/website.png", Icon());
-				//}
-				//}
 				var toCustomHtml = function () {
 					try {
 						var a = Address()
@@ -1456,7 +1475,9 @@ app.Places = (function () {
 									+ n + '"><img src="styles/images/notifications.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
 								break;
 							case "follow":
-								introHtml = introHtml + '<a data-role="button" class="butn" href="#views/clubView.html"><img src="styles/images/follow.png" alt="Follow" height="auto" width="25%" style="padding:5px"></a>'
+								introHtml = introHtml + '<a data-role="button" class="butn" href="#views/placesView.html?name='
+									+ resolveString(resolveString(n, "'", "%27"), "&", "%26") + '"><img src="styles/images/follow.png" alt="'
+									+ n + ' website" height="auto" width="25%" style="padding:5px"></a>'
 								break;
 							case "activities":
 								if (programmedOptions) {
@@ -1465,8 +1486,8 @@ app.Places = (function () {
 								}
 								break;
 							case "partner":
-								introHtml = introHtml + '<a data-role="button" class="butn" href="#views/placesView.html?uid='
-									+ id + '"><img src="' + app.helper.resolvePictureUrl(picture()) + '" alt="'
+								introHtml = introHtml + '<a data-role="button" class="butn" href="#views/placesView.html?name='
+									+ resolveString(resolveString(n, "'", "%27"), "&", "%26") + '"><img src="' + app.helper.resolvePictureUrl(picture()) + '" alt="'
 									+ n + ' website" height="auto" width="25%" style="padding:5px"></a>'
 								break;
 							case "camera":
@@ -1480,7 +1501,7 @@ app.Places = (function () {
 						for (var h = 0; h < programmedOptions.length; h++) {
 							var link = programmedOptions[h];
 							if (link.icon) {
-								if (link.icon.substring(0, 3) !== "http") link.icon = "styles/images/" + link.name + ".png";
+								if (link.icon.substring(0, 4) !== "http") link.icon = "styles/images/" + link.name + ".png";
 								introHtml = introHtml + '<a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
 									+ link.path + '\');"><img src="' + link.icon + '" alt="' + link.name + '" height="auto" width="25%" style="padding:5px"></a>'
 							}
@@ -1535,6 +1556,9 @@ app.Places = (function () {
 					return partnerRow.Website;
 				};
 				var Description = function () {
+					if(partnerRow.Description.length<10){
+						partnerRow.Description = "This is a new partner setup that will be updated with the corect data in short-order. These are the default settings that allow additional research to be achieved. "
+					}
 					return partnerRow.Description;
 				}
 				var partnerOptions = function () {
@@ -1718,34 +1742,6 @@ app.Places = (function () {
 					myCity = app.Places.locationViewModel.getComponent(googleData.address_components, "locality");
 					return text;
 				}
-				//this.checkPlaceDetails = function (callback) {
-				//	if (googleDataFetch === true) {
-				//		if (callBack !== null) {
-				//			callback();
-				//		} else {
-				//			return true;
-				//		}
-				//	}
-				//	else {
-				//		var place = {
-				//			placeId: placeId()
-				//		};
-				//		googleDataFetch = true;
-				//		service.getDetails(place, function (result, status) {
-				//			if (status !== google.maps.places.PlacesServiceStatus.OK) {
-				//				console.error(status);
-				//				return false;
-				//			}
-				//			googleData = result;
-				//			if (app.isNullOrEmpty(callBack)) {
-				//				return true;
-				//			} else {
-				//				callback();
-				//			}
-				//		}
-				//		)
-				//	}
-				//}
 				this.vicinity = function () {
 					if (app.isNullOrEmpty(partnerRow.Address)) {
 						partnerRow.Address = partnerRow.vicinity;
@@ -1753,8 +1749,19 @@ app.Places = (function () {
 					return partnerRow.Address;
 				};
 				this.likeClick = function () {
-					app.notify.memorize(myId);
-					app.notify.showShortTop(appSettings.messages.membership);
+					if (!app.isOnline()) {
+						app.mobileApp.navigate("#welcome");
+					} else {
+						var Id = app.Users.currentUser.data.Id;
+						var myArray = app.Places.visiting.clubList;
+						var result = $.grep(myArray, function (e) { return e.id == Id; });
+						if (result.length === 0) {
+							app.notify.memorize(app.Places.visiting.getPartnerRow().Id);
+							app.notify.showShortTop(appSettings.messages.membership);
+						} else {
+							app.notify.showShortTop("You are alreay enrolled!")
+						}
+					}
 				};
 				this.rating = function () {
 					return htmlIw.rating;
@@ -1852,6 +1859,9 @@ app.Places = (function () {
 						partnerRow.PlaceId = partnerRow.place_id;
 					}
 					return partnerRow.PlaceId;
+				}
+				this.getPartnerRow = function () {
+					return partnerRow;
 				}
 				this.location = function () {
 					if (app.isNullOrEmpty(partnerRow.Location)) {

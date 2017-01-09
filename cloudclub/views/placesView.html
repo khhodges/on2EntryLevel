@@ -1,14 +1,9 @@
-<div data-role="view" data-title="Club Details" data-model="app.Places.visiting" data-show="app.Places.visitingShow" id="visitingDetailsView">
+<div data-role="view" data-title="Club Details" data-reload="true" data-model="app.Places.visiting" data-show="app.Places.visitingShow" id="visitingDetailsView">
 	<header data-role="header">
-		<div data-role="navbar" class="header-text">
-			<a data-role="backbutton" data-align="left">Back</a>
-			<span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;">Club Detail</span>
-			<a data-role="button" data-align="right" data-bind="events: { click: likeClick}">Follow</a>
-		</div>
+		<div data-role="navbar" class="header-text"> <a data-role="backbutton" data-align="left">Back</a> <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;">Club Information</span>			<a data-role="button" data-align="right" data-bind="events: { click: likeClick}">Follow</a> </div>
 	</header>
-	<div class="image-with-text">
-		<img data-bind="attr: { src: details().icon, href: details().website}" data-style="inset" style="padding: 0 0 0 15px"
-			 width="35%" height="auto">
+	<div class="image-with-text"> <img data-bind="attr: { src: details().icon, href: details().website}" data-style="inset" style="padding: 0 0 0 15px" width="35%"
+			height="auto">
 		<h3 data-bind="text: details().name"></h3>
 		<p data-bind="text: details().description"></p>
 		<div id="splitter">
@@ -16,45 +11,40 @@
 				<h3 data-style="inset">
 					Tip Calculator:
 				</h3>
-				<p>
-					<b> Bill: $
+				<p> <b> Bill: $
 						<input type="number" style="background-color: azure;font-style: italic;width: 35%;" min="0"placeholder="Enter Charge" max="50000" style=""  id="bill" onchange="tipCalculate('slideval', 'bill')"> 
                     <br/> Rate:&nbsp;
-						<input type="number" style="background-color: azure;font-style: italic;width: 20%;" border="0" value="15.0" min="0" max="50" id="slideval" onchange="tipCalculate(this.value, 'bill')">% <br/><br/>Tip: <span id="tipamount" class="tip-amount">$0.00</span>&nbsp;Total: <span id="fullamount" class="tip-amount">$0.00</span> <br/><span id="dateRef"></span> </b>
-				</p>
+						<input type="number" style="background-color: azure;font-style: italic;width: 20%;" border="0" value="15.0" min="0" max="50" id="slideval" onchange="tipCalculate(this.value, 'bill')">% <br/><br/>Tip: <span id="tipamount" class="tip-amount">$0.00</span>&nbsp;Total: <span id="fullamount" class="tip-amount">$0.00</span> <br/><span id="dateRef"></span> </b>					</p>
 			</div>
-
 			<div id="openTimes" data-style="inset" data-role="collapsible" data-animation="true">
 				<h3>
 					Opening Times:
 				</h3>
-				<p>Hours:
-<br/>Sunday 11 a.m. – 10 p.m.
-<br/>Monday 11 a.m. – 10 p.m.
-<br/>Tuesday 11 a.m. – 10 p.m.
-<br/>Wednesday 11 a.m. – 10 p.m.
-<br/>Thursday 11 a.m. – 11 p.m.
-<br/>Friday 11 a.m. – 11 p.m.
-<br/>Saturday 11 a.m. – 11 p.m.</p>
-				<div id="authorize-div" style="display: none">
-					<span>Authorize access to Google Calendar API</span>
-					<!--Button for the user to click to initiate auth sequence -->
-					<button id="authorize-button" onclick="handleAuthClick(event)">
+				<p>Hours: <br/>Sunday 11 a.m. – 10 p.m. <br/>Monday 11 a.m. – 10 p.m. <br/>Tuesday 11 a.m. – 10 p.m. <br/>Wednesday 11 a.m.
+					– 10 p.m. <br/>Thursday 11 a.m. – 11 p.m. <br/>Friday 11 a.m. – 11 p.m. <br/>Saturday 11 a.m. – 11 p.m.</p>
+				<div id="authorize-div"
+					style="display: none"> <span>Authorize access to Google Calendar API</span>
+					<!--Button for the user to click to initiate auth sequence --><button id="authorize-button" onclick="handleAuthClick(event)">
 						Authorize
-					</button>
-				</div>
-				<pre id="output"></pre>
-			</div>
-			<div id="contactDetails" data-style="inset" data-role="collapsible" data-animation="true">
+					</button> </div> <pre id="output"></pre> </div>
+			<div id="contactDetails" data-style="inset" data-role="collapsible"
+				data-animation="true">
 				<h3>
-					Contact Us:
+					Loyalty Club Details:
 				</h3>
-		<p data-bind="text: details().vicinity"></p>
-		<p data-bind="text: details().listString"></p>
+				<p data-bind="text: details().vicinity"></p>
+				<p data-bind="text: details().listString"></p>
 				<p data-bind="text: details().phone"></p>
 			</div>
+			<div id="membersDetails" data-style="inset" data-role="collapsible" data-animation="true">
+				<h3>ClubClub:</h3>
+				<p>Joining our CloudClub will connect you to the management team to notify you on 
+					all the latest events, services and other activities. You
+					can easily join by clicking the FOLLOW button above.<p><strong>Members List:</strong></p>
+					<ul id="club-listview" class="club-list-view"
+						data-role="listview" data-click="app.PushRegistrar.onSelected"></ul>
+			</div>
 		</div>
-
 	</div>
 	<script type="text/javascript">
 		// Your Client ID can be retrieved from your project in the Google
@@ -162,11 +152,10 @@
 			var textContent = document.createTextNode(message + '\n');
 			pre.appendChild(textContent);
 		}
-		
 	</script>
 	<script src="https://apis.google.com/js/client.js?onload=checkAuth">
-	</script>
 
+	</script>
 	<script>
 		function tipCalculate () {
 			var tip = document.getElementById('tipamount');

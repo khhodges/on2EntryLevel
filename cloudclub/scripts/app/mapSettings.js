@@ -7,12 +7,8 @@ var htmlOptions = {
 	"version": 1.1,
 	"releaseDate": "2016-09-19T00:00:00.000Z",
 	"approved": true,
-	"partner": {
-		"stars": "0",
-		"rating": "??"
-	},
 	"defaultOptions": {
-		"standard": ["camera","events", "activities"],
+		"standard": ["follow","events", "activities"],
 		"search": ["google", "twitter", "bing", "facebook"],
 		"food": ["zomato", "yelp"],
 		"general":["yellowpages","wikipedia"],

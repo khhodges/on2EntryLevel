@@ -103,10 +103,12 @@ var app = (function (win) {
 			notificationCallbackIOS: on2SeeIosPushReceived
 		},
 		enablePushNotifications: function () {
-			app.notify.showShortTop("Initializing push notifications for " + device.platform + '...');
 			app.PushRegistrar.pushSettings.customParameters = {
-				"LastLoginDate": new Date()
+				"LastLoginDate": new Date(),
+				"CodeRelease":"CC Release 1.2.1 - 1/7/2017"
 			};
+			//app.notify.showShortTop("Initializing push notifications for " + device.platform + ', '
+			+ app.PushRegistrar.pushSettings.customParameters.CodeRelease;
 
 			app.everlive.push.register(app.PushRegistrar.pushSettings)
 				.then(
@@ -124,7 +126,7 @@ var app = (function (win) {
 				});
 		},
 		updateRegistration: function () {
-			app.notify.showShortTop("Initializing update registration of notifications for " + device.platform + '...');
+			//app.notify.showShortTop("Initializing update registration of notifications for " + device.platform + '...');
 			app.everlive.push.updateRegistration(
 				{ Parameters: { "PushToken": app.notifyStatus.PushToken, "LastLoginDate": new Date().toDateString(), "Location": app.cdr } },
 				function (obj) {
@@ -137,7 +139,7 @@ var app = (function (win) {
 		},
 
 		checkNotify: function () {
-			app.notify.showShortTop("Initializing check of registration for notifications on " + device.platform + '...');
+			//app.notify.showShortTop("Initializing check of registration for notifications on " + device.platform + '...');
 			app.everlive.push.getRegistration(
 				function (obj) {
 					app.notifyStatus = obj.result;
@@ -146,7 +148,7 @@ var app = (function (win) {
 						app.notify.showShortTop("Notification service is ON.");// + JSON.stringify(obj.result));
 						//Must be online first app.PushRegistrar.updateRegistration();// updateRegistration;
 					} else {
-						app.notify.showShortTop("PushToken is not yet set, No notification options underway, login is required. ");// + JSON.stringify(obj));
+						app.notify.showShortTop("Please login to recieve notifications. ");// + JSON.stringify(obj));
 					}
 					//app.notify.showShortTop("Check end - Status check: " + JSON.stringify(app.notifyStatus))
 				},
@@ -186,7 +188,8 @@ var app = (function (win) {
 				"data": {
 					"title": pushTitle,
 					"message": pushMessage,
-					"customData": customData
+					"customData": customData,
+					"smallIcon": "iconcee24"
 				}
 			};
 
@@ -198,8 +201,12 @@ var app = (function (win) {
 				},
 				"customData": customData
 			};
+			var x, y = new Date();
+			x.setDate(x.getDate() + 7);
 			var notificationObject = {
 				"Filter": JSON.stringify(filter),
+				"NotificationDate": y,
+				"ExpirationDate": x,
 				"Android": androidPayload,
 				"IOS": iosPayload
 			};
@@ -210,7 +217,7 @@ var app = (function (win) {
 
 
 	var onDeviceReady = function () {
-		app.notify.showShortTop("Device ready: " + device.platform);
+		//app.notify.showShortTop("Device ready: " + device.platform);
 		app.PushRegistrar.checkNotify();
 		// Handle "backbutton" event
 		document.addEventListener('backbutton', onBackKeyDown, false);
@@ -218,7 +225,6 @@ var app = (function (win) {
 			app.cdr = crd;
 			var zoom = 15;
 			app.cdr.distance = (21 - zoom) * 2;
-			//localStorage.setItem("cdr", cdr.latitude + ":" + cdr.longitude);
 		},
 			function (error) {
 				//app.notify.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
@@ -446,65 +452,76 @@ var app = (function (win) {
 					logonB.style.display = "";
 				});
 		},
-		getPartnerFollowers(name) {
+		getPartnerFollowers(name, notify) {
+			var clubList;
 			var query = new Everlive.Query();
 			query.where().eq('Place', name);
+			// query.where({
+			// 	field: "Title",
+			// 	operator: "startswith",
+			// 	value: name
+			// });
 			var partner = app.everlive.data('Places');
 			query.expand({ "Members": { "TargetTypeName": "Users", "Fields": { "DisplayName": 1, "Email": 1, "Phone": 1 } } });
 			partner.get(query).then(function (data) {
-				if (!data.result || !data.result[0] || !data.result[0].Members) {
+				clubList = data.result[0].Members;
+				app.Places.visiting.clubList = clubList;
+				if (!data.result || !data.result.length > 1 || !data.result[0].Members) {
 					app.notify.showShortTop("There are no followers to contact using the notification service!")
 				} else {
-					var followers = new Array(data.result[0].Members.length)
-					for (var i = 0; i < data.result[0].Members.length; i++) {
-						var follower = data.result[0].Members[i];
-						followers.push(follower.Id);
-						console.log(follower.Email);
-					}
-					//sendNotificationsAll(data.result[0].Members)
-					app.notify.showShortTop(appSettings.messages.broadcast);
-					var notify = app.PushRegistrar.create(name, app.Activity.activity().Text, app.Activity.activity().Id, followers)
-					// if (true) { //TO DO: check if notification activity exists to prevent second attempt
-					// 	var notify = {
-					// 		"Message": app.Activity.activity().Text, // upgrade required,
-					// 		"UseLocalTime": true,
-					// 		"Android": {
-					// 			"data": {
-					// 				"title": "Local Update",
-					// 				"message": app.Activity.activity().Text,
-					// 				"smallIcon": "iconcee24",
-					// 				"id": app.Activity.activity().Id
-					// 			}
-					// 		}
-					// 	}
-					app.everlive.push.notifications.create(
-						notify,
-						function (data) {
-							var createdAt = app.formatDate(data.result.CreatedAt);
-							app.notify.showShortTop(appSettings.messages.broadcast + createdAt);
-							var data = el.data('Notifications');
-							var place = "Sent from " + app.Activity.activity().Title;
-							data.create({
-								'Place': place,
-								'Reference': app.Activity.activity().Id,
-								'Status': true,
-								'Location': {
-									"latitude": app.cdr.latitude,
-									"longitude": app.cdr.longitude
-								}
-							},
+					try {
+						var followers = new Array(data.result[0].Members.length)
+						for (var i = 0; i < clubList.length; i++) {
+							var follower = data.result[0].Members[i];
+							followers.push(follower.Id);
+							console.log(follower.Email);
+						}
+						if (notify) {
+							app.notify.showShortTop(appSettings.messages.broadcast);
+							var notify = app.PushRegistrar.create(name, app.Activity.activity().Text, app.Activity.activity().Id, followers)
+							app.everlive.push.notifications.create(
+								notify,
 								function (data) {
-									app.notify.showShortTop(appSettings.messages.saved + data.result.Id);
+									var createdAt = app.formatDate(data.result.CreatedAt);
+									app.notify.showShortTop(appSettings.messages.broadcast + createdAt);
+									var data = el.data('Notifications');
+									var place = "Sent from " + app.Activity.activity().Title;
+									data.create({
+										'Place': place,
+										'Reference': app.Activity.activity().Id,
+										'Status': true,
+										'Location': {
+											"latitude": app.cdr.latitude,
+											"longitude": app.cdr.longitude
+										}
+									},
+										function (data) {
+											app.notify.showShortTop(appSettings.messages.saved + data.result.Id);
+										},
+										function (error) {
+											app.notify.showShortTop(appSettings.messages.tryAgain + error.message);
+										});
 								},
 								function (error) {
-									app.notify.showShortTop(appSettings.messages.tryAgain + error.message);
-								});
-						},
-						function (error) {
-							app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
-						})
-				}
+									app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
+								})
+						} else {
 
+							$("#club-listview").kendoMobileListView({
+								dataSource: clubList,
+								template: "#: DisplayName #",
+								selectable: "multiple",
+								change: function () {
+									alert("Change event!")
+								}
+							})
+								.data("kendoListView");
+							$("#places-listview").on("data-swipe", "li", app.Places.locationViewModel.openListSheet);
+						}
+					} catch (e) {
+						app.showError(JSON.stringify(e))
+					}
+				}
 			},
 				function (error) {
 					app.showError("Followers error " + JSON.stringify(error))
@@ -732,9 +749,9 @@ var app = (function (win) {
 				};
 
 				data.rawUpdate(attributes, filter, function (data) {
-					app.notify.showShortTop(appSettings.messages.registeredOK);
+					app.notify.showShortTop(appSettings.messages.registeredOK + JSON.stringify(data));
 				}, function (err) {
-					app.notify.showShortTop(appSettings.messages.tryAgain);
+					app.notify.showShortTop(appSettings.messages.tryAgain+JSON.stringify(err));
 				});
 			} else {
 				app.notify.showShortTop(appSettings.messages.tryAgain);
@@ -744,27 +761,21 @@ var app = (function (win) {
 
 		memorize: function (PartnerId) {
 			console.log("Start Like." + PartnerId);
-
 			if (app.Users.currentUser.data) {
 				//use everlive
 				var data = app.everlive.data('Places');
-
-				//var likedUserId = '790d1f30-b86c-11e5-86a2-6700f56ce9c3'; //user-id';
-
 				var attributes = {
-					"$push": {
+					"$addToSet": {
 						"Members": app.Users.currentUser.data.Id //liked - user - id
 					}
 				};
-
 				var filter = {
-					'Id': PartnerId // TO DO! replace this with the current place, if the place does not exist that register the place
+					'Id': PartnerId //   the current place, if the place does not exist then register the place??
 				};
-
 				data.rawUpdate(attributes, filter, function (data) {
-					app.notify.showShortTop(appSettings.messages.joinMeaage);
+					app.notify.showShortTop(appSettings.messages.joinMessage+JSON.stringify(data));
 				}, function (err) {
-					app.notify.showShortTop(appSettings.messages.tryAgain);
+					app.notify.showShortTop(appSettings.messages.tryAgain+JSON.stringify(err));
 				});
 			} else {
 				app.notify.showShortTop(appSettings.messages.signIn);

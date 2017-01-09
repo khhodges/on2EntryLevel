@@ -1,15 +1,14 @@
-
-<div 
-	id="club-list" 
-	class="view place-list" 
-	data-role="view" 
-	data-model="app.clubViewModel" 
-	data-show="app.PushRegistrar.create">
+<div id="club-list" class="view place-list" data-role="view" data-model="app.Places.visiting" data-show="app.helper.getPartnerFollowers(#: details().name#,false)">
 	<div data-role="header">
 		<div data-role="navbar"> List <a data-role="button" data-align="left" href="#views/mapView.html">Home</a>
 			<a data-role="button" data-align="right"
 				data-icon="globe" data-click="app.Places.browse"></a>
 		</div>
 	</div>
-	<ul id="club-listview" class="club-list-view" data-role="listview" data-click="app.PushRegistrar.onSelected"></ul>
+	<div class="image-with-text"> <img data-bind="attr: { src: details().icon, href: details().website}" data-style="inset" style="padding: 0 0 0 15px" width="35%"
+			height="auto">
+		<h3 data-bind="text: details().name"></h3>
+		<p data-bind="text: details().description"></p>
+		<ul id="club-listview" class="club-list-view" data-role="listview" data-click="app.PushRegistrar.onSelected"></ul>
+	</div>
 </div>
