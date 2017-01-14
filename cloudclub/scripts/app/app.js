@@ -759,29 +759,32 @@ var app = (function (win) {
 			}
 		},
 
-		memorize: function (PartnerId) {
-			console.log("Start Like." + PartnerId);
-			if (app.Users.currentUser.data) {
-				//use everlive
-				var data = app.everlive.data('Places');
-				var attributes = {
-					"$addToSet": {
-						"Members": app.Users.currentUser.data.Id //liked - user - id
-					}
-				};
-				var filter = {
-					'Id': PartnerId //   the current place, if the place does not exist then register the place??
-				};
-				data.rawUpdate(attributes, filter, function (data) {
-					app.notify.showShortTop(appSettings.messages.joinMessage);
-				}, function (err) {
-					app.notify.showShortTop(appSettings.messages.tryAgain+JSON.stringify(err));
-				});
-			} else {
-				app.notify.showShortTop(appSettings.messages.signIn);
-				app.mobileApp.navigate('#welcome');
-			}
-		},
+        memorize: function (PartnerId) {
+            if (PartnerId!== undefined) {
+                console.log("Start Like." + PartnerId);
+                if (app.Users.currentUser.data) {
+                    //use everlive
+                    var data = app.everlive.data('Places');
+                    var attributes = {
+                        "$addToSet": {
+                            "Members": app.Users.currentUser.data.Id //liked - user - id
+                        }
+                    };
+                    var filter = {
+                        'Id': PartnerId //   the current place, if the place does not exist then register the place??
+                    };
+                    data.rawUpdate(attributes, filter, function (data) {
+                        app.notify.showShortTop(appSettings.messages.joinMessage);
+                    }, function (err) {
+                        app.notify.showShortTop(appSettings.messages.tryAgain + JSON.stringify(err));
+                    });
+                } else {
+                    app.notify.showShortTop(appSettings.messages.signIn);
+                    app.mobileApp.navigate('#welcome');
+                }
+            } else {//TO DO: save app.Places.visiting.PlaceId() in like list for user
+            }
+        },
 		openBroadcastSheet: function () {
 			if (!app.Places.locationViewModel.checkSimulator()) {
 				app.notify.showBroadcastSheet({
@@ -993,7 +996,7 @@ var app = (function (win) {
 			var options = {
 				enableHighAccuracy: true,
 				timeout: 20000,
-				maximumAge: 200000
+				maximumAge: 2000
 			};
 
 			function success(pos) {
@@ -1002,6 +1005,7 @@ var app = (function (win) {
 				continueButton.style.display = "";
 				var setupBtn = document.getElementById("setupBtn");
 				setupBtn.style.display = "";
+                app.cdr = crd;
 				callBack(crd);
 			};
 
