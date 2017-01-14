@@ -500,11 +500,12 @@ app.Places = (function () {
 				map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
 				var iw = infoWindow;
 				iw.close();
-				var marker = new google.maps.Marker({
-					position: latLng,
-					map: map,
-					title: 'Hello World!'
-				});
+				//that._lastMarker.setPosition(latlng)
+				// var marker = new google.maps.Marker({
+				// 	position: latLng,
+				// 	map: map,
+				// 	title: 'Hello World!'
+				// });
 				// Create the PlaceService and send the request.
 				// Handle the callback with an anonymous function.
 				service = new google.maps.places.PlacesService(map);
@@ -659,9 +660,9 @@ app.Places = (function () {
 			toggleLoading: function () {
 				//app.showAlert("Loading "+this._isLoading)
 				if (this._isLoading) {
-					kendo.mobile.application.showLoading();
+                    app.mobileApp.pane.loader.show()
 				} else {
-					kendo.mobile.application.hideLoading();
+                    app.mobileApp.pane.loader.hide();
 				}
 			},
 			currentLocation: function (marker) {
@@ -976,11 +977,11 @@ app.Places = (function () {
 				streetView = map.getStreetView();
 			},
 			show: function () {
+                app.mobileApp.pane.loader.show();
 				if (app.Users.currentUser.data && app.Users.currentUser.data.jsonList.partner.rememberMe === true) {
 					localStorage.access_token = localStorage.access_token1
 				}
 				app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
-				kendo.mobile.application.showLoading();
 				app.adMobService.viewModel.removeBanner();
 				//app.adMobService.viewModel.prepareInterstitial();
 				if (app.isOnline()) {
@@ -1557,8 +1558,8 @@ app.Places = (function () {
 					return partnerRow.Website;
 				};
 				var Description = function () {
-					if(partnerRow.Description.length<10){
-						partnerRow.Description = "This is a new partner setup that will be updated with the corect data in short-order. These are the default settings that allow additional research to be achieved. "
+					if(!partnerRow.Description && partnerRow.Description.length<10){
+						partnerRow.Description = "This is a new setup that will be updated shortly. "
 					}
 					return partnerRow.Description;
 				}
