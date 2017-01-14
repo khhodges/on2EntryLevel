@@ -56,7 +56,7 @@ app.Activity = (function () {
 
 			app.notify.showShortTop(appSettings.messages.loadComments)
 
-			//app.mobileApp.showLoading();
+			app.mobileApp.showLoading();
 			app.Comments.comments.filter({
 				field: 'ActivityId',
 				operator: 'eq',

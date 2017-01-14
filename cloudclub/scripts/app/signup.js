@@ -217,7 +217,7 @@ app.Signup = (function () {
                     destinationType: Camera.DestinationType.DATA_URL,
                     quality: 25
                 };
-                //app.mobileApp.showLoading();
+                app.mobileApp.showLoading();
                 navigator.camera.getPicture(success, error, config);
             };
         }

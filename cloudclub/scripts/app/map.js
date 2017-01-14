@@ -1004,7 +1004,7 @@ app.Places = (function () {
 			},
 			hide: function () {
 				//hide loading mask if user changed the tab as it is only relevant to location tab
-				kendo.mobile.application.hideLoading();
+				app.mobileApp.hideLoading();
 			},
 			locationViewModel: new LocationViewModel(),
 			//packPartner: function (item) {

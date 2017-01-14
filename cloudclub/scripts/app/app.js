@@ -1219,6 +1219,12 @@ var app = (function (win) {
 				action.innerText = "Register";
 			}
 		},
-		PushRegistrar: PushRegistrar
+		PushRegistrar: PushRegistrar,
+        loading:function(show){
+            if(show){
+                return app.mobileApp.showLoading();
+            }
+            return app.mobileApp.hideLoading();
+        }
 	};
 } (window));

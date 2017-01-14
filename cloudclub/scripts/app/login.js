@@ -72,7 +72,7 @@ app.Login = (function () {
 			var username = $loginUsername.val();
 			var password = $loginPassword.val();
 
-			//app.mobileApp.showLoading();
+			app.mobileApp.showLoading();
 
 			// Authenticate using the username and password
 			app.everlive.Users.login(username.trim(), password)

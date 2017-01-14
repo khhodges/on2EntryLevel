@@ -90,7 +90,8 @@ app.Activities = (function () {
 			}
 			if (app.isOnline() && e.view.params.ActivityText === 'My Private Feed') {
 				app.Activities.activities._filter={field: "UserId", operator: "eq", value: app.Users.currentUser.data.Id};
-			} 
+			}            
+        app.loading(true);
 		}
 		app.Activities.activities.fetch(function () {
 			$('#activities-listview').kendoMobileListView({
@@ -364,8 +365,7 @@ app.Activities = (function () {
 				app.showAlert("First take a photo with your camera and then add a message to match!", "Informational");
 			}
 			if (validator.validate() && (selected !== undefined)) {
-				app.notify.showShortTop(appSettings.messages.updating);
-				app.mobileApp.showLoading();
+				app.notify.showLongBottom(appSettings.messages.updating);
 				// Save image as base64 to everlive
 				app.everlive.Files.create({
 					Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
