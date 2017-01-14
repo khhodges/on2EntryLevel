@@ -900,24 +900,24 @@ app.Places = (function () {
 				update = true;
 				app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
 			},
-			updateMapLocation: function () {
-				app.notify.getLocation(function (position) {
-					locality = position;
-					map.panTo({
-						lat: position.latitude,
-						lng: position.longitude
-					});
-					//map.setZoom(theZoom);
-					map.fitBounds(allBounds);
-					map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-					var iw = infoWindow;
-					iw.close();
-					app.Places.locationViewModel._putMarker({
-						lng: position.longitude,
-						lat: position.latitude
-					});
-				})
-			},
+			//updateMapLocation: function () {
+			//	app.notify.getLocation(function (position) {
+			//		locality = position;
+			//		map.panTo({
+			//			lat: position.latitude,
+			//			lng: position.longitude
+			//		});
+			//		//map.setZoom(theZoom);
+			//		map.fitBounds(allBounds);
+			//		map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+			//		var iw = infoWindow;
+			//		iw.close();
+			//		app.Places.locationViewModel._putMarker({
+			//			lng: position.longitude,
+			//			lat: position.latitude
+			//		});
+			//	})
+			//},
 			initLocation: function () {
 				//common variables 
 				app.notify.showLongBottom(appSettings.messages.mapMessage);
