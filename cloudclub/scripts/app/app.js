@@ -787,7 +787,50 @@ var app = (function (win) {
                 app.mobileApp.navigate('#welcome');
             }
         },
-
+        fixPlaceId: function (placeId, placeJson) {
+            var filter = {
+                'PlaceId': placeId
+            };
+            var data = app.everlive.data('Jsonlists');
+            data.get(filter)
+                .then(function (data) {
+                    //alert(JSON.stringify(data));
+                    if (data.result && data.result[0] && data.result[0].PlaceId ===  placeId) {
+                        app.notify.addUserFavourite(data.result[0].Id);
+                    }
+                    else {
+                        app.notify.createPlaceIdwithUserFavorite(placeId, placeJson)
+                    }
+                },
+                function (error) {
+                    app.showError(JSON.stringify(error));
+                });
+        },
+        addUserFavourite: function (newPlaceId) {
+            var data2 = app.everlive.data('Users');
+            var attributes = {
+                "$addToSet": {
+                    "Favorites": newPlaceId //Jsonlist new  place id
+                }
+            };
+            var filter = {
+                'Id': app.Users.currentUser.data.Id //   the current User
+            };
+            data2.rawUpdate(attributes, filter, function (data) {
+                app.notify.showShortTop(appSettings.messages.joinMessage);
+            }, function (err) {
+                app.notify.showShortTop(appSettings.messages.tryAgain + JSON.stringify(err));
+            });
+        },
+        createPlaceIdwithUserFavorite: function (placeId, placeJson) {
+            //use everlive to save PlaceId in Jsonlist
+            var data = app.everlive.data('Jsonlists');
+            data.create({ 'PlaceId': placeId, 'Jsonfield': placeJson },
+                function (data) {
+                    //app.notify.showShortTop("Place is saved " + JSON.stringify(data));
+                    app.notify.addUserFavourite(data.result.Id);
+                })
+        },
         memorize: function (PartnerId) {
             if (PartnerId.length < "12345678-1234-1234-1234-123456789123xxxx".length) {
                 console.log("Start Like." + PartnerId);
@@ -814,25 +857,17 @@ var app = (function (win) {
             } else {//TO DO: save app.Places.visiting.PlaceId() in like list for user
                 var place = JSON.parse(PartnerId);
                 if (app.Users.currentUser.data) {
-                    //use everlive
-                    var data = app.everlive.data('Jsonlists');
-                    data.create({ 'PlaceId': place.placeId, 'Jsonfield': PartnerId },
-                        function (data) {
-                            app.notify.showShortTop("Favorite Place is saved " + JSON.stringify(data));
-                            var data2 = app.everlive.data('Users');
-                            var attributes = {"$addToSet": {"Favorites": data.result.Id //Jsonlist new  place id
-                                }};
-                            var filter = {'Id': app.Users.currentUser.data.Id //   the current User
-                            };
-                            data2.rawUpdate(attributes, filter, function (data) {
-                                app.notify.showShortTop(appSettings.messages.joinMessage);
-                            }, function (err) {
-                                app.notify.showShortTop(appSettings.messages.tryAgain + JSON.stringify(err));
-                            });
-                        },
-                        function (error) {
-                            app.showError("Error " + JSON.stringify(error));
-                        });
+                    //use everlive to save PlaceId in Jsonlist
+                    app.notify.fixPlaceId(place.placeId, PartnerId)
+                    // var data = app.everlive.data('Jsonlists');
+                    // data.create({ 'PlaceId': place.placeId, 'Jsonfield': PartnerId },
+                    //     function (data) {
+                    //         //app.notify.showShortTop("Favorite Place is saved " + JSON.stringify(data));
+                    //         app.notify.addUserFavourite(data.result.Id);
+                    //     },
+                    //     function (error) {
+                    //         app.showError("Error " + JSON.stringify(error));
+                    //     });
                 } else {
                     app.notify.showShortTop(appSettings.messages.signIn);
                     app.mobileApp.navigate('#welcome');
@@ -1155,23 +1190,23 @@ var app = (function (win) {
         var ctx = canvas.getContext("2d");
         app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
         $baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
-		/*			if (!navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
-						textMessage ="Crop action";
-						ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-					} else {
-						textMessage = "iOS 7 crop";
-						app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-					}
-					$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
-					if($baseImafe.indexOf(appSettings.empty1x1png >0)){
-						textMessage = "Special Crop action";
-						app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
-						$baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
-					}
-					var sb = document.getElementById("saveButton");
-					if(sb.style.display === "none"){ textMessage = "You can update any items including or excluding the Avatar";
-					sb.style.display = ""}
-					app.notify.show(textMessage);*/
+        /*			if (!navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
+                        textMessage ="Crop action";
+                        ctx.drawImage(starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+                    } else {
+                        textMessage = "iOS 7 crop";
+                        app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+                    }
+                    $baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+                    if($baseImafe.indexOf(appSettings.empty1x1png >0)){
+                        textMessage = "Special Crop action";
+                        app.helper.drawImageIOSFix(ctx, starter, sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight);
+                        $baseImage = canvas.toDataURL("image/jpeg", 1.0).substring("data:image/jpeg;base64,".length);
+                    }
+                    var sb = document.getElementById("saveButton");
+                    if(sb.style.display === "none"){ textMessage = "You can update any items including or excluding the Avatar";
+                    sb.style.display = ""}
+                    app.notify.show(textMessage);*/
     }
 
     var createImage = function (baseImage) {
