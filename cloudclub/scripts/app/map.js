@@ -297,14 +297,14 @@ app.Places = (function () {
                            for (var i = 0; i < data.count; i++) {
                                var partner = data.result[i];
                                var partnerV = new app.Places.newPartner();
-                               partnerV.setPartnerRow(partner);
+                               partnerV.setPartnerRow(partner);// define as a specific Partner
                                app.Places.visiting = partnerV;
                                app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV);
                            }
                        },
-                                                function (error) {
-                                                    app.showError(JSON.stringify(error))
-                                                });
+                            function (error) {
+                                app.showError(JSON.stringify(error))
+                            });
                    },
                    getComponent: function (address_components, component) {
                        for (var i = 0; i < address_components.length; i++) {
@@ -382,20 +382,20 @@ app.Places = (function () {
                    openActionSheet: function () {
                        if (!app.Places.locationViewModel.checkSimulator()) {
                            app.Places.locationViewModel.showActionSheet({
-                                                                            'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
-                                                                            'title': 'What do you want to do?',
-                                                                            'buttonLabels': [
-                                   'Show Place List',
-                                   'Show Nearby Partners',
-                                   'Keep the Golden places',
+                                'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+                                'title': 'What do you want to do?',
+                                'buttonLabels': [
+                                   'Show Places as a List',
+                                   'Update Current Location',
+                                   'Keep the Top Places',
                                    'Upgrade for more Features',
                                    //'Switch Lists',
                                    //'Get List as Trip Directions',
                                ],
-                                                                            'addCancelButtonWithLabel': 'Cancel',
-                                                                            'androidEnableCancelButton': true, // default false
-                                                                            'winphoneEnableCancelButton': true, // default false
-                                                                            //'addDestructiveButtonWithLabel' : 'Delete it'                
+                                    'addCancelButtonWithLabel': 'Cancel',
+                                    'androidEnableCancelButton': true, // default false
+                                    'winphoneEnableCancelButton': true, // default false
+                                    //'addDestructiveButtonWithLabel' : 'Delete it'                
                                                                         });
                        } else {
                            app.mobileApp.navigate("views/listView.html");
@@ -534,7 +534,7 @@ app.Places = (function () {
                                    for (var i = 0; i < results.length; i++) {
                                        place = results[i];
                                        var partnerV = new app.Places.newPartner();
-                                       partnerV.setPlaceRow(place);
+                                       partnerV.setPlaceRow(place);// define as a general Place
                                        app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV);
                                    }
                                }
@@ -1070,14 +1070,20 @@ app.Places = (function () {
             listShow3: function (result) {
                 if (result === 1) {
                     return
-                }
-                ;
+                };
                 if (result === 2) {
                     var thisPartner = app.Places.visiting;
                     var Details = thisPartner.details();
                     //app.showAlert("Delete this item "+ Details.vicinity);
                     Details.clearMapMark();
-                }
+                };
+                if(result === 3) {
+                    var thisPartner = app.Places.visiting;
+                    var Details = thisPartner.details();
+                    //app.showAlert("Delete this item "+ Details.vicinity);
+                    Details.highlightMapMark();
+                };
+                
             },
             visitingShow: function (e) {
                 app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
@@ -1156,18 +1162,18 @@ app.Places = (function () {
                     try {
                         var aList = app.Places.locationViewModel.list.array();
                         list = $("#places-listview").kendoMobileListView({
-                                                                             dataSource: aList,
-                                                                             template: "<div class='${isSelectedClass}'><div id='placelist'"
-                                                                                       + "data-role='touch' data-enable-swipe='true'"
-                                                                                       //+" data-swipe='app.Places.locationViewModel.openListSheet'"
-                                                                                       + "><strong> #: name #</strong><div id='placedetails' ${visibility} "
-                                                                                       + "style='width:100%; margin-top:-5px'> #: vicinity # -- about "
-                                                                                       + " #: distance # mile(s) (as the crow flys). <br/></div></div></div>",
-                                                                             //<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
-                                                                             selectable: "multiple",
-                                                                             change: function () {
-                                                                                 alert("Change event!")
-                                                                             }
+                            dataSource: aList,
+                            template: "<div class='${isSelectedClass}'><div id='placelist'"
+                                    + "data-role='touch' data-enable-swipe='true'"
+                                    //+" data-swipe='app.Places.locationViewModel.openListSheet'"
+                                    + "><strong> #: name #</strong><div id='placedetails' ${visibility} "
+                                    + "style='width:100%; margin-top:-5px'> #: vicinity # -- about "
+                                    + " #: distance # mile(s) (as the crow flys). <br/></div></div></div>",
+                            //<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
+                            selectable: "multiple",
+                            change: function () {
+                                alert("Change event!")
+                            }
                                                                          })
                             .data("kendoListView");
                         //app.showAlert(JSON.stringify(aList));
@@ -1230,7 +1236,7 @@ app.Places = (function () {
                 app.mobileApp.navigate('views/mapView.html');
             },
             browse: function (url) {
-                if (url === null || url === undefined || url.length < 10 || url.button) {
+                if (url === null || url === undefined || url.length < 10 || (url.button && url.button.length >0)) {
                     var base = new URL("/", "https://en.wikipedia.org");
                     if (app.isNullOrEmpty(myCity))
                         myCity = "Boca Raton, Florida";//app.Places.visiting.details().city() +", "+app.Places.visiting.details().state() ;
@@ -1369,6 +1375,7 @@ app.Places = (function () {
                 }
             },
             newPartner: function () {
+                //every mark on the map is defined as a newPartner object
                 var service = new google.maps.places.PlacesService(map);
                 var partnerRow = null;
                 var dataType = null;
@@ -1461,7 +1468,7 @@ app.Places = (function () {
                             programmedOptions = partnerOptions.url;
                             standardOptions = partnerOptions.defaultOptions.standard;
                         }
-                        var workingList = new Array();
+                        var workingList = new Array();// build the array for media search
                         for (var k = 0; k < customOptions.length; k++) {
                             var option = customOptions[k];
                             workingList = workingList.concat(htmlOptions.defaultOptions[option]);
@@ -1787,8 +1794,7 @@ app.Places = (function () {
                                 app.notify.showShortTop("You are alreay enrolled!")
                             }
                         }else{                            
-                             app.notify.memorize(undefined);
-                             app.notify.showShortTop(appSettings.messages.following);
+                             app.notify.memorize(JSON.stringify(app.Places.visiting.details()));
                         }
                     }
                 };
@@ -1892,13 +1898,15 @@ app.Places = (function () {
                     return partnerRow;
                 }
                 this.location = function () {
-                    if (app.isNullOrEmpty(partnerRow.Location)) {
+                    if (partnerRow.geometry) {
                         partnerRow.Location = { lng: partnerRow.geometry.location.lng(), lat: partnerRow.geometry.location.lat() };
                     }
                     return partnerRow.Location;
                 }
                 this.details = function () {
                     return {
+                        placeId: this.PlaceId(),
+                        location: this.location(),
                         description: Description(),
                         website: Website(),
                         phone: Phone(),
@@ -1930,6 +1938,9 @@ app.Places = (function () {
                             app.Places.visiting.e.dataItem.set("isSelectedClass", "listview-hidden");
                             app.Places.visiting.e.dataItem.set("visibility", "hidden");
                             app.Places.locationViewModel.list.delete(Address());
+                        },
+                        highlightMapMark: function(){
+                            Mark.setIcon("styles/images/star_red2.png");
                         }
                     }
                 }
