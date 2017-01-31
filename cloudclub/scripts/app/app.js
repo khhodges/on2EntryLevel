@@ -817,7 +817,7 @@ var app = (function (win) {
                 'Id': app.Users.currentUser.data.Id //   the current User
             };
             data2.rawUpdate(attributes, filter, function (data) {
-                app.notify.showShortTop(appSettings.messages.joinMessage);
+                app.notify.showShortTop(appSettings.messages.favoriteMessage);
             }, function (err) {
                 app.notify.showShortTop(appSettings.messages.tryAgain + JSON.stringify(err));
             });

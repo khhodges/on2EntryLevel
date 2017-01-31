@@ -660,6 +660,7 @@ var appSettings = {
     },
 
     spanish: {
+        favoritesMessage:"This Place was added to your List of Favorites",
         activityFilter: "Por favor, espere a que los datos seleccionados para cargar ...",
         addedToFavorites: "Has recordado con éxito este lugar en tu lista de favoritos ...",
         autoBlog: "Blog de Auto:",
@@ -710,6 +711,7 @@ var appSettings = {
     },
     messages: {    },
     portuguese: {
+        favoritesMessage:"This Place was added to your List of Favorites",
         autoBlog: "Auto Blog:",
         following: "Você se lembrou deste lugar",
         inspectorTitle: "Seu Inspetor Privado",
@@ -759,6 +761,7 @@ var appSettings = {
         welcome: "\nPor favor desfrute este aplicativo móvel avançada com a Comunidade o acesso à mídia social integrada e personalizada.\nNenhum login é necessário para pesquisar em toda a mídia social e localizar hotspots so encontrar actividades comunitárias. Para postagem e recursos avançados, clubes de fidelidade e adesão notificações instantâneas de que você precisa para se juntarem e fazer o logon. \nAjuda adicional é encontrada na Http://www.on2see.com \n\n"
     },
     german: {
+        favoritesMessage:"This Place was added to your List of Favorites",
         autoBlog: "Auto Blog:",
         following: "You have remembered this place.",
         inspectorTitle: "Your Private Inspector",
@@ -808,6 +811,7 @@ var appSettings = {
         welcome: "\nBitte genießen Sie diese erweiterte mobile Anwendung mit den Zugriff auf integrierte und maßgeschneiderte social media.\nKeine Anmeldung erforderlich ist, um eine Suche über Social Media und finden Sie lokale Hot Spots os finden Sie Tätigkeiten der Gemeinschaft. Für POST-ing und erweiterte Funktionen, die treue Mitgliedschaft Vereine und sofortige Benachrichtigungen müssen Sie auf und melden Sie sich an. \nWeitere Hilfe finden Sie unter Http://www.on2see.com \n\n"
     },
     french: {
+        favoritesMessage:"This Place was added to your List of Favorites",
         autoBlog: "Auto Blog:",
         following: "You have remembered this place.",
         inspectorTitle: "Your Private Inspector",
@@ -858,6 +862,7 @@ var appSettings = {
 
     },
     dutch: {
+        favoritesMessage:"This Place was added to your List of Favorites",
         autoBlog: "Auto Blog:",
         following: "You have remembered this place.",
         inspectorTitle: "Your Private Inspector",
@@ -910,6 +915,7 @@ var appSettings = {
         welcome: "\n Controleer genieten van deze geavanceerde mobiele applicatie met de gemeenschap toegang tot geïntegreerde en op maat social media. \n Geen login nodig is om te zoeken in sociale media en vinden de lokale Hot Spots of vind maatschappelijke activiteiten \ Nfor detachering en geavanceerde functies, loyaliteit clubs lidmaatschap.. en directe meldingen die u nodig hebt aan te sluiten en meld u aan. Extra hulp is te vinden op http://www.on2see.com \n \n "
     },
     english: {
+        favoritesMessage:"This Place was added to your List of Favorites",
         activityFilter: "Please wait for the selected data to load...",
         addedToFavorites: "You have succesfully remembered this place in your favorites list...",
         autoBlog: "Auto Blog:",

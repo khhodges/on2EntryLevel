@@ -1077,11 +1077,16 @@ app.Places = (function () {
                     //app.showAlert("Delete this item "+ Details.vicinity);
                     Details.clearMapMark();
                 };
-                if(result === 3) {
+                if(result === 3) {if (!app.isOnline()) {
+                        app.mobileApp.navigate("#welcome");
+                    } else {
                     var thisPartner = app.Places.visiting;
                     var Details = thisPartner.details();
                     //app.showAlert("Delete this item "+ Details.vicinity);
                     Details.highlightMapMark();
+                    var place = app.Places.visiting.details();
+                    app.notify.fixPlaceId(place.PlaceId,JSON.stringify(place))
+                    }
                 };
                 
             },
@@ -1923,7 +1928,7 @@ app.Places = (function () {
                         distance: distance(),
                         listString: listString(),
                         clearLowMark: function () {
-                            if (Mark.icon.url !== 'styles/images/orangecircle.png') {
+                            if (Mark.icon.url === 'styles/images/redcircle.png' || Mark.icon.url === 'styles/images/greencircle.png') {
                                 Mark.setMap(null);
                                 app.Places.locationViewModel.list.delete(Address());
                             }
