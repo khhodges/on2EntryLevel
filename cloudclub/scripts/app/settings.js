@@ -915,6 +915,13 @@ var appSettings = {
         welcome: "\n Controleer genieten van deze geavanceerde mobiele applicatie met de gemeenschap toegang tot geïntegreerde en op maat social media. \n Geen login nodig is om te zoeken in sociale media en vinden de lokale Hot Spots of vind maatschappelijke activiteiten \ Nfor detachering en geavanceerde functies, loyaliteit clubs lidmaatschap.. en directe meldingen die u nodig hebt aan te sluiten en meld u aan. Extra hulp is te vinden op http://www.on2see.com \n \n "
     },
     english: {
+        whatToDo:'What do you want to do?',
+        mapList1:'Show List of Places',
+        mapList2:'Update Current Location',
+        mapList3:'Keep the Top Places',
+        mapList4:'Change your service level',
+        mapList5:'Show my Favorites List',
+        mapList6:'TBD',
         favoritesMessage:"This Place was added to your List of Favorites",
         activityFilter: "Please wait for the selected data to load...",
         addedToFavorites: "You have succesfully remembered this place in your favorites list...",

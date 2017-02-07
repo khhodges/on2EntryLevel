@@ -28,9 +28,39 @@ app.notifications = kendo.observable({
 									  logic: 'and',
 									  filters: [paramFilter, searchFilter]
 								  });
-			} else if (paramFilter || searchFilter) {
-				dataSource.filter(paramFilter || searchFilter);
+			} else if ((paramFilter && paramFilter.value !== undefined )|| searchFilter ) {
+                //remove near sphere to find all 
+                var filterNoS = {
+								"X-Everlive-Expand": {
+											"Reference": {
+														"TargetTypeName": "Activities",
+														"ReturnAs": "EventDetails",
+														"Fields": { "Title": 1, "Text": 1, "Picture": 1 }
+													}
+										}
+				};
+                dataSource.filter(paramFilter || searchFilter )
 			} else {
+                //add near sphere to current location
+                                var filterNoS = {
+								"X-Everlive-Expand": {
+											"Reference": {
+														"TargetTypeName": "Activities",
+														"ReturnAs": "EventDetails",
+														"Fields": { "Title": 1, "Text": 1, "Picture": 1 }
+													}
+										}
+								,"X-Everlive-Filter": JSON.stringify({
+												 "Location": {
+												 "$nearSphere": {
+															 "longitude":app.cdr.longitude,
+															 "latitude":app.cdr.latitude
+														 },
+									"$maxDistanceInMiles":40
+								}
+							})
+				};
+                dataSource.transport.options.read.headers = filterNoS
 				dataSource.filter({});
 			}
 		},
@@ -79,20 +109,24 @@ app.notifications = kendo.observable({
 													}
 										}
 								,"X-Everlive-Filter": JSON.stringify({
-																		 "Location": {
-																		 "$nearSphere": {
-																					 "longitude":-80.07,
-																					 "latitude":26.3
-																				 },
-									"$maxDistanceInMiles":40
+												 "Location": {
+												 "$nearSphere": {
+															 "longitude":-80.07,
+															 "latitude":26.3
+														 },
+									"$maxDistanceInMiles":25
 								}
-							})
-						}
+							})}
 					}
 			},
 			sort: { field: 'Date', dir: 'desc' },
 			//filter: {field:'Date', operator;'gt', value:new Date.getDate()-10},
 			change: function (e) {
+				if (e.items && e.items.length > 0) {
+					$('#no-notifications-span').hide();
+				} else {
+					$('#no-notifications-span').show();
+				}
 				var data = this.data();
 				for (var i = 0; i < data.length; i++) {
 					var dataItem = data[i];
@@ -170,19 +204,15 @@ app.notifications = kendo.observable({
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
 /*		var d = new Date();
 		d.setDate(d.getDate() - 60);
-		d = d.toDateString();
+		d = d.toDateString();*/
 		app.notify.showShortTop("Filtering by " + e.view.params.ActivityText)
-		if ((param === null || param === undefined) && app.Places.visiting) {
-			if (typeof app.Places.visiting.details === "function")  {				
-				param = {
-					filter: {
-						"field": "Place",
-						"operator": "startswith",
-						"value": app.Places.visiting.details().name 
-					}
-				}
-			}
-		} */
+		if (param === null || param === undefined) {					
+			param = {
+					"field": "Reference",
+					"operator": "eq",
+					"value": e.view.params.ActivityText 
+			}		
+		} 
 		fetchFilteredData(param);
 	});
 })(app.notifications);

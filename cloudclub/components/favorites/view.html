@@ -1,0 +1,39 @@
+<div data-role="view" data-title="Favorites" data-layout="main" data-model="app.favorites" data-show="app.favorites.onShow" data-after-show="app.favorites.afterShow" id="favoritesScreen" class="screen">
+   <header data-role="header">
+        <div data-role="navbar" class="header-text">
+            <span data-role="view-title" style="overflow: hidden; white-space: nowrap; 
+                text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;"></span>
+            <a data-role="button" href="#views/mapView.html" data-align="left">Home</a>
+			<a data-role="button" data-align="right" href="#welcome">Post</a>
+        </div>
+    </header>
+
+
+    <!-- START_CUSTOM_CODE_favorites -->
+    <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+
+    <!-- END_CUSTOM_CODE_favorites -->
+    <form class="km-filter-form custom-filter">
+
+        <div class="km-filter-wrap">
+            <input type="search" placeholder="Search..." data-bind="events:{keyup: favoritesModel.searchChange}">
+        </div>
+    </form>
+    <ul class="masterDetailView" data-role="listview" data-auto-bind="false" data-style="inset" 
+        data-template="favoritesModelTemplate" data-bind="source: favoritesModel.dataSource" data-pull-to-refresh="false" data-endless-scroll="false">
+    </ul>
+
+
+    <!-- START_CUSTOM_CODE_favoritesModel -->
+    <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+
+    <!-- END_CUSTOM_CODE_favoritesModel -->
+    <script type="text/x-kendo-template" id="favoritesModelTemplate">
+        <div class="image-with-text">
+            <img src="styles/images/star_red.png" width="30%" height="30%">
+            # data = app.favorites.favoritesModel.fixHierarchicalData(data); #
+            <a onclick="app.openLink(&quot;#: JSON.parse(data.Jsonfield).website #&quot;);" href="\\#" class="link"><h3>#: JSON.parse(data.Jsonfield).name #</h3></a>
+            <p>#: JSON.parse(data.Jsonfield).vicinity #</p>
+        </div>
+    </script>
+</div>

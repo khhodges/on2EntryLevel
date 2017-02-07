@@ -383,15 +383,8 @@ app.Places = (function () {
                        if (!app.Places.locationViewModel.checkSimulator()) {
                            app.Places.locationViewModel.showActionSheet({
                                 'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
-                                'title': 'What do you want to do?',
-                                'buttonLabels': [
-                                   'Show Places as a List',
-                                   'Update Current Location',
-                                   'Keep the Top Places',
-                                   'Upgrade for more Features',
-                                   //'Switch Lists',
-                                   //'Get List as Trip Directions',
-                               ],
+                                'title': appSettings.messages.whatToDo,
+                                'buttonLabels': [appSettings.messages.mapList1,appSettings.messages.mapList2,appSettings.messages.mapList3,appSettings.messages.mapList4,appSettings.messages.mapList5],
                                     'addCancelButtonWithLabel': 'Cancel',
                                     'androidEnableCancelButton': true, // default false
                                     'winphoneEnableCancelButton': true, // default false
@@ -456,8 +449,9 @@ app.Places = (function () {
                                            case 4:
                                                app.mobileApp.navigate("#views/updateView.html");
                                                break;
-                                               //case 8:
-                                               //	break;
+                                           case 5:
+                                               app.mobileApp.navigate('#components/favorites/view.html');
+                                               break;
                                            default:
                                                //app.notify.showShortTop('You will need to upgrade to use this feature.');
                                                break;
@@ -624,7 +618,7 @@ app.Places = (function () {
                    //			} else {
                    //				place.text = "Not Available"
                    //			}
-                   //			place.addurl = encodeURI('components/aboutView/view.html?Name=' + place.name + '&email=newpartner@on2t.com' + '&longitude=' + place.geometry.location.lng() + '&latitude=' + place.geometry.location.lat() + '&html=hhhhh' + '&icon=styles/images/avatar.png' + '&address=' + result.formatted_address.replace('#', '') + '&textField="" &www=' + result.website + '&tel=' + result.formatted_phone_number + '&placeId=' + place.place_id + '&city=' + app.Places.locationViewModel.getComponent(result.address_components, "locality") + '&zipcode=' + app.Places.locationViewModel.getComponent(result.address_components, "postal_code"));
+                   //			place.addurl = encodeURI('components/aboutView/view.html?Name=' + place.name + '&email=newpartner@On2See.com' + '&longitude=' + place.geometry.location.lng() + '&latitude=' + place.geometry.location.lat() + '&html=hhhhh' + '&icon=styles/images/avatar.png' + '&address=' + result.formatted_address.replace('#', '') + '&textField="" &www=' + result.website + '&tel=' + result.formatted_phone_number + '&placeId=' + place.place_id + '&city=' + app.Places.locationViewModel.getComponent(result.address_components, "locality") + '&zipcode=' + app.Places.locationViewModel.getComponent(result.address_components, "postal_code"));
                    //			//    place.infoContent = '<div><span onclick="test(\'' + result.website + '\')\"><strong><u>' + result.name + '</u></a></strong><br>' + 'Phone: ' + result.formatted_phone_number + '<br>' + result.formatted_address.replace('#', '') + place.starString  + place.openString + '</span></div>'
                    //			//       + '<div><table ${visibility} style="width:100%; margin-top:15px"><tr style="width:100%"><td style="width:33%"><a data-role="button" href='
                    //			//       + url
@@ -793,7 +787,7 @@ app.Places = (function () {
                                saveAddressLink.addEventListener("click",
                                                                 function () {
                                                                     if (app.Users.currentUser.data && (app.Users.currentUser.data.Id === "84bb6cf0-b3e0-11e5-8558-adda7fdf67e8")) {
-                                                                        app.mobileApp.navigate("components/partners/add.html?Name=&placeId=" + app.Places.locationViewModel._lastMarker.place_id + "&www=&textField=&longitude=" + app.Places.locationViewModel._lastMarker.position.lng().toFixed(6) + "&latitude=" + app.Places.locationViewModel._lastMarker.position.lat().toFixed(6) + "&email=newpartner@on2t.com&html=&icon=" + app.Places.locationViewModel.lastPicture + "&address=" + myAddress + "&tel=&city=&zipcode")
+                                                                        app.mobileApp.navigate("components/partners/add.html?Name=&placeId=" + app.Places.locationViewModel._lastMarker.place_id + "&www=&textField=&longitude=" + app.Places.locationViewModel._lastMarker.position.lng().toFixed(6) + "&latitude=" + app.Places.locationViewModel._lastMarker.position.lat().toFixed(6) + "&email=newpartner@On2See.com&html=&icon=" + app.Places.locationViewModel.lastPicture + "&address=" + myAddress + "&tel=&city=&zipcode")
                                                                     } else {
                                                                         app.mobileApp.navigate("components/aboutView/view.html")
                                                                     }
@@ -1495,7 +1489,7 @@ app.Places = (function () {
                             case "events":
                             case "notifications":
                                 introHtml = introHtml + '<a data-role="button" class="butn" href="#components/notifications/view.html?ActivityText='
-                                            + n + '"><img src="styles/images/notifications.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+                                            + resolveString(resolveString(n, "'", "%27"), "&", "%26") + '"><img src="styles/images/notifications.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
                                 break;
                             case "follow":
                                 introHtml = introHtml + '<a data-role="button" class="butn" href="#views/placesView.html?name='
@@ -1505,7 +1499,7 @@ app.Places = (function () {
                             case "activities":
                                 if (programmedOptions) {
                                     introHtml = introHtml + '<a data-role="button" class="butn" href="#components/activities/view.html?ActivityText='
-                                                + n + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+                                                + resolveString(resolveString(n, "'", "%27"), "&", "%26") + '"><img src="styles/images/on2see-icon-120x120.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
                                 }
                                 break;
                             case "partner":

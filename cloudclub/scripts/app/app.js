@@ -39,7 +39,17 @@ var app = (function (win) {
     //	 window.onerror = function (message, file, line) {
     //	     alert("Error: " + message + ", File: " + file + ", Line: " + line);
     //	 }
+    var openLink = function(url) {
+        if (url.substring(0, 4) === 'geo:' && device.platform === 'iOS') {
+            url = 'http://maps.apple.com/?ll=' + url.substring(4, url.length);
+        }
 
+        window.open(url, '_system');
+        if (window.event) {
+            window.event.preventDefault && window.event.preventDefault();
+            window.event.returnValue = false;
+        }
+    };
     var cdr;
     var registerNotify;
 
@@ -281,7 +291,7 @@ var app = (function (win) {
 
         ////register for device notifications
         //el.push.register(devicePushSettings, function () {
-        //    app.notify.showShortTop("User.Successful registration in on2t platform. You are ready to receive push notifications.");
+        //    app.notify.showShortTop("User.Successful registration in On2See platform. You are ready to receive push notifications.");
         //}, function (err) {
         //    alert("Error: " + err.message);
         //})
@@ -361,7 +371,8 @@ var app = (function (win) {
                 if (lan[item] === undefined) {
                     console.log(lan.language);
                     console.log(item + ", " + appSettings.english[item])
-                    app.showError(item + ", " + appSettings.english[item])
+                    app.notify.showShortTop(item + ", " + appSettings.english[item])
+                    appSettings.messages[item] = appSettings.english[item];
                     return item + ", " + appSettings.english[item]
                 } else { return 1 }
             })
@@ -565,6 +576,12 @@ var app = (function (win) {
             } else {
                 app.notify.dialogAlert();
                 app.mobileApp.navigate('components/activities/view.html');
+            }
+        },
+        notOnline: function(){
+             if (app.isNullOrEmpty(app.Places.visiting)) {
+                app.notify.showShortTop(appSettings.messages.signIn)
+                app.mobileApp.navigate("#welcome");
             }
         },
         cameraRoute: function (e) {
@@ -1270,6 +1287,7 @@ var app = (function (win) {
         },
         showAlert: showAlert,
         showReviews: showReviews,
+        openLink: openLink,
         cdr: cdr,
         registerNotify: registerNotify,
         showError: showError,

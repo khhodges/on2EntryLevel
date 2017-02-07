@@ -64,9 +64,9 @@
       }
     }
   },
-  "masterDetailView": {
+  "favorites": {
     "title": "Partners",
-    "masterDetailViewModel": {
+    "favoritesViewModel": {
       "editableListForm111": {
         "dataList": {
           "title": "Followed By"
