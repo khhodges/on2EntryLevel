@@ -959,7 +959,7 @@ var appSettings = {
         removeMessage: "Removal undeway, please wait to return to the updated list...",
         saved: "Item saved",
         savedAvatar: "Update saved, it takes time to cache the new image across the Internet!",
-        searchAgain: "You can always search the exposed map area for a place name or for 20 surgestions any term, like food, pizza, police, church or school!",
+        searchAgain: "You can always search the exposed map area for a place name or for 20 suggestions any time, like food, pizza, police, church or school!",
         sent: "Message sent ...",
         settingsMessage: "You can update any items including or excluding the Avatar",
         share: "Share options now loading...",

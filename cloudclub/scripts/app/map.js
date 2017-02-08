@@ -330,6 +330,7 @@ app.Places = (function () {
                                                 myState = '';
                                                 if (results[0]) {
                                                     myAddress = results[0].formatted_address;
+                                                    app.cdr.address = myAddress;
                                                     myCity = app.Places.locationViewModel.getComponent(results[0].address_components, "locality");
                                                     if (document.getElementById('addressStatus')) {
                                                         document.getElementById('addressStatus').innerHTML = myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '</span>';
@@ -391,7 +392,7 @@ app.Places = (function () {
                                     //'addDestructiveButtonWithLabel' : 'Delete it'                
                                                                         });
                        } else {
-                           app.mobileApp.navigate("views/listView.html");
+                           app.mobileApp.navigate("#components/favorites/view.html");
                        }
                    },
                    showListSheet: function (options) {
@@ -1062,16 +1063,17 @@ app.Places = (function () {
             }
             },*/
             listShow3: function (result) {
-                if (result === 1) {
+                if (result === 1) {//cancel
                     return
-                };
-                if (result === 2) {
+                }
+                if (result === 2) {//remove
                     var thisPartner = app.Places.visiting;
                     var Details = thisPartner.details();
                     //app.showAlert("Delete this item "+ Details.vicinity);
                     Details.clearMapMark();
-                };
-                if(result === 3) {if (!app.isOnline()) {
+                }
+                if(result === 3) {//highlight
+                    if (!app.isOnline()) {
                         app.mobileApp.navigate("#welcome");
                     } else {
                     var thisPartner = app.Places.visiting;
@@ -1079,9 +1081,9 @@ app.Places = (function () {
                     //app.showAlert("Delete this item "+ Details.vicinity);
                     Details.highlightMapMark();
                     var place = app.Places.visiting.details();
-                    app.notify.fixPlaceId(place.PlaceId,JSON.stringify(place))
+                    app.notify.fixPlaceId(place.placeId,JSON.stringify(place))
                     }
-                };
+                }
                 
             },
             visitingShow: function (e) {
@@ -1420,7 +1422,7 @@ app.Places = (function () {
                         result = result[0].long_name
                         return result;
                     } else {
-                        app.showError("Place not found!")
+                        return "";("Place not found!")
                     }
                 }
                 //var state = function () { items.filter(function (item) { return (item.types[0] === "administrative_area_level_1") }) }

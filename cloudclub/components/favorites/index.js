@@ -1,9 +1,11 @@
 'use strict';
 
 app.favorites = kendo.observable({
-    onShow: function () { },
-    afterShow: function () { }
-});
+                                     onShow: function () {
+                                     },
+                                     afterShow: function () {
+                                     }
+                                 });
 //app.localization.registerView('favorites');
 
 // START_CUSTOM_CODE_favorites
@@ -13,9 +15,21 @@ app.favorites = kendo.observable({
 (function (parent) {
     var filterExpression = { "PlaceId": {} };
     var dataProvider = app.data.defender,
-        /// start global model properties
-        /// end global model properties
+    /// start global model properties
+    /// end global model properties
         fetchFilteredData = function (paramFilter, searchFilter) {
+            // get the Favorites array and build complex filter
+            var favorites = app.Users.currentUser.data.Favorites;
+            var favoritesFilterArray = [];
+ 
+            favorites.forEach(function(item) {
+                favoritesFilterArray.push({ field: "Id", operator: "eq", value: item });
+            });
+ 
+            var favoritesFilter = {
+                logic: 'or',
+                filters: favoritesFilterArray
+            };
             var model = parent.get('favoritesModel'),
                 dataSource;
 
@@ -33,38 +47,26 @@ app.favorites = kendo.observable({
             }
             //var asd = {};
             if (app.isOnline()) {
-                filterExpression = {
-                    "Id": {
-                        "$in": app.Users.currentUser.data.Favorites
-                    }
-                }
-                //if (true) {
-                //    asd = {'X-Everlive-Filter': { "PlaceId" : { "$in" : app.Users.currentUser.data.Favorites } }};
-                //    dataSource.transport.headers = asd;
-                //}else {
-                //    dataSource.transport.options.read = {};
-                //    asd = {'X-Everlive-Filter': { "PlaceId" : { "$in" : app.Users.currentUser.data.Favorites } }};
-                //    dataSource.transport.options.read = asd;
-                //}
-
-                //build new filter Expression and update the dataSource header
-                dataSource.options.transport.read.headers = {
-                    "X-Everlive-Filter": JSON.stringify(filterExpression)
-                };
-                //make a request to the remote service
-                dataSource.read();
+                if (paramFilter && searchFilter) {
+                    dataSource.filter({
+                                          logic: 'and',
+                                          filters: [paramFilter, searchFilter, favoritesFilter]
+                                      });
+                } else if (paramFilter) {
+                    dataSource.filter({
+                                          logic: 'and',
+                                          filters: [paramFilter, favoritesFilter]
+                                      });
+                } else if (searchFilter) {
+                    dataSource.filter({
+                                          logic: 'and',
+                                          filters: [searchFilter, favoritesFilter]
+                                      });
+                } else {
+                    dataSource.filter(favoritesFilter);
+                }  
             } else {
                 app.mobileApp.navigate("#welcome");
-            }
-            if (paramFilter && searchFilter) {
-                dataSource.filter({
-                    logic: 'and',
-                    filters: [paramFilter, searchFilter]
-                });
-            } else if (paramFilter || searchFilter) {
-                dataSource.filter(paramFilter || searchFilter);
-            } else {
-                dataSource.filter({});
             }
         },
 
@@ -72,7 +74,7 @@ app.favorites = kendo.observable({
             var propName, propValue,
                 isLocation = function (value) {
                     return propValue && typeof propValue === 'object' &&
-                        propValue.longitude && propValue.latitude;
+                                               propValue.longitude && propValue.latitude;
                 };
 
             for (propName in dataItem) {
@@ -80,8 +82,8 @@ app.favorites = kendo.observable({
                     propValue = dataItem[propName];
                     if (isLocation(propValue)) {
                         dataItem[propName] =
-                            kendo.format('Latitude: {0}, Longitude: {1}',
-                                propValue.latitude, propValue.longitude);
+                        kendo.format('Latitude: {0}, Longitude: {1}',
+                                     propValue.latitude, propValue.longitude);
                     }
                 }
             }
@@ -92,11 +94,11 @@ app.favorites = kendo.observable({
                 typeName: 'Jsonlists',
                 dataProvider: dataProvider,
                 read: {
-                    headers: {
-                        "X-Everlive-Filter": ""
-                    //beforeSend: function (xhr) {xhr.headers = { 'X-Everlive-Filter': JSON.stringify(filterExpression) }
+                        headers: {
+                                "X-Everlive-Filter": ""
+                                //beforeSend: function (xhr) {xhr.headers = { 'X-Everlive-Filter': JSON.stringify(filterExpression) }
+                            }
                     }
-                }
             },
             change: function (e) {
                 var data = this.data();
@@ -106,11 +108,9 @@ app.favorites = kendo.observable({
                     /// start flattenLocation property
                     flattenLocationProperties(dataItem);
                     /// end flattenLocation property
-
                 }
             },
             error: function (e) {
-
                 if (e.xhr) {
                     var errorText = "";
                     try {
@@ -123,17 +123,17 @@ app.favorites = kendo.observable({
             },
             schema: {
                 model: {
-                    fields: {
-                        'PlaceId': {
-                            field: 'PlaceId',
-                            defaultValue: ''
-                        },
-                        'Jsonfield': {
-                            field: 'Jsonfield',
-                            defaultValue: ''
-                        },
+                        fields: {
+                                'PlaceId': {
+                                            field: 'PlaceId',
+                                            defaultValue: ''
+                                        },
+                                'Jsonfield': {
+                                            field: 'Jsonfield',
+                                            defaultValue: ''
+                                        },
+                            }
                     }
-                }
             },
             serverFiltering: true,
             serverSorting: true,
@@ -144,119 +144,117 @@ app.favorites = kendo.observable({
             serverPaging: true,
             pageSize: 100
         },
-        /// start data sources
-        /// end data sources
+    /// start data sources
+    /// end data sources
         favoritesModel = kendo.observable({
-            _dataSourceOptions: dataSourceOptions,
-            searchChange: function (e) {
-                var searchVal = e.target.value,
-                    searchFilter;
+                                              _dataSourceOptions: dataSourceOptions,
+                                              searchChange: function (e) {
+                                                  var searchVal = e.target.value,
+                                                      searchFilter;
 
-                if (searchVal) {
-                    searchFilter = {
-                        field: 'Jsonfield',
-                        operator: 'contains',
-                        value: searchVal
-                    };
-                }
-                fetchFilteredData(favoritesModel.get('paramFilter'), searchFilter);
-            },
-            fixHierarchicalData: function (data) {
-                var result = {},
-                    layout = {};
+                                                  if (searchVal) {
+                                                      searchFilter = {
+                                                          field: 'Jsonfield',
+                                                          operator: 'contains',
+                                                          value: searchVal
+                                                      };
+                                                  }
+                                                  fetchFilteredData(favoritesModel.get('paramFilter'), searchFilter);
+                                              },
+                                              fixHierarchicalData: function (data) {
+                                                  var result = {},
+                                                      layout = {};
 
-                $.extend(true, result, data);
+                                                  $.extend(true, result, data);
 
-                (function removeNulls(obj) {
-                    var i, name,
-                        names = Object.getOwnPropertyNames(obj);
+                                                  (function removeNulls(obj) {
+                                                      var i, name,
+                                                          names = Object.getOwnPropertyNames(obj);
 
-                    for (i = 0; i < names.length; i++) {
-                        name = names[i];
+                                                      for (i = 0; i < names.length; i++) {
+                                                          name = names[i];
 
-                        if (obj[name] === null) {
-                            delete obj[name];
-                        } else if ($.type(obj[name]) === 'object') {
-                            removeNulls(obj[name]);
-                        }
-                    }
-                })(result);
+                                                          if (obj[name] === null) {
+                                                              delete obj[name];
+                                                          } else if ($.type(obj[name]) === 'object') {
+                                                              removeNulls(obj[name]);
+                                                          }
+                                                      }
+                                                  })(result);
 
-                (function fix(source, layout) {
-                    var i, j, name, srcObj, ltObj, type,
-                        names = Object.getOwnPropertyNames(layout);
+                                                  (function fix(source, layout) {
+                                                      var i, j, name, srcObj, ltObj, type,
+                                                          names = Object.getOwnPropertyNames(layout);
 
-                    if ($.type(source) !== 'object') {
-                        return;
-                    }
+                                                      if ($.type(source) !== 'object') {
+                                                          return;
+                                                      }
 
-                    for (i = 0; i < names.length; i++) {
-                        name = names[i];
-                        srcObj = source[name];
-                        ltObj = layout[name];
-                        type = $.type(srcObj);
+                                                      for (i = 0; i < names.length; i++) {
+                                                          name = names[i];
+                                                          srcObj = source[name];
+                                                          ltObj = layout[name];
+                                                          type = $.type(srcObj);
 
-                        if (type === 'undefined' || type === 'null') {
-                            source[name] = ltObj;
-                        } else {
-                            if (srcObj.length > 0) {
-                                for (j = 0; j < srcObj.length; j++) {
-                                    fix(srcObj[j], ltObj[0]);
-                                }
-                            } else {
-                                fix(srcObj, ltObj);
-                            }
-                        }
-                    }
-                })(result, layout);
+                                                          if (type === 'undefined' || type === 'null') {
+                                                              source[name] = ltObj;
+                                                          } else {
+                                                              if (srcObj.length > 0) {
+                                                                  for (j = 0; j < srcObj.length; j++) {
+                                                                      fix(srcObj[j], ltObj[0]);
+                                                                  }
+                                                              } else {
+                                                                  fix(srcObj, ltObj);
+                                                              }
+                                                          }
+                                                      }
+                                                  })(result, layout);
 
-                return result;
-            },
-            itemClick: function (e) {
-                var dataItem = e.dataItem || favoritesModel.originalItem;
+                                                  return result;
+                                              },
+                                              itemClick: function (e) {
+                                                  var dataItem = e.dataItem || favoritesModel.originalItem;
 
-                app.mobileApp.navigate('#components/favorites/details.html?uid=' + dataItem.uid);
+                                                  app.mobileApp.navigate('#components/favorites/details.html?uid=' + dataItem.uid);
+                                              },
+                                              detailsShow: function (e) {
+                                                  var uid = e.view.params.uid,
+                                                      dataSource = favoritesModel.get('dataSource'),
+                                                      itemModel = dataSource.getByUid(uid);
 
-            },
-            detailsShow: function (e) {
-                var uid = e.view.params.uid,
-                    dataSource = favoritesModel.get('dataSource'),
-                    itemModel = dataSource.getByUid(uid);
+                                                  favoritesModel.setCurrentItemByUid(uid);
+                                                  /// start detail form show
+                                                  /// end detail form show
+                                              },
+                                              setCurrentItemByUid: function (uid) {
+                                                  var item = uid,
+                                                      dataSource = favoritesModel.get('dataSource'),
+                                                      itemModel = dataSource.getByUid(item);
 
-                favoritesModel.setCurrentItemByUid(uid);
+                                                  if (!itemModel.Jsonfield) {
+                                                      itemModel.Jsonfield = String.fromCharCode(160);
+                                                  }
 
-                /// start detail form show
-                /// end detail form show
-            },
-            setCurrentItemByUid: function (uid) {
-                var item = uid,
-                    dataSource = favoritesModel.get('dataSource'),
-                    itemModel = dataSource.getByUid(item);
+                                                  /// start detail form initialization
+                                                  /// end detail form initialization
 
-                if (!itemModel.Jsonfield) {
-                    itemModel.Jsonfield = String.fromCharCode(160);
-                }
+                                                  favoritesModel.set('originalItem', itemModel);
+                                                  favoritesModel.set('currentItem',
+                                                                     favoritesModel.fixHierarchicalData(itemModel));
 
-                /// start detail form initialization
-                /// end detail form initialization
-
-                favoritesModel.set('originalItem', itemModel);
-                favoritesModel.set('currentItem',
-                    favoritesModel.fixHierarchicalData(itemModel));
-
-                return itemModel;
-            },
-            linkBind: function (linkString) {
-                var linkChunks = linkString.split('|');
-                if (linkChunks[0].length === 0) {
-                    return this.get('currentItem.' + linkChunks[1]);
-                }
-                return linkChunks[0] + this.get('currentItem.' + linkChunks[1]);
-            },
-            /// start masterDetails view model functions
-            /// end masterDetails view model functions
-            currentItem: {}
-        });
+                                                  return itemModel;
+                                              },
+                                              linkBind: function (linkString) {
+                                                  var linkChunks = linkString.split('|');
+                                                  if (linkChunks[0].length === 0) {
+                                                      return this.get('currentItem.' + linkChunks[1]);
+                                                  }
+                                                  return linkChunks[0] + this.get('currentItem.' + linkChunks[1]);
+                                              },
+                                              /// start masterDetails view model functions
+                                              /// end masterDetails view model functions
+                                              currentItem: {}
+                                          });
 
     if (typeof dataProvider.sbProviderReady === 'function') {
         dataProvider.sbProviderReady(function dl_sbProviderReady() {
@@ -314,5 +312,13 @@ app.favorites = kendo.observable({
 
 // START_CUSTOM_CODE_favoritesModel
 // Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
-
+app.favorites.directions = function() {
+    var myLines = document.getElementsByClassName("image-with-text");//document.getElementById("myText");
+    var directions = "/" + app.cdr.address;
+    for (var i = 0;i < myLines.length;i++) {
+        directions = directions + "/" + document.getElementsByClassName("image-with-text")[i].innerText.replace("\n", " ").replace("\n", " ").replace("\n", " ").replace("\n", " ").replace("  ", " ");
+    }
+    app.openLink("https://www.google.com/maps/dir" + directions);
+    //1230+Hillsboro+Mile,+Hillsboro+Beach,+FL+33062,+USA/2315+N+Federal+Hwy,+Pompano+Beach,+FL+33062/1940+NE+49th+St,+Pompano+Beach,+FL+33064");
+}
 // END_CUSTOM_CODE_favoritesModel

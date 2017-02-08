@@ -805,8 +805,10 @@ var app = (function (win) {
             }
         },
         fixPlaceId: function (placeId, placeJson) {
+            // if not in Favorites list save favorite and add to list
+            
             var filter = {
-                'PlaceId': placeId
+                'PlaceId': placeId, 'Owner':app.Users.currentUser.data.Id
             };
             var data = app.everlive.data('Jsonlists');
             data.get(filter)
@@ -824,6 +826,7 @@ var app = (function (win) {
                 });
         },
         addUserFavourite: function (newPlaceId) {
+            // add relation to user favorites list
             var data2 = app.everlive.data('Users');
             var attributes = {
                 "$addToSet": {
@@ -834,7 +837,7 @@ var app = (function (win) {
                 'Id': app.Users.currentUser.data.Id //   the current User
             };
             data2.rawUpdate(attributes, filter, function (data) {
-                app.notify.showShortTop(appSettings.messages.favoriteMessage);
+                app.notify.showShortTop(appSettings.messages.favoritesMessage);
             }, function (err) {
                 app.notify.showShortTop(appSettings.messages.tryAgain + JSON.stringify(err));
             });
@@ -848,9 +851,10 @@ var app = (function (win) {
                     app.notify.addUserFavourite(data.result.Id);
                 })
         },
-        memorize: function (PartnerId) {
-            if (PartnerId.length < "12345678-1234-1234-1234-123456789123xxxx".length) {
-                console.log("Start Like." + PartnerId);
+        memorize: function (Parameter) {
+            //Add to Favorites and Like button 
+            if (Parameter.length < "12345678-1234-1234-1234-123456789123xxxx".length) {
+                console.log("Start Like." + Parameter);
                 if (app.Users.currentUser.data) {
                     //use everlive
                     var data = app.everlive.data('Places');
@@ -860,7 +864,7 @@ var app = (function (win) {
                         }
                     };
                     var filter = {
-                        'Id': PartnerId //   the current place, if the place does not exist then register the place??
+                        'Id': Parameter //   Parameter = PartnerID the current place, if the place does not exist then register the place??
                     };
                     data.rawUpdate(attributes, filter, function (data) {
                         app.notify.showShortTop(appSettings.messages.joinMessage);
@@ -871,11 +875,11 @@ var app = (function (win) {
                     app.notify.showShortTop(appSettings.messages.signIn);
                     app.mobileApp.navigate('#welcome');
                 }
-            } else {//TO DO: save app.Places.visiting.PlaceId() in like list for user
-                var place = JSON.parse(PartnerId);
+            } else {// Parameter is a Json string representing a Favorite save app.Places.visiting.PlaceId() in Favorite list for user
+                var place = JSON.parse(Parameter);
                 if (app.Users.currentUser.data) {
                     //use everlive to save PlaceId in Jsonlist
-                    app.notify.fixPlaceId(place.placeId, PartnerId)
+                    app.notify.fixPlaceId(place.placeId, Parameter)
                     // var data = app.everlive.data('Jsonlists');
                     // data.create({ 'PlaceId': place.placeId, 'Jsonfield': PartnerId },
                     //     function (data) {

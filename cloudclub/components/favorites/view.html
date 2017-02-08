@@ -1,12 +1,13 @@
 <div data-role="view" data-title="Favorites" data-layout="main" data-model="app.favorites" data-show="app.favorites.onShow" data-after-show="app.favorites.afterShow" id="favoritesScreen" class="screen">
-   <header data-role="header">
+   <div data-role="header">
         <div data-role="navbar" class="header-text">
             <span data-role="view-title" style="overflow: hidden; white-space: nowrap; 
                 text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;"></span>
             <a data-role="button" href="#views/mapView.html" data-align="left">Home</a>
-			<a data-role="button" data-align="right" href="#welcome">Post</a>
+			<a data-role="button" data-align="right" onclick="app.favorites.directions()">Directions</a>
+                <!-- app.openLink(&quot;https://www.google.com/maps/dir/1230+Hillsboro+Mile,+Hillsboro+Beach,+FL+33062,+USA/2315+N+Federal+Hwy,+Pompano+Beach,+FL+33062/1940+NE+49th+St,+Pompano+Beach,+FL+33064&quot;);">Directions</a -->
         </div>
-    </header>
+    </div>
 
 
     <!-- START_CUSTOM_CODE_favorites -->
@@ -19,7 +20,7 @@
             <input type="search" placeholder="Search..." data-bind="events:{keyup: favoritesModel.searchChange}">
         </div>
     </form>
-    <ul class="masterDetailView" data-role="listview" data-auto-bind="false" data-style="inset" 
+    <ul id="myText" class="masterDetailView" data-role="listview" data-auto-bind="false" data-style="inset" 
         data-template="favoritesModelTemplate" data-bind="source: favoritesModel.dataSource" data-pull-to-refresh="false" data-endless-scroll="false">
     </ul>
 
@@ -29,6 +30,7 @@
 
     <!-- END_CUSTOM_CODE_favoritesModel -->
     <script type="text/x-kendo-template" id="favoritesModelTemplate">
+        
         <div class="image-with-text">
             <img src="styles/images/star_red.png" width="30%" height="30%">
             # data = app.favorites.favoritesModel.fixHierarchicalData(data); #
