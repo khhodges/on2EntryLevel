@@ -21,7 +21,7 @@
         </div>
     </form>
     <ul id="myText" class="masterDetailView" data-role="listview" data-auto-bind="false" data-style="inset" 
-        data-template="favoritesModelTemplate" data-bind="source: favoritesModel.dataSource" data-pull-to-refresh="false" data-endless-scroll="false">
+         data-template="favoritesModelTemplate" data-bind="source: favoritesModel.dataSource, events: {click: favoritesModel.itemClick}" data-pull-to-refresh="true" data-endless-scroll="false">
     </ul>
 
 
@@ -31,10 +31,11 @@
     <!-- END_CUSTOM_CODE_favoritesModel -->
     <script type="text/x-kendo-template" id="favoritesModelTemplate">
         
-        <div class="image-with-text">
-            <img src="styles/images/star_red.png" width="30%" height="30%">
+        <div class="image-with-text" data-role='touch' data-enable-swipe='true' data-swipe='app.favorites.openListSheet'>
+            <img src="styles/images/star_red.png" width="30%" height="30%" >
             # data = app.favorites.favoritesModel.fixHierarchicalData(data); #
-            <a onclick="app.openLink(&quot;#: JSON.parse(data.Jsonfield).website #&quot;);" href="\\#" class="link"><h3>#: JSON.parse(data.Jsonfield).name #</h3></a>
+            <!--a onclick="app.openLink(&quot;#: JSON.parse(data.Jsonfield).website #&quot;);" href="\\#" class="link"><h3>#: JSON.parse(data.Jsonfield).name #</h3></a-->
+        <h3>#: JSON.parse(data.Jsonfield).name #</h3>
             <p>#: JSON.parse(data.Jsonfield).vicinity #</p>
         </div>
     </script>

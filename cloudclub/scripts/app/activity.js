@@ -54,7 +54,7 @@ app.Activity = (function () {
 
 			$activityPicture[0].style.display = activity.Picture ? 'block' : 'none';
 
-			app.notify.showShortTop(appSettings.messages.loadComments)
+			app.notify.showLongBottom(appSettings.messages.loadComments)
 
 			app.mobileApp.showLoading();
 			app.Comments.comments.filter({
@@ -102,7 +102,7 @@ app.Activity = (function () {
 				comment.UserId = app.Users.currentUser.get('data').Id;
 				comment.ActivityId = app.Activity.activity().Id;
 
-				app.notify.showShortTop(appSettings.messages.updating)
+				app.notify.showLongBottom(appSettings.messages.updating)
 
 				comments.sync();
 				$newComment.Val = "";

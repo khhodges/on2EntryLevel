@@ -200,12 +200,12 @@ app.notifications = kendo.observable({
 	}
 
 	parent.set('onShow', function (e) {
-		app.notify.showShortTop(appSettings.messages.dataLoad)
+		app.notify.showLongBottom(appSettings.messages.dataLoad)
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
 /*		var d = new Date();
 		d.setDate(d.getDate() - 60);
 		d = d.toDateString();*/
-		app.notify.showShortTop("Filtering by " + e.view.params.ActivityText)
+		app.notify.showLongBottom("Filtering by " + e.view.params.ActivityText)
 		if (param === null || param === undefined) {					
 			param = {
 					"field": "Reference",

@@ -18,53 +18,53 @@ app.favorites = kendo.observable({
     /// start global model properties
     /// end global model properties
         fetchFilteredData = function (paramFilter, searchFilter) {
-            // get the Favorites array and build complex filter
-            var favorites = app.Users.currentUser.data.Favorites;
-            var favoritesFilterArray = [];
- 
-            favorites.forEach(function(item) {
-                favoritesFilterArray.push({ field: "Id", operator: "eq", value: item });
-            });
- 
-            var favoritesFilter = {
-                logic: 'or',
-                filters: favoritesFilterArray
-            };
             var model = parent.get('favoritesModel'),
-                dataSource;
-
+                dataSource,
+                favorites,
+                filterFavorites,
+                filterArray = [],
+                newSearchFilter = {},
+                newParamFilter = {},
+                finalFilter;
+ 
             if (model) {
                 dataSource = model.get('dataSource');
             } else {
                 parent.set('favoritesModel_delayedFetch', paramFilter || null);
                 return;
             }
-
-            if (paramFilter) {
-                model.set('paramFilter', paramFilter);
-            } else {
-                model.set('paramFilter', undefined);
-            }
-            //var asd = {};
             if (app.isOnline()) {
-                if (paramFilter && searchFilter) {
-                    dataSource.filter({
-                                          logic: 'and',
-                                          filters: [paramFilter, searchFilter, favoritesFilter]
-                                      });
-                } else if (paramFilter) {
-                    dataSource.filter({
-                                          logic: 'and',
-                                          filters: [paramFilter, favoritesFilter]
-                                      });
-                } else if (searchFilter) {
-                    dataSource.filter({
-                                          logic: 'and',
-                                          filters: [searchFilter, favoritesFilter]
-                                      });
+                favorites = app.Users.currentUser.data.Favorites;
+            } else {
+                app.mobileApp.navigate("#welcome");
+            }
+ 
+            filterFavorites = { "Id": { "$in": favorites } };
+            filterArray.push(filterFavorites);
+ 
+            if (app.isOnline()) {
+                if (paramFilter) {
+                    model.set('paramFilter', paramFilter);
+                    newParamFilter[paramFilter.field] = { "$regex": ".*" + paramFilter.value + ".*", "$options": "i" };
+                    filterArray.push(newParamFilter);
                 } else {
-                    dataSource.filter(favoritesFilter);
-                }  
+                    model.set('paramFilter', undefined);
+                }    
+                if (searchFilter) {
+                    // save searchFilter in the model
+                    model.set('searchFilter', searchFilter);
+                    newSearchFilter[searchFilter.field] = { "$regex": ".*" + searchFilter.value + ".*", "$options": "i" };
+                    filterArray.push(newSearchFilter);
+                } else {
+                    model.set('searchFilter', undefined);
+                }
+                finalFilter = { "$and": filterArray};
+ 
+                dataSource.options.transport.read.headers = {
+                    "X-Everlive-Filter": JSON.stringify(finalFilter)
+                };
+ 
+                return dataSource.read();
             } else {
                 app.mobileApp.navigate("#welcome");
             }
@@ -95,7 +95,7 @@ app.favorites = kendo.observable({
                 dataProvider: dataProvider,
                 read: {
                         headers: {
-                                "X-Everlive-Filter": ""
+                                //"X-Everlive-Filter": ""
                                 //beforeSend: function (xhr) {xhr.headers = { 'X-Everlive-Filter': JSON.stringify(filterExpression) }
                             }
                     }
@@ -149,16 +149,19 @@ app.favorites = kendo.observable({
         favoritesModel = kendo.observable({
                                               _dataSourceOptions: dataSourceOptions,
                                               searchChange: function (e) {
-                                                  var searchVal = e.target.value,
+                                                  if (e && e.target && e.target.searchVal){
+                                                      var searchVal = e.target.value,
                                                       searchFilter;
-
-                                                  if (searchVal) {
-                                                      searchFilter = {
+                                                  searchFilter = {
                                                           field: 'Jsonfield',
                                                           operator: 'contains',
                                                           value: searchVal
                                                       };
                                                   }
+                                                  else {
+                                                      searchFilter = undefined;
+                                                  }
+                                                  favoritesModel.set('searchFilter', { "Id": { "$in": app.Users.currentUser.data.Favorites } });
                                                   fetchFilteredData(favoritesModel.get('paramFilter'), searchFilter);
                                               },
                                               fixHierarchicalData: function (data) {
@@ -215,6 +218,30 @@ app.favorites = kendo.observable({
                                               itemClick: function (e) {
                                                   var dataItem = e.dataItem || favoritesModel.originalItem;
 
+                                                  if (!e.dataItem) {
+                                                      return;
+                                                  }
+                                                  var items = JSON.parse(e.dataItem.Jsonfield);
+                                                  try {
+                                                      //var isSelected = e.dataItem.get("visibility");
+                                                      var newState = items.visibility === "hidden" ? "visible" : "hidden";
+                                                      e.dataItem.set("isSelected", newState);
+                                                      if (newState === "visible") {
+                                                          e.dataItem.set("isSelectedClass", "listview-selected");
+                                                          e.dataItem.set("visibility", "visible")
+                                                          app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "visible");
+                                                          app.Places.visiting = app.Places.locationViewModel.list.get(e.dataItem.vicinity);
+                                                          app.Places.visiting.e = e;
+                                                          myCity = e.dataItem.city;
+                                                          app.Places.visiting.checkInfoWindow();
+                                                      } else {
+                                                          e.dataItem.set("isSelectedClass", "");
+                                                          e.dataItem.set("visibility", "hidden");
+                                                          app.Places.locationViewModel.list.attribute(e.dataItem.vicinity, "hidden");
+                                                      }
+                                                  } catch (e) {
+                                                      JSON.stringify(e)
+                                                  }
                                                   app.mobileApp.navigate('#components/favorites/details.html?uid=' + dataItem.uid);
                                               },
                                               detailsShow: function (e) {
@@ -312,13 +339,61 @@ app.favorites = kendo.observable({
 
 // START_CUSTOM_CODE_favoritesModel
 // Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
-app.favorites.directions = function() {
+app.favorites.directions = function () {
     var myLines = document.getElementsByClassName("image-with-text");//document.getElementById("myText");
     var directions = "/" + app.cdr.address;
-    for (var i = 0;i < myLines.length;i++) {
+    for (var i = 0; i < myLines.length; i++) {
         directions = directions + "/" + document.getElementsByClassName("image-with-text")[i].innerText.replace("\n", " ").replace("\n", " ").replace("\n", " ").replace("\n", " ").replace("  ", " ");
     }
     app.openLink("https://www.google.com/maps/dir" + directions);
     //1230+Hillsboro+Mile,+Hillsboro+Beach,+FL+33062,+USA/2315+N+Federal+Hwy,+Pompano+Beach,+FL+33062/1940+NE+49th+St,+Pompano+Beach,+FL+33064");
+}
+app.favorites.openListSheet = function () {
+    if (!app.Places.locationViewModel.checkSimulator()) {
+        app.favorites.showListSheet({
+                                        'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+                                        'title': appSettings.messages.whatToDo,
+                                        'buttonLabels': [
+                appSettings.messages.list1,
+                appSettings.messages.list2,
+                appSettings.messages.list3,
+                appSettings.messages.list4,
+                appSettings.messages.list5
+            ],
+                                        'addCancelButtonWithLabel': 'Cancel',
+                                        'androidEnableCancelButton': true, // default false
+                                        'winphoneEnableCancelButton': true, // default false
+                                        //'addDestructiveButtonWithLabel' : 'Delete it'                
+                                    });
+    } else {
+        app.mobileApp.navigate("#components/favorites/View.html");
+    }
+}
+
+app.favorites.showListSheet = function (options) {
+    if (!app.Places.locationViewModel.checkSimulator()) {
+        window.plugins.actionsheet.show(
+            options,
+            function (buttonIndex) {
+                // wrapping in a timeout so the dialog doesn't freeze the app
+                setTimeout(function () {
+                    switch (buttonIndex) {
+                        case 1: //'Keep selected items',
+                        case 2: //Delete selected items    
+                            app.mobileApp.navigate("#views/listView.html?keep=" + buttonIndex);
+                            break;
+                        case 3:
+                            app.mobileApp.navigate("#views/updateView.html");
+                            break;
+                            //case 8:
+                            //	break;
+                        default:
+                            //app.notify.showShortTop('You will need to upgrade to use this feature.');
+                            break;
+                    }
+                }, 0);
+            }
+            );
+    }
 }
 // END_CUSTOM_CODE_favoritesModel

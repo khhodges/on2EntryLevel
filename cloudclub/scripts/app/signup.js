@@ -57,7 +57,7 @@ app.Signup = (function () {
                         dataSource)
                         .then(function () {
                             //console.log("Congratulations! You are now registered!", "The Loyalty Club");
-                            app.notify.showShortTop(appSettings.messages.registration);
+                            app.notify.showLongBottom(appSettings.messages.registration);
                             app.mobileApp.navigate('#welcome');
                         },
                             function (err) {
@@ -195,7 +195,7 @@ app.Signup = (function () {
         var addImage = function () {
             var success = function (data) {
                 if (!app.helper.checkSimulator()) {
-                    app.notify.showShortTop(appSettings.messages.updating);
+                    app.notify.showLongBottom(appSettings.messages.updating);
                     everlive.Files.create({
                         Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
                         ContentType: "image/jpeg",

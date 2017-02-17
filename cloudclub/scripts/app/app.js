@@ -5,7 +5,7 @@ function on2SeePushNotificationReceived(e) {
 function on2SeeprocessPushMessage(message, date) {
     date = date || new Date().toISOString();
     var dateStr = app.formatDate(date);
-    app.notify.showShortTop(dateStr + ' : ' + message);
+    app.notify.showLongBottom(dateStr + ' : ' + message);
 };
 
 function on2SeeAndroidPushReceived(e) {
@@ -126,12 +126,12 @@ var app = (function (win) {
                     if (app.notifyStatus.PushToken === initResult.token) {
                         app.notify.showLongBottom("Notification registered.");// + JSON.stringify(initResult) + "Your device is successfully registered in Backend Services. You can receive push notifications.");
                     } else {
-                        app.notify.showShortTop("Push Token updated.");// + app.notifyStatus.PushToken + " to " + initResult.token);
+                        app.notify.showLongBottom("Push Token updated.");// + app.notifyStatus.PushToken + " to " + initResult.token);
                         app.notifyStatus.PushToken = initResult.token;
                     }
                 },
                 function (err) {
-                    app.notify.showShortTop("Notification Error on registration. ");// + JSON.stringify(err))
+                    app.notify.showLongBottom("Notification Error on registration. ");// + JSON.stringify(err))
                     //_onPushErrorOccurred(err.message);
                 });
         },
@@ -140,10 +140,10 @@ var app = (function (win) {
             app.everlive.push.updateRegistration(
                 { Parameters: { "PushToken": app.notifyStatus.PushToken, "LastLoginDate": new Date().toDateString(), "Location": app.cdr } },
                 function (obj) {
-                    app.notify.showShortTop("Notification connection updated. ");// + JSON.stringify(obj))
+                    app.notify.showLongBottom("Notification connection updated. ");// + JSON.stringify(obj))
                 },
                 function (obj) {
-                    app.notify.showShortTop("Notification connection failure, please continue.");//JSON.stringify(obj));
+                    app.notify.showLongBottom("Notification connection failure, please continue.");//JSON.stringify(obj));
                 }
             )
         },
@@ -154,16 +154,16 @@ var app = (function (win) {
                     app.notifyStatus = obj.result;
                     localStorage.setItem("PushToken", obj.result.PushToken);
                     if (app.notifyStatus.PushToken !== "fake_push_token") {
-                        app.notify.showShortTop("Notification service is ON.");// + JSON.stringify(obj.result));
+                        app.notify.showLongBottom("Notification service is ON.");// + JSON.stringify(obj.result));
                         //Must be online first app.PushRegistrar.updateRegistration();// updateRegistration;
                     } else {
-                        app.notify.showShortTop("Please login to recieve notifications. ");// + JSON.stringify(obj));
+                        app.notify.showLongBottom("Please login to recieve notifications. ");// + JSON.stringify(obj));
                     }
                     //app.notify.showShortTop("Check end - Status check: " + JSON.stringify(app.notifyStatus))
                 },
                 function (obj) {
                     notifyStatus = null;
-                    app.notify.showShortTop("Please login to register this new device for instant notifications from CloudClub.");
+                    app.notify.showLongBottom("Please login to register this new device for instant notifications from CloudClub.");
                 }
             )
         },
@@ -371,7 +371,7 @@ var app = (function (win) {
                 if (lan[item] === undefined) {
                     console.log(lan.language);
                     console.log(item + ", " + appSettings.english[item])
-                    app.notify.showShortTop(item + ", " + appSettings.english[item])
+                    app.notify.showLongBottom(item + ", " + appSettings.english[item])
                     appSettings.messages[item] = appSettings.english[item];
                     return item + ", " + appSettings.english[item]
                 } else { return 1 }
@@ -386,31 +386,31 @@ var app = (function (win) {
         portuguese: function () {
             appSettings.messages = appSettings.portuguese;
             var yy = app.helper.missing(appSettings.messages);
-            app.notify.showShortTop(appSettings.messages.language);
+            app.notify.showLongBottom(appSettings.messages.language);
             document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
         },
         french: function () {
             appSettings.messages = appSettings.french;
             var yy = app.helper.missing(appSettings.messages);
-            app.notify.showShortTop(appSettings.messages.language);
+            app.notify.showLongBottom(appSettings.messages.language);
             document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
         },
         german: function () {
             appSettings.messages = appSettings.german;
             var yy = app.helper.missing(appSettings.messages);
-            app.notify.showShortTop(appSettings.messages.language);
+            app.notify.showLongBottom(appSettings.messages.language);
             document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
         },
         dutch: function () {
             appSettings.messages = appSettings.dutch;
             var yy = app.helper.missing(appSettings.messages);
-            app.notify.showShortTop(appSettings.messages.language);
+            app.notify.showLongBottom(appSettings.messages.language);
             document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
         },
         spanish: function () {
             appSettings.messages = appSettings.spanish;
             var yy = app.helper.missing(appSettings.messages);
-            app.notify.showShortTop(appSettings.messages.language);
+            app.notify.showLongBottom(appSettings.messages.language);
             document.getElementById("introduction").innerHTML = "Hello " + app.helper.name();
         },
         more: function () {
@@ -474,7 +474,7 @@ var app = (function (win) {
         logout: function () {
             app.helper.doLogout()
                 .then(function (lo) {
-                    app.notify.showShortTop(appSettings.messages.logoff);
+                    app.notify.showLongBottom(appSettings.messages.logoff);
                     app.Users.currentUser.data = null;
                     app.helper.navigateHome();
                     var logonB = document.getElementById("logonButton");
@@ -507,7 +507,7 @@ var app = (function (win) {
                 clubList = data.result[0].Members;
                 app.Places.visiting.clubList = clubList;
                 if (!data.result || !data.result.length > 1 || !data.result[0].Members) {
-                    app.notify.showShortTop("There are no followers to contact using the notification service!")
+                    app.notify.showLongBottom("There are no followers to contact using the notification service!")
                 } else {
                     try {
                         var followers = new Array(data.result[0].Members.length)
@@ -517,13 +517,13 @@ var app = (function (win) {
                             console.log(follower.Email);
                         }
                         if (notify) {
-                            app.notify.showShortTop(appSettings.messages.broadcast);
+                            app.notify.showLongBottom(appSettings.messages.broadcast);
                             var notify = app.PushRegistrar.create(name, app.Activity.activity().Text, app.Activity.activity().Id, followers)
                             app.everlive.push.notifications.create(
                                 notify,
                                 function (data) {
                                     var createdAt = app.formatDate(data.result.CreatedAt);
-                                    app.notify.showShortTop(appSettings.messages.broadcast + createdAt);
+                                    app.notify.showLongBottom(appSettings.messages.broadcast + createdAt);
                                     var data = el.data('Notifications');
                                     var place = "Sent from " + app.Activity.activity().Title;
                                     data.create({
@@ -536,10 +536,10 @@ var app = (function (win) {
                                         }
                                     },
                                         function (data) {
-                                            app.notify.showShortTop(appSettings.messages.saved + data.result.Id);
+                                            app.notify.showLongBottom(appSettings.messages.saved + data.result.Id);
                                         },
                                         function (error) {
-                                            app.notify.showShortTop(appSettings.messages.tryAgain + error.message);
+                                            app.notify.showLongBottom(appSettings.messages.tryAgain + error.message);
                                         });
                                 },
                                 function (error) {
@@ -580,13 +580,13 @@ var app = (function (win) {
         },
         notOnline: function(){
              if (app.isNullOrEmpty(app.Places.visiting)) {
-                app.notify.showShortTop(appSettings.messages.signIn)
+                app.notify.showLongBottom(appSettings.messages.signIn)
                 app.mobileApp.navigate("#welcome");
             }
         },
         cameraRoute: function (e) {
             if (app.isNullOrEmpty(app.Places.visiting)) {
-                app.notify.showShortTop(appSettings.messages.signIn)
+                app.notify.showLongBottom(appSettings.messages.signIn)
                 app.mobileApp.navigate("#welcome");
             } else {
                 if (app.Places.visiting.name === undefined)
@@ -613,7 +613,7 @@ var app = (function (win) {
 
         openExternalInAppBrowser: function (url) {
             var winB = window.open(url, "_blank");
-            app.notify.showShortTop(appSettings.messages.url);
+            app.notify.showLongBottom(appSettings.messages.url);
         },
 
         isAnalytics: function () {
@@ -765,14 +765,14 @@ var app = (function (win) {
         onPrompt: function (results) {
             //alert("You selected button number " + results + " and entered " + results);
             if (results === 3) {
-                app.notify.showShortTop(appSettings.messages.continueAnonomously);
+                app.notify.showLongBottom(appSettings.messages.continueAnonomously);
             }
             if (results === 2) {
-                app.notify.showShortTop(appSettings.messages.register);
+                app.notify.showLongBottom(appSettings.messages.register);
                 app.mobileApp.navigate('views/signupView.html');
             }
             if (results === 1) {
-                app.notify.showShortTop(appSettings.messages.signIn);
+                app.notify.showLongBottom(appSettings.messages.signIn);
                 app.mobileApp.navigate('#welcome');
             }
         },
@@ -795,12 +795,12 @@ var app = (function (win) {
                 };
 
                 data.rawUpdate(attributes, filter, function (data) {
-                    app.notify.showShortTop(appSettings.messages.registeredOK);
+                    app.notify.showLongBottom(appSettings.messages.registeredOK);
                 }, function (err) {
-                    app.notify.showShortTop(appSettings.messages.tryAgain + JSON.stringify(err));
+                    app.notify.showLongBottom(appSettings.messages.tryAgain + JSON.stringify(err));
                 });
             } else {
-                app.notify.showShortTop(appSettings.messages.tryAgain);
+                app.notify.showLongBottom(appSettings.messages.tryAgain);
                 app.mobileApp.navigate('#welcome');
             }
         },
@@ -837,9 +837,9 @@ var app = (function (win) {
                 'Id': app.Users.currentUser.data.Id //   the current User
             };
             data2.rawUpdate(attributes, filter, function (data) {
-                app.notify.showShortTop(appSettings.messages.favoritesMessage);
+                app.notify.showLongBottom(appSettings.messages.favoritesMessage);
             }, function (err) {
-                app.notify.showShortTop(appSettings.messages.tryAgain + JSON.stringify(err));
+                app.notify.showLongBottom(appSettings.messages.tryAgain + JSON.stringify(err));
             });
         },
         createPlaceIdwithUserFavorite: function (placeId, placeJson) {
@@ -849,6 +849,8 @@ var app = (function (win) {
                 function (data) {
                     //app.notify.showShortTop("Place is saved " + JSON.stringify(data));
                     app.notify.addUserFavourite(data.result.Id);
+                    app.Users.currentUser.data.Favorites.push(data.result.Id);
+                    app.favorites.favoritesModel.searchChange();
                 })
         },
         memorize: function (Parameter) {
@@ -867,12 +869,12 @@ var app = (function (win) {
                         'Id': Parameter //   Parameter = PartnerID the current place, if the place does not exist then register the place??
                     };
                     data.rawUpdate(attributes, filter, function (data) {
-                        app.notify.showShortTop(appSettings.messages.joinMessage);
+                        app.notify.showLongBottom(appSettings.messages.joinMessage);
                     }, function (err) {
-                        app.notify.showShortTop(appSettings.messages.tryAgain + JSON.stringify(err));
+                        app.notify.showLongBottom(appSettings.messages.tryAgain + JSON.stringify(err));
                     });
                 } else {
-                    app.notify.showShortTop(appSettings.messages.signIn);
+                    app.notify.showLongBottom(appSettings.messages.signIn);
                     app.mobileApp.navigate('#welcome');
                 }
             } else {// Parameter is a Json string representing a Favorite save app.Places.visiting.PlaceId() in Favorite list for user
@@ -890,7 +892,7 @@ var app = (function (win) {
                     //         app.showError("Error " + JSON.stringify(error));
                     //     });
                 } else {
-                    app.notify.showShortTop(appSettings.messages.signIn);
+                    app.notify.showLongBottom(appSettings.messages.signIn);
                     app.mobileApp.navigate('#welcome');
                 }
                 app.notify.showLongBottom("Saving PlaceId " + place.placeId + " to User to Memberships " + app.Users.currentUser.data.Id)
@@ -934,7 +936,7 @@ var app = (function (win) {
                                     app.mobileApp.navigate("#components/followers/view.html?option=selected");
                                     break;
                                 default:
-                                    app.notify.showShortTop('You will need to upgrade to use this feature.');
+                                    app.notify.showLongBottom('You will need to upgrade to use this feature.');
                                     break;
                             }
                         }, 0);
@@ -952,7 +954,7 @@ var app = (function (win) {
             //	app.notify.showShortTop("To protect your privacy you cannot broadcast from your Private Data Feed!");
             //	return;
             //}
-            app.notify.showShortTop(appSettings.messages.broadcast);
+            app.notify.showLongBottom(appSettings.messages.broadcast);
             if (true) { //TO DO: check if notification activity exists to prevent second attempt
                 var notify = {
                     "Message": activity.Text, // upgrade required,
@@ -970,7 +972,7 @@ var app = (function (win) {
                     notify,
                     function (data) {
                         var createdAt = app.formatDate(data.result.CreatedAt);
-                        app.notify.showShortTop(appSettings.messages.broadcast + createdAt);
+                        app.notify.showLongBottom(appSettings.messages.broadcast + createdAt);
                         //update notification assets Activity reference and status
                         //everlive = el
 
@@ -988,10 +990,10 @@ var app = (function (win) {
                             'Location': thisPlace
                         },
                             function (data) {
-                                app.notify.showShortTop(appSettings.messages.saved + data.result.Id);
+                                app.notify.showLongBottom(appSettings.messages.saved + data.result.Id);
                             },
                             function (error) {
-                                app.notify.showShortTop(appSettings.messages.tryAgain + error.message);
+                                app.notify.showLongBottom(appSettings.messages.tryAgain + error.message);
                             });
                     },
                     function (error) {
@@ -1002,15 +1004,19 @@ var app = (function (win) {
 
         showLongBottom: function (m) {
             //app.adMobService.viewModel.prepareInterstitial();
-            console.log("Start Toast Message - " + m);
-            if (analytics.isAnalytics()) {
-                m = m + " . . . . . .";
-                analytics.TrackFeature('Toast.' + m.substring(0, 10));
-            }
-            if (!app.helper.checkSimulator()) {
-                window.plugins.toast.showLongBottom(m);
+            if (m===undefined) {
+                app.notify.showShortTop(m)
             } else {
-                showAlert(m, "Toast Simulation");
+                console.log("Start Toast Message - " + m);
+                if (analytics.isAnalytics()) {
+                    m = m + " . . . . . .";
+                    analytics.TrackFeature('Toast.' + m.substring(0, 10));
+                }
+                if (!app.helper.checkSimulator()) {
+                    window.plugins.toast.showLongBottom(m);
+                } else {
+                    showAlert(m, "Toast Simulation");
+                }
             }
         },
 
@@ -1186,7 +1192,7 @@ var app = (function (win) {
     });
 
     var cropImage = function (image) {
-        app.notify.showShortTop(appSettings.messages.wait);
+        app.notify.showLongBottom(appSettings.messages.wait);
 
         var sx, sy, starterWidth, starterHeight, dx, dy, canvasWidth, canvasHeight;
         var starter = document.getElementById(image);
@@ -1231,7 +1237,7 @@ var app = (function (win) {
     }
 
     var createImage = function (baseImage) {
-        app.notify.showShortTop(appSettings.messages.updating);
+        app.notify.showLongBottom(appSettings.messages.updating);
 
         app.everlive.Files.create({
             Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
@@ -1252,7 +1258,7 @@ var app = (function (win) {
         navigator.camera.getPicture(function (imageURI) {
             callback(imageURI);
         }, function () {
-            app.notify.showShortTop(appSettings.messages.tryAgain);
+            app.notify.showLongBottom(appSettings.messages.tryAgain);
         }, {
                 //kjhh best result including iphone rotation
                 quality: 100,

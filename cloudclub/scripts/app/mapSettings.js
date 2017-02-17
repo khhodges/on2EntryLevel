@@ -9,7 +9,7 @@ var htmlOptions = {
 	"approved": true,
 	"defaultOptions": {
 		"standard": ["follow","events", "activities"],
-		"search": ["google", "twitter", "bing", "facebook"],
+		"search": ["google", "twitter", "bing", "facebook","roosterlocal"],
 		"food": ["zomato", "yelp"],
 		"general":["yellowpages","wikipedia"],
 		"display": ["search","general"],
@@ -25,6 +25,13 @@ var htmlOptions = {
 	},
 	"uris":
 	{
+        "roosterlocal":{
+			"name": "roosterlocal",
+			"path": "https://www.roosterlocal.com/",
+			"query": "",
+			"option": "",
+			"space": " "
+        },
 		"angiesList": {
 			"name": "angiesList",
 			"path": "https://www.angieslist.com/research/",

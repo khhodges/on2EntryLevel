@@ -38,7 +38,7 @@
 					"ken@sipantic.com",//['cc@person1.com'], // CC: must be null or an array			 
 					app.Users.currentUser.data.Email,//null, // BCC: must be null or an array			 
 					data.result.Uri,//['https://www.google.nl/images/srpr/logo4w.png', 'www/localimage.png'], // FILES: can be null, a string, or an array			
-					function(){app.notify.showShortTop(appSettings.messages.sent)}, // called when sharing worked, but also when the user cancelled sharing via email (I've found no way to detect the difference)
+					function(){app.notify.showLongBottom(appSettings.messages.sent)}, // called when sharing worked, but also when the user cancelled sharing via email (I've found no way to detect the difference)
 					app.onError) // called when sh*t hits the fan
 		}, 
 		function(error) {
@@ -153,10 +153,10 @@
 
 	// callbacks
 	app.onSuccess = function(msg) {
-		app.notify.showShortTop(appSettings.messages.sent);
+		app.notify.showLongBottom(appSettings.messages.sent);
 	}
 
 	app.onError = function(msg) {
-		app.notify.showShortTop(appSettings.messages.sent + msg);
+		app.notify.showLongBottom(appSettings.messages.sent + msg);
 	}
 }(window));

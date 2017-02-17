@@ -44,7 +44,7 @@ app.Update = (function () {
 			Everlive.$.Users.update(dataSource)
 				.then(function () {
 					analytics.TrackFeature('Update.User');
-					app.notify.showShortTop(appSettings.messages.update);
+					app.notify.showLongBottom(appSettings.messages.update);
 				},
 				function (err) {
 					app.showError(err.message);
@@ -64,7 +64,7 @@ app.Update = (function () {
 					function (data) {
 						var sb = document.getElementById("saveButton");
 						sb.style.display = "none";
-						app.notify.showShortTop(appSettings.messages.savedAvatar);
+						app.notify.showLongBottom(appSettings.messages.savedAvatar);
 					},
 
 					function (error) {
@@ -83,12 +83,12 @@ app.Update = (function () {
 			// Get a reference to our sensitive element
 			try {
 				if (!app.isOnline()) {
-					app.notify.showShortTop(appSettings.messages.signIn);
+					app.notify.showLongBottom(appSettings.messages.signIn);
 					app.mobileApp.navigate('#welcome');
 					return;
 				}
 			} catch (e) {
-				app.notify.showShortTop(appSettings.messages.signIn);
+				app.notify.showLongBottom(appSettings.messages.signIn);
 				app.mobileApp.navigate('#welcome');
 				return;
 			}
@@ -114,12 +114,12 @@ app.Update = (function () {
 		var show = function () {
 			try {
 				if (!app.isOnline()) {
-					app.notify.showShortTop(appSettings.messages.signIn);
+					app.notify.showLongBottom(appSettings.messages.signIn);
 					app.mobileApp.navigate('#welcome');
 					return;
 				}
 			} catch (e) {
-				app.notify.showShortTop(appSettings.messages.signIn);
+				app.notify.showLongBottom(appSettings.messages.signIn);
 				app.mobileApp.navigate('#welcome');
 				return;
 			}

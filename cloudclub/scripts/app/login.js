@@ -77,12 +77,12 @@ app.Login = (function () {
 			// Authenticate using the username and password
 			app.everlive.Users.login(username.trim(), password)
 				.then(function (result) {
-					app.notify.showShortTop("Login success!");//+JSON.stringify(result))
+					app.notify.showLongBottom("Login success!");//+JSON.stringify(result))
 					try {
 						priorUser = localStorage.getItem("username", username);
 						pushToken = localStorage.getItem("PushToken", pushToken);
 					} catch (e)
-					{ app.showShortTop("Login initialization " + e.message) }
+					{ app.showLongBottom("Login initialization " + e.message) }
 					localStorage.setItem("access_token1", result.result.access_token);
 					localStorage.setItem("username", username);
 					localStorage.setItem("password", password);

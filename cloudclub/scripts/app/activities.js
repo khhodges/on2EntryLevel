@@ -75,7 +75,7 @@ app.Activities = (function () {
 			try {
 				var theName = app.Places.visiting.details().name
 			}catch (ex) {
-				app.notify.showShortTop(appSettings.messages.dataLoad);
+				app.notify.showLongBottom(appSettings.messages.dataLoad);
 				app.Activities.activities._filter={field: "Title", operator: "doesnotcontain",value: "My Private Feed"}
 			}
 			if (e.view.params.ActivityText) {
@@ -200,7 +200,7 @@ app.Activities = (function () {
 			User: function () {
 				var userId = this.get('UserId');
 				if (userId === undefined) {
-					app.notify.showShortTop(appSettings.messages.tryAgain);
+					app.notify.showLongBottom(appSettings.messages.tryAgain);
 					userId = app.Users.currentUser.data.Id;
 				}
 
@@ -403,7 +403,7 @@ app.Activities = (function () {
 							},
 							function (error) {
 								position = new google.maps.LatLng(0, -20);
-								app.notify.showShortTop(appSettings.messages.mapError);
+								app.notify.showLongBottom(appSettings.messages.mapError);
 								return position;
 							}, {
 								timeout: 30000,
@@ -433,7 +433,7 @@ app.Activities = (function () {
 			$enterEvent.style.display = 'block';
 		}
 		var error = function () {
-			app.notify.showShortTop(appSettings.messages.tryAgain);
+			app.notify.showLongBottom(appSettings.messages.tryAgain);
 			$enterEvent.style.display = 'none';
 			validator.hideMessages();
 			document.getElementById('addButton').innerText = "Post";

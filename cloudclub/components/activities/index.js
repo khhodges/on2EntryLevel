@@ -162,10 +162,10 @@ app.activities = kendo.observable({
 					return;
                 }
 				if (results === 2) {
-					app.notify.showShortTop(appSettings.messages.registerOption);
+					app.notify.showLongBottom(appSettings.messages.registerOption);
 					app.mobileApp.navigate('views/signupView.html');
 				} else {
-					app.notify.showShortTop(appSettings.messages.signIn);
+					app.notify.showLongBottom(appSettings.messages.signIn);
 					app.mobileApp.navigate('#welcome');
 				}
 			},
@@ -181,9 +181,9 @@ app.activities = kendo.observable({
 						'Id': activitiesModel.get('currentItem').Id
 					};
 					data.rawUpdate(attributes, filter, function (data) {
-						app.notify.showShortTop(appSettings.messages.addedToFavorites);
+						app.notify.showLongBottom(appSettings.messages.addedToFavorites);
 					}, function (err) {
-						app.notify.showShortTop(appSettings.messages.continueError);
+						app.notify.showLongBottom(appSettings.messages.continueError);
 					});
 				} else {
 					navigator.notification.confirm(
@@ -295,7 +295,7 @@ app.activities = kendo.observable({
 	}
 
 	parent.set('onShow', function (e) {
-		app.notify.showShortTop(appSettings.messages.activityFilter);
+		app.notify.showLongBottom(appSettings.messages.activityFilter);
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : {
 			logic: 'and', filters: [{
 				"field": "UserId",
