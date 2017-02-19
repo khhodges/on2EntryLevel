@@ -331,6 +331,7 @@ app.Places = (function () {
                                                                                                     if (results[0]) {
                                                                                                         myAddress = results[0].formatted_address;
                                                                                                         app.cdr.address = myAddress;
+                                                                                                        app.notify.showLongBottom(myAddress);
                                                                                                         myCity = app.Places.locationViewModel.getComponent(results[0].address_components, "locality");
                                                                                                         if (document.getElementById('addressStatus')) {
                                                                                                             document.getElementById('addressStatus').innerHTML = myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '</span>';
@@ -393,7 +394,7 @@ app.Places = (function () {
                                                                                                                                 //'addDestructiveButtonWithLabel' : 'Delete it'                
                                                                                                                             });
                                                                            } else {
-                                                                               app.mobileApp.navigate("#components/favorites/view.html");
+                                                                               app.mobileApp.navigate("#views/listView.html");//components/favorites/view.html");
                                                                            }
                                                                        },
                                                                        showListSheet: function (options) {
@@ -1081,7 +1082,7 @@ app.Places = (function () {
                         var Details = thisPartner.details();
                         //app.showAlert("Delete this item "+ Details.vicinity);
                         Details.highlightMapMark();
-                        app.showConfirm(appSettings.messages.saveHighlight, appSettings.whatToDo,function(button) {
+                        app.showConfirm(appSettings.messages.saveHighlight, appSettings.whatToDo, function(button) {
                             if (button === 1) {
                                 var place = app.Places.visiting.details();
                                 app.notify.fixPlaceId(place.placeId, JSON.stringify(place))
@@ -1165,15 +1166,26 @@ app.Places = (function () {
                         app.Places.locationViewModel.list = ps;
                     }
                     try {
+                        app.Places.displayListView();
+                    } catch (ex) {
+                        app.showAlert(JSON.stringify(ex));
+                    }
+                } catch (e) {
+                    app.showAlert(JSON.stringify(e));
+                }
+            },
+            displayListView:function(){      
                         var aList = app.Places.locationViewModel.list.array();
                         list = $("#places-listview").kendoMobileListView({
                                                                              dataSource: aList,
-                                                                             template: "<div class='${isSelectedClass}'><div id='placelist'"
+                                                                             template: "<div id = '#:name#' class='${isSelectedClass}' ><div class='image-with-text'>"
+                                                                                       +"<a href='#: website #'>"
+                                                                                       + "<img src='#: icon #' width='10%'></a><div id='placelist'"
                                                                                        + "data-role='touch' data-enable-swipe='true'"
                                                                                        + " data-swipe='app.Places.locationViewModel.openListSheet'"
                                                                                        + "><strong> #: name #</strong><div id='placedetails' ${visibility} "
                                                                                        + "style='width:100%; margin-top:-5px'> #: vicinity # -- about "
-                                                                                       + " #: distance # mile(s) (as the crow flys). <br/></div></div></div>",
+                                                                                       + " #: distance # mile(s) (as the crow flys). <br/></div></div></div></div>",
                                                                              //<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
                                                                              selectable: "multiple",
                                                                              change: function () {
@@ -1183,12 +1195,6 @@ app.Places = (function () {
                             .data("kendoListView");
                         //app.showAlert(JSON.stringify(aList));
                         $("#places-listview").on("data-swipe", "li", app.Places.locationViewModel.openListSheet)
-                    } catch (ex) {
-                        app.showAlert(JSON.stringify(ex));
-                    }
-                } catch (e) {
-                    app.showAlert(JSON.stringify(e));
-                }
             },
             onSelected: function (e) {
                 if (!e.dataItem) {
@@ -1345,10 +1351,12 @@ app.Places = (function () {
                 };
                 this.array = function () {
                     var len = this.keys.length;
-                    var array = new Array(len);
+                    var array = new Array();
                     for (var i = 0; i < len; i++) {
                         var key = this.keys[i];
-                        array[i] = this.get(key).details();
+                        if (key!==undefined) {
+                            array.push(this.get(key).details());
+                        }
                     }
                     return array;
                 };
@@ -1667,7 +1675,7 @@ app.Places = (function () {
                 };
                 var picture = function () {
                     var iconText = partnerRow.Icon;
-                    if (iconText.indexOf('//') > -1) {
+                    if (iconText.indexOf('//') > -1 || iconText.indexOf('styles/images') > -1) {
                         return iconText;
                     } else {
                         return app.helper.resolvePictureUrl(iconText);
@@ -1826,14 +1834,17 @@ app.Places = (function () {
                     if (partnerRow.rating < 3.0) {
                         options.icon.url = 'styles/images/redcircle.png';
                         options.zIndex = 6;
+                        partnerRow.icon = options.icon.url;
                     }
                     if (partnerRow.rating > 4.2) {
                         options.icon.url = 'styles/images/orangecircle.png';
                         options.zIndex = 8;
+                        partnerRow.icon = options.icon.url;
                     }
                     options.icon.scaledSize = new google.maps.Size(3 * options.zIndex, 3 * options.zIndex)
                     options.position = { lng: partnerRow.geometry.location.lng(), lat: partnerRow.geometry.location.lat() };
                     options.vicinity = partnerRow.vicinity;
+                    partnerRow.Icon = options.icon.url;
                     try {
                         initClass();
                     } catch (e) {
@@ -1934,18 +1945,18 @@ app.Places = (function () {
                             }
                         },
                         clearMapMark: function () {
-                            app.showConfirm("Do you want to remove " + name()
-                                            + " at " + Address() + listString(), "Remove Place", function (e) {
+                            app.showConfirm(appSettings.messages.removeQuestion + name()
+                                            + " at " + Address() + listString(), appSettings.messages.removeTitle, function (e) {
                                                 if (e === 2)
                                                     return;
                                             });
                             Mark.setMap(null);
-                            app.Places.visiting.e.dataItem.set("isSelectedClass", "listview-hidden");
-                            app.Places.visiting.e.dataItem.set("visibility", "hidden");
                             app.Places.locationViewModel.list.delete(Address());
+                            app.Places.displayListView();
                         },
                         highlightMapMark: function() {
                             Mark.setIcon("styles/images/star_red2.png");
+                            partnerRow.Icon = "styles/images/star_red2.png";
                         }
                     }
                 }

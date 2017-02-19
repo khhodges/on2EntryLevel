@@ -681,7 +681,7 @@ var app = (function (win) {
         // Return user profile picture url
         resolveProfilePictureUrl: function (id) {
             var result = id;
-            if (id && (id !== emptyGuid && id !== "styles/images/avatar.png" && id !== "styles/images/default-image.jpg.png")) {
+            if (id && (id !== emptyGuid && id.substring(0,6) !== "styles" && id !== "styles/images/default-image.jpg.png")) {
                 return el.Files.getDownloadUrl(id);
             } else {
                 return id;
@@ -690,10 +690,10 @@ var app = (function (win) {
 
         // Return current activity picture url
         resolvePictureUrl: function (id) {
-            if (id && (id !== emptyGuid && id !== "styles/images/avatar.png" && id.substring(0, 4) !== "http")) {
+            if (id && (id !== emptyGuid && id.substring(0,6) !== "styles" && id.substring(0, 4) !== "http")) {
                 return el.Files.getDownloadUrl(id);
             } else {
-                if (id.substring(0, 3) !== "http") {
+                if (id.substring(0, 4) !== "http") {
                     return id;
                 } else {
                     return 'styles/images/default-image.jpg';
@@ -1123,11 +1123,20 @@ var app = (function (win) {
                 var setupBtn = document.getElementById("setupBtn");
                 setupBtn.style.display = "";
                 app.cdr = crd;
+                localStorage.setItem("lastLocation", JSON.stringify(cdr))
                 callBack(crd);
             };
 
             function error(err) {
-                app.showError('ERROR( Please enable Location and restart the application ' + err.code + '): ' + err.message);
+                if(localStorage.getItem('lastLocation')){
+                   crd = JSON.parse(localStorage.getItem('lastLocation'));
+                    app.cdr = crd;
+                    callBack(crd);
+                }else{
+                    app.cdr = {'latitude':26.243, 'longitude':-80.1025};
+                    callBack(crd);
+                }
+                app.notify.showLongBottom('Using last known location '+ err);
             };
 
             navigator.geolocation.getCurrentPosition(success, error, options);

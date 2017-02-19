@@ -149,20 +149,22 @@ app.favorites = kendo.observable({
         favoritesModel = kendo.observable({
                                               _dataSourceOptions: dataSourceOptions,
                                               searchChange: function (e) {
-                                                  if (e && e.target && e.target.searchVal){
+                                                  if (e && e.target && e.target.searchVal) {
                                                       var searchVal = e.target.value,
-                                                      searchFilter;
-                                                  searchFilter = {
+                                                          searchFilter;
+                                                      searchFilter = {
                                                           field: 'Jsonfield',
                                                           operator: 'contains',
                                                           value: searchVal
                                                       };
-                                                  }
-                                                  else {
+                                                  } else {
                                                       searchFilter = undefined;
                                                   }
                                                   favoritesModel.set('searchFilter', { "Id": { "$in": app.Users.currentUser.data.Favorites } });
-                                                  fetchFilteredData(favoritesModel.get('paramFilter'), searchFilter);
+                                                  try {
+                                                      fetchFilteredData(favoritesModel.get('paramFilter'), searchFilter);
+                                                  } catch (e) {
+                                                  }
                                               },
                                               fixHierarchicalData: function (data) {
                                                   var result = {},
@@ -348,18 +350,21 @@ app.favorites.directions = function () {
     app.openLink("https://www.google.com/maps/dir" + directions);
     //1230+Hillsboro+Mile,+Hillsboro+Beach,+FL+33062,+USA/2315+N+Federal+Hwy,+Pompano+Beach,+FL+33062/1940+NE+49th+St,+Pompano+Beach,+FL+33064");
 }
-app.favorites.openListSheet = function () {
+app.favorites.openListSheet = function (e) {
     if (!app.Places.locationViewModel.checkSimulator()) {
+        for(var i=0;i< app.favorites.favoritesModel.dataSource._pristineData.length;i++){
+                if(app.favorites.favoritesModel.dataSource._pristineData[i]>0)app.Places.favoriteItem = app.favorites.favoritesModel.dataSource._pristineData[0].Jsonfield.indexOf(e.sender.wrapper.context.getElementsByTagName('h3')[0].innerText)
+            }
         app.favorites.showListSheet({
                                         'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
                                         'title': appSettings.messages.whatToDo,
                                         'buttonLabels': [
-                appSettings.messages.list1,
-                appSettings.messages.list2,
-                appSettings.messages.list3,
-                appSettings.messages.list4,
-                appSettings.messages.list5
-            ],
+                                            appSettings.messages.list1,
+                                            appSettings.messages.list2,
+                                            appSettings.messages.list3,
+                                            appSettings.messages.list4,
+                                            appSettings.messages.list5
+                                        ],
                                         'addCancelButtonWithLabel': 'Cancel',
                                         'androidEnableCancelButton': true, // default false
                                         'winphoneEnableCancelButton': true, // default false
@@ -369,7 +374,11 @@ app.favorites.openListSheet = function () {
         app.mobileApp.navigate("#components/favorites/View.html");
     }
 }
-
+//        list1:"Add to the Map",
+//        list2:"Delete From Map",
+//        list3:"Visit Home Page",
+//        list4:"Show Google Reviews",
+//        list5:"Add to Trip",
 app.favorites.showListSheet = function (options) {
     if (!app.Places.locationViewModel.checkSimulator()) {
         window.plugins.actionsheet.show(
@@ -378,15 +387,17 @@ app.favorites.showListSheet = function (options) {
                 // wrapping in a timeout so the dialog doesn't freeze the app
                 setTimeout(function () {
                     switch (buttonIndex) {
-                        case 1: //'Keep selected items',
-                        case 2: //Delete selected items    
+                        case 1: //'Add to Map',
+                        case 2: //Delete this items    
                             app.mobileApp.navigate("#views/listView.html?keep=" + buttonIndex);
                             break;
-                        case 3:
-                            app.mobileApp.navigate("#views/updateView.html");
+                        case 3: // Visit home Page
+                            app.helper.openExternalInAppBrowser("#views/updateView.html");
                             break;
-                            //case 8:
-                            //	break;
+                        case 4:// Show Googl Reviews
+                        	break;
+                        case 5:// Add to Trip
+                        	break;
                         default:
                             //app.notify.showShortTop('You will need to upgrade to use this feature.');
                             break;
