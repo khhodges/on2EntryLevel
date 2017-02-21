@@ -917,7 +917,7 @@ var appSettings = {
     english: {
         removeQuestion:"Do you want to remove ",
         removeTitle:"Remove Place",
-        saveHighlight:" Highlight set as a Red Star on map!\nDo you also want to save this place in your Favorites list?",
+        saveHighlight:"Highlight set as a Red Star on map!\n\nClick TRIP to add this place to your trip list? or...\n\nClick FAVORITE to add this place in your Favorites list?",
         list1:"Add to the Map",
         list2:"Delete From Map",
         list3:"Visit Home Page",

@@ -123,6 +123,7 @@ app.Places = (function () {
                                                                        address: "",
                                                                        find: null,
                                                                        list: null,
+                                                                       trip: null,
                                                                        homeMarker: null,
                                                                        isGoogleMapsInitialized: true,
                                                                        isGoogleDirectionsInitialized: false,
@@ -348,6 +349,38 @@ app.Places = (function () {
                                                                                return app.helper.resolvePictureUrl(iconText);
                                                                            }
                                                                        },
+                                                                        getBoundsZoomLevel: function(bounds) {
+                                                                            var mapDim = {
+                                                                                height: 400,
+                                                                                width: 300
+                                                                            };
+                                                                            var WORLD_DIM = { height: 256, width: 256 };
+                                                                            var ZOOM_MAX = 21;
+
+                                                                            function latRad(lat) {
+                                                                                var sin = Math.sin(lat * Math.PI / 180);
+                                                                                var radX2 = Math.log((1 + sin) / (1 - sin)) / 2;
+                                                                                return Math.max(Math.min(radX2, Math.PI), -Math.PI) / 2;
+                                                                            }
+
+                                                                            function zoom(mapPx, worldPx, fraction) {
+                                                                                return Math.floor(Math.log(mapPx / worldPx / fraction) / Math.LN2);
+                                                                            }
+
+                                                                            var ne = bounds.getNorthEast();
+                                                                            var sw = bounds.getSouthWest();
+
+                                                                            var latFraction = (latRad(ne.lat()) - latRad(sw.lat())) / Math.PI;
+                                                                            
+                                                                            var lngDiff = ne.lng() - sw.lng();
+                                                                            var lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
+                                                                            
+                                                                            var latZoom = zoom(mapDim.height, WORLD_DIM.height, latFraction);
+                                                                            var lngZoom = zoom(mapDim.width, WORLD_DIM.width, lngFraction);
+
+                                                                            return Math.min(latZoom, lngZoom, ZOOM_MAX);
+                                                                        },
+
                                                                        clearMap: function deleteMarkers() { // Deletes all markers in the array by removing references to them.
                                                                            markers = app.Places.locationViewModel.markers;
                                                                            for (var i = 0; i < markers.length; i++) {
@@ -360,24 +393,32 @@ app.Places = (function () {
                                                                            app.Places.locationViewModel.details = new Array;
                                                                            app.Places.locationViewModel.list = new app.Places.List;
                                                                        },
-                                                                       openListSheet: function () {
-                                                                           if (!app.Places.locationViewModel.checkSimulator()) {
+                                                                       openListSheet: function (e) {
+                                                                            if (!app.Places.locationViewModel.checkSimulator()) {
+                                                                                var myList = app.Places.locationViewModel.list.array();
+                                                                                for (var i = 0;i < myList.length ;i++) {
+                                                                                    if (myList[i].name === e.sender.events.currentTarget.innerText) {
+                                                                                        app.Places.favoriteItem = myList[i];
+                                                                                        break;
+                                                                                    }
+        }
+                                                                                }
+                                                                                if (!app.Places.locationViewModel.checkSimulator()) {
                                                                                app.Places.locationViewModel.showListSheet({
-                                                                                                                              'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
-                                                                                                                              'title': appSettings.messages.whatToDo,
-                                                                                                                              'buttonLabels': [
-                                   
-                                                                                       appSettings.messages.list1,
-                                                                                       appSettings.messages.list2,
+                                                                                      'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+                                                                                      'title': appSettings.messages.whatToDo,
+                                                                                      'buttonLabels': [
+                                                                                       appSettings.messages.list5,
+                                                                                       appSettings.messages.list4,
                                                                                        appSettings.messages.list3,
                                                                                        // appSettings.messages.list4,
                                                                                        // appSettings.messages.list5
                                                                                    ],
-                                                                                                                              'addCancelButtonWithLabel': 'Cancel',
-                                                                                                                              'androidEnableCancelButton': true, // default false
-                                                                                                                              'winphoneEnableCancelButton': true, // default false
-                                                                                                                              //'addDestructiveButtonWithLabel' : 'Delete it'                
-                                                                                                                          });
+                                                                                      'addCancelButtonWithLabel': 'Cancel',
+                                                                                      'androidEnableCancelButton': true, // default false
+                                                                                      'winphoneEnableCancelButton': true, // default false
+                                                                                      //'addDestructiveButtonWithLabel' : 'Delete it'                
+                                                                                  });
                                                                            } else {
                                                                                app.Places.logExceptions(app.mobileApp.navigate("#views/listView.html?keep=2"));
                                                                            }
@@ -403,16 +444,22 @@ app.Places = (function () {
                                                                                    options,
                                                                                    function (buttonIndex) {
                                                                                        // wrapping in a timeout so the dialog doesn't freeze the app
+                                                                                        //        list1:"Add to the Map",
+                                                                                        //        list2:"Delete From Map",
+                                                                                        //        list3:"Visit Home Page",
+                                                                                        //        list4:"Show Google Reviews",
+                                                                                        //        list5:"Add to Trip",
                                                                                        setTimeout(function () {
                                                                                            switch (buttonIndex) {
-                                                                                               case 1: //'Keep selected items',
-                                                                                               case 2: //Delete selected items    
+                                                                                               case 1: //'Add to Map',
+                                                                                               case 2: //Delete from Map    
                                                                                                    app.mobileApp.navigate("#views/listView.html?keep=" + buttonIndex);
                                                                                                    break;
-                                                                                               case 3:
-                                                                                                   app.mobileApp.navigate("#views/updateView.html");
+                                                                                               case 3://visit Home Page
+                                                                                                    app.helper.openExternalInAppBrowser(app.Places.favoriteItem.website);
+                                                                                                   //app.mobileApp.navigate("#views/updateView.html");
                                                                                                    break;
-                                                                                                   //case 8:
+                                                                                                   //case 4://
                                                                                                    //	break;
                                                                                                default:
                                                                                                    //app.notify.showShortTop('You will need to upgrade to use this feature.');
@@ -886,6 +933,14 @@ app.Places = (function () {
                                                                        //},
                                                                    });
         return {
+                                                                       addToTrip: function(item) {
+                                                                            if (!app.Places.locationViewModel.trip) {
+                                                                                app.Places.locationViewModel.trip = new app.Places.List;
+                                                                            }
+                                                                           var partnerV = new app.Places.newPartner();
+                                                                           partnerV.setTripRow(item);// define as a specific Partner
+                                                                           app.Places.locationViewModel.trip.put(partnerV.vicinity(), partnerV);
+                                                                       },
             listViewOpen: function () {
                 app.mobileApp.navigate("views/listView.html")
             },
@@ -1082,12 +1137,17 @@ app.Places = (function () {
                         var Details = thisPartner.details();
                         //app.showAlert("Delete this item "+ Details.vicinity);
                         Details.highlightMapMark();
-                        app.showConfirm(appSettings.messages.saveHighlight, appSettings.whatToDo, function(button) {
+                        app.showOptions(appSettings.messages.saveHighlight, appSettings.whatToDo, function(button) {
                             if (button === 1) {
+                            }
+                            if (button === 2) {
+                                app.Places.addToTrip(app.Places.visiting.details());
+                            }
+                            if (button === 3) {
                                 var place = app.Places.visiting.details();
                                 app.notify.fixPlaceId(place.placeId, JSON.stringify(place))
                             }
-                        })
+                        },['CANCEL','TRIP','FAVORITES'])
                     }
                 }
             },
@@ -1610,9 +1670,12 @@ app.Places = (function () {
                         allBounds.extend(options.position);
                         //now fit the map to the newly inclusive bounds
                         map.fitBounds(allBounds);
+                        var newZoom = app.Places.locationViewModel.getBoundsZoomLevel(allBounds);
+                        if(map.zoom === 0)map.setZoom(newZoom)
                         google.maps.event.addListener(Mark, 'click', function () {
                             if (Mark.icon.url === "styles/images/xstar.png") {
                                 app.showAlert("Star");
+                                checkInfoWindow(setInfoWindow);
                             } else {
                                 checkInfoWindow(setInfoWindow);
                             }
@@ -1660,17 +1723,25 @@ app.Places = (function () {
                     return partnerRow.Id;
                 };
                 var lat = function () {
-                    if (!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.latitude)) {
+                    if ((!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.latitude) && partnerRow.location)) {
                         partnerRow.Location = {};
-                        partnerRow.Location.latitude = partnerRow.geometry.location.lat();
+                        try {
+                            partnerRow.Location.latitude = partnerRow.geometry.location.lat(); 
+                        }catch (e) {
+                            partnerRow.Location.latitude = partnerRow.location.lat;
+                        }
                     }
                     return partnerRow.Location.latitude;
                 };
                 var lng = function () {
-                    if (!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.longitude)) {
+                    if ((!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.longitude) && partnerRow.location)) {
                         partnerRow.Location = {};
-                        partnerRow.Location.longitude = partnerRow.geometry.location.lng();
-                    }
+                        try {
+                            partnerRow.Location.longitude = partnerRow.geometry.location.lng();
+                        }catch (e) {
+                            partnerRow.Location.longitude = partnerRow.location.lng;
+                        }
+                    }                
                     return partnerRow.Location.longitude;
                 };
                 var picture = function () {
@@ -1701,7 +1772,8 @@ app.Places = (function () {
                 };
                 var placeId = function () {
                     if (app.isNullOrEmpty(partnerRow.PlaceId)) {
-                        partnerRow.PlaceId = partnerRow.place_id;
+                        if(partnerRow.place_id)partnerRow.PlaceId = partnerRow.place_id;
+                        if(partnerRow.placeId)partnerRow.PlaceId = partnerRow.placeId;
                     }
                     return partnerRow.PlaceId;
                 };
@@ -1827,6 +1899,22 @@ app.Places = (function () {
                         return false;
                     }
                 };
+                this.setTripRow = function (place) {
+                    partnerRow = place;
+                    dataType = "Trip";
+                    options.zIndex = 12;                    
+                    options.icon.url = 'styles/images/pin.png';
+                    partnerRow.icon = options.icon.url;
+                    //options.icon.scaledSize = new google.maps.Size(3 * options.zIndex, 3 * options.zIndex)
+                    options.position = { lng: partnerRow.location.lng, lat: partnerRow.location.lat };
+                    options.vicinity = partnerRow.vicinity;
+                    try {
+                        initClass();
+                    } catch (e) {
+                        app.notify.showLongBottom(appSettings.messages.tryAgain + partnerRow.vicinity + e.message);
+                        return;
+                    }
+                };
                 this.setPlaceRow = function (place) {
                     partnerRow = place;
                     dataType = "Place";
@@ -1842,7 +1930,7 @@ app.Places = (function () {
                         partnerRow.icon = options.icon.url;
                     }
                     options.icon.scaledSize = new google.maps.Size(3 * options.zIndex, 3 * options.zIndex)
-                    options.position = { lng: partnerRow.geometry.location.lng(), lat: partnerRow.geometry.location.lat() };
+                    options.position = { lng: partnerRow.geometry.location.lng, lat: partnerRow.geometry.location.lat };
                     options.vicinity = partnerRow.vicinity;
                     partnerRow.Icon = options.icon.url;
                     try {

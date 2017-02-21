@@ -342,19 +342,28 @@ app.favorites = kendo.observable({
 // START_CUSTOM_CODE_favoritesModel
 // Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
 app.favorites.directions = function () {
-    var myLines = document.getElementsByClassName("image-with-text");//document.getElementById("myText");
+    var myLines = app.Places.locationViewModel.trip.array();
     var directions = "/" + app.cdr.address;
-    for (var i = 0; i < myLines.length; i++) {
-        directions = directions + "/" + document.getElementsByClassName("image-with-text")[i].innerText.replace("\n", " ").replace("\n", " ").replace("\n", " ").replace("\n", " ").replace("  ", " ");
+    for (var i=0;i<myLines.length;i++){
+        directions = directions + "/" + myLines[i].vicinity;
     }
+    
+    //var myLines = document.getElementsByClassName("image-with-text");//document.getElementById("myText");
+    //var directions = "/" + app.cdr.address;
+    //for (var i = 0; i < myLines.length; i++) {
+    //    directions = directions + "/" + document.getElementsByClassName("image-with-text")[i].innerText.replace("\n", " ").replace("\n", " ").replace("\n", " ").replace("\n", " ").replace("  ", " ");
+    //}
     app.openLink("https://www.google.com/maps/dir" + directions);
     //1230+Hillsboro+Mile,+Hillsboro+Beach,+FL+33062,+USA/2315+N+Federal+Hwy,+Pompano+Beach,+FL+33062/1940+NE+49th+St,+Pompano+Beach,+FL+33064");
 }
 app.favorites.openListSheet = function (e) {
     if (!app.Places.locationViewModel.checkSimulator()) {
-        for(var i=0;i< app.favorites.favoritesModel.dataSource._pristineData.length;i++){
-                if(app.favorites.favoritesModel.dataSource._pristineData[i]>0)app.Places.favoriteItem = app.favorites.favoritesModel.dataSource._pristineData[0].Jsonfield.indexOf(e.sender.wrapper.context.getElementsByTagName('h3')[0].innerText)
+        for (var i = 0;i < app.favorites.favoritesModel.dataSource._pristineData.length;i++) {
+            if (app.favorites.favoritesModel.dataSource._pristineData[i].Jsonfield.indexOf(e.sender.wrapper.context.getElementsByTagName('h3')[0].innerText) > 0) {
+                app.Places.favoriteItem = JSON.parse(app.favorites.favoritesModel.dataSource._pristineData[i].Jsonfield);
+                break;
             }
+        }
         app.favorites.showListSheet({
                                         'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
                                         'title': appSettings.messages.whatToDo,
@@ -392,11 +401,12 @@ app.favorites.showListSheet = function (options) {
                             app.mobileApp.navigate("#views/listView.html?keep=" + buttonIndex);
                             break;
                         case 3: // Visit home Page
-                            app.helper.openExternalInAppBrowser("#views/updateView.html");
+                            app.helper.openExternalInAppBrowser(app.Places.favoriteItem.website);
                             break;
                         case 4:// Show Googl Reviews
                         	break;
                         case 5:// Add to Trip
+                            app.Places.addToTrip(app.Places.favoriteItem);
                         	break;
                         default:
                             //app.notify.showShortTop('You will need to upgrade to use this feature.');

@@ -31,6 +31,10 @@ var app = (function (win) {
         navigator.notification.confirm(message, callback || function () {
         }, title, ['Cancel', 'Delete', 'Highlight']);
     };
+    var showOptions = function (message, title, callback, threeButtons) {
+        navigator.notification.confirm(message, callback || function () {
+        }, title,threeButtons);
+    };
 
     var showError = function (message) {
         showAlert(message, 'Error occured');
@@ -66,7 +70,7 @@ var app = (function (win) {
     // Global confirm dialog
     var showConfirm = function (message, title, callback) {
         navigator.notification.confirm(message, callback || function () {
-        }, title, ['OK', 'Cancel']);
+        }, title, ['YES', 'NO']);
     };
 
     var isNullOrEmpty = function (value) {
@@ -1306,6 +1310,7 @@ var app = (function (win) {
         },
         showAlert: showAlert,
         showReviews: showReviews,
+        showOptions: showOptions,
         openLink: openLink,
         cdr: cdr,
         registerNotify: registerNotify,
