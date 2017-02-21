@@ -535,8 +535,8 @@ var app = (function (win) {
                                         'Reference': app.Activity.activity().Id,
                                         'Status': true,
                                         'Location': {
-                                            "latitude": app.cdr.latitude,
-                                            "longitude": app.cdr.longitude
+                                            "latitude": app.cdr.lat,
+                                            "longitude": app.cdr.lng
                                         }
                                     },
                                         function (data) {
@@ -982,8 +982,8 @@ var app = (function (win) {
 
                         //if does not exist add to log
                         var thisPlace = {
-                            "longitude": app.cdr.longitude,
-                            "latitude": app.cdr.latitude
+                            "longitude": app.cdr.lng,
+                            "latitude": app.cdr.lat
                         };
                         var data = el.data('Notifications');
                         var place = "Sent from " + activity.Title;
@@ -1122,6 +1122,8 @@ var app = (function (win) {
 
             function success(pos) {
                 var crd = pos.coords;
+                crd.lat = crd.latitude;
+                crd.lng = crd.longitude;
                 var continueButton = document.getElementById("continueButton");
                 continueButton.style.display = "";
                 var setupBtn = document.getElementById("setupBtn");
@@ -1137,7 +1139,7 @@ var app = (function (win) {
                     app.cdr = crd;
                     callBack(crd);
                 }else{
-                    app.cdr = {'latitude':26.243, 'longitude':-80.1025};
+                    app.cdr = {'lat':26.243, 'lng':-80.1025};
                     callBack(crd);
                 }
                 app.notify.showLongBottom('Using last known location '+ err);
