@@ -224,7 +224,10 @@ app.Activities = (function () {
 				var userId = this.get('UserId');
 				var level = app.Users.currentUser.data.Level;
 
-				return (level === '4' && currentUserId === userId);
+				if (level === '4' && currentUserId === userId){
+                    document.getElementsByClassName("nav-button nav-button-icon nav-button-delete hide-text")[0].attributes.style = "block";
+                    return true;
+                }
 			}
 		};
 		// Activities data source. The Backend Services dialect of the Kendo UI DataSource component

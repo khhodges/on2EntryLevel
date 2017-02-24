@@ -342,20 +342,17 @@ app.favorites = kendo.observable({
 // START_CUSTOM_CODE_favoritesModel
 // Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
 app.favorites.directions = function () {
-    var myLines = app.Places.locationViewModel.trip.array();
-    var directions = "/" + app.cdr.address;
-    for (var i=0;i<myLines.length;i++){
-        directions = directions + "/" + myLines[i].vicinity;
-    }
+    if(app.Places.locationViewModel.trip){
+        var myLines = app.Places.locationViewModel.trip.array();
+        var directions = "/" + app.cdr.address;
+        for (var i=0;i<myLines.length;i++){
+            directions = directions + "/" + myLines[i].vicinity;
+        }
+        app.openLink("https://www.google.com/maps/dir" + directions);
+  }else{
+      app.notify.showLongBottom("First add some Places to your Trip.")
+  }}
     
-    //var myLines = document.getElementsByClassName("image-with-text");//document.getElementById("myText");
-    //var directions = "/" + app.cdr.address;
-    //for (var i = 0; i < myLines.length; i++) {
-    //    directions = directions + "/" + document.getElementsByClassName("image-with-text")[i].innerText.replace("\n", " ").replace("\n", " ").replace("\n", " ").replace("\n", " ").replace("  ", " ");
-    //}
-    app.openLink("https://www.google.com/maps/dir" + directions);
-    //1230+Hillsboro+Mile,+Hillsboro+Beach,+FL+33062,+USA/2315+N+Federal+Hwy,+Pompano+Beach,+FL+33062/1940+NE+49th+St,+Pompano+Beach,+FL+33064");
-}
 app.favorites.openListSheet = function (e) {
     if (!app.Places.locationViewModel.checkSimulator()) {
         for (var i = 0;i < app.favorites.favoritesModel.dataSource._pristineData.length;i++) {
@@ -368,11 +365,9 @@ app.favorites.openListSheet = function (e) {
                                         'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
                                         'title': appSettings.messages.whatToDo,
                                         'buttonLabels': [
-                                            appSettings.messages.list1,
-                                            appSettings.messages.list2,
                                             appSettings.messages.list3,
-                                            appSettings.messages.list4,
-                                            appSettings.messages.list5
+                                            appSettings.messages.list5,
+                                            appSettings.messages.list6
                                         ],
                                         'addCancelButtonWithLabel': 'Cancel',
                                         'androidEnableCancelButton': true, // default false
@@ -396,17 +391,14 @@ app.favorites.showListSheet = function (options) {
                 // wrapping in a timeout so the dialog doesn't freeze the app
                 setTimeout(function () {
                     switch (buttonIndex) {
-                        case 1: //'Add to Map',
-                        case 2: //Delete this items    
-                            app.mobileApp.navigate("#views/listView.html?keep=" + buttonIndex);
-                            break;
-                        case 3: // Visit home Page
+                        case 1: // Visit home Page
                             app.helper.openExternalInAppBrowser(app.Places.favoriteItem.website);
                             break;
-                        case 4:// Show Googl Reviews
-                        	break;
-                        case 5:// Add to Trip
+                        case 2:// Add to Trip
                             app.Places.addToTrip(app.Places.favoriteItem);
+                        	break;
+                        case 3:// Directions to Trip
+                            app.favorites.directions();
                         	break;
                         default:
                             //app.notify.showShortTop('You will need to upgrade to use this feature.');

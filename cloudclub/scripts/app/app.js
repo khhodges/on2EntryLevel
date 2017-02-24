@@ -508,11 +508,11 @@ var app = (function (win) {
             var partner = app.everlive.data('Places');
             query.expand({ "Members": { "TargetTypeName": "Users", "Fields": { "DisplayName": 1, "Email": 1, "Phone": 1 } } });
             partner.get(query).then(function (data) {
-                clubList = data.result[0].Members;
-                app.Places.visiting.clubList = clubList;
-                if (!data.result || !data.result.length > 1 || !data.result[0].Members) {
+                if (!data.result || data.result.length < 1) {
                     app.notify.showLongBottom("There are no followers to contact using the notification service!")
-                } else {
+                } else {                    
+                    clubList = data.result[0].Members;
+                    app.Places.visiting.clubList = clubList;
                     try {
                         var followers = new Array(data.result[0].Members.length)
                         for (var i = 0; i < clubList.length; i++) {

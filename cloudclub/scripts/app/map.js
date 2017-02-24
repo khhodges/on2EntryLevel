@@ -111,599 +111,556 @@ app.Places = (function () {
             return theString;
         };
         var LocationViewModel = kendo.data.ObservableObject.extend({
-                                                                       lastPicture: "styles/images/avatar.png",
-                                                                       _lastMarker: null,
-                                                                       _isLoading: false,
-                                                                       address: "",
-                                                                       find: null,
-                                                                       list: null,
-                                                                       trip: null,
-                                                                       homeMarker: null,
-                                                                       isGoogleMapsInitialized: true,
-                                                                       isGoogleDirectionsInitialized: false,
-                                                                       markers: [],
-                                                                       details: [],
-                                                                       hideSearch: false,
-                                                                       updateDistance: function (lat2, lng2) {
-                                                                           var R = 6371; // km
-                                                                           var lat1 = app.cdr.lat;
-                                                                           var lng1 = app.cdr.lng;
-                                                                           var dLat = (lat2 - lat1) * Math.PI / 180;
-                                                                           var dLon = (lng2 - lng1) * Math.PI / 180;
-                                                                           var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                                                                                   Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                                                                                   Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                                                                           var c = 2 * Math.asin(Math.sqrt(a));
-                                                                           var d = R * c / 1.61; // converted to miles
-                                                                           return d.toFixed(4);
-                                                                       },
-                                                                       onNavigateHome: function () {
-                                                                           //find present location, clear markers and set up members as icons
-                                                                           var that = this;
-                                                                           homePosition = { lat: app.cdr.lat, lng: app.cdr.lng };//new google.maps.LatLng(app.cdr.lng, app.cdr.lat);
-                                                                           var position = homePosition;
-                                                                           that._isLoading = true;
-                                                                           that.toggleLoading();
-                                                                           if (!app.Places.locationViewModel.markers) {
-                                                                               app.Places.locationViewModel.markers = new Array;
-                                                                               allBounds = new google.maps.LatLngBounds();
-                                                                           }
-                                                                           if (!app.Places.locationViewModel.details) {
-                                                                               app.Places.locationViewModel.details = new Array;
-                                                                           }
-                                                                           app.Places.locationViewModel.clearMap();
-                                                                           try {
-                                                                               Selfie = {
-                                                                                   Picture: null,
-                                                                                   name: "My Private Feed",
-                                                                                   Value: null,
-                                                                                   Active: true,
-                                                                                   Notes: 'Selfie',
-                                                                                   Text: '',
-                                                                                   Title: 'My Private Feed',
-                                                                                   location: position
-                                                                               };
-                                                                           } catch (e) {
-                                                                               app.Error(JSON.stringify(e))
-                                                                           }
-                                                                           app.Places.visiting = Selfie;
-                                                                           app.Places.center = Selfie;
-                                                                           map.panTo(position);
-                                                                           that._putMarker(position);
-                                                                           locality = position;
-                                                                           that._isLoading = false;
-                                                                           that.toggleLoading();
-                                                                           var query = new Everlive.Query();
-                                                                           var point = new Everlive.GeoPoint(position.lng, position.lat);
-                                                                           query.where().nearSphere('Location', point, 25, 'miles').ne('Icon', 'styles/images/avatar.png');
-                                                                           var partners = app.everlive.data('Places');
-                                                                           app.notify.showLongBottom("Loading nearby CloudClub Partners within 25 miles onto Google Maps. Click any star to research the Partner.,")
-                                                                           partners.get(query).then(function (data) {
-                                                                               app.Places.locationViewModel.list = new app.Places.List;
-                                                                               for (var i = 0; i < data.count; i++) {
-                                                                                   var partner = data.result[i];
-                                                                                   partner.Location.lat = partner.Location.latitude;
-                                                                                   partner.Location.lng = partner.Location.longitude;
-                                                                                   var partnerV = new app.Places.newPartner();
-                                                                                   partnerV.setPartnerRow(partner);// define as a specific Partner
-                                                                                   app.Places.visiting = partnerV;
-                                                                                   app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV);
-                                                                               }
-                                                                           },
-                                                                            function (error) {
-                                                                                app.showError(JSON.stringify(error))
-                                                                            });
-                                                                       },
-                                                                       getComponent: function (address_components, component) {
-                                                                           for (var i = 0; i < address_components.length; i++) {
-                                                                               if (address_components[i].types[0] === "locality") {
-                                                                                   myCity = address_components[i].long_name;
-                                                                               }
-                                                                               if (address_components[i].types[0] === "administrative_area_level_1") {
-                                                                                   myState = address_components[i].long_name;
-                                                                               }
-                                                                           }
-                                                                           return myCity;
-                                                                       },
-                                                                       getAddress: function (latLng, marker) {
-                                                                           geocoder.geocode({
-                                                                                                'location': latLng
-                                                                                            }, function (results, status) {
-                                                                                                if (status !== google.maps.GeocoderStatus.OK) {
-                                                                                                    console.error(status);
-                                                                                                    return false;
-                                                                                                } else {
-                                                                                                    myAddress = '';
-                                                                                                    myCity = '';
-                                                                                                    myState = '';
-                                                                                                    if (results[0]) {
-                                                                                                        myAddress = results[0].formatted_address;
-                                                                                                        app.cdr.address = myAddress;
-                                                                                                        app.notify.showLongBottom(myAddress);
-                                                                                                        myCity = app.Places.locationViewModel.getComponent(results[0].address_components, "locality");
-                                                                                                        if (document.getElementById('addressStatus')) {
-                                                                                                            document.getElementById('addressStatus').innerHTML = myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '</span>';
-                                                                                                        }
-                                                                                                    }
-                                                                                                }
-                                                                                            });
-                                                                       },
-                                                                       getIconUrl: function () {
-                                                                           var iconText = this.get('Icon');
-                                                                           if (iconText.indexOf('//') > -1) {
-                                                                               return iconText;
-                                                                           } else {
-                                                                               return app.helper.resolvePictureUrl(iconText);
-                                                                           }
-                                                                       },
-                                                                        getBoundsZoomLevel: function(bounds) {
-                                                                            var mapDim = {
-                                                                                height: 400,
-                                                                                width: 300
-                                                                            };
-                                                                            var WORLD_DIM = { height: 256, width: 256 };
-                                                                            var ZOOM_MAX = 21;
+                   lastPicture: "styles/images/avatar.png",
+                   _lastMarker: null,
+                   _isLoading: false,
+                   address: "",
+                   find: null,
+                   list: null,
+                   trip: null,
+                   homeMarker: null,
+                   isGoogleMapsInitialized: true,
+                   isGoogleDirectionsInitialized: false,
+                   markers: [],
+                   details: [],
+                   hideSearch: false,
+                   updateDistance: function (lat2, lng2) {
+                       var R = 6371; // km
+                       var lat1 = app.cdr.lat;
+                       var lng1 = app.cdr.lng;
+                       var dLat = (lat2 - lat1) * Math.PI / 180;
+                       var dLon = (lng2 - lng1) * Math.PI / 180;
+                       var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                               Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                               Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                       var c = 2 * Math.asin(Math.sqrt(a));
+                       var d = R * c / 1.61; // converted to miles
+                       return d.toFixed(4);
+                   },
+                   onNavigateHome: function () {
+                       //find present location, clear markers and set up members as icons
+                       var that = this;
+                       homePosition = { lat: app.cdr.lat, lng: app.cdr.lng };//new google.maps.LatLng(app.cdr.lng, app.cdr.lat);
+                       var position = homePosition;
+                       that._isLoading = true;
+                       that.toggleLoading();
+                       if (!app.Places.locationViewModel.markers) {
+                           app.Places.locationViewModel.markers = new Array;
+                           allBounds = new google.maps.LatLngBounds();
+                       }
+                       if (!app.Places.locationViewModel.details) {
+                           app.Places.locationViewModel.details = new Array;
+                       }
+                       app.Places.locationViewModel.clearMap();
+                       try {
+                           Selfie = {
+                               Picture: null,
+                               name: "My Private Feed",
+                               Value: null,
+                               Active: true,
+                               Notes: 'Selfie',
+                               Text: '',
+                               Title: 'My Private Feed',
+                               location: position
+                           };
+                       } catch (e) {
+                           app.Error(JSON.stringify(e))
+                       }
+                       app.Places.visiting = Selfie;
+                       app.Places.center = Selfie;
+                       map.panTo(position);
+                       that._putMarker(position);
+                       locality = position;
+                       that._isLoading = false;
+                       that.toggleLoading();
+                       var query = new Everlive.Query();
+                       var point = new Everlive.GeoPoint(position.lng, position.lat);
+                       query.where().nearSphere('Location', point, 25, 'miles').ne('Icon', 'styles/images/avatar.png');
+                       var partners = app.everlive.data('Places');
+                       app.notify.showLongBottom("Loading nearby CloudClub Partners within 25 miles onto Google Maps. Click any star to research the Partner.,")
+                       partners.get(query).then(function (data) {
+                           app.Places.locationViewModel.list = new app.Places.List;
+                           for (var i = 0; i < data.count; i++) {
+                               var partner = data.result[i];
+                               partner.Location.lat = partner.Location.latitude;
+                               partner.Location.lng = partner.Location.longitude;
+                               var partnerV = new app.Places.newPartner();
+                               partnerV.setPartnerRow(partner);// define as a specific Partner
+                               app.Places.visiting = partnerV;
+                               app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV);
+                           }
+                       },
+                        function (error) {
+                            app.showError(JSON.stringify(error))
+                        });
+                   },
+                   getComponent: function (address_components, component) {
+                       for (var i = 0; i < address_components.length; i++) {
+                           if (address_components[i].types[0] === "locality") {
+                               myCity = address_components[i].long_name;
+                           }
+                           if (address_components[i].types[0] === "administrative_area_level_1") {
+                               myState = address_components[i].long_name;
+                           }
+                       }
+                       return myCity;
+                   },
+                   getAddress: function (latLng, marker) {
+                       geocoder.geocode({
+                            'location': latLng
+                        }, function (results, status) {
+                            if (status !== google.maps.GeocoderStatus.OK) {
+                                console.error(status);
+                                return false;
+                            } else {
+                                myAddress = '';
+                                myCity = '';
+                                myState = '';
+                                if (results[0]) {
+                                    myAddress = results[0].formatted_address;
+                                    app.cdr.address = myAddress;
+                                    app.notify.showLongBottom(myAddress);
+                                    myCity = app.Places.locationViewModel.getComponent(results[0].address_components, "locality");
+                                    if (document.getElementById('addressStatus')) {
+                                        document.getElementById('addressStatus').innerHTML = myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '</span>';
+                                    }
+                                }
+                            }
+                        });
+                   },
+                   getIconUrl: function () {
+                       var iconText = this.get('Icon');
+                       if (iconText.indexOf('//') > -1) {
+                           return iconText;
+                       } else {
+                           return app.helper.resolvePictureUrl(iconText);
+                       }
+                   },
+                    getBoundsZoomLevel: function(bounds) {
+                        var mapDim = {
+                            height: 400,
+                            width: 300
+                        };
+                        var WORLD_DIM = { height: 256, width: 256 };
+                        var ZOOM_MAX = 21;
 
-                                                                            function latRad(lat) {
-                                                                                var sin = Math.sin(lat * Math.PI / 180);
-                                                                                var radX2 = Math.log((1 + sin) / (1 - sin)) / 2;
-                                                                                return Math.max(Math.min(radX2, Math.PI), -Math.PI) / 2;
-                                                                            }
+                        function latRad(lat) {
+                            var sin = Math.sin(lat * Math.PI / 180);
+                            var radX2 = Math.log((1 + sin) / (1 - sin)) / 2;
+                            return Math.max(Math.min(radX2, Math.PI), -Math.PI) / 2;
+                        }
 
-                                                                            function zoom(mapPx, worldPx, fraction) {
-                                                                                return Math.floor(Math.log(mapPx / worldPx / fraction) / Math.LN2);
-                                                                            }
+                        function zoom(mapPx, worldPx, fraction) {
+                            return Math.floor(Math.log(mapPx / worldPx / fraction) / Math.LN2);
+                        }
 
-                                                                            var ne = bounds.getNorthEast();
-                                                                            var sw = bounds.getSouthWest();
+                        var ne = bounds.getNorthEast();
+                        var sw = bounds.getSouthWest();
 
-                                                                            var latFraction = (latRad(ne.lat()) - latRad(sw.lat())) / Math.PI;
-                                                                            
-                                                                            var lngDiff = ne.lng() - sw.lng();
-                                                                            var lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
-                                                                            
-                                                                            var latZoom = zoom(mapDim.height, WORLD_DIM.height, latFraction);
-                                                                            var lngZoom = zoom(mapDim.width, WORLD_DIM.width, lngFraction);
+                        var latFraction = (latRad(ne.lat()) - latRad(sw.lat())) / Math.PI;
+                        
+                        var lngDiff = ne.lng() - sw.lng();
+                        var lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
+                        
+                        var latZoom = zoom(mapDim.height, WORLD_DIM.height, latFraction);
+                        var lngZoom = zoom(mapDim.width, WORLD_DIM.width, lngFraction);
 
-                                                                            return Math.min(latZoom, lngZoom, ZOOM_MAX);
-                                                                        },
+                        return Math.min(latZoom, lngZoom, ZOOM_MAX);
+                    },
 
-                                                                       clearMap: function deleteMarkers() { // Deletes all markers in the array by removing references to them.
-                                                                           markers = app.Places.locationViewModel.markers;
-                                                                           for (var i = 0; i < markers.length; i++) {
-                                                                               markers[i].setMap(null);
-                                                                           }
-                                                                           //create empty LatLngBounds object
-                                                                           allBounds = new google.maps.LatLngBounds();
-                                                                           markers = [];
-                                                                           app.Places.locationViewModel.markers = new Array;
-                                                                           app.Places.locationViewModel.details = new Array;
-                                                                           app.Places.locationViewModel.list = new app.Places.List;
-                                                                       },
-                                                                       openListSheet: function (e) {
-                                                                            if (!app.Places.locationViewModel.checkSimulator()) {
-                                                                                var myList = app.Places.locationViewModel.list.array();
-                                                                                for (var i = 0;i < myList.length ;i++) {
-                                                                                    if (myList[i].name === e.sender.events.currentTarget.innerText) {
-                                                                                        app.Places.favoriteItem = myList[i];
-                                                                                        break;
-                                                                                    }
-        }
-                                                                                }
-                                                                                if (!app.Places.locationViewModel.checkSimulator()) {
-                                                                               app.Places.locationViewModel.showListSheet({
-                                                                                      'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
-                                                                                      'title': appSettings.messages.whatToDo,
-                                                                                      'buttonLabels': [
-                                                                                       appSettings.messages.list5,
-                                                                                       appSettings.messages.list4,
-                                                                                       appSettings.messages.list3,
-                                                                                       // appSettings.messages.list4,
-                                                                                       // appSettings.messages.list5
-                                                                                   ],
-                                                                                      'addCancelButtonWithLabel': 'Cancel',
-                                                                                      'androidEnableCancelButton': true, // default false
-                                                                                      'winphoneEnableCancelButton': true, // default false
-                                                                                      //'addDestructiveButtonWithLabel' : 'Delete it'                
-                                                                                  });
-                                                                           } else {
-                                                                               app.Places.logExceptions(app.mobileApp.navigate("#views/listView.html?keep=2"));
-                                                                           }
-                                                                       },
-                                                                       openActionSheet: function () {
-                                                                           if (!app.Places.locationViewModel.checkSimulator()) {
-                                                                               app.Places.locationViewModel.showActionSheet({
-                                                                                                                                'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
-                                                                                                                                'title': appSettings.messages.whatToDo,
-                                                                                                                                'buttonLabels': [appSettings.messages.mapList1,appSettings.messages.mapList2,appSettings.messages.mapList3,appSettings.messages.mapList4,appSettings.messages.mapList5],
-                                                                                                                                'addCancelButtonWithLabel': 'Cancel',
-                                                                                                                                'androidEnableCancelButton': true, // default false
-                                                                                                                                'winphoneEnableCancelButton': true, // default false
-                                                                                                                                //'addDestructiveButtonWithLabel' : 'Delete it'                
-                                                                                                                            });
-                                                                           } else {
-                                                                               app.mobileApp.navigate("#views/listView.html");//components/favorites/view.html");
-                                                                           }
-                                                                       },
-                                                                       showListSheet: function (options) {
-                                                                           if (!this.checkSimulator()) {
-                                                                               window.plugins.actionsheet.show(
-                                                                                   options,
-                                                                                   function (buttonIndex) {
-                                                                                       // wrapping in a timeout so the dialog doesn't freeze the app
-                                                                                        //        list1:"Add to the Map",
-                                                                                        //        list2:"Delete From Map",
-                                                                                        //        list3:"Visit Home Page",
-                                                                                        //        list4:"Show Google Reviews",
-                                                                                        //        list5:"Add to Trip",
-                                                                                       setTimeout(function () {
-                                                                                           switch (buttonIndex) {
-                                                                                               case 1: //'Add to Map',
-                                                                                               case 2: //Delete from Map    
-                                                                                                   app.mobileApp.navigate("#views/listView.html?keep=" + buttonIndex);
-                                                                                                   break;
-                                                                                               case 3://visit Home Page
-                                                                                                    app.helper.openExternalInAppBrowser(app.Places.favoriteItem.website);
-                                                                                                   //app.mobileApp.navigate("#views/updateView.html");
-                                                                                                   break;
-                                                                                                   //case 4://
-                                                                                                   //	break;
-                                                                                               default:
-                                                                                                   //app.notify.showShortTop('You will need to upgrade to use this feature.');
-                                                                                                   break;
-                                                                                           }
-                                                                                       }, 0);
-                                                                                   }
-                                                                                   );
-                                                                           }
-                                                                       },
-                                                                       showActionSheet: function (options) {
-                                                                           if (!this.checkSimulator()) {
-                                                                               window.plugins.actionsheet.show(
-                                                                                   options,
-                                                                                   function (buttonIndex) {
-                                                                                       // wrapping in a timeout so the dialog doesn't freeze the app
-                                                                                       setTimeout(function () {
-                                                                                           switch (buttonIndex) {
-                                                                                               case 1:
-                                                                                                   //'Show List Details',
-                                                                                                   app.mobileApp.navigate("#views/listView.html");
-                                                                                                   break;
-                                                                                                   //case 2:
-                                                                                                   //	app.Places.updateMapLocation();
-                                                                                                   //	break;
-                                                                                               case 2:
-                                                                                                   app.Places.updatePartnerLocation();
-                                                                                                   break;
-                                                                                               case 3:
-                                                                                                   var markersList = app.Places.locationViewModel.list.array();
-                                                                                                   for (var i = 0; i < markersList.length; i++) {
-                                                                                                       var thePartner = app.Places.locationViewModel.list.get(markersList[i].vicinity);
-                                                                                                       var Details = thePartner.details();
-                                                                                                       Details.clearLowMark();
-                                                                                                   }
-                                                                                                   break;
-                                                                                               case 4:
-                                                                                                   app.mobileApp.navigate("#views/updateView.html");
-                                                                                                   break;
-                                                                                               case 5:
-                                                                                                   app.mobileApp.navigate('#components/favorites/view.html');
-                                                                                                   break;
-                                                                                               default:
-                                                                                                   //app.notify.showShortTop('You will need to upgrade to use this feature.');
-                                                                                                   break;
-                                                                                           }
-                                                                                       }, 0);
-                                                                                   }
-                                                                                   );
-                                                                           }
-                                                                           //else
-                                                                           //	if(app.isNullOrEmpty(localStorage.getItem("username"))){
-                                                                           //		app.notify.showShortTop("Please register first!");
-                                                                           //		app.mobileApp.navigatedeleteMap("#views/signupView.html");
-                                                                           //    }
-                                                                           //else{
-                                                                           //	app.notify.showShortTop("Please login first!");
-                                                                           //	app.mobileApp.navigate("#welcome");
-                                                                           //}
-                                                                       },
-                                                                       checkSimulator: function () {
-                                                                           //app.notify.showShortTop(window.navigator.simulator);
-                                                                           if (window.navigator.simulator === true || window.cordova === undefined) {
-                                                                               app.notify.showLongBottom('This plugin is not available in the simulator.');
+                   clearMap: function deleteMarkers() { // Deletes all markers in the array by removing references to them.
+                       markers = app.Places.locationViewModel.markers;
+                       for (var i = 0; i < markers.length; i++) {
+                           markers[i].setMap(null);
+                       }
+                       //create empty LatLngBounds object
+                       allBounds = new google.maps.LatLngBounds();
+                       markers = [];
+                       app.Places.locationViewModel.markers = new Array;
+                       app.Places.locationViewModel.details = new Array;
+                       app.Places.locationViewModel.list = new app.Places.List;
+                   },
+                   openListSheet: function (e) {
+                        if (!app.Places.locationViewModel.checkSimulator()) {
+                            var myList = app.Places.locationViewModel.list.array();
+                            for (var i = 0;i < myList.length ;i++) {
+                                if (myList[i].name === e.sender.events.currentTarget.innerText) {
+                                    app.Places.favoriteItem = myList[i];
+                                    break;
+                                }
+}
+                            }
+                            if (!app.Places.locationViewModel.checkSimulator()) {
+                           app.Places.locationViewModel.showListSheet({
+                                  'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+                                  'title': appSettings.messages.whatToDo,
+                                  'buttonLabels': [
+                                   appSettings.messages.list5,
+                                   appSettings.messages.list6,
+                                   appSettings.messages.list3,
+                                   // appSettings.messages.list4,
+                                   // appSettings.messages.list5
+                               ],
+                                  'addCancelButtonWithLabel': 'Cancel',
+                                  'androidEnableCancelButton': true, // default false
+                                  'winphoneEnableCancelButton': true, // default false
+                                  //'addDestructiveButtonWithLabel' : 'Delete it'                
+                              });
+                       } else {
+                           app.Places.logExceptions(app.mobileApp.navigate("#views/listView.html?keep=2"));
+                       }
+                   },
+                   openActionSheet: function () {
+                       if (!app.Places.locationViewModel.checkSimulator()) {
+                           app.Places.locationViewModel.showActionSheet({
+                                                                            'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+                                                                            'title': appSettings.messages.whatToDo,
+                                                                            'buttonLabels': [appSettings.messages.mapList1,appSettings.messages.mapList2,appSettings.messages.mapList3,appSettings.messages.mapList4,appSettings.messages.mapList5,appSettings.messages.mapList6],
+                                                                            'addCancelButtonWithLabel': 'Cancel',
+                                                                            'androidEnableCancelButton': true, // default false
+                                                                            'winphoneEnableCancelButton': true, // default false
+                                                                            //'addDestructiveButtonWithLabel' : 'Delete it'                
+                                                                        });
+                       } else {
+                           app.mobileApp.navigate("#views/listView.html");//components/favorites/view.html");
+                       }
+                   },
+                   showListSheet: function (options) {
+                       if (!this.checkSimulator()) {
+                           window.plugins.actionsheet.show(
+                               options,
+                               function (buttonIndex) {
+                                   // wrapping in a timeout so the dialog doesn't freeze the app
+                                    //        list1:"Add to the Trip",
+                                    //        list2:"See Trip",
+                                    //        list3:"Visit Home Page",
+                                    //        list4:"",
+                                    //        list5:"",
+                                   setTimeout(function () {
+                                       switch (buttonIndex) {
+                                           case 1: //'Add to Map',                                           
+                                                app.Places.addToTrip(app.Places.favoriteItem);
+                                               break;
+                                           case 2: // Directions to Trip
+                                                app.favorites.directions();
+                                            	break;
+                                           case 3://visit Home Page
+                                                app.helper.openExternalInAppBrowser(app.Places.favoriteItem.website);
+                                               //app.mobileApp.navigate("#views/updateView.html");
+                                               break;
+                                               //case 4://
+                                               //	break;
+                                           default:
+                                               //app.notify.showShortTop('You will need to upgrade to use this feature.');
+                                               break;
+                                       }
+                                   }, 0);
+                               }
+                               );
+                       }
+                   },
+                   showActionSheet: function (options) {//swipe on list
+                       if (!this.checkSimulator()) {
+                           window.plugins.actionsheet.show(
+                               options,
+                               function (buttonIndex) {
+                                   // wrapping in a timeout so the dialog doesn't freeze the app
+                                   setTimeout(function () {
+                                       switch (buttonIndex) {
+                                           case 1:
+                                               //'Show List Details',
+                                               app.mobileApp.navigate("#views/listView.html");
+                                               break;
+                                           case 2:
+                                               app.Places.updatePartnerLocation();
+                                               break;
+                                           case 3:
+                                               var markersList = app.Places.locationViewModel.list.array();
+                                               for (var i = 0; i < markersList.length; i++) {
+                                                   var thePartner = app.Places.locationViewModel.list.get(markersList[i].vicinity);
+                                                   var Details = thePartner.details();
+                                                   Details.clearLowMark();
+                                               }
+                                               break;
+                                           case 4:
+                                               app.mobileApp.navigate("#views/updateView.html");
+                                               break;
+                                           case 5:
+                                               app.mobileApp.navigate('#components/favorites/view.html');
+                                               break;
+                                            case 6:// Directions to Trip
+                                                app.favorites.directions();
+                                            	break;
+                                           default:
+                                               //app.notify.showShortTop('You will need to upgrade to use this feature.');
+                                               break;
+                                       }
+                                   }, 0);
+                               }
+                               );
+                       }
+                       //else
+                       //	if(app.isNullOrEmpty(localStorage.getItem("username"))){
+                       //		app.notify.showShortTop("Please register first!");
+                       //		app.mobileApp.navigatedeleteMap("#views/signupView.html");
+                       //    }
+                       //else{
+                       //	app.notify.showShortTop("Please login first!");
+                       //	app.mobileApp.navigate("#welcome");
+                       //}
+                   },
+                   checkSimulator: function () {
+                       //app.notify.showShortTop(window.navigator.simulator);
+                       if (window.navigator.simulator === true || window.cordova === undefined) {
+                           app.notify.showLongBottom('This plugin is not available in the simulator.');
 
-                                                                               return true;
-                                                                           } else {
-                                                                               return false;
-                                                                           }
-                                                                       },
-                                                                       onPlaceSearch: function () {
-                                                                           app.notify.showLongBottom(appSettings.messages.searchAgain);
-                                                                           app.Places.locationViewModel.clearMap();
-                                                                           service = new google.maps.places.PlacesService(map);
-                                                                           if (app.Places.locationViewModel.find && app.Places.locationViewModel.find.indexOf(',') < 0) {
-                                                                               //Perform Address Search
-                                                                               request = {
-                                                                                   location: locality,
-                                                                                   radius: 5000,
-                                                                                   keyword: app.Places.locationViewModel.find
-                                                                               };
-                                                                               service.nearbySearch(request, function (results, status) {
-                                                                                   if (status !== google.maps.places.PlacesServiceStatus.OK) {
-                                                                                       console.error(status);
-                                                                                       return false;
-                                                                                   } else {
-                                                                                       for (var i = 0; i < results.length; i++) {
-                                                                                           place = results[i];
-                                                                                           var partnerV = new app.Places.newPartner();
-                                                                                           partnerV.setPlaceRow(place);// define as a general Place
-                                                                                           app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV);
-                                                                                       }
-                                                                                   }
-                                                                               });
-                                                                           } else {
-                                                                               //Search on find text with , in address
-                                                                               app.Places.locationViewModel.onSearchAddress();
-                                                                           }
+                           return true;
+                       } else {
+                           return false;
+                       }
+                   },
+                   onPlaceSearch: function () {
+                       app.notify.showLongBottom(appSettings.messages.searchAgain);
+                       app.Places.locationViewModel.clearMap();
+                       service = new google.maps.places.PlacesService(map);
+                       if (app.Places.locationViewModel.find && app.Places.locationViewModel.find.indexOf(',') < 0) {
+                           //Perform Address Search
+                           request = {
+                               location: locality,
+                               radius: 5000,
+                               keyword: app.Places.locationViewModel.find
+                           };
+                           service.nearbySearch(request, function (results, status) {
+                               if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                                   console.error(status);
+                                   return false;
+                               } else {
+                                   for (var i = 0; i < results.length; i++) {
+                                       place = results[i];
+                                       var partnerV = new app.Places.newPartner();
+                                       partnerV.setPlaceRow(place);// define as a general Place
+                                       app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV);
+                                   }
+                               }
+                           });
+                       } else {
+                           //Search on find text with , in address
+                           app.Places.locationViewModel.onSearchAddress();
+                       }
 
-                                                                           function toggleBounce() {
-                                                                               if (this.getAnimation() !== null) {
-                                                                                   this.setAnimation(null);
-                                                                               } else {
-                                                                                   this.setAnimation(google.maps.Animation.BOUNCE);
-                                                                               }
-                                                                           };
-                                                                       },
+                       function toggleBounce() {
+                           if (this.getAnimation() !== null) {
+                               this.setAnimation(null);
+                           } else {
+                               this.setAnimation(google.maps.Animation.BOUNCE);
+                           }
+                       };
+                   },
 
-                                                                       onSearchAddress: function () {
-                                                                           app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
-                                                                           app.Places.locationViewModel.set("isGoogleDirectionsInitialized", false);
-                                                                           app.adMobService.viewModel.prepareInterstitial();
-                                                                           var that = this;
-                                                                           var addr = that.get("find");
-                                                                           geocoder.geocode({
-                                                                                                'address': addr
-                                                                                            },
-                                                                                            function (results, status) {
-                                                                                                if (status !== google.maps.GeocoderStatus.OK) {
-                                                                                                    console.error(status);
-                                                                                                    app.notify.showLongBottom(appSettings.messages.tryAgain);
-                                                                                                    return;
-                                                                                                }
-                                                                                                map.panTo(results[0].geometry.location);
-                                                                                                //bounds
-                                                                                                that._putMarker(results[0].geometry.location);
-                                                                                                locality = results[0].geometry.location;
-                                                                                            });
-                                                                       },
-                                                                       toggleLoading: function () {
-                                                                           //app.showAlert("Loading "+this._isLoading)
-                                                                           if (this._isLoading) {
-                                                                               app.mobileApp.pane.loader.show()
-                                                                           } else {
-                                                                               app.mobileApp.pane.loader.hide();
-                                                                           }
-                                                                       },
-                                                                       currentLocation: function (marker) {
-                                                                           //kjhh to do update my address
-                                                                           var lat = marker.position.lat().toString();
-                                                                           var lng = marker.position.lng().toString();
-                                                                           var url = "styles/images/avatar.png";
-                                                                           if (app.Users.currentUser.data)
-                                                                               url = app.Users.currentUser.data.PictureUrl;
-                                                                           var options;
-                                                                           if (!app.isOnline()) {
-                                                                               options = appSettings.defaultMedia;
-                                                                           } else {
-                                                                               options = app.Users.currentUser.data.jsonDirectory;
-                                                                           }
-                                                                           var infoContent = '<h3>' + appSettings.messages.inspectorTitle + '</h3>';
-                                                                           for (var i = 0; i < options.length; i++) {
-                                                                               if (options[i].selected === true) {
-                                                                                   var name = options[i].name;
-                                                                                   if (!appSettings.infoContent[name])
-                                                                                       app.showError("<" + name + "> is missing")
-                                                                                   infoContent = infoContent + appSettings.infoContent[name];
-                                                                               }
-                                                                           }
+                   onSearchAddress: function () {
+                       app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
+                       app.Places.locationViewModel.set("isGoogleDirectionsInitialized", false);
+                       app.adMobService.viewModel.prepareInterstitial();
+                       var that = this;
+                       var addr = that.get("find");
+                       geocoder.geocode({
+                                            'address': addr
+                                        },
+                                        function (results, status) {
+                                            if (status !== google.maps.GeocoderStatus.OK) {
+                                                console.error(status);
+                                                app.notify.showLongBottom(appSettings.messages.tryAgain);
+                                                return;
+                                            }
+                                            map.panTo(results[0].geometry.location);
+                                            //bounds
+                                            that._putMarker(results[0].geometry.location);
+                                            locality = results[0].geometry.location;
+                                        });
+                   },
+                   toggleLoading: function () {
+                       //app.showAlert("Loading "+this._isLoading)
+                       if (this._isLoading) {
+                           app.mobileApp.pane.loader.show()
+                       } else {
+                           app.mobileApp.pane.loader.hide();
+                       }
+                   },
+                   currentLocation: function (marker) {
+                       //kjhh to do update my address
+                       var lat = marker.position.lat().toString();
+                       var lng = marker.position.lng().toString();
+                       var url = "styles/images/avatar.png";
+                       if (app.Users.currentUser.data)
+                           url = app.Users.currentUser.data.PictureUrl;
+                       var options;
+                       if (!app.isOnline()) {
+                           options = appSettings.defaultMedia;
+                       } else {
+                           options = app.Users.currentUser.data.jsonDirectory;
+                       }
+                       var infoContent = '<h3>' + appSettings.messages.inspectorTitle + '</h3>';
+                       for (var i = 0; i < options.length; i++) {
+                           if (options[i].selected === true) {
+                               var name = options[i].name;
+                               if (!appSettings.infoContent[name])
+                                   app.showError("<" + name + "> is missing")
+                               infoContent = infoContent + appSettings.infoContent[name];
+                           }
+                       }
 
-                                                                           infoContent = infoContent + '<br/><div class="user-avatar" style="margin:20px -10px 0px 5px;">'
-                                                                                         + '<a id="avatarLink" data-role="button" class="butn"> <img id="myAvatar" src='
-                                                                                         + url + ' alt="On2See"></a></div>'
+                       infoContent = infoContent + '<br/><div class="user-avatar" style="margin:20px -10px 0px 5px;">'
+                                     + '<a id="avatarLink" data-role="button" class="butn"> <img id="myAvatar" src='
+                                     + url + ' alt="On2See"></a></div>'
 
-                                                                                         + '<h4>' + appSettings.messages.inspectorHelp + '</h4>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>'
-                                                                                         + app.helper.formatDate(new Date()) + '</span>' + '<br/><span id="dateTime">' + '</span>' + '</p>'
-                                                                           return infoContent;
-                                                                       },
-                                                                       _putMarker: function (position) {
-                                                                           //position = { lat: -34.397, lng: 150.644 };
-                                                                           var that = this;
+                                     + '<h4>' + appSettings.messages.inspectorHelp + '</h4>' + '<p id="addressStatus">' + myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '<br/>'
+                                     + app.helper.formatDate(new Date()) + '</span>' + '<br/><span id="dateTime">' + '</span>' + '</p>'
+                       return infoContent;
+                   },
+                   _putMarker: function (position) {
+                       //position = { lat: -34.397, lng: 150.644 };
+                       var that = this;
 
-                                                                           if (that._lastMarker !== null && that._lastMarker !== undefined) {
-                                                                               that._lastMarker.setMap(null);
-                                                                           }
+                       if (that._lastMarker !== null && that._lastMarker !== undefined) {
+                           that._lastMarker.setMap(null);
+                       }
 
-                                                                           that._lastMarker = new google.maps.Marker({
-                                                                                                                         map: map,
-                                                                                                                         position: position,
-                                                                                                                         draggable: true,
-                                                                                                                         zIndex: 100
-                                                                                                                     });
-                                                                           homePosition = { lat: that._lastMarker.getPosition().lat(), lng: that._lastMarker.getPosition().lng() }; // update position display for local search
+                       that._lastMarker = new google.maps.Marker({
+                                                                     map: map,
+                                                                     position: position,
+                                                                     draggable: true,
+                                                                     zIndex: 100
+                                                                 });
+                       homePosition = { lat: that._lastMarker.getPosition().lat(), lng: that._lastMarker.getPosition().lng() }; // update position display for local search
+                       allBounds.extend(that._lastMarker.position);
+                       map.setZoom(app.Places.locationViewModel.getBoundsZoomLevel(allBounds));
+                       Selfie.address = that.getAddress(position, that._lastMarker);
+                       Selfie.marker = that._lastMarker;
+                       //Center InfoWindow PopUp
+                       google.maps.event.addListener(that._lastMarker, 'click', function () {
+                           infoWindow.setContent(that.currentLocation(that._lastMarker));
+                           map.setZoom(17);
+                           that._lastMarker.setDraggable(true);
+                           map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+                           app.Places.visiting = Selfie;
+                           infoWindow.open(map, that._lastMarker);
+                           that._lastMarker.setZIndex(100);
+                       });
+                       google.maps.event.addListener(that._lastMarker, 'dragend', function () {
+                           newPlace = this.getPosition();
+                           map.setCenter(newPlace); // Set map center to marker position
+                           that.getAddress(newPlace, this);
+                           homePosition = { lat: this.getPosition().lat(), lng: this.getPosition().lng() }; // update position display
+                       });
 
-                                                                           //app.Places.locationViewModel.markers.push(that._lastMarker);
-                                                                           //extend the bounds to include each marker's position
-                                                                           allBounds.extend(that._lastMarker.position);
-                                                                           //now fit the map to the newly inclusive bounds
-                                                                           //map.fitBounds(allBounds);
-                                                                           //app.notify.showShortTop(map.getZoom());
-                                                                           map.setZoom(13);
-                                                                           Selfie.address = that.getAddress(position, that._lastMarker);
-                                                                           Selfie.marker = that._lastMarker;
-                                                                           //Center InfoWindow PopUp
-                                                                           google.maps.event.addListener(that._lastMarker, 'click', function () {
-                                                                               infoWindow.setContent(that.currentLocation(that._lastMarker));
-                                                                               map.setZoom(17);
-                                                                               that._lastMarker.setDraggable(true);
-                                                                               map.setMapTypeId(google.maps.MapTypeId.HYBRID);
-                                                                               app.Places.visiting = Selfie;
-                                                                               infoWindow.open(map, that._lastMarker);
-                                                                               that._lastMarker.setZIndex(100);
-                                                                           });
-                                                                           google.maps.event.addListener(that._lastMarker, 'dragend', function () {
-                                                                               newPlace = this.getPosition();
-                                                                               map.setCenter(newPlace); // Set map center to marker position
+                       google.maps.event.addListener(infoWindow, 'closeclick', function () {
+                           map.fitBounds(allBounds);
+                           map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+                       });
+                       google.maps.event.addListener(infoWindow, 'domready', function () {
+                           var avatarRoute = document.getElementById("avatarLink");
+                           if (avatarRoute) {
+                               avatarRoute.addEventListener("click", function () {
+                                   if (app.isOnline()) {
+                                       app.mobileApp.navigate("views/updateView.html")
+                                   } else {
+                                       app.mobileApp.navigate("#welcome")
+                                   }
+                               });
+                           }
+                           var camera = document.getElementById("camera");
+                           if (camera) {
+                               camera.addEventListener("click", app.helper.cameraRoute);
+                           }
+                           var feedRoute = document.getElementById("notifications");
+                           if (feedRoute) {
+                               feedRoute.addEventListener("click", function () {
+                                   app.mobileApp.navigate("components/notifications/view.html");
+                               });
+                           }
+                           var goHome = document.getElementById("googleMaps");
+                           if (goHome) {
+                               goHome.addEventListener("click",
+                                                       function () {
+                                                           if (this.attributes.valueOf()["data-lat"]) {
+                                                               var lat = this.attributes.valueOf()["data-lat"].value;
+                                                               var lng = this.attributes.valueOf()["data-lng"].value
+                                                               if ((lat === "#lat#" || lng === "#lng") ||
+                                                                   (locality.lat - lat < .0001 && locality.lng - lng < .00001)) {
+                                                                   app.notify.showLongBottom(appSettings.messages.directions);
+                                                                   app.Places.browse("https://news.google.com")
+                                                               } else {
+                                                                   if (locality) {
+                                                                       app.Places.browse("https://maps.google.com?saddr=" + locality.lat + "," + locality.lng + "&daddr=" + lat + "," + lng)
+                                                                   }
+                                                               }
+                                                           }
+                                                       })
+                           }
+                           ;
+                           var saveAddressLink = document.getElementById("saveAddressLink");
+                           if (saveAddressLink) {
+                               saveAddressLink.addEventListener("click",
+                                                                function () {
+                                                                    if (app.Users.currentUser.data && (app.Users.currentUser.data.Id === "84bb6cf0-b3e0-11e5-8558-adda7fdf67e8")) {
+                                                                        app.mobileApp.navigate("components/partners/add.html?Name=&placeId=" + app.Places.locationViewModel._lastMarker.place_id + "&www=&textField=&lng=" + app.Places.locationViewModel._lastMarker.position.lng().toFixed(6) + "&lat=" + app.Places.locationViewModel._lastMarker.position.lat().toFixed(6) + "&email=newpartner@On2See.com&html=&icon=" + app.Places.locationViewModel.lastPicture + "&address=" + myAddress + "&tel=&city=&zipcode")
+                                                                    } else {
+                                                                        app.mobileApp.navigate("components/aboutView/view.html")
+                                                                    }
+                                                                }
+                                   )
+                           }
+                           var calendarLink = document.getElementById("calendar");
+                           if (calendarLink) {
+                               calendarLink.addEventListener("click",
+                                                             function () {
+                                                                 app.mobileApp.navigate("components/aboutView/view.html")
+                                                             }
+                                   )
+                           }
+                           var myGooglePlus = document.getElementById("googleplus+");
+                           if (myGooglePlus) {
+                               myGooglePlus.addEventListener('click', function () {
+                                   // app.showAlert("myGooglePlus")
+                                   app.Places.browse("http://plus.google.com")
+                               })
+                           }
+                           var privateFeed = document.getElementById("iSee");
+                           if (privateFeed) {
+                               privateFeed.addEventListener('click', function () {
+                                   if (!app.isOnline()) {
+                                       app.mobileApp.navigate("#welcome");
+                                   } else {
+                                       //app.showAlert("privateFeed")
+                                       app.mobileApp.navigate("#views/activitiesView.html?ActivityText=My Private Feed")
+                                   }
+                               })
+                           }
+                           var defaultSites = appSettings.defaultSites;
+                           for (var i = 0; i < defaultSites.length; i++) {
+                               var site = defaultSites[i];
+                               addDEL(document.getElementById(site));
+                           }
+                       });
+                       function addDEL(name) {
+                           if (name) {
+                               name.addEventListener('click', function () {
+                                   app.Places.browse("http://www." + name.firstElementChild.alt + ".com")
+                               })
+                           } else {
+                               return
+                           }
+                       }
+                       function updatePosition(lat, lng) {
+                           document.getElementById('dragStatus').innerHTML = 'New Lat: ' + lat.toFixed(6) + ' New Lng: ' + lng.toFixed(6);
+                       }
 
-                                                                               that.getAddress(newPlace, this);
-                                                                               //homePosition = new google.maps.LatLng(this.getPosition().lat(), this.getPosition().lng()); // update position display
-                                                                               homePosition = { lat: this.getPosition().lat(), lng: this.getPosition().lng() }; // update position display
-                                                                           });
-
-                                                                           google.maps.event.addListener(infoWindow, 'closeclick', function () {
-                                                                               map.fitBounds(allBounds);
-                                                                               map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-                                                                           });
-                                                                           google.maps.event.addListener(infoWindow, 'domready', function () {
-                                                                               var avatarRoute = document.getElementById("avatarLink");
-                                                                               if (avatarRoute) {
-                                                                                   avatarRoute.addEventListener("click", function () {
-                                                                                       if (app.isOnline()) {
-                                                                                           app.mobileApp.navigate("views/updateView.html")
-                                                                                       } else {
-                                                                                           app.mobileApp.navigate("#welcome")
-                                                                                       }
-                                                                                   });
-                                                                               }
-                                                                               var camera = document.getElementById("camera");
-                                                                               if (camera) {
-                                                                                   camera.addEventListener("click", app.helper.cameraRoute);
-                                                                               }
-                                                                               var feedRoute = document.getElementById("notifications");
-                                                                               if (feedRoute) {
-                                                                                   feedRoute.addEventListener("click", function () {
-                                                                                       app.mobileApp.navigate("components/notifications/view.html");
-                                                                                   });
-                                                                               }
-                                                                               var goHome = document.getElementById("googleMaps");
-                                                                               if (goHome) {
-                                                                                   goHome.addEventListener("click",
-                                                                                                           function () {
-                                                                                                               if (this.attributes.valueOf()["data-lat"]) {
-                                                                                                                   var lat = this.attributes.valueOf()["data-lat"].value;
-                                                                                                                   var lng = this.attributes.valueOf()["data-lng"].value
-                                                                                                                   if ((lat === "#lat#" || lng === "#lng") ||
-                                                                                                                       (locality.lat - lat < .0001 && locality.lng - lng < .00001)) {
-                                                                                                                       app.notify.showLongBottom(appSettings.messages.directions);
-                                                                                                                       app.Places.browse("https://news.google.com")
-                                                                                                                   } else {
-                                                                                                                       if (locality) {
-                                                                                                                           app.Places.browse("https://maps.google.com?saddr=" + locality.lat + "," + locality.lng + "&daddr=" + lat + "," + lng)
-                                                                                                                       }
-                                                                                                                   }
-                                                                                                               }
-                                                                                                           })
-                                                                               }
-                                                                               ;
-                                                                               var saveAddressLink = document.getElementById("saveAddressLink");
-                                                                               if (saveAddressLink) {
-                                                                                   saveAddressLink.addEventListener("click",
-                                                                                                                    function () {
-                                                                                                                        if (app.Users.currentUser.data && (app.Users.currentUser.data.Id === "84bb6cf0-b3e0-11e5-8558-adda7fdf67e8")) {
-                                                                                                                            app.mobileApp.navigate("components/partners/add.html?Name=&placeId=" + app.Places.locationViewModel._lastMarker.place_id + "&www=&textField=&lng=" + app.Places.locationViewModel._lastMarker.position.lng().toFixed(6) + "&lat=" + app.Places.locationViewModel._lastMarker.position.lat().toFixed(6) + "&email=newpartner@On2See.com&html=&icon=" + app.Places.locationViewModel.lastPicture + "&address=" + myAddress + "&tel=&city=&zipcode")
-                                                                                                                        } else {
-                                                                                                                            app.mobileApp.navigate("components/aboutView/view.html")
-                                                                                                                        }
-                                                                                                                    }
-                                                                                       )
-                                                                               }
-                                                                               var calendarLink = document.getElementById("calendar");
-                                                                               if (calendarLink) {
-                                                                                   calendarLink.addEventListener("click",
-                                                                                                                 function () {
-                                                                                                                     app.mobileApp.navigate("components/aboutView/view.html")
-                                                                                                                 }
-                                                                                       )
-                                                                               }
-                                                                               var myGooglePlus = document.getElementById("googleplus+");
-                                                                               if (myGooglePlus) {
-                                                                                   myGooglePlus.addEventListener('click', function () {
-                                                                                       // app.showAlert("myGooglePlus")
-                                                                                       app.Places.browse("http://plus.google.com")
-                                                                                   })
-                                                                               }
-                                                                               var privateFeed = document.getElementById("iSee");
-                                                                               if (privateFeed) {
-                                                                                   privateFeed.addEventListener('click', function () {
-                                                                                       if (!app.isOnline()) {
-                                                                                           app.mobileApp.navigate("#welcome");
-                                                                                       } else {
-                                                                                           //app.showAlert("privateFeed")
-                                                                                           app.mobileApp.navigate("#views/activitiesView.html?ActivityText=My Private Feed")
-                                                                                       }
-                                                                                   })
-                                                                               }
-                                                                               var defaultSites = appSettings.defaultSites;
-                                                                               for (var i = 0; i < defaultSites.length; i++) {
-                                                                                   var site = defaultSites[i];
-                                                                                   addDEL(document.getElementById(site));
-                                                                               }
-                                                                           });
-                                                                           function addDEL(name) {
-                                                                               if (name) {
-                                                                                   name.addEventListener('click', function () {
-                                                                                       app.Places.browse("http://www." + name.firstElementChild.alt + ".com")
-                                                                                   })
-                                                                               } else {
-                                                                                   return
-                                                                               }
-                                                                           }
-                                                                           function updatePosition(lat, lng) {
-                                                                               document.getElementById('dragStatus').innerHTML = 'New Lat: ' + lat.toFixed(6) + ' New Lng: ' + lng.toFixed(6);
-                                                                           }
-
-                                                                           function updateAddress(myAddress) {
-                                                                               document.getElementById('addressStatus').innerHTML = myAddress;
-                                                                           }
-                                                                       },
-                                                                       places: placesDataSource,
-                                                                       //getButtons: function (place) { //url,icon,phone,name,address) {
-                                                                       //	var htmlString = appSettings.HEAD;
-                                                                       //	//var myIcon = place.avatar;
-                                                                       //	//if(myIcon.substring(0,4)!=='http'){
-                                                                       //	//    htmlString = htmlString.replace('Icon', app.helper.resolvePictureUrl(myIcon));
-                                                                       //	//}				   
-                                                                       //	htmlString = htmlString.replace('WebSite', place.details.website).replace('Icon', app.helper.resolvePictureUrl(place.avatar)).replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('%Name%', place.name).replace('%Name%', place.name).replace("Address", place.details.formatted_address);
-                                                                       //	htmlString = htmlString.replace('Phone', place.details.formatted_phone_number).replace('%Name%', place.name).replace('Open', place.openString).replace('Stars', place.starString);
-                                                                       //	htmlString = htmlString.replace('UrlString', place.addurl);
-                                                                       //	var stringResult, find, replace;
-                                                                       //	//Twitter Change//https://twitter.com/search?q=Nick%27s%20Pizza%20Deerfield%20Beach&src=typd&lang=en
-                                                                       //	find = '\'';
-                                                                       //	replace = '%27';
-                                                                       //	stringResult = resolveString(place.name, find, replace);
-                                                                       //	find = ' '; // space change
-                                                                       //	replace = '%20';
-                                                                       //	htmlString = htmlString.replace('Twitter', resolveString(stringResult, find, replace));
-                                                                       //	//Rest
-                                                                       //	find = '\'';
-                                                                       //	replace = ''; //Remove (reused in part)
-                                                                       //	stringResult = resolveString(place.name, find, replace);
-                                                                       //	//Facebook//https://www.facebook.com/thewhalesribrawbar/?fref=ts
-                                                                       //	find = ' '; // space change same remove replace
-                                                                       //	replace = '-';
-                                                                       //	htmlString = htmlString.replace('Facebook', resolveString(stringResult, find, replace));
-                                                                       //	//Google//https://www.google.com/maps/place/Bocas+Best+Pizza+Bar
-                                                                       //	replace = '+';
-                                                                       //	htmlString = htmlString.replace('Google', resolveString(stringResult, find, replace));
-                                                                       //	//Yelp//http://www.yelp.com/biz/bocas-best-pizza-bar-boca-raton
-                                                                       //	replace = '-';
-                                                                       //	//var city = "-" + place.details.formatted_address.split(',')[(place.details.formatted_address.split(',').length - 2)].trim().replace(' ', '-');
-                                                                       //	// TO DO: fix city
-                                                                       //	//if (city.split('-')[3] === undefined) city = "-" + place.details.formatted_address.split(',')[(place.details.formatted_address.split(',').length - 3)].trim().replace(' ', '-');
-                                                                       //	htmlString = htmlString.replace('Yelp', resolveString(stringResult, find, replace) + myCity);
-                                                                       //	//https://www.youtube.com/watch?v=oO4IZaujgrM;
-                                                                       //	return htmlString;
-                                                                       //},
-                                                                   });
+                       function updateAddress(myAddress) {
+                           document.getElementById('addressStatus').innerHTML = myAddress;
+                       }
+                   },
+                   places: placesDataSource,                                                           
+               });
         return {
            addToTrip: function(item) {
                 if (!app.Places.locationViewModel.trip) {
@@ -711,7 +668,8 @@ app.Places = (function () {
                 }
                var partnerV = new app.Places.newPartner();
                partnerV.setTripRow(item);// define as a specific Partner
-               app.Places.locationViewModel.trip.put(partnerV.vicinity(), partnerV);
+               app.Places.locationViewModel.trip.put(partnerV.vicinity(), partnerV);               
+               app.favorites.directions();
            },
             listViewOpen: function () {
                 app.mobileApp.navigate("views/listView.html")
@@ -772,18 +730,6 @@ app.Places = (function () {
 
                 app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
                 map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-                //                service = new google.maps.places.PlacesService(map);
-
-                //var directionsService = new google.maps.DirectionsService;
-                //var directionsDisplay = new google.maps.DirectionsRenderer;
-                //directionsDisplay.setMap(map);
-                //var origin_input = document.getElementById('origin-input');
-                //var destination_input = document.getElementById('destination-input');
-                //var modes = document.getElementById('mode-selector');
-
-                //map.controls[google.maps.ControlPosition.TOP_LEFT].push(origin_input);
-                //map.controls[google.maps.ControlPosition.TOP_LEFT].push(destination_input);
-
                 geocoder = new google.maps.Geocoder();
                 app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
                 streetView = map.getStreetView();
@@ -805,11 +751,8 @@ app.Places = (function () {
                         document.getElementById("myAvatar").src = "styles/images/avatar.png"
                     }
                 }
-                //TO DO: update location and get local partners??
                 if (app.isNullOrEmpty(app.Places.locationViewModel) || !app.Places.locationViewModel.get("isGoogleMapsInitialized")) {
                     app.Places.locationViewModel = new LocationViewModel();
-                    //TO DO: Clean up map locations
-                    //app.notify.showShortTop("Map was refreshed and reloaded!");
                 }
                 //resize the map in case the orientation has been changed while showing other tab
                 google.maps.event.trigger(map, "resize");
@@ -860,12 +803,8 @@ app.Places = (function () {
                 app.notify.showLongBottom(appSettings.messages.listHelp)
                 app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
                 try {
-                    //var e = myEvent;
                     var ds2 = new app.Places.List;
                     var ds3 = new app.Places.List;
-                    //var da = app.Places.locationViewModel.list.array();
-                    //find place markers in active list
-                    //var markers = app.Places.locationViewModel.markers;
                     if (e.view.params.keep) {
                         for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
                             var vitem = app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]);
@@ -878,7 +817,6 @@ app.Places = (function () {
                                 case "1":
                                     //keep selected (Push and do nothing)
                                     if (thisState === "visible") {
-                                        //ds2.add(item.vicinity, item);
                                         ds3.put(vitem.vicinity(), vitem);
                                     } else {
                                         item.clearMapMark(vitem.vicinity());
@@ -888,7 +826,6 @@ app.Places = (function () {
                                 case "2":
                                     //delete selected (Do not push and set null)			                    
                                     if (thisState === "hidden") {
-                                        //ds2.add(item.vicinity, item);
                                         ds3.put(vitem.vicinity(), vitem);
                                     } else {
                                         item.clearMapMark(vitem.vicinity());
@@ -901,18 +838,15 @@ app.Places = (function () {
                             //}
                         }
                         app.Places.locationViewModel.list = ds3;
-                        //app.Places.locationViewModel.list = ds3;
                         var ps = new app.Places.List;
                         for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
                             var newPartner = app.Places.locationViewModel.list.keys[i];
                             newPartner = app.Places.locationViewModel.list.get(newPartner)
                             if (newPartner)
                                 ps.put(newPartner.vicinity(), newPartner);
-                            //ds.add(newPartner.vicinity(), newPartner.details());
                         }
                     } else {
                         //reopen list so dynamically rebuild the List from the markers store
-                        //var ds = new app.Places.List;
                         var ps = new app.Places.List;
                         for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
                             var newPartner = app.Places.locationViewModel.list.keys[i];
@@ -937,21 +871,21 @@ app.Places = (function () {
             displayListView:function(){      
                         var aList = app.Places.locationViewModel.list.array();
                         list = $("#places-listview").kendoMobileListView({
-                                                                             dataSource: aList,
-                                                                             template: "<div id = '#:name#' class='${isSelectedClass}' ><div class='image-with-text'>"
-                                                                                       +"<a href='#: website #'>"
-                                                                                       + "<img src='#: icon #' width='10%'></a><div id='placelist'"
-                                                                                       + "data-role='touch' data-enable-swipe='true'"
-                                                                                       + " data-swipe='app.Places.locationViewModel.openListSheet'"
-                                                                                       + "><strong> #: name #</strong><div id='placedetails' ${visibility} "
-                                                                                       + "style='width:100%; margin-top:-5px'> #: vicinity # -- about "
-                                                                                       + " #: distance # mile(s) (as the crow flys). <br/></div></div></div></div>",
-                                                                             //<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
-                                                                             selectable: "multiple",
-                                                                             change: function () {
-                                                                                 alert("Change event!")
-                                                                             }
-                                                                         })
+                             dataSource: aList,
+                             template: "<div id = '#:name#' class='${isSelectedClass}' ><div class='image-with-text'>"
+                                       +"<a href='#: website #'>"
+                                       + "<img src='#: icon #' width='10%'></a><div id='placelist'"
+                                       + "data-role='touch' data-enable-swipe='true'"
+                                       + " data-swipe='app.Places.locationViewModel.openListSheet'"
+                                       + "><strong> #: name #</strong><div id='placedetails' ${visibility} "
+                                       + "style='width:100%; margin-top:-5px'> #: vicinity # -- about "
+                                       + " #: distance # mile(s) (as the crow flys). <br/></div></div></div></div>",
+                             //<a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Shortlist this Place</a><a data-role='button' data-click='app.Places.addToTrip' data-nameAttribute='#:name#' class='btn-continue km-widget km-button'>Delete this Place</a>
+                             selectable: "multiple",
+                             change: function () {
+                                 alert("Change event!")
+                             }
+                         })
                             .data("kendoListView");
                         //app.showAlert(JSON.stringify(aList));
                         $("#places-listview").on("data-swipe", "li", app.Places.locationViewModel.openListSheet)
@@ -1022,14 +956,14 @@ app.Places = (function () {
                 this.keys = new Array();
                 this.data = new Array();
                 this.put = function (key, value) {
-                    if (!app.isNullOrEmpty(key) || !app.isNullOrEmpty(value)) {
+                    if ((!app.isNullOrEmpty(key) || !app.isNullOrEmpty(value)) && this.data[key] === undefined) {
                         this.keys.push(key);
                         this.data[key] = value;
                         myCity = value.getPartner().City;
                     }
                 };
                 this.add = function (key, value) {
-                    if (this.data[key] == null) {
+                    if (this.data[key] === undefined) {
                         this.keys.push(key);
                         this.data[key] = value;
                     }
@@ -1335,7 +1269,7 @@ app.Places = (function () {
                         //now fit the map to the newly inclusive bounds
                         map.fitBounds(allBounds);
                         var newZoom = app.Places.locationViewModel.getBoundsZoomLevel(allBounds);
-                        if(map.zoom === 0)map.setZoom(newZoom)
+                        if(map.zoom < newZoom)map.setZoom(newZoom)
                         google.maps.event.addListener(Mark, 'click', function () {
                             if (Mark.icon.url === "styles/images/xstar.png") {
                                 app.showAlert("Star");
@@ -1513,7 +1447,6 @@ app.Places = (function () {
                         text = text + '\n' + JSON.stringify(googleData);
                         app.Places.browse("http://jsoneditoronline.org/?json=" + JSON.stringify(googleData));
                     }
-                    //app.Places.visiting = app.Places.locationViewModel.list.get(googleData.formatted_address);
                     app.showReviews(text, "Google Reviews for " + partnerRow.Place, function (result) {
                         app.Places.listShow3(result)
                     });
