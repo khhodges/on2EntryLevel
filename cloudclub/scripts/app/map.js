@@ -195,15 +195,16 @@ app.Places = (function () {
                         });
                    },
                    getComponent: function (address_components, component) {
+                       var result = 'Address Field not found';
                        for (var i = 0; i < address_components.length; i++) {
-                           if (address_components[i].types[0] === "locality") {
-                               myCity = address_components[i].long_name;
+                           if (address_components[i].types[0] === component) {
+                               result = address_components[i].long_name;
                            }
-                           if (address_components[i].types[0] === "administrative_area_level_1") {
-                               myState = address_components[i].long_name;
-                           }
+                           //if (address_components[i].types[0] === "administrative_area_level_1") {
+                           //    result = address_components[i].long_name;
+                           //}
                        }
-                       return myCity;
+                       return result;
                    },
                    getAddress: function (latLng, marker) {
                        geocoder.geocode({
@@ -221,6 +222,9 @@ app.Places = (function () {
                                     app.cdr.address = myAddress;
                                     app.notify.showLongBottom(myAddress);
                                     myCity = app.Places.locationViewModel.getComponent(results[0].address_components, "locality");
+                                    app.cdr.myCity=myCity;
+                                    app.cdr.myState = app.Places.locationViewModel.getComponent(results[0].address_components, "administrative_area_level_1")
+                                    app.cdr.myCountry = app.Places.locationViewModel.getComponent(results[0].address_components, "country")
                                     if (document.getElementById('addressStatus')) {
                                         document.getElementById('addressStatus').innerHTML = myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '</span>';
                                     }
@@ -505,7 +509,7 @@ app.Places = (function () {
                                var name = options[i].name;
                                if (!appSettings.infoContent[name])
                                    app.showError("<" + name + "> is missing")
-                               infoContent = infoContent + appSettings.infoContent[name];
+                               infoContent = infoContent + appSettings.infoContent[name].replace("#:lat#",lat).replace("#:lng#",lng);
                            }
                        }
 
@@ -585,7 +589,7 @@ app.Places = (function () {
                                                            if (this.attributes.valueOf()["data-lat"]) {
                                                                var lat = this.attributes.valueOf()["data-lat"].value;
                                                                var lng = this.attributes.valueOf()["data-lng"].value
-                                                               if ((lat === "#lat#" || lng === "#lng") ||
+                                                               if ((lat === "#lat#" || lng === "#lng#") ||
                                                                    (locality.lat - lat < .0001 && locality.lng - lng < .00001)) {
                                                                    app.notify.showLongBottom(appSettings.messages.directions);
                                                                    app.Places.browse("https://news.google.com")
@@ -642,14 +646,18 @@ app.Places = (function () {
                                addDEL(document.getElementById(site));
                            }
                        });
-                       function addDEL(name) {
-                           if (name) {
-                               name.addEventListener('click', function () {
-                                   app.Places.browse("http://www." + name.firstElementChild.alt + ".com")
-                               })
-                           } else {
-                               return
-                           }
+                           function addDEL(name) {
+                               if (name) {
+                                   name.addEventListener('click', function () {
+                                       if (this.attributes.valueOf()["data-url"]) {
+                                           app.Places.browse(this.attributes.valueOf()["data-url"].value.replace("#:city#", app.cdr.myCity).replace("#:state#", app.cdr.myState).replace("#:CITY#", app.cdr.myCity.replace(' ', '')).replace("#:STATE#", app.cdr.myState.replace(' ', '')))
+                                       }else {
+                                           app.Places.browse("http://www." + name.firstElementChild.alt + ".com/search?q=" + app.cdr.myCity)
+                                       }
+                                   })
+                               } else {
+                                   return
+                               }
                        }
                        function updatePosition(lat, lng) {
                            document.getElementById('dragStatus').innerHTML = 'New Lat: ' + lat.toFixed(6) + ' New Lng: ' + lng.toFixed(6);
@@ -763,12 +771,13 @@ app.Places = (function () {
             },
             locationViewModel: new LocationViewModel(),
             listShow3: function (result) {
+                var thisPartner,Details;
                 if (result === 1) {//cancel
                     return
                 }
                 if (result === 2) {//remove
-                    var thisPartner = app.Places.visiting;
-                    var Details = thisPartner.details();
+                     thisPartner = app.Places.visiting;
+                     Details = thisPartner.details();
                     //app.showAlert("Delete this item "+ Details.vicinity);
                     Details.clearMapMark();
                 }
@@ -776,8 +785,8 @@ app.Places = (function () {
                     if (!app.isOnline()) {
                         app.mobileApp.navigate("#welcome");
                     } else {
-                        var thisPartner = app.Places.visiting;
-                        var Details = thisPartner.details();
+                         thisPartner = app.Places.visiting;
+                         Details = thisPartner.details();
                         //app.showAlert("Delete this item "+ Details.vicinity);
                         Details.highlightMapMark();
                         app.showOptions(appSettings.messages.saveHighlight, appSettings.whatToDo, function(button) {
@@ -948,7 +957,7 @@ app.Places = (function () {
                     url = new URL("wiki/" + myCity, base);
                 }
                 app.notify.showLongBottom(appSettings.messages.url);
-                bw = window.open(url, "_blank", "location=yes");
+                bw = window.open(url, "_system", "location=yes");
                 bw.addEventListener("loaderror", app.Places.iabLoadError);
                 bw.addEventListener("exit", app.Places.iabClose);
             },
@@ -1086,8 +1095,7 @@ app.Places = (function () {
                     var result = items.filter
                     (function (item) {
                         return (item.types[0] === component)
-                    }
-                        )
+                    })
                     if (result.length === 1) {
                         result = result[0].long_name
                         return result;
@@ -1102,8 +1110,16 @@ app.Places = (function () {
                     var Path = parts.path;
                     var term = name();
                     if (parts.query === "search")
+                        if (!app.isNullOrEmpty(app.Places.locationViewModel.find)){
                         term = app.Places.locationViewModel.find;
-                    var searchTerm = resolveString(resolveString(term, "'", "%27"), "&", "%26");
+                        } else {
+                            if (app.Places.visiting.details().city()) {
+                                term = app.Places.visiting.details().city();
+                            }else {
+                                term = app.cdr.myCity;
+                            }
+                        }
+                    var searchTerm = resolveString(resolveString(resolveString(term, "'", "%27"), "&", "%26"), " ", "%20");
                     searchTerm = resolveString(searchTerm, " ", parts.space);
                     if (Path.indexOf("#:name#") > 0) {
                         Path = resolveString(Path, "#:name#", searchTerm)

@@ -69,7 +69,7 @@ var htmlOptions = {
 		},
 		"facebook": {
 			"name": "facebook",
-			"path": "https://www.facebook.com/search/top/?q=",
+			"path": "https://m.facebook.com/search/pages/?q=",
 			"query": "name-",
 			"option": "",
 			"space": " "
