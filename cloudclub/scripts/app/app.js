@@ -54,8 +54,8 @@ var app = (function (win) {
             window.event.returnValue = false;
         }
     };
-    var cdr;
-    var registerNotify;
+    var cdr = {"latitude":26.299801713039646,"longitude":-80.07814407348633,"accuracy":150,"altitude":100,"heading":null,"speed":0,"altitudeAccuracy":80,"lat":26.299801713039646,"lng":-80.07814407348633,"distance":12,"address":"1199 Hillsboro Mile, Pompano Beach, FL 33062, USA","appName":"On2See"};
+    var registerNotify, appName;
 
     win.addEventListener('error', function (e) {
         e.preventDefault();
@@ -242,10 +242,21 @@ var app = (function (win) {
         app.PushRegistrar.checkNotify();
         // Handle "backbutton" event
         document.addEventListener('backbutton', onBackKeyDown, false);
+
         app.notify.getLocation(function (crd) {
             app.cdr = crd;
             var zoom = 15;
             app.cdr.distance = (21 - zoom) * 2;
+            cordova.getAppVersion.getAppName(function (version) {
+                var x = version.split(' ')[0];
+                if (x !== "Cloud") {
+                    appName=x;
+                    //get home partner app.showAlert(appName)
+                    }
+                else{
+                    app.appName = null;
+                }
+            });
         },
             function (error) {
                 //app.notify.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
@@ -260,6 +271,7 @@ var app = (function (win) {
                 timeout: 20000,
                 enableHighAccuracy: true
             });
+
         if (device.platform === 'iOS' && parseFloat(device.version) >= 7.0) {
             $('.ui-header > *').css('margin-top', function (index, curValue) {
                 return parseInt(curValue, 10) + 0 + 'px';
@@ -1135,11 +1147,11 @@ var app = (function (win) {
 
             function error(err) {
                 if(localStorage.getItem('lastLocation')){
-                   crd = JSON.parse(localStorage.getItem('lastLocation'));
-                    app.cdr = crd;
-                    callBack(crd);
+                   var xcrd = JSON.parse(localStorage.getItem('lastLocation'));
+                    app.cdr = xcrd;
+                    callBack(xcrd);
                 }else{
-                    app.cdr = {'lat':26.243, 'lng':-80.1025};
+                    app.cdr = {"latitude":26.299801713039646,"longitude":-80.07814407348633,"accuracy":150,"altitude":100,"heading":null,"speed":0,"altitudeAccuracy":80,"lat":26.299801713039646,"lng":-80.07814407348633,"distance":12,"address":"1199 Hillsboro Mile, Pompano Beach, FL 33062, USA"};
                     callBack(crd);
                 }
                 app.notify.showLongBottom('Using last known location '+ err);
@@ -1314,6 +1326,7 @@ var app = (function (win) {
         showReviews: showReviews,
         showOptions: showOptions,
         openLink: openLink,
+        appName:function(){return appName;},
         cdr: cdr,
         registerNotify: registerNotify,
         showError: showError,

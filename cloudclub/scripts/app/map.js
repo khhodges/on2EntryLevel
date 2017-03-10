@@ -182,12 +182,14 @@ app.Places = (function () {
                            app.Places.locationViewModel.list = new app.Places.List;
                            for (var i = 0; i < data.count; i++) {
                                var partner = data.result[i];
-                               partner.Location.lat = partner.Location.latitude;
-                               partner.Location.lng = partner.Location.longitude;
-                               var partnerV = new app.Places.newPartner();
-                               partnerV.setPartnerRow(partner);// define as a specific Partner
-                               app.Places.visiting = partnerV;
-                               app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV);
+                               if (partner.Place.indexOf(app.appName()) > 0) {
+                                   partner.Location.lat = partner.Location.latitude;
+                                   partner.Location.lng = partner.Location.longitude;
+                                   var partnerV = new app.Places.newPartner();
+                                   partnerV.setPartnerRow(partner);// define as a specific Partner
+                                   app.Places.visiting = partnerV;
+                                   app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV);
+                               }
                            }
                        },
                         function (error) {
@@ -228,6 +230,7 @@ app.Places = (function () {
                                     if (document.getElementById('addressStatus')) {
                                         document.getElementById('addressStatus').innerHTML = myAddress + '<br/><span id="dragStatus"> Lat:' + marker.position.lat().toFixed(4) + ' Lng:' + marker.position.lng().toFixed(4) + '</span>';
                                     }
+                                    map.setZoom(app.Places.locationViewModel.getBoundsZoomLevel(allBounds));
                                 }
                             }
                         });
@@ -246,7 +249,7 @@ app.Places = (function () {
                             width: 300
                         };
                         var WORLD_DIM = { height: 256, width: 256 };
-                        var ZOOM_MAX = 21;
+                        var ZOOM_MAX = 15;
 
                         function latRad(lat) {
                             var sin = Math.sin(lat * Math.PI / 180);
@@ -273,12 +276,18 @@ app.Places = (function () {
                     },
 
                    clearMap: function deleteMarkers() { // Deletes all markers in the array by removing references to them.
-                       markers = app.Places.locationViewModel.markers;
+                       var markers = app.Places.locationViewModel.markers;
                        for (var i = 0; i < markers.length; i++) {
-                           markers[i].setMap(null);
+                          if(markers[i] && markers[i].icon && markers[i].icon.url !=='styles/images/pin.png') markers[i].setMap(null);
                        }
                        //create empty LatLngBounds object
-                       allBounds = new google.maps.LatLngBounds();
+                       if (allBounds.isEmpty()) {                           
+                           allBounds = new google.maps.LatLngBounds();
+                       }else {
+                           var center = allBounds.getCenter();
+                           allBounds = new google.maps.LatLngBounds();
+                           allBounds.extend(center);
+                       }                       
                        markers = [];
                        app.Places.locationViewModel.markers = new Array;
                        app.Places.locationViewModel.details = new Array;
@@ -300,8 +309,8 @@ app.Places = (function () {
                                   'title': appSettings.messages.whatToDo,
                                   'buttonLabels': [
                                    appSettings.messages.list5,
-                                   appSettings.messages.list6,
-                                   appSettings.messages.list3,
+                                   appSettings.messages.list6
+                                   //appSettings.messages.list3,
                                    // appSettings.messages.list4,
                                    // appSettings.messages.list5
                                ],
@@ -348,10 +357,10 @@ app.Places = (function () {
                                            case 2: // Directions to Trip
                                                 app.favorites.directions();
                                             	break;
-                                           case 3://visit Home Page
-                                                app.helper.openExternalInAppBrowser(app.Places.favoriteItem.website);
-                                               //app.mobileApp.navigate("#views/updateView.html");
-                                               break;
+                                           //case 3://visit Home Page
+                                           //     if(app.Places.favoriteItem.website !== undefined) app.helper.openExternalInAppBrowser(app.Places.favoriteItem.website);
+                                           //    //app.mobileApp.navigate("#views/updateView.html");
+                                           //    break;
                                                //case 4://
                                                //	break;
                                            default:
@@ -431,10 +440,10 @@ app.Places = (function () {
                            //Perform Address Search
                            request = {
                                location: locality,
-                               radius: 5000,
-                               keyword: app.Places.locationViewModel.find
+                               bounds: map.getBounds(),
+                               query:app.Places.locationViewModel.find
                            };
-                           service.nearbySearch(request, function (results, status) {
+                           service.textSearch(request, function (results, status) {
                                if (status !== google.maps.places.PlacesServiceStatus.OK) {
                                    console.error(status);
                                    return false;
@@ -601,7 +610,7 @@ app.Places = (function () {
                                                            }
                                                        })
                            }
-                           ;
+                           
                            var saveAddressLink = document.getElementById("saveAddressLink");
                            if (saveAddressLink) {
                                saveAddressLink.addEventListener("click",
@@ -857,14 +866,21 @@ app.Places = (function () {
                     } else {
                         //reopen list so dynamically rebuild the List from the markers store
                         var ps = new app.Places.List;
-                        for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
-                            var newPartner = app.Places.locationViewModel.list.keys[i];
-                            newPartner = app.Places.locationViewModel.list.get(newPartner)
+                        var psArray = app.Places.locationViewModel.list.array();
+                        for (var i = 0; i < psArray.length; i++) {
+                            var newPartner = psArray[i];
+                            newPartner = psArray[i]
                             if (newPartner)
-                                ps.put(newPartner.vicinity(), newPartner);
+                            {
+                                try{
+                                        ps.put(newPartner.vicinity(), newPartner);
+                                    }catch (e){
+                                        ps.put(newPartner.vicinity, app.Places.locationViewModel.list.get(newPartner.vicinity));
+                                    }
+                            }
                             //ds.add(newPartner.vicinity(), newPartner.details());
                         }
-                        ;
+                        
                         // da = ds.array();
                         app.Places.locationViewModel.list = ps;
                     }
@@ -968,7 +984,13 @@ app.Places = (function () {
                     if ((!app.isNullOrEmpty(key) || !app.isNullOrEmpty(value)) && this.data[key] === undefined) {
                         this.keys.push(key);
                         this.data[key] = value;
+                        try{
                         myCity = value.getPartner().City;
+                            }
+                        catch(e)
+                        {
+                            myCity = value.city();
+                        }
                     }
                 };
                 this.add = function (key, value) {
@@ -1092,10 +1114,10 @@ app.Places = (function () {
                 var items;
                 var addressComponent = function (component) {
                     var items = googleData.address_components;
-                    var result = items.filter
-                    (function (item) {
-                        return (item.types[0] === component)
-                    })
+                    var result = items.filter(
+                        function (item) {
+                            return (item.types[0] === component)
+                        })
                     if (result.length === 1) {
                         result = result[0].long_name
                         return result;
@@ -1193,7 +1215,7 @@ app.Places = (function () {
                                 break;
                             case "partner":
                                 introHtml = introHtml + '<a data-role="button" class="butn" href="#views/placesView.html?name='
-                                            + resolveString(resolveString(n, "'", "%27"), "&", "%26") + '"><img src="' + app.helper.resolvePictureUrl(picture()) + '" alt="'
+                                            + resolveString(resolveString(n, "'", "%27"), "&", "%26") + '"><img src="' + picture() + '" alt="'
                                             + n + ' website" height="auto" width="25%" style="padding:5px"></a>'
                                 break;
                             case "camera":
@@ -1287,7 +1309,7 @@ app.Places = (function () {
                         var newZoom = app.Places.locationViewModel.getBoundsZoomLevel(allBounds);
                         if(map.zoom < newZoom)map.setZoom(newZoom)
                         google.maps.event.addListener(Mark, 'click', function () {
-                            if (Mark.icon.url === "styles/images/xstar.png") {
+                            if (Mark.icon && Mark.icon.url === "styles/images/xstar.png") {
                                 app.showAlert("Star");
                                 checkInfoWindow(setInfoWindow);
                             } else {
@@ -1311,6 +1333,10 @@ app.Places = (function () {
                             Math.sin(dLon / 2) * Math.sin(dLon / 2);
                     var c = 2 * Math.asin(Math.sqrt(a));
                     var d = R * c / 1.61; // converted to miles
+                    if(d==='NaN'){
+                        app.showError('Distance error!')
+                        d=0;
+                    }
                     return d.toFixed(0);
                 };
                 var visible = "hidden";
@@ -1337,25 +1363,34 @@ app.Places = (function () {
                     return partnerRow.Id;
                 };
                 var lat = function () {
-                    if ((!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.lat) && partnerRow.location)) {
+                    if(partnerRow.Location.lat) return partnerRow.Location.lat; 
+                    if (!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.lat)) {
                         partnerRow.Location = {};
                         try {
-                            partnerRow.Location.lat = partnerRow.geometry.location.lat(); 
+                            partnerRow.Location.lat = partnerRow.geometry.location.lat();
+                            partnerRow.Location.lng = partnerRow.geometry.location.lng(); 
                         }catch (e) {
                             partnerRow.Location.lat = partnerRow.location.lat;
+                            partnerRow.Location.lng = partnerRow.location.lng;
                         }
                     }
                     return partnerRow.Location.lat;
                 };
                 var lng = function () {
-                    if ((!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.lng) && partnerRow.location)) {
+                    if(partnerRow.Location.lng) return partnerRow.Location.lng;
+                    if (!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.lng)) 
+                    {
                         partnerRow.Location = {};
                         try {
-                            partnerRow.Location.lng = partnerRow.geometry.location.lng();
-                        }catch (e) {
-                            partnerRow.Location.lng = partnerRow.location.lng;
+                            partnerRow.Location.lat = partnerRow.geometry.location.lat();
+                            partnerRow.Location.lng = partnerRow.geometry.location.lng(); 
                         }
-                    }                
+                        catch (e) 
+                        {
+                            partnerRow.Location.lat = partnerRow.location.lat;
+                            partnerRow.Location.lng = partnerRow.location.lng;
+                            }   
+                     }
                     return partnerRow.Location.lng;
                 };
                 var picture = function () {
@@ -1544,6 +1579,7 @@ app.Places = (function () {
                     }
                     options.icon.scaledSize = new google.maps.Size(3 * options.zIndex, 3 * options.zIndex)
                     options.position = { lng: partnerRow.geometry.location.lng(), lat: partnerRow.geometry.location.lat() };
+                    if(!partnerRow.vicinity && partnerRow.formatted_address)partnerRow.vicinity = partnerRow.formatted_address;
                     options.vicinity = partnerRow.vicinity;
                     partnerRow.Icon = options.icon.url;
                     try {

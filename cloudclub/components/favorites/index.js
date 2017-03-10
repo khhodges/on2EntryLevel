@@ -348,7 +348,8 @@ app.favorites.directions = function () {
         for (var i=0;i<myLines.length;i++){
             directions = directions + "/" + myLines[i].vicinity;
         }
-        app.openLink("https://www.google.com/maps/dir" + directions);
+        app.openLink("https://www.google.com/maps/dir" + directions.replace(' ','+'));
+        //https://www.google.com/maps/dir/1228+Hillsboro+Mile,+Hillsboro+Beach,+FL+33062/10301+Hagen+Ranch+Rd,+Boynton+Beach,+FL+33437/Morikami+Museum+and+Japanese+Gardens,+4000+Morikami+Park+Rd,+Delray+Beach,+FL+33446
   }else{
       app.notify.showLongBottom("First add some Places to your Trip.")
   }}

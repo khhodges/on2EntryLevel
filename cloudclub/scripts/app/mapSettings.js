@@ -11,7 +11,7 @@ var htmlOptions = {
 		"standard": ["follow","events", "activities"],
 		"search": ["google", "twitter", "bing", "facebook","roosterlocal"],
 		"food": ["zomato", "yelp"],
-		"general":["yellowpages","wikipedia"],
+		"general":["yellowpages"],
 		"display": ["search","general"],
 		"jobs": ["angiesList", "homeAdvisor"]
 	},
