@@ -6,11 +6,11 @@
 	<div data-role="header">
 		<div data-role="navbar"> My Media
 		<a data-role="backbutton" data-align="left">Back</a> 
-		<a id="logoffButton" style="display:" data-role="button" data-click="app.helper.logout" data-align="right">Logout</a> 
+		<a id="logoffButton" style="display:" data-role="button" href="#components/aboutView/view.html" data-align="right">Upgrade</a> 
 		<a id="saveMedia" style="display: none" data-align="left" data-role="button" data-click="app.Update.update">Save</a>			</div>
 	</div>
-	<div>
-		<h3 data-align="center">Selecting more than 8 options depends on screen size and service level.</h3>
+    <div><h3 data-style="inset" >
+	<span data-bind="text: myMediaHeading"></span></h3>
 		<ul id="media-listView" data-role="listview" data-template="favoriteTemplate" data-style="inset" data-bind="source: ds"></ul>
 	</div>
 	<!-- Activities ListView Template -->

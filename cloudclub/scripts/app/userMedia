@@ -1,0 +1,276 @@
+{
+  "product": "On2See partners urls",
+  "version": 1.1,
+  "releaseDate": "2016-09-19T00:00:00.000Z",
+  "approved": true,
+  "partner": {
+    "stars": 5,
+    "rating": "$$",
+    "autoBlog": false,
+    "rememberMe": true,
+    "language": 1
+  },
+  "url": [
+    {
+      "group": "1. Social Media",
+      "name": "facebook",
+      "icon": "xx",
+      "path": "",
+      "selected": true
+    },
+    {
+      "group": "1. Social Media",
+      "name": "yelp",
+      "icon": "xx",
+      "path": "",
+      "selected": false
+    },
+    {
+      "group": "1. Social Media",
+      "name": "instagram",
+      "icon": "xx",
+      "path": "",
+      "selected": true
+    },
+    {
+      "group": "1. Social Media",
+      "name": "googleMap",
+      "icon": "xx",
+      "path": "",
+      "selected": true
+    },
+    {
+      "group": "1. Social Media",
+      "name": "zomato",
+      "icon": "xx",
+      "path": "",
+      "selected": false
+    },
+    {
+      "group": "2. Sport",
+      "name": "nfl",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "2. Sport",
+      "name": "ESPN",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "3. News",
+      "name": "bloomberg",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "4. Professional",
+      "name": "linkedIn",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "3. News",
+      "name": "twitter",
+      "icon": "xx",
+      "Path": "",
+      "selected": true
+    },
+    {
+      "group": "1. Social Media",
+      "name": "googleplus",
+      "icon": "xx",
+      "Path": "",
+      "selected": true
+    },
+    {
+      "group": "4. Professional",
+      "name": "angiesList",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "3. News",
+      "name": "bing",
+      "icon": "xx",
+      "Path": "",
+      "selected": true
+    },
+    {
+      "group": "4. Professional",
+      "name": "blogger",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "4. Professional",
+      "name": "groupon",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "1. Social Media",
+      "name": "youtube",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "3. News",
+      "name": "google",
+      "icon": "xx",
+      "Path": "",
+      "selected": true
+    },
+    {
+      "group": "1. Social Media",
+      "name": "flickr",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "0. Platform",
+      "name": "events",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "0. Platform",
+      "name": "settings",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "5. Enhanced",
+      "name": "contacts",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "1. Social Media",
+      "name": "pintrest",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "5. Enhanced",
+      "name": "notifications",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "5. Enhanced",
+      "name": "mail",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "1. Social Media",
+      "name": "vine",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "0. Platform",
+      "name": "iSee",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "5. Enhanced",
+      "name": "weather",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "4. Professional",
+      "name": "wikipedia",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "3. News",
+      "name": "yahoo",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "4. Professional",
+      "name": "yellowpages",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "5. Enhanced",
+      "name": "calendar",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    },
+    {
+      "group": "0. Platform",
+      "name": "camera",
+      "icon": "xx",
+      "Path": "",
+      "selected": false
+    }
+  ],
+  "defaultOptions": {
+    "standard": [
+      "events",
+      "activities",
+      "partner"
+    ],
+    "search": [
+      "google",
+      "twitter",
+      "bing",
+      "googleMaps"
+    ],
+    "food": [
+      "zomato",
+      "yelp"
+    ],
+    "display": [
+      "search",
+      "food"
+    ],
+    "jobs": [
+      "angiesList",
+      "homeAdviser",
+      "pintrest",
+      "google"
+    ]
+  },
+  "customOptions": [
+    "home",
+    "events",
+    "zomato",
+    "yelp",
+    "google",
+    "twitter",
+    "bing",
+    "googleMaps"
+  ]
+}

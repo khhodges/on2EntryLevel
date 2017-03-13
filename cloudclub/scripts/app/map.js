@@ -140,18 +140,8 @@ app.Places = (function () {
                    onNavigateHome: function () {
                        //find present location, clear markers and set up members as icons
                        var that = this;
-                       homePosition = { lat: app.cdr.lat, lng: app.cdr.lng };//new google.maps.LatLng(app.cdr.lng, app.cdr.lat);
-                       var position = homePosition;
                        that._isLoading = true;
-                       that.toggleLoading();
-                       if (!app.Places.locationViewModel.markers) {
-                           app.Places.locationViewModel.markers = new Array;
-                           allBounds = new google.maps.LatLngBounds();
-                       }
-                       if (!app.Places.locationViewModel.details) {
-                           app.Places.locationViewModel.details = new Array;
-                       }
-                       app.Places.locationViewModel.clearMap();
+                       //app.Places.locationViewModel.clearMap();
                        try {
                            Selfie = {
                                Picture: null,
@@ -161,20 +151,22 @@ app.Places = (function () {
                                Notes: 'Selfie',
                                Text: '',
                                Title: 'My Private Feed',
-                               location: position
+                               location: homePosition
                            };
                        } catch (e) {
-                           app.Error(JSON.stringify(e))
+                           app.showError(JSON.stringify(e))
                        }
                        app.Places.visiting = Selfie;
                        app.Places.center = Selfie;
-                       map.panTo(position);
-                       that._putMarker(position);
-                       locality = position;
+                       map.panTo(homePosition);
+                       that._putMarker(homePosition);
+                       locality = homePosition;
                        that._isLoading = false;
                        that.toggleLoading();
+                       },
+                  onSetupPartners: function(){
                        var query = new Everlive.Query();
-                       var point = new Everlive.GeoPoint(position.lng, position.lat);
+                       var point = new Everlive.GeoPoint(homePosition.lng, homePosition.lat);
                        query.where().nearSphere('Location', point, 25, 'miles').ne('Icon', 'styles/images/avatar.png');
                        var partners = app.everlive.data('Places');
                        app.notify.showLongBottom("Loading nearby CloudClub Partners within 25 miles onto Google Maps. Click any star to research the Partner.,")
@@ -245,8 +237,8 @@ app.Places = (function () {
                    },
                     getBoundsZoomLevel: function(bounds) {
                         var mapDim = {
-                            height: 400,
-                            width: 300
+                            height: $('#map-canvas').height(),
+                            width: $('#map-canvas').width()
                         };
                         var WORLD_DIM = { height: 256, width: 256 };
                         var ZOOM_MAX = 15;
@@ -272,7 +264,12 @@ app.Places = (function () {
                         var latZoom = zoom(mapDim.height, WORLD_DIM.height, latFraction);
                         var lngZoom = zoom(mapDim.width, WORLD_DIM.width, lngFraction);
 
-                        return Math.min(latZoom, lngZoom, ZOOM_MAX);
+                        var newZoom = Math.min(latZoom, lngZoom, ZOOM_MAX);
+                         
+                        //if(map.zoom < newZoom)
+                        map.setZoom(newZoom);
+                        map.setCenter(bounds.getCenter());
+                        return newZoom;
                     },
 
                    clearMap: function deleteMarkers() { // Deletes all markers in the array by removing references to them.
@@ -309,8 +306,8 @@ app.Places = (function () {
                                   'title': appSettings.messages.whatToDo,
                                   'buttonLabels': [
                                    appSettings.messages.list5,
-                                   appSettings.messages.list6
-                                   //appSettings.messages.list3,
+                                   appSettings.messages.list6,
+                                   appSettings.messages.list3
                                    // appSettings.messages.list4,
                                    // appSettings.messages.list5
                                ],
@@ -357,10 +354,10 @@ app.Places = (function () {
                                            case 2: // Directions to Trip
                                                 app.favorites.directions();
                                             	break;
-                                           //case 3://visit Home Page
-                                           //     if(app.Places.favoriteItem.website !== undefined) app.helper.openExternalInAppBrowser(app.Places.favoriteItem.website);
-                                           //    //app.mobileApp.navigate("#views/updateView.html");
-                                           //    break;
+                                           case 3://visit Home Page
+                                                if(app.Places.favoriteItem.website !== undefined) app.openLink(app.Places.favoriteItem.website);
+                                               //app.mobileApp.navigate("#views/updateView.html");
+                                               break;
                                                //case 4://
                                                //	break;
                                            default:
@@ -386,8 +383,10 @@ app.Places = (function () {
                                                break;
                                            case 2:
                                                app.Places.updatePartnerLocation();
+                                               app.mobileApp.navigate("#views/mapView.html");
                                                break;
                                            case 3:
+                                               app.mobileApp.navigate("#views/mapView.html");
                                                var markersList = app.Places.locationViewModel.list.array();
                                                for (var i = 0; i < markersList.length; i++) {
                                                    var thePartner = app.Places.locationViewModel.list.get(markersList[i].vicinity);
@@ -436,8 +435,10 @@ app.Places = (function () {
                        app.notify.showLongBottom(appSettings.messages.searchAgain);
                        app.Places.locationViewModel.clearMap();
                        service = new google.maps.places.PlacesService(map);
-                       if (app.Places.locationViewModel.find && app.Places.locationViewModel.find.indexOf(',') < 0) {
-                           //Perform Address Search
+                       if (app.Places.locationViewModel.find && app.Places.locationViewModel.find.indexOf('.') > 0) {
+                           app.openLink((app.Places.locationViewModel.find));
+                       }
+                       if (app.Places.locationViewModel.find && app.Places.locationViewModel.find.indexOf(',') < 0) {                           //Perform Address Search
                            request = {
                                location: locality,
                                bounds: map.getBounds(),
@@ -748,6 +749,20 @@ app.Places = (function () {
                 app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
                 map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
                 geocoder = new google.maps.Geocoder();
+                //add App Site
+               homePosition = { lat: app.cdr.lat, lng: app.cdr.lng };//new google.maps.LatLng(app.cdr.lng, app.cdr.lat);
+               //var position = homePosition;
+               //that.toggleLoading();
+               if (!app.Places.locationViewModel.markers) {
+                   app.Places.locationViewModel.markers = new Array;
+                   allBounds = new google.maps.LatLngBounds();
+               }
+               if (!app.Places.locationViewModel.details) {
+                   app.Places.locationViewModel.details = new Array;
+               }
+                var partnerV = new app.Places.newPartner();
+                partnerV.setPartnerRow(app.cdr.app);   
+                app.notify.showLongBottom("Loading CloudClub Partner. Click the star to research this Partner.")
                 app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
                 streetView = map.getStreetView();
             },
@@ -823,7 +838,7 @@ app.Places = (function () {
                 try {
                     var ds2 = new app.Places.List;
                     var ds3 = new app.Places.List;
-                    if (e.view.params.keep) {
+                    if (e && e.view.params.keep) {
                         for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
                             var vitem = app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]);
                             //var bitem = app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i])
@@ -1175,7 +1190,7 @@ app.Places = (function () {
                         var standardOptions = htmlOptions.defaultOptions.standard;
                         if (partnerOptions && partnerOptions.defaultOptions && partnerOptions.defaultOptions.display) {
                             customOptions = partnerOptions.defaultOptions.display;
-                            programmedOptions = partnerOptions.url;
+                            programmedOptions = partnerOptions.purl;
                             standardOptions = partnerOptions.defaultOptions.standard;
                         }
                         var workingList = new Array();// build the array for media search
@@ -1305,9 +1320,8 @@ app.Places = (function () {
                         //extend the bounds to include each marker's position
                         allBounds.extend(options.position);
                         //now fit the map to the newly inclusive bounds
-                        map.fitBounds(allBounds);
+                        //map.fitBounds(allBounds);
                         var newZoom = app.Places.locationViewModel.getBoundsZoomLevel(allBounds);
-                        if(map.zoom < newZoom)map.setZoom(newZoom)
                         google.maps.event.addListener(Mark, 'click', function () {
                             if (Mark.icon && Mark.icon.url === "styles/images/xstar.png") {
                                 app.showAlert("Star");
@@ -1363,8 +1377,11 @@ app.Places = (function () {
                     return partnerRow.Id;
                 };
                 var lat = function () {
-                    if(partnerRow.Location.lat) return partnerRow.Location.lat; 
-                    if (!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.lat)) {
+                    if(!partnerRow.Location && partnerRow.location){
+                        partnerRow.Location = partnerRow.location;
+                    }
+                    if(partnerRow.Location && partnerRow.Location.lat) return partnerRow.Location.lat; 
+                    if (!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location)) {
                         partnerRow.Location = {};
                         try {
                             partnerRow.Location.lat = partnerRow.geometry.location.lat();
@@ -1377,8 +1394,11 @@ app.Places = (function () {
                     return partnerRow.Location.lat;
                 };
                 var lng = function () {
-                    if(partnerRow.Location.lng) return partnerRow.Location.lng;
-                    if (!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location.lng)) 
+                    if(!partnerRow.Location && partnerRow.location){
+                        partnerRow.Location = partnerRow.location;
+                    }
+                    if(partnerRow.Location && partnerRow.Location.lng) return partnerRow.Location.lng;
+                    if (!partnerRow.Location || app.isNullOrEmpty(partnerRow.Location)) 
                     {
                         partnerRow.Location = {};
                         try {
@@ -1602,6 +1622,10 @@ app.Places = (function () {
                     if (p.Place === "Home") {
                         app.Places.locationViewModel.home = partner;
                     }
+                    if(!partnerRow.Location.lat){
+                        partnerRow.Location.lat = partnerRow.Location.latitude;
+                        partnerRow.Location.lng = partnerRow.Location.longitude;
+                    }
                     options = {
                         map: map,
                         position: {
@@ -1615,6 +1639,7 @@ app.Places = (function () {
                             scaledSize: new google.maps.Size(30, 30),
                         }
                     }
+                    //load default html
                     if (partnerRow.Html) {
                         try {
                             partnerOptions = JSON.parse(partnerRow.Html);

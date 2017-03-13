@@ -50,9 +50,9 @@
                     Service Level:
                     <select id="updateLevelPicker" data-bind="value: Level">
                         <option value="1">Free Member Services</option>
-                        <option value="2">Member without Ads</option>
-                        <option value="3">Member with Customization Optiond</option>
-                        <option value="4">Partner using Notifications Services</option>
+                        <option value="2">Member + Extended media & no Ads</option>
+                        <option value="3">Partner with Notification Option</option>
+                        <option value="4">Partner Customization Services</option>
                     </select>
                 </b> </li>
 			<!--li class="select-wrp" > <b><font size=3> <label data-bind="text: autoBlogText"/></font>
@@ -71,11 +71,14 @@
       	</b> <input id="#:name#-switch" data-role="switch" data-bind="events: { change: onNotificationsChange }, checked: notificationsState"
 					data-on-label="ON" data-off-label="OFF" /> </li>
 		</ul>
-		<div class="button-group" style="margin-top:-25px" > <a class="btn-login" data-role="button" href="#views/example.html"> 
+		<div class="button-group" style="margin-top:-25px" > <a class="btn-login" data-role="button" href="#views/mapView.html"> 
 				Cancel
-				</a> <a class="btn-continue" data-role="button" href="#views/mediaView.html"> 
+				</a> 
+            <a class="btn-continue" data-role="button" href="#views/mediaView.html"> 
 				Options
-				</a> <a class="btn-register" data-role="button" data-click="app.Update.update">Update</a> </div>
+				</a> 
+            <a class="btn-register" data-role="button" data-click="app.Update.update">
+                Update</a> </div>
 	</font></form>
 	<div data-role="view" data-model="app.registerNotify">
 		<p>Hardware: #: hardware #</p>

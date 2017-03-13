@@ -47,7 +47,7 @@ var app = (function (win) {
         if (url.substring(0, 4) === 'geo:' && device.platform === 'iOS') {
             url = 'http://maps.apple.com/?ll=' + url.substring(4, url.length);
         }
-
+        if(url.substring(0,4)!=='http' && url.substring(0,11)!=='http://.www.') url = 'http://.www.'+url;
         window.open(url, '_system');
         if (window.event) {
             window.event.preventDefault && window.event.preventDefault();
@@ -242,20 +242,22 @@ var app = (function (win) {
         app.PushRegistrar.checkNotify();
         // Handle "backbutton" event
         document.addEventListener('backbutton', onBackKeyDown, false);
-
+            
         app.notify.getLocation(function (crd) {
             app.cdr = crd;
             var zoom = 15;
             app.cdr.distance = (21 - zoom) * 2;
-            cordova.getAppVersion.getAppName(function (version) {
-                var x = version.split(' ')[0];
-                if (x !== "Cloud") {
-                    appName=x;
-                    //get home partner app.showAlert(appName)
-                    }
-                else{
-                    app.appName = null;
-                }
+           cordova.getAppVersion.getAppName(function (version) {               
+                    appName=version;
+                    var filter = {"Html":{"$regex":appName} };
+                    var data = app.everlive.data('Places');
+                    data.get(filter)
+                        .then(function(data){
+                            app.cdr.app = data.result[0]
+                        },
+                        function(error){
+                            alert(JSON.stringify(error));
+                        });        
             });
         },
             function (error) {

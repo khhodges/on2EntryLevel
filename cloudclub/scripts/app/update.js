@@ -164,27 +164,21 @@ app.Update = (function () {
 			kendo.bind($('#update-form'), dataSource, kendo.mobile.ui);
 			//favorites = app.Users.currentUser.data.jsonDirectory;
 			//app.showAlert(JSON.stringify("favorites"));
-			viewModel = kendo.observable({
+			viewModel = kendo.observable(
+            {
 				onVmChange: function (e) {
 					sb = document.getElementById("saveMedia");
 					sb.style.display = "";
-					//app.showAlert(JSON.stringify(app.Users.currentUser.data.jsonDirectory))
-					//var name = e.data.name,
-					//	dataItem = e.data;
-					//	for(var i=0;i<app.Users.currentUser.data.jsonDirectory.length;i++){
-					//		var item = app.Users.currentUser.data.jsonDirectory[i];
-					//		if(item.name=name){
-								//item.selected=!dataItem.selected;
-					//			break;
-					//		}
-					//	}
-					//app.notify.showShortTop("id: " + name + ", selected: " + dataItem.selected);
 				},
-				ds: new kendo.data.DataSource({
-					data: app.Users.currentUser.data.jsonDirectory,
-					group:{field:"group"}
-				})
-			});
+				ds: new kendo.data.DataSource(
+                    {
+    					data: app.Users.currentUser.data.jsonDirectory,
+    					group:{field:"group"}
+    				}
+                ),
+                myMediaHeading: appSettings.messages.myMedia
+			}
+            );
 			//app.showAlert(JSON.stringify("viewModel"));
 			app.Update.viewModel = viewModel;
 			if(!app.Update.viewModel || !app.Update.viewModel.ds) app.showError("No viewModel");
