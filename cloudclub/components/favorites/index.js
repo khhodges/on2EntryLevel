@@ -356,20 +356,6 @@ app.favorites.directions = function () {
     
 app.favorites.openListSheet = function (e) {
     if (!app.Places.locationViewModel.checkSimulator()) {
-        
-                               
-                            //var myList = app.favorites.favoritesModel.dataSource.data();
-                            //for (var j = 0;j < myList.length ;j++) {
-                            //    if (app.favorites.favoritesModel.dataSource.data()[j].Jsonfield.indexOf(app.favorites.favoritesModel.dataSource.data()[0].PlaceId)) {
-                            //        //delete PlaceID;
-                            //        var dataItem = app.favorites.favoritesModel.dataSource.data()[j];
-                            //        app.favorites.favoritesModel.dataSource.remove(dataItem);
-                            //        break;
-                            //    }
-                            //                                        }
-                            
-
-        
         for (var i = 0;i < app.favorites.favoritesModel.dataSource.data().length;i++) {
             if (app.favorites.favoritesModel.dataSource.data()[i].Jsonfield.indexOf(e.sender.wrapper.context.getElementsByTagName('h3')[0].innerText) > 0) {
                 app.Places.favoriteItem = app.favorites.favoritesModel.dataSource.data()[i];

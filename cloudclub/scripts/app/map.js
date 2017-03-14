@@ -1183,13 +1183,24 @@ app.Places = (function () {
                 };
                 var toCustomHtml = function () {
                     try {
+                        var introHtml;
                         var a = Address()
                         var i = infoString()
                         var id = myId()
                         var n = name()
                         var p = Phone()
                         var w = Website()
-                        //var p = picture()
+                        var pp = picture()
+                        var gp = getPartner();
+                        if(!p && !w){
+                            introHtml = '<div>'
+                            +'<h3 >'+n+'</h3>'
+                    		+'<img src = '+pp+' style="padding: 10px 0 0 15px" width="90%" height="auto">'
+                    		+'<p >'+a+'</p>'
+                    		+'<p>'+gp.Text +'</p>'
+                    		+'<p></p></div>'
+                            return introHtml;
+                        }
                         var programmedOptions;
                         var customList = htmlOptions.uris;
                         var customOptions = htmlOptions.defaultOptions.display;
@@ -1204,12 +1215,10 @@ app.Places = (function () {
                             var option = customOptions[k];
                             workingList = workingList.concat(htmlOptions.defaultOptions[option]);
                         }
-                        var introHtml = '<div><div class="iw-subTitle"><br/><a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
-                                        + w + '\');"><u>'
-                                        + n + '</u></a></div>' // Title Row
+                        introHtml = '<div><div class="iw-subTitle"><br/><a data-role="button" class="butn" data-rel="external" onclick="app.Places.browse(\''
+                                        + w + '\');"><u>' + n + '</u></a></div>' // Title Row
                                         + '<div class="image-with-text"><a data-role="button" class="butn" data-rel="external" href="tel:'
-                                        + p + '">'
-                                        + '<img src="styles/images/phone2.png" alt="'
+                                        + p + '">'+ '<img src="styles/images/phone2.png" alt="'
                                         + p + '" height="auto" width="25%" style="padding:-5px"></a><p><small>' //Phone Icon address and info next
                                         + a + ', ' + i + '</small></div><div class="iw-subTitle" style="padding-top:22px">Social Media Links</div><div>' //Address etc
                     } catch (e) {
@@ -1397,7 +1406,11 @@ app.Places = (function () {
                             partnerRow.Location.lng = partnerRow.location.lng;
                         }
                     }
-                    return partnerRow.Location.lat;
+                    if (partnerRow.Location.lat) {
+                        return partnerRow.Location.lat;
+                    }else {
+                        return partnerRow.Location.latitude;
+                    }
                 };
                 var lng = function () {
                     if(!partnerRow.Location && partnerRow.location){
@@ -1417,7 +1430,11 @@ app.Places = (function () {
                             partnerRow.Location.lng = partnerRow.location.lng;
                             }   
                      }
-                    return partnerRow.Location.lng;
+                    if (partnerRow.Location.lng) {
+                        return partnerRow.Location.lng;
+                    }else {
+                        return partnerRow.Location.longitude;
+                    }
                 };
                 var picture = function () {
                     var iconText = partnerRow.Icon;
@@ -1426,6 +1443,9 @@ app.Places = (function () {
                     } else {
                         return app.helper.resolvePictureUrl(iconText);
                     }
+                };
+                var getPartner = function () {
+                    return partnerRow;
                 };
                 var Address = function () {
                     if (app.isNullOrEmpty(partnerRow.Address && googleData !== "")) {
@@ -1588,6 +1608,37 @@ app.Places = (function () {
                         app.notify.showLongBottom(appSettings.messages.tryAgain + partnerRow.vicinity + e.message);
                         return;
                     }
+                };
+                this.setActivityRow = function (place, callback) {
+                    partnerRow = place;
+                    dataType = "Activity";
+                    options.zIndex = 12;                    
+                    options.icon.url = 'styles/images/camera.png';
+                    partnerRow.Icon = place.Picture;
+                    partnerRow.Place = place.Title;
+                    geocoder.geocode({
+                                         'location': {lat: partnerRow.Location.latitude, lng: partnerRow.Location.longitude}
+                                     },
+                                     function (results, status) {
+                                         if (status !== google.maps.GeocoderStatus.OK) {
+                                             console.error(status);
+                                             return false;
+                                         } else {
+                                             if (results[0]) {
+                                                 partnerRow.vicinity = results[0].formatted_address; 
+                                                 partnerRow.placeId = results[0].place_id;
+                                                 options.position = { lng: partnerRow.Location.longitude, lat: partnerRow.Location.latitude };
+                                                 options.vicinity = partnerRow.vicinity;
+                                                 partnerRow.icon = partnerRow.Picture;
+                                                 try {
+                                                     initClass();
+                                                 } catch (e) {
+                                                     app.notify.showLongBottom(appSettings.messages.tryAgain + partnerRow.vicinity + e.message);
+                                                 }
+                                              callback();
+                                             }
+                                         }
+                                     })
                 };
                 this.setPlaceRow = function (place) {
                     partnerRow = place;

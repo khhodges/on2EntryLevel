@@ -490,6 +490,10 @@ input[type='week']
 {
 	background-image: url(images/icon-comment.png);
 }
+	#friendsApp .nav-button-directions
+	{
+		background-image: url(images/signpost.png);
+	}
 #friendsApp .nav-button-chat
 {
 	background-image: url(images/share.png);
@@ -954,6 +958,10 @@ input[type='week']
 	#friendsApp .nav-button-comment
 	{
 		background-image: url(images/icon-comment@2x.png);
+	}
+	#friendsApp .nav-button-directions
+	{
+		background-image: url(images/signpost.png);
 	}
 	#friendsApp .nav-button-chat
 	{

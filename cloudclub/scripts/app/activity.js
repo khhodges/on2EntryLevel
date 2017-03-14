@@ -120,19 +120,37 @@ app.Activity = (function () {
 				activities.sync();
 			}
 		};
-		var addComment = function () {
-			$enterComment = document.getElementById('enterComment');
-			if ($enterComment.style.display === 'block') {
-				$enterComment.style.display = 'none';
-				validator.hideMessages();
-			} else {
-				$enterComment.style.display = 'block';
-				document.getElementById('newComment').value = "";
-			}
-		};
+        var addComment = function () {
+            $enterComment = document.getElementById('enterComment');
+            if ($enterComment.style.display === 'block') {
+                $enterComment.style.display = 'none';
+                validator.hideMessages();
+            } else {
+                $enterComment.style.display = 'block';
+                document.getElementById('newComment').value = "";
+            }
+        };
+        var callback = function() {
+            // define as a specific Partner
+            app.Places.locationViewModel.trip.put(partnerV.vicinity(), partnerV);               
+            app.favorites.directions();
+        };
+        var showDirections = function() {
+            var item = activity;
+            if (!app.Places.locationViewModel.trip) {
+                app.Places.locationViewModel.trip = new app.Places.List;
+            }
+            var partnerV = new app.Places.newPartner();
+            partnerV.setActivityRow(item, function() {
+                // define as a specific Partner
+                app.Places.locationViewModel.trip.put(partnerV.vicinity(), partnerV);   
+                app.mobileApp.navigate("#views/mapView.html");
+                //app.favorites.directions();
+            });
+        };
 
-		var addStar = function () {
-			if (document.getElementById("one").style.visibility === "hidden") {
+        var addStar = function () {
+            if (document.getElementById("one").style.visibility === "hidden") {
 				document.getElementById("one").style.visibility = "visible";
 				stars = 1;
 			} else {
@@ -203,6 +221,7 @@ app.Activity = (function () {
 			remove: removeActivity,
 			addComment: addComment,
 			saveComment: saveComment,
+            showDirections: showDirections,
 			activity: function () {
 				return activity;
 			},
