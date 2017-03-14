@@ -291,14 +291,15 @@ app.Places = (function () {
                        app.Places.locationViewModel.list = new app.Places.List;
                    },
                    openListSheet: function (e) {
-                        if (!app.Places.locationViewModel.checkSimulator()) {
+                        if (!app.Places.locationViewModel.checkSimulator()) 
+                       {
                             var myList = app.Places.locationViewModel.list.array();
                             for (var i = 0;i < myList.length ;i++) {
                                 if (myList[i].name === e.sender.events.currentTarget.innerText) {
                                     app.Places.favoriteItem = myList[i];
                                     break;
                                 }
-}
+                                                                    }
                             }
                             if (!app.Places.locationViewModel.checkSimulator()) {
                            app.Places.locationViewModel.showListSheet({
@@ -308,7 +309,6 @@ app.Places = (function () {
                                    appSettings.messages.list5,
                                    appSettings.messages.list6,
                                    appSettings.messages.list3
-                                   // appSettings.messages.list4,
                                    // appSettings.messages.list5
                                ],
                                   'addCancelButtonWithLabel': 'Cancel',
@@ -358,8 +358,6 @@ app.Places = (function () {
                                                 if(app.Places.favoriteItem.website !== undefined) app.openLink(app.Places.favoriteItem.website);
                                                //app.mobileApp.navigate("#views/updateView.html");
                                                break;
-                                               //case 4://
-                                               //	break;
                                            default:
                                                //app.notify.showShortTop('You will need to upgrade to use this feature.');
                                                break;
@@ -702,6 +700,7 @@ app.Places = (function () {
                     }
                 }
                 update = true;
+                app.Places.initLocation();
                 app.notify.getLocation(function() {
                     app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, [])
                 })
@@ -750,22 +749,29 @@ app.Places = (function () {
                 map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
                 geocoder = new google.maps.Geocoder();
                 //add App Site
-               homePosition = { lat: app.cdr.lat, lng: app.cdr.lng };//new google.maps.LatLng(app.cdr.lng, app.cdr.lat);
-               //var position = homePosition;
-               //that.toggleLoading();
-               if (!app.Places.locationViewModel.markers) {
-                   app.Places.locationViewModel.markers = new Array;
-                   allBounds = new google.maps.LatLngBounds();
-               }
-               if (!app.Places.locationViewModel.details) {
-                   app.Places.locationViewModel.details = new Array;
-               }
+                homePosition = { lat: app.cdr.lat, lng: app.cdr.lng };//new google.maps.LatLng(app.cdr.lng, app.cdr.lat);
+                //var position = homePosition;
+                //that.toggleLoading();
+                if (!app.Places.locationViewModel.markers) {
+                    app.Places.locationViewModel.markers = new Array;
+                    allBounds = new google.maps.LatLngBounds();
+                }
+                if (!app.Places.locationViewModel.details) {
+                    app.Places.locationViewModel.details = new Array;
+                }
                 var partnerV = new app.Places.newPartner();
-                partnerV.setPartnerRow(app.cdr.app);   
+                if (!app.cdr.app) {
+                    app.showAlert("Please try again...");
+                    app.mobileApp.navigate("views/mapView.html");
+                }
+                else{
+                partnerV.setPartnerRow(app.cdr.app);  
+                app.Places.visiting = partnerV;
+                app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV); 
                 app.notify.showLongBottom("Loading CloudClub Partner. Click the star to research this Partner.")
                 app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
                 streetView = map.getStreetView();
-            },
+            }},
             show: function () {
                 app.mobileApp.pane.loader.show();
                 if (app.Users.currentUser.data && app.Users.currentUser.data.jsonList.partner.rememberMe === true) {

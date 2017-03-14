@@ -915,6 +915,8 @@ var appSettings = {
         welcome: "\n Controleer genieten van deze geavanceerde mobiele applicatie met de gemeenschap toegang tot geïntegreerde en op maat social media. \n Geen login nodig is om te zoeken in sociale media en vinden de lokale Hot Spots of vind maatschappelijke activiteiten \ Nfor detachering en geavanceerde functies, loyaliteit clubs lidmaatschap.. en directe meldingen die u nodig hebt aan te sluiten en meld u aan. Extra hulp is te vinden op http://www.on2see.com \n \n "
     },
     english: {
+        comfirm: "Are you sure?",
+        title:"Confirm Delete",
         serviceL1:"Free Membership",
         myMedia:"Selecting more than 8 options depends on screen size and service level. More options are available if you upgrade your service level.",
         removeQuestion:"Do you want to remove ",
@@ -926,6 +928,7 @@ var appSettings = {
         list4:"Show Google Reviews",
         list5:"Add to Trip",
         list6:"Show Your Trip Directions",
+        list7:"Delete this item?",
         whatToDo:'What do you want to do?',
         mapList1:'Show List of Places',
         mapList2:'Refresh Current Location',

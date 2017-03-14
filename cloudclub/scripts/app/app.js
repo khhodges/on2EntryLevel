@@ -253,7 +253,7 @@ var app = (function (win) {
                     var data = app.everlive.data('Places');
                     data.get(filter)
                         .then(function(data){
-                            app.cdr.app = data.result[0]
+                            app.cdr.app = data.result[0];
                         },
                         function(error){
                             alert(JSON.stringify(error));
@@ -1136,15 +1136,19 @@ var app = (function (win) {
 
             function success(pos) {
                 var crd = pos.coords;
-                crd.lat = crd.latitude;
-                crd.lng = crd.longitude;
+                if (!app.cdr) {
+                    app.cdr = crd;
+                }
+                app.cdr.lat = crd.latitude;
+                app.cdr.lng = crd.longitude;
+                //app.showAlert(JSON.stringify(app.cdr));
                 var continueButton = document.getElementById("continueButton");
                 continueButton.style.display = "";
                 var setupBtn = document.getElementById("setupBtn");
                 setupBtn.style.display = "";
-                app.cdr = crd;
+                //app.cdr = crd;
                 localStorage.setItem("lastLocation", JSON.stringify(cdr))
-                callBack(crd);
+                callBack(app.cdr);
             };
 
             function error(err) {

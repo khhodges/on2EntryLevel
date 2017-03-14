@@ -356,9 +356,23 @@ app.favorites.directions = function () {
     
 app.favorites.openListSheet = function (e) {
     if (!app.Places.locationViewModel.checkSimulator()) {
-        for (var i = 0;i < app.favorites.favoritesModel.dataSource._pristineData.length;i++) {
-            if (app.favorites.favoritesModel.dataSource._pristineData[i].Jsonfield.indexOf(e.sender.wrapper.context.getElementsByTagName('h3')[0].innerText) > 0) {
-                app.Places.favoriteItem = JSON.parse(app.favorites.favoritesModel.dataSource._pristineData[i].Jsonfield);
+        
+                               
+                            //var myList = app.favorites.favoritesModel.dataSource.data();
+                            //for (var j = 0;j < myList.length ;j++) {
+                            //    if (app.favorites.favoritesModel.dataSource.data()[j].Jsonfield.indexOf(app.favorites.favoritesModel.dataSource.data()[0].PlaceId)) {
+                            //        //delete PlaceID;
+                            //        var dataItem = app.favorites.favoritesModel.dataSource.data()[j];
+                            //        app.favorites.favoritesModel.dataSource.remove(dataItem);
+                            //        break;
+                            //    }
+                            //                                        }
+                            
+
+        
+        for (var i = 0;i < app.favorites.favoritesModel.dataSource.data().length;i++) {
+            if (app.favorites.favoritesModel.dataSource.data()[i].Jsonfield.indexOf(e.sender.wrapper.context.getElementsByTagName('h3')[0].innerText) > 0) {
+                app.Places.favoriteItem = app.favorites.favoritesModel.dataSource.data()[i];
                 break;
             }
         }
@@ -368,7 +382,8 @@ app.favorites.openListSheet = function (e) {
                                         'buttonLabels': [
                                             appSettings.messages.list3,
                                             appSettings.messages.list5,
-                                            appSettings.messages.list6
+                                            appSettings.messages.list6,
+                                            appSettings.messages.list7
                                         ],
                                         'addCancelButtonWithLabel': 'Cancel',
                                         'androidEnableCancelButton': true, // default false
@@ -393,14 +408,24 @@ app.favorites.showListSheet = function (options) {
                 setTimeout(function () {
                     switch (buttonIndex) {
                         case 1: // Visit home Page
-                            app.helper.openExternalInAppBrowser(app.Places.favoriteItem.website);
+                            app.helper.openExternalInAppBrowser(app.Places.favoriteItem.Jsonlist.website);
                             break;
                         case 2:// Add to Trip
-                            app.Places.addToTrip(app.Places.favoriteItem);
+                            app.Places.addToTrip(app.Places.favoriteItem.Jsonlist);
                         	break;
                         case 3:// Directions to Trip
                             app.favorites.directions();
                         	break;
+                       case 4://Delete Favorite
+                               app.showConfirm(appSettings.messages.comfirm,appSettings.messages.title,function(e){
+                                   //app.showAlert(JSON.stringify(e));
+                                   if(e===1){
+                                       app.notify.showLongBottom("This item will be removed.");
+                                       app.favorites.favoritesModel.dataSource.remove(app.Places.favoriteItem);
+                                       app.favorites.favoritesModel.dataSource.sync();
+                                   }
+                               });
+                           	break;
                         default:
                             //app.notify.showShortTop('You will need to upgrade to use this feature.');
                             break;
