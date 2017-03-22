@@ -269,6 +269,8 @@ app.Places = (function () {
                         //if(map.zoom < newZoom)
                         map.setZoom(newZoom);
                         map.setCenter(bounds.getCenter());
+                        infoWindow.close();                        
+                        map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
                         return newZoom;
                     },
 
@@ -648,16 +650,21 @@ app.Places = (function () {
                                    }
                                })
                            }
-                           var defaultSites = appSettings.defaultSites;
-                           for (var i = 0; i < defaultSites.length; i++) {
-                               var site = defaultSites[i];
-                               addDEL(document.getElementById(site));
+                           //var defaultSites = appSettings.defaultSites;
+                           var xx = JSON.stringify(appSettings.infoContent).split('"');
+                           for(var j=1;j<xx.length-2;j+=4){
+                               var yy = xx[j]; 
+                               console.log(yy); 
+                               var site = yy;
+                               if(xx[j+2].indexOf('data-url')>0){
+                                addDEL(document.getElementById(site));
+                                   }
                            }
                        });
                            function addDEL(name) {
                                if (name) {
                                    name.addEventListener('click', function () {
-                                       if (this.attributes.valueOf()["data-url"]) {
+                                       if (this.attributes.valueOf()["data-url"].length >4) {
                                            app.Places.browse(this.attributes.valueOf()["data-url"].value.replace("#:city#", app.cdr.myCity).replace("#:state#", app.cdr.myState).replace("#:CITY#", app.cdr.myCity.replace(' ', '')).replace("#:STATE#", app.cdr.myState.replace(' ', '')))
                                        }else {
                                            app.Places.browse("http://www." + name.firstElementChild.alt + ".com/search?q=" + app.cdr.myCity)
@@ -691,17 +698,17 @@ app.Places = (function () {
                 app.mobileApp.navigate("views/listView.html")
             },
             updatePartnerLocation: function () {
-                if (app.Places.locationViewModel.list && app.Places.locationViewModel.list.keys.length) {
-                    for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
-                        try {
-                            app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]).clearMark();
-                        } catch (e) {
+                app.notify.getLocation(function() {
+                    if (app.Places.locationViewModel.list && app.Places.locationViewModel.list.keys.length) {
+                        for (var i = 0; i < app.Places.locationViewModel.list.keys.length; i++) {
+                            try {
+                                app.Places.locationViewModel.list.get(app.Places.locationViewModel.list.keys[i]).clearMark();
+                            } catch (e) {
+                            }
                         }
                     }
-                }
-                update = true;
-                app.Places.initLocation();
-                app.notify.getLocation(function() {
+                    update = true;
+                    app.Places.initLocation();
                     app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, [])
                 })
             },           
@@ -793,7 +800,8 @@ app.Places = (function () {
                     app.Places.locationViewModel = new LocationViewModel();
                 }
                 //resize the map in case the orientation has been changed while showing other tab
-                google.maps.event.trigger(map, "resize");
+                //google.maps.event.trigger(map, "resize");
+                map.setZoom(app.Places.locationViewModel.getBoundsZoomLevel(allBounds));
             },
             hide: function () {
                 //hide loading mask if user changed the tab as it is only relevant to location tab
@@ -1196,9 +1204,9 @@ app.Places = (function () {
                             introHtml = '<div>'
                             +'<h3 >'+n+'</h3>'
                     		+'<img src = '+pp+' style="padding: 10px 0 0 15px" width="90%" height="auto">'
+                    		+'<p>'+app.formatDate(gp.CreatedAt)+'</p></div>'
                     		+'<p >'+a+'</p>'
                     		+'<p>'+gp.Text +'</p>'
-                    		+'<p></p></div>'
                             return introHtml;
                         }
                         var programmedOptions;

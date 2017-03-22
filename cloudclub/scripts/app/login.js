@@ -87,15 +87,15 @@ app.Login = (function () {
 					localStorage.setItem("username", username);
 					localStorage.setItem("password", password);
 					// EQATEC analytics monitor - track login type
-					if (isAnalytics && !app.helper.checkSimulator()) {
-						analytics.TrackFeature('Login.Regular');
-					}
-					if (username !== priorUser || pushToken === 'fake_push_token' || app.isNullOrEmpty(pushToken)) {
-						// initializing the push notifications
-						app.PushRegistrar.enablePushNotifications();
-						//app.PushRegistrar.updatePushNotifications();
-						//pushEnabledForUser = loggedInUser;
-					}
+                    if (isAnalytics && !app.helper.checkSimulator()) {
+                        analytics.TrackFeature('Login.Regular');
+                    }
+                    //if (username !== priorUser || pushToken === 'fake_push_token' || app.isNullOrEmpty(pushToken)) {
+                        // initializing the push notifications
+                        app.PushRegistrar.enablePushNotifications();
+                        //app.PushRegistrar.updatePushNotifications();
+                        //pushEnabledForUser = loggedInUser;
+                    //}
 					app.mobileApp.hideLoading();
 					var logonB = document.getElementById("logonButton");
 					var logoffB = document.getElementById("logoffButton");
@@ -104,7 +104,16 @@ app.Login = (function () {
 					return app.Users.load();
 				})
 				.then(function () {
-
+                    
+                    app.PushRegistrar.enablePushNotifications();
+                    app.everlive.push.areNotificationsEnabled({ 
+                              'channelName': 'PushChannelName' // channelName is required for Windows Phone devices
+                          }, 
+                          function successCallback(areEnabled) {
+                              app.showAlert(JSON.stringify(areEnabled));// check whether the notifications are enabled or not
+                          } , function errorCallback(err) {
+                              app.showAlert(JSON.stringify(err));// an error has occurred
+                          });
 					app.mobileApp.navigate('views/mapView.html'); //'components/notifications/view.html');
 				})
 				.then(null,

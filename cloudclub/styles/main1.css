@@ -492,7 +492,7 @@ input[type='week']
 }
 	#friendsApp .nav-button-directions
 	{
-		background-image: url(images/signpost.png);
+		background-image: url(images/signpost-48x48.png);
 	}
 #friendsApp .nav-button-chat
 {
@@ -961,7 +961,7 @@ input[type='week']
 	}
 	#friendsApp .nav-button-directions
 	{
-		background-image: url(images/signpost.png);
+		background-image: url(images/signpost-48x48.png);
 	}
 	#friendsApp .nav-button-chat
 	{

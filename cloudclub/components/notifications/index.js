@@ -114,7 +114,7 @@ app.notifications = kendo.observable({
 															 "longitude":-80.07,
 															 "latitude":26.3
 														 },
-									"$maxDistanceInMiles":25
+									"$maxDistanceInMiles":2000
 								}
 							})}
 					}

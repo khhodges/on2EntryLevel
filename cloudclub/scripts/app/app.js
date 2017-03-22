@@ -117,12 +117,23 @@ var app = (function (win) {
             notificationCallbackIOS: on2SeeIosPushReceived
         },
         enablePushNotifications: function () {
+            // app name
+            cordova.getAppVersion.getAppName(function(value) { alert(value) });
+
+            // package name
+            cordova.getAppVersion.getPackageName(function(value) { alert(value) });
+
+            // version number
+            cordova.getAppVersion.getVersionNumber(function(value) { alert(value) });
+
+            // version code
+            cordova.getAppVersion.getVersionCode(function(value) { alert(value) });
             app.PushRegistrar.pushSettings.customParameters = {
                 "LastLoginDate": new Date(),
                 "CodeRelease": "CC Release 1.2.1 - 1/7/2017"
             };
-            //app.notify.showShortTop("Initializing push notifications for " + device.platform + ', '
-            + app.PushRegistrar.pushSettings.customParameters.CodeRelease;
+            app.notify.showShortTop("Initializing push notifications for " + device.platform + ', '
+            + app.PushRegistrar.pushSettings.customParameters.CodeRelease);
 
             app.everlive.push.register(app.PushRegistrar.pushSettings)
                 .then(
@@ -156,6 +167,7 @@ var app = (function (win) {
             app.everlive.push.getRegistration(
                 function (obj) {
                     app.notifyStatus = obj.result;
+                    app.showAlert(JSON.stringify(obj))
                     localStorage.setItem("PushToken", obj.result.PushToken);
                     if (app.notifyStatus.PushToken !== "fake_push_token") {
                         app.notify.showLongBottom("Notification service is ON.");// + JSON.stringify(obj.result));
@@ -173,7 +185,6 @@ var app = (function (win) {
         },
         create: function (sender, message, reference, recipients) {
             var filter;
-
             if (Array.isArray(recipients) && recipients.length > 0) {
                 // filter on the userId field in each device
                 filter = {
@@ -191,10 +202,8 @@ var app = (function (win) {
                     "latitude": app.cdr.latitude
                 }
             };
-
             var pushTitle = "CloudClub Message";
             var pushMessage = sender + ": " + "Hello! " + message;
-
             // constructing the payload for the notification specifically for each supported mobile platform
             // following the structure from here: http://docs.telerik.com/platform/backend-services/features/push-notifications/structure
             var androidPayload = {
@@ -205,7 +214,6 @@ var app = (function (win) {
                     "smallIcon": "iconcee24"
                 }
             };
-
             var iosPayload = {
                 "aps": {
                     "alert": pushMessage,
@@ -214,11 +222,10 @@ var app = (function (win) {
                 },
                 "customData": customData
             };
-            var x, y = new Date();
+            var x = new Date(), y = new Date();
             x.setDate(x.getDate() + 7);
             var notificationObject = {
                 "Filter": JSON.stringify(filter),
-                "NotificationDate": y,
                 "ExpirationDate": x,
                 "Android": androidPayload,
                 "IOS": iosPayload
@@ -226,17 +233,6 @@ var app = (function (win) {
             return notificationObject;
         }
     };
-
-    // var key;
-    // var baseline = {
-    //     set: function (x) {
-    //         key = x;
-    //     },
-    //     get: function () {
-    //         return key;
-    //     }
-    // };
-
     var onDeviceReady = function () {
         //app.notify.showShortTop("Device ready: " + device.platform);
         app.PushRegistrar.checkNotify();
@@ -510,15 +506,22 @@ var app = (function (win) {
                     logonB.style.display = "";
                 });
         },
-        getPartnerFollowers: function (name, notify) {
+        listMembers: function(){
+            $("#club-listview").kendoMobileListView({
+                dataSource: clubList,
+                template: "#: DisplayName #",
+                selectable: "multiple",
+                change: function () {
+                    alert("Change event!")
+                }
+            })
+                .data("kendoListView");
+            $("#places-listview").on("data-swipe", "li", app.Places.locationViewModel.openListSheet);            
+        },
+        getPartnerFollowers: function (name, note) {
             var clubList;
             var query = new Everlive.Query();
             query.where().eq('Place', name);
-            // query.where({
-            // 	field: "Title",
-            // 	operator: "startswith",
-            // 	value: name
-            // });
             var partner = app.everlive.data('Places');
             query.expand({ "Members": { "TargetTypeName": "Users", "Fields": { "DisplayName": 1, "Email": 1, "Phone": 1 } } });
             partner.get(query).then(function (data) {
@@ -530,61 +533,64 @@ var app = (function (win) {
                     try {
                         var followers = new Array(data.result[0].Members.length)
                         for (var i = 0; i < clubList.length; i++) {
-                            var follower = data.result[0].Members[i];
-                            followers.push(follower.Id);
+                           var follower = data.result[0].Members[i];
+                            followers[i] = follower.Id ;
                             console.log(follower.Email);
-                        }
-                        if (notify) {
-                            app.notify.showLongBottom(appSettings.messages.broadcast);
-                            var notify = app.PushRegistrar.create(name, app.Activity.activity().Text, app.Activity.activity().Id, followers)
-                            app.everlive.push.notifications.create(
-                                notify,
-                                function (data) {
-                                    var createdAt = app.formatDate(data.result.CreatedAt);
-                                    app.notify.showLongBottom(appSettings.messages.broadcast + createdAt);
-                                    var data = el.data('Notifications');
-                                    var place = "Sent from " + app.Activity.activity().Title;
-                                    data.create({
-                                        'Place': place,
-                                        'Reference': app.Activity.activity().Id,
-                                        'Status': true,
-                                        'Location': {
-                                            "latitude": app.cdr.lat,
-                                            "longitude": app.cdr.lng
-                                        }
-                                    },
-                                        function (data) {
-                                            app.notify.showLongBottom(appSettings.messages.saved + data.result.Id);
-                                        },
-                                        function (error) {
-                                            app.notify.showLongBottom(appSettings.messages.tryAgain + error.message);
-                                        });
-                                },
-                                function (error) {
-                                    app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
-                                })
-                        } else {
-
-                            $("#club-listview").kendoMobileListView({
-                                dataSource: clubList,
-                                template: "#: DisplayName #",
-                                selectable: "multiple",
-                                change: function () {
-                                    alert("Change event!")
-                                }
-                            })
-                                .data("kendoListView");
-                            $("#places-listview").on("data-swipe", "li", app.Places.locationViewModel.openListSheet);
-                        }
+                        }                        
+                        $("#club-listview").kendoMobileListView({
+                            dataSource: clubList,
+                            template: "#: DisplayName #",
+                            selectable: "multiple",
+                            change: function () {
+                                alert("Change event!")
+                            }
+                        });
+                    app.helper.sendNotification(followers);
                     } catch (e) {
                         app.showError(JSON.stringify(e))
                     }
                 }
+                
             },
                 function (error) {
                     app.showError("Followers error " + JSON.stringify(error))
                 });
+        }, 
+        sendNotification: function(followers) {
+            app.notify.showLongBottom(appSettings.messages.broadcast);
+            try {
+                var notify = app.PushRegistrar.create(app.Activity.activity().Title, app.Activity.activity().Text, app.Activity.activity().Id, followers)
+                app.everlive.push.notifications.create(
+                    notify,
+                    function (data) {
+                        var createdAt = app.formatDate(new Date());
+                        app.notify.showLongBottom(appSettings.messages.broadcast + createdAt);
+                        var data = el.data('Notifications');
+                        var place = "Sent from " + app.Activity.activity().Title;
+                        data.create({
+                                        'Place': place,
+                                        'Reference': app.Activity.activity().Id,
+                                        'Status': true,
+                                        'Location': {
+                                "latitude": app.cdr.lat,
+                                "longitude": app.cdr.lng
+                            }
+                                    },
+                                    function (data) {
+                                        app.notify.showLongBottom(appSettings.messages.saved + data.result.Id);
+                                    },
+                                    function (error) {
+                                        app.notify.showLongBottom(appSettings.messages.tryAgain + error.message);
+                                    });
+                    },
+                    function (error) {
+                        app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
+                    })
+            }catch(e){
+                console.log(e.message);
+            }
         },
+        
         activityRoute: function (e) {
             // app.notify.showShortTop(JSON.stringify(e))
             if (app.isOnline()) {

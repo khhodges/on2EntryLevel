@@ -1044,6 +1044,12 @@ var appSettings = {
                 "icon": "",
                 "Path": "",
                 "selected": true
+            },
+            {
+                "name": "redbubble",
+                "icon": "",
+                "Path": "",
+                "selected": true
             }
         ],
         "defaultOptions": {
@@ -1086,43 +1092,44 @@ var appSettings = {
         ]
     },
     infoContent: {
+        "redbubble": "<a id='redbubble' data-role='button' class='butn' style='padding:5px' data-url='http://www.redbubble.com'><img src='styles/images/rbtext.jpg' alt='RedBubble' height='auto' width='20%'/></a>",
         "iSee": "<a id='iSee' data-role='button' class='butn' style='padding:5px'><img src='styles/images/iSee.png' alt='iSee' height='auto' width='20%'/></a>",
         "follow": "<a id='iSee' data-role='button' class='butn' style='padding:5px'><img src='styles/images/follow.png' alt='follow' height='auto' width='20%'/></a>",
         "camera": "<a id='camera' data-role='button' class='butn' style='padding:5px'> <img src='styles/images/camera.png' alt='cameraLink' height='auto' width='20%'></a>",
         "notifications": "<a id='notifications' data-role='button' class='butn' style='padding:5px'><img src='styles/images/notifications.png' alt='notifications' height='auto' width='20%'/></a>",
         "goHome": "<a id='goHome' data-role='button' data-lat=#lat# data-lng=#lng#class='butn' style='padding:5px'><img src='styles/images/goHome.png' alt='google' height='auto' width='20%'/></a>",
-        "facebook": "<a id='facebook' data-role='button' class='butn' style='padding:5px'><img src='styles/images/facebook.png' alt='facebook' height='auto' width='20%'/></a>",
+        "facebook": "<a id='facebook' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/facebook.png' alt='facebook' height='auto' width='20%'/></a>",
         "yelp": "<a id='yelp' data-role='button' class='butn' style='padding:5px' data-url='https://m.yelp.com/search?find_loc=#:city#+#:state#'><img src='styles/images/yelp.png' alt='yelp' height='auto' width='20%'/></a>",
         "instagram": "<a id='instagram' data-role='button' class='butn' style='padding:5px' data-url='http://www.instagram.com/#:STATE#/' ><img src='styles/images/instagram.png' alt='instagram' height='auto' width='20%'/></a>",
-        "nfl": "<a id='nfl' data-role='button' class='butn' style='padding:5px'><img src='styles/images/nfl.png' alt='nfl' height='auto' width='20%'/></a>",
-        "zomato": "<a id='zomato' data-role='button' class='butn' style='padding:5px'><img src='styles/images/zomato.png' alt='zomato' height='auto' width='20%'/></a>",
-        "ESPN": "<a id='ESPN' data-role='button' class='butn' style='padding:5px'><img src='styles/images/ESPN.png' alt='ESPN' height='auto' width='20%'/></a>",
-        "bloomberg": "<a id='bloomberg' data-role='button' class='butn' style='padding:5px'><img src='styles/images/bloomberg.png' alt='bloomberg' height='auto' width='20%'/></a>",
-        "angiesList": "<a id='angiesList' data-role='button' class='butn' style='padding:5px'><img src='styles/images/angiesList.png' alt='angiesList' height='auto' width='20%'/></a>",
+        "nfl": "<a id='nfl' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/nfl.png' alt='nfl' height='auto' width='20%'/></a>",
+        "zomato": "<a id='zomato' data-role='button' class='butn' style='padding:5px data-url='http''><img src='styles/images/zomato.png' alt='zomato' height='auto' width='20%'/></a>",
+        "ESPN": "<a id='ESPN' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/ESPN.png' alt='ESPN' height='auto' width='20%'/></a>",
+        "bloomberg": "<a id='bloomberg' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/bloomberg.png' alt='bloomberg' height='auto' width='20%'/></a>",
+        "angiesList": "<a id='angiesList' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/angiesList.png' alt='angiesList' height='auto' width='20%'/></a>",
         "bing": "<a id='bing' data-role='button' class='butn' style='padding:5px' data-url='http://www.bing.com/search?q=#:city#'><img src='styles/images/bing.png' alt='bing' height='auto' width='20%'/></a>",
-        "blogger": "<a id='blogger' data-role='button' class='butn' style='padding:5px'><img src='styles/images/blogger.png' alt='blogger' height='auto' width='20%'/></a>",
-        "groupon": "<a id='groupon' data-role='button' class='butn' style='padding:5px'><img src='styles/images/groupon.png' alt='groupon' height='auto' width='20%'/></a>",
-        "youtube": "<a id='youtube' data-role='button' class='butn' style='padding:5px'><img src='styles/images/youtube.png' alt='YouTube' height='auto' width='20%'/></a>",
+        "blogger": "<a id='blogger' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/blogger.png' alt='blogger' height='auto' width='20%'/></a>",
+        "groupon": "<a id='groupon' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/groupon.png' alt='groupon' height='auto' width='20%'/></a>",
+        "youtube": "<a id='youtube' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/youtube.png' alt='YouTube' height='auto' width='20%'/></a>",
         "flickr": "<a id='flickr' data-role='button' class='butn' style='padding:5px'><img src='styles/images/flickr.png' alt='flickr' height='auto' width='20%'/></a>",
         "settings": "<a id='settings' data-role='button' class='butn' style='padding:5px'><img src='styles/images/settings.png' alt='settings' height='auto' width='20%'/></a>",
         "contacts": "<a id='contacts' data-role='button' class='butn' style='padding:5px'><img src='styles/images/contacts.png' alt='contacts' height='auto' width='20%'/></a>",
-        "pintrest": "<a id='pintrest' data-role='button' class='butn' style='padding:5px'><img src='styles/images/pintrest.png' alt='pintrest' height='auto' width='20%'/></a>",
-        "news": "<a id='news' data-role='button' class='butn' style='padding:5px'><img src='styles/images/news.png' alt='news' height='auto' width='20%'/></a>",
+        "pintrest": "<a id='pintrest' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/pintrest.png' alt='pintrest' height='auto' width='20%'/></a>",
+        "news": "<a id='news' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/news.png' alt='news' height='auto' width='20%'/></a>",
         "mail": "<a id='mail-icon' data-role='button' class='butn' style='padding:5px'><img src='styles/images/mail.png' alt='mail' height='auto' width='20%'/></a>",
-        "vine": "<a id='vine' data-role='button' class='butn' style='padding:5px'><img src='styles/images/vine.png' alt='vine' height='auto' width='20%'/></a>",
-        "weather": "<a id='weather' data-role='button' class='butn' style='padding:5px'><img src='styles/images/weather.png' alt='weather' height='auto' width='20%'/></a>",
-        "wikipedia": "<a id='wikipedia' data-role='button' class='butn' style='padding:5px'><img src='styles/images/wikipedia.png' alt='wikipedia' height='auto' width='20%'/></a>",
-        "yahoo": "<a id='yahoo' data-role='button' class='butn' style='padding:5px'><img src='styles/images/yahoo.png' alt='yahoo' height='auto' width='20%'/></a>",
-        "yellowpages": "<a id='yellowpages' data-role='button' class='butn' style='padding:5px'><img src='styles/images/yellowpages.png' alt='yellowpages' height='auto' width='20%'/></a>",
+        "vine": "<a id='vine' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/vine.png' alt='vine' height='auto' width='20%'/></a>",
+        "weather": "<a id='weather' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/weather.png' alt='weather' height='auto' width='20%'/></a>",
+        "wikipedia": "<a id='wikipedia' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/wikipedia.png' alt='wikipedia' height='auto' width='20%'/></a>",
+        "yahoo": "<a id='yahoo' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/yahoo.png' alt='yahoo' height='auto' width='20%'/></a>",
+        "yellowpages": "<a id='yellowpages' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/yellowpages.png' alt='yellowpages' height='auto' width='20%'/></a>",
         "calendar": "<a id='calendar' data-role='button' class='butn' style='padding:5px'><img src='styles/images/calendar.png' alt='calendar' height='auto' width='20%'/></a>",
-        "twitter": "<a id='twitter' data-role='button' class='butn' style='padding:5px'><img src='styles/images/twitter.png' alt='twitter' height='auto' width='20%'/></a>",
-        "linkedIn": "<a id='linkedIn' data-role='button' class='butn' style='padding:5px'><img src='styles/images/linkedIn.png' alt='linkedin' height='auto' width='20%'/></a>",
-        "googleplus": "<a id='myGoogle+' data-role='button' class='butn' style='padding:5px'><img src='styles/images/googleplus.png' alt='myGoogle+' height='auto' width='20%'/></a>",
-        "googleMaps": "<a id='googleMaps' data-role='button' data-lat='#:lat#' data-lng='#:lng#' class='butn' style='padding:5px'><img src='styles/images/googleMaps.png' alt='googleMaps' height='auto' width='20%'/></a>",
-        "google": "<a id='google' data-role='button' class='butn' style='padding:5px'><img src='styles/images/google.png' alt='Google' height='auto' width='20%'/></a>"
+        "twitter": "<a id='twitter' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/twitter.png' alt='twitter' height='auto' width='20%'/></a>",
+        "linkedIn": "<a id='linkedIn' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/linkedIn.png' alt='linkedin' height='auto' width='20%'/></a>",
+        "googleplus": "<a id='myGoogle+' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/googleplus.png' alt='myGoogle+' height='auto' width='20%'/></a>",
+        "googleMaps": "<a id='googleMaps' data-role='button' data-lat='#:lat#' data-url='http' data-lng='#:lng#' class='butn' style='padding:5px'><img src='styles/images/googleMaps.png' alt='googleMaps' height='auto' width='20%'/></a>",
+        "google": "<a id='google' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/google.png' alt='Google' height='auto' width='20%'/></a>"
     },
     "defaultMedia": [
         { "name": "facebook", "selected": true }, { "name": "yelp", "selected": true }, { "name": "bing", "selected": true }, { "name": "iSee", "selected": true }, { "name": "twitter", "selected": true }, { "name": "instagram", "selected": true }, { "name": "notifications", "selected": true }, { "name": "googleMaps", "selected": true }
     ],
-    "defaultSites": ["google", "youtube", "facebook", "bing", "twitter", "yelp", "instagram", "yellowpages", "linkedIn", "wikipedia", "yahoo", "pintrest", "flickr", "groupon", "angiesList", "ESPN", "nfl", "bloomberg", "zomato"]
+    "defaultSites": ["redbubble","google", "youtube", "facebook", "bing", "twitter", "yelp", "instagram", "yellowpages", "linkedIn", "wikipedia", "yahoo", "pintrest", "flickr", "groupon", "angiesList", "ESPN", "nfl", "bloomberg", "zomato"]
 };
