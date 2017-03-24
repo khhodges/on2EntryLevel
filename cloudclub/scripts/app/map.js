@@ -1237,8 +1237,8 @@ app.Places = (function () {
                         switch (parts) {
                             case "events":
                             case "notifications":
-                                introHtml = introHtml + '<a data-role="button" class="butn" href="#components/notifications/view.html?ActivityText='
-                                            + resolveString(resolveString(n, "'", "%27"), "&", "%26") + '"><img src="styles/images/notifications.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
+                                introHtml = introHtml + '<a data-role="button" class="butn" href="#components/notifications/view.html?Id='
+                                            + id + '"><img src="styles/images/notifications.png" alt="On2See" height="auto" width="25%" style="padding:5px"></a>'
                                 break;
                             case "follow":
                                 introHtml = introHtml + '<a data-role="button" class="butn" href="#views/placesView.html?name='

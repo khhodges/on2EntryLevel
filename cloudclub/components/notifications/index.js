@@ -12,6 +12,9 @@ app.notifications = kendo.observable({
 
 // END_CUSTOM_CODE_notifications
 (function (parent) {
+    //case 1. anonomous inspector, 2. logon ...
+    //case 3. anon partner , 4. ...
+    //case 5. anon search, 6. ...
 	var dataProvider = app.data.defender,
 		fetchFilteredData = function (paramFilter, searchFilter) {
 			var model = parent.get('notificationsModel'),
@@ -21,48 +24,31 @@ app.notifications = kendo.observable({
 				model.set('paramFilter', paramFilter);
 			} else {
 				model.set('paramFilter', undefined);
-			}
-
-			if (paramFilter && searchFilter) {
-				dataSource.filter({
-									  logic: 'and',
-									  filters: [paramFilter, searchFilter]
-								  });
-			} else if ((paramFilter && paramFilter.value !== undefined )|| searchFilter ) {
-                //remove near sphere to find all 
-                var filterNoS = {
-								"X-Everlive-Expand": {
-											"Reference": {
-														"TargetTypeName": "Activities",
-														"ReturnAs": "EventDetails",
-														"Fields": { "Title": 1, "Text": 1, "Picture": 1 }
-													}
+			}		
+            //add near sphere to current location
+                    var filterNoS = {
+					"X-Everlive-Expand": {
+								"Reference": {
+											"TargetTypeName": "Activities",
+											"ReturnAs": "EventDetails",
+											"Fields": { "Title": 1, "Text": 1, "Picture": 1 }
 										}
-				};
-                dataSource.filter(paramFilter || searchFilter )
-			} else {
-                //add near sphere to current location
-                                var filterNoS = {
-								"X-Everlive-Expand": {
-											"Reference": {
-														"TargetTypeName": "Activities",
-														"ReturnAs": "EventDetails",
-														"Fields": { "Title": 1, "Text": 1, "Picture": 1 }
-													}
-										}
-								,"X-Everlive-Filter": JSON.stringify({
-												 "Location": {
-												 "$nearSphere": {
-															 "longitude":app.cdr.longitude,
-															 "latitude":app.cdr.latitude
-														 },
-									"$maxDistanceInMiles":40
-								}
-							})
-				};
-                dataSource.transport.options.read.headers = filterNoS
-				dataSource.filter({});
-			}
+							}
+					,"X-Everlive-Filter": JSON.stringify({
+									 "Location": {
+									 "$nearSphere": {
+												 "longitude":app.cdr.longitude,
+												 "latitude":app.cdr.latitude
+											 }
+					}
+				})
+			};
+            dataSource.transport.options.read.headers = filterNoS;
+            if(paramFilter===undefined){
+			        dataSource.filter({});
+                }else{
+                    dataSource.filter(paramFilter);
+                }
 		},
 		processImage = function (img) {
 			if (!img) {
@@ -94,31 +80,31 @@ app.notifications = kendo.observable({
 				}
 			}
 		},
-		dataSourceOptions = {
-			type: 'everlive',
-			transport: {
-				typeName: 'Notifications',
-				dataProvider: dataProvider,
-				read: {
-						headers: {
-								"X-Everlive-Expand": {
-											"Reference": {
-														"TargetTypeName": "Activities",
-														"ReturnAs": "EventDetails",
-														"Fields": { "Title": 1, "Text": 1, "Picture": 1 }
-													}
-										}
-								,"X-Everlive-Filter": JSON.stringify({
-												 "Location": {
-												 "$nearSphere": {
-															 "longitude":-80.07,
-															 "latitude":26.3
-														 },
-									"$maxDistanceInMiles":2000
-								}
-							})}
-					}
-			},
+        dataSourceOptions = {
+            type: 'everlive',
+            transport: {
+                typeName: 'Notifications',
+                dataProvider: dataProvider,
+                read: {
+                        headers: {
+                                "X-Everlive-Expand": {
+                                            "Reference": {
+                                                        "TargetTypeName": "Activities",
+                                                        "ReturnAs": "EventDetails",
+                                                        "Fields": { "Title": 1, "Text": 1, "Picture": 1 }
+                                                    }
+                                        }
+                                ,"X-Everlive-Filter": JSON.stringify({
+                                         "Location": {
+                                        "$nearSphere": {
+                                                 "longitude":-80.07,
+                                                 "latitude":26.3
+                                             }
+                                    }
+                                 })
+                            }
+                    }
+            },
 			sort: { field: 'Date', dir: 'desc' },
 			//filter: {field:'Date', operator;'gt', value:new Date.getDate()-10},
 			change: function (e) {
@@ -144,12 +130,16 @@ app.notifications = kendo.observable({
 			schema: {
 				model: {
 						fields: {
-								'Reference': {
+								'Title': {
 											field: 'EventDetails.Title',
 											defaultValue: 'xxxxx'
 										},
-								'Place': {
+								'Text': {
 											field: 'EventDetails.Text',
+											defaultValue: 'xxxxx'
+										},
+								'Id': {
+											field: 'Place',
 											defaultValue: 'xxxxx'
 										},
 								'Picture': {
@@ -167,7 +157,7 @@ app.notifications = kendo.observable({
 							}
 					}
 			},
-			//serverFiltering: true,
+			serverFiltering: true,
 		},
 		dataSource = new kendo.data.DataSource(dataSourceOptions),
 		notificationsModel = kendo.observable({
@@ -202,18 +192,20 @@ app.notifications = kendo.observable({
 	parent.set('onShow', function (e) {
 		app.notify.showLongBottom(appSettings.messages.dataLoad)
 		var param = e.view.params.filter ? JSON.parse(e.view.params.filter) : null;
-/*		var d = new Date();
-		d.setDate(d.getDate() - 60);
-		d = d.toDateString();*/
-		app.notify.showLongBottom("Filtering by " + e.view.params.ActivityText)
-		if (param === null || param === undefined) {					
-			param = {
-					"field": "Reference",
+		
+		if (e.view.params.Id) {					
+            //app.mobileApp.navigate("#components/someNotifications/view.html?Id="+e.view.params.Id);
+            param = {
+					"field": "Id",
 					"operator": "eq",
-					"value": e.view.params.ActivityText 
+					"value": e.view.params.Id 
 			}		
-		} 
-		fetchFilteredData(param);
+		    fetchFilteredData(param);
+			}
+        else{
+            app.notify.showLongBottom("No Filtering applied.")
+		    fetchFilteredData(undefined);
+        }
 	});
 })(app.notifications);
 // START_CUSTOM_CODE_notificationsModel
