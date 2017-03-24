@@ -367,6 +367,65 @@ var app = (function (win) {
     var name;
 
     var AppHelper = {
+        activityFilter: function(a, b) {
+            var param={};
+            if (app.isOnline()) {
+                if (a) {
+                    app.mobileApp.navigate('views/activitiesView.html?ActivityText=' + a + '&Text=' + b);
+                } else {
+                    app.mobileApp.navigate('views/activitiesView.html?public=true');
+                }
+            } else {
+                var d = new Date();
+                d.setDate(d.getDate() - 120);
+                if (e.view.params.ActivityText && !e.view.params.Text) {
+                    param = {
+                        logic: 'and',
+                        filters: [{
+                                    "field": "CreatedAt",
+                                    "operator": "gt",
+                                    "value": d
+                                }, {
+                                    "field": "Title",
+                                    "operator": "startswith",
+                                    "value": a
+                                }
+                        ]
+                    }
+                }
+            }
+            if (a && b) {
+                 param = {
+                    logic: 'and',
+                    filters: [{
+                                "field": "CreatedAt",
+                                "operator": "gt",
+                                "value": d
+                            }, {
+                                "field": "Title",
+                                "operator": "startswith",
+                                "value": a
+                            },{
+                                "field": 'Text',
+                                "operator": 'contains',
+                                "value": b
+                            }
+                    ]
+                }
+                return param;
+            } else {
+                if (a === 'My Activity Text') {
+                    fetchFilteredData(param);
+                } else {
+                    var partnerFilter = {
+                        field: 'Title',
+                        operator: 'startswith',
+                        value: a
+                    }
+                    return partnerFilter;
+                }
+            }
+        },
 
         name: function () {
             name = localStorage.getItem("username");

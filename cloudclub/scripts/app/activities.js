@@ -65,34 +65,36 @@ app.Activities = (function () {
 		}
 		app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
 		$("#scroller").data("kendoMobileScroller").reset();
-		if (e.view.params.ActivityText) {
-			/*			app.Activities.activities._filter = filterOne;
-				3 cases: 
-				[2] all from one partner (thePartner), {field: "Title", operator: "startswith",value: e.view.params.ActivityText}
-				[1] one selected item (theText), {field: "Text", operator: "eq",value: e.view.params.Text}
-				[0] all from one user (online) {field:} {field: "UserId", operator: "eq", myId}
-				*/
-			try {
-				var theName = app.Places.visiting.details().name
-			}catch (ex) {
-				app.notify.showLongBottom(appSettings.messages.dataLoad);
-				app.Activities.activities._filter={field: "Title", operator: "doesnotcontain",value: "My Private Feed"}
-			}
-			if (e.view.params.ActivityText) {
-				thePartner = e.view.params.ActivityText;
-				app.Activities.activities._filter={field: "Title", operator: "startswith",value: e.view.params.ActivityText}
-			} else {
-				thePartner = app.Places.visiting.name;
-			}
-			if (e.view.params.Text && e.view.params.Text !== "undefined") {
-				theText = e.view.params.Text;
-				app.Activities.activities._filter={field: "Text", operator: "eq",value: e.view.params.Text};
-			}
-			if (app.isOnline() && e.view.params.ActivityText === 'My Private Feed') {
-				app.Activities.activities._filter={field: "UserId", operator: "eq", value: app.Users.currentUser.data.Id};
-			}            
+		//if (e.view.params.ActivityText) {
+		//	/*			app.Activities.activities._filter = filterOne;
+		//		3 cases: 
+		//		[2] all from one partner (thePartner), {field: "Title", operator: "startswith",value: e.view.params.ActivityText}
+		//		[1] one selected item (theText), {field: "Text", operator: "eq",value: e.view.params.Text}
+		//		[0] all from one user (online) {field:} {field: "UserId", operator: "eq", myId}
+		//		*/
+		//	try {
+		//		var theName = app.Places.visiting.details().name
+		//	}catch (ex) {
+		//		app.notify.showLongBottom(appSettings.messages.dataLoad);
+		//		app.Activities.activities._filter={field: "Title", operator: "doesnotcontain",value: "My Private Feed"}
+		//	}
+		//	if (e.view.params.ActivityText) {
+		//		thePartner = e.view.params.ActivityText;
+		//		app.Activities.activities._filter={field: "Title", operator: "startswith",value: e.view.params.ActivityText}
+		//	} else {
+		//		thePartner = app.Places.visiting.name;
+		//	}
+		//	if (e.view.params.Text && e.view.params.Text !== "undefined") {
+		//		theText = e.view.params.Text;
+		//		app.Activities.activities._filter={field: "Text", operator: "eq",value: e.view.params.Text};
+		//	}
+		//	if (app.isOnline() && e.view.params.ActivityText === 'My Private Feed') {
+		//		app.Activities.activities._filter={field: "UserId", operator: "eq", value: app.Users.currentUser.data.Id};
+		//	}            
+        //app.loading(true);
+		//}
+        app.Activities.activities._filter = app.helper.activityFilter(e.view.params.ActivityText, e.view.params.Text);
         app.loading(true);
-		}
 		app.Activities.activities.fetch(function () {
 			$('#activities-listview').kendoMobileListView({
 				dataSource: app.Activities.activities,

@@ -163,7 +163,7 @@ app.notifications = kendo.observable({
 		notificationsModel = kendo.observable({
 												  dataSource: dataSource,
 												  itemClick: function (e) {
-													  app.mobileApp.navigate('#components/activities/view.html?ActivityText=' + e.dataItem.Reference.split('&')[0] + '&Text=' + e.dataItem.Place);
+													  app.mobileApp.navigate('#components/activities/view.html?ActivityText=' + e.dataItem.Title.split('&')[0] + '&Text=' + e.dataItem.Text);
 												  },
 												  detailsShow: function (e) {
 													  var item = e.view.params.uid,

@@ -327,7 +327,7 @@ app.Places = (function () {
                            app.Places.locationViewModel.showActionSheet({
                                                                             'androidTheme': window.plugins.actionsheet.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
                                                                             'title': appSettings.messages.whatToDo,
-                                                                            'buttonLabels': [appSettings.messages.mapList1,appSettings.messages.mapList2,appSettings.messages.mapList3,appSettings.messages.mapList4,appSettings.messages.mapList5,appSettings.messages.mapList6],
+                                                                            'buttonLabels': [appSettings.messages.mapList1,appSettings.messages.mapList2,appSettings.messages.mapList3,appSettings.messages.mapList4,appSettings.messages.mapList5,appSettings.messages.mapList6, "Back"],
                                                                             'addCancelButtonWithLabel': 'Cancel',
                                                                             'androidEnableCancelButton': true, // default false
                                                                             'winphoneEnableCancelButton': true, // default false
@@ -403,6 +403,9 @@ app.Places = (function () {
                                             case 6:// Directions to Trip
                                                 app.favorites.directions();
                                             	break;
+                                           case 7:
+                                               app.mobileApp.navigate("#:back");
+                                               break;
                                            default:
                                                //app.notify.showShortTop('You will need to upgrade to use this feature.');
                                                break;

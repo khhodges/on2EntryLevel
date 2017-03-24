@@ -316,7 +316,7 @@ app.activities = kendo.observable({
 		} else {
 			var d = new Date();
 			d.setDate(d.getDate() - 120);
-			if ((param === null || param === undefined) && e.view.params.ActivityText) {
+			if ((param === null || param === undefined) && e.view.params.ActivityText && !e.view.params.Text ) {
 				param = {
 					logic: 'and',
 					filters: [{
@@ -332,15 +332,26 @@ app.activities = kendo.observable({
 				}
 			}
 		}
-		var nameFilter = null;
-		if (e.view.params.Text) {
-			nameFilter = {
-				field: 'Text',
-				operator: 'contains',
-				value: e.view.params.Text
-			}
+		if ((param === null || param === undefined) && e.view.params.ActivityText && e.view.params.Text) {
+            nameFilter = {
+                logic: 'and',
+                filters: [{
+                            "field": "CreatedAt",
+                            "operator": "gt",
+                            "value": d
+                        }, {
+                            "field": "Title",
+                            "operator": "startswith",
+                            "value": e.view.params.ActivityText
+                        },{
+                            "field": 'Text',
+                            "operator": 'contains',
+                            "value": e.view.params.Text
+                        }
+                ]
+            }
 			//app.notify.showShortTop("Filtering by " + e.view.params.Text)
-			fetchFilteredData(nameFilter);
+			fetchFilteredData(param);
 		}
 		else {
 			if(e.view.params.ActivityText === 'My Activity Text'){
