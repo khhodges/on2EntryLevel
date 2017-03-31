@@ -1124,7 +1124,7 @@ var appSettings = {
         "calendar": "<a id='calendar' data-role='button' class='butn' style='padding:5px'><img src='styles/images/calendar.png' alt='calendar' height='auto' width='20%'/></a>",
         "twitter": "<a id='twitter' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/twitter.png' alt='twitter' height='auto' width='20%'/></a>",
         "linkedIn": "<a id='linkedIn' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/linkedIn.png' alt='linkedin' height='auto' width='20%'/></a>",
-        "googleplus": "<a id='myGoogle+' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/googleplus.png' alt='myGoogle+' height='auto' width='20%'/></a>",
+        "googleplus": "<a id='googleplus' data-role='button' class='butn' data-url='http' style='padding:5px'><img src='styles/images/googleplus.png' alt='googleplus' height='auto' width='20%'/></a>",
         "googleMaps": "<a id='googleMaps' data-role='button' data-lat='#:lat#' data-url='http' data-lng='#:lng#' class='butn' style='padding:5px'><img src='styles/images/googleMaps.png' alt='googleMaps' height='auto' width='20%'/></a>",
         "google": "<a id='google' data-role='button' class='butn' style='padding:5px' data-url='http'><img src='styles/images/google.png' alt='Google' height='auto' width='20%'/></a>"
     },

@@ -1,0 +1,22 @@
+<div 
+	id="place-list" 
+	class="view place-list" 
+	data-role="view" 
+	data-model="app.quickstart" 
+  data-init="app.quickstart.omload"
+	data-show="app.quickstart.show">
+	<div data-role="header">
+		<div data-role="navbar"> List <a data-role="button" data-align="left" href="#views/mapView.html">Home</a>
+			<a data-role="button" data-align="right"
+				data-icon="globe" data-click="app.Places.browse"></a>
+		</div>
+	</div>
+    <p>Google Calendar API Quickstart</p>
+
+    <!--Add buttons to initiate auth sequence and sign out-->
+    <button id="authorize-button" style="display: none;">Authorize</button>
+    <button id="signout-button" style="display: none;">Sign Out</button>
+
+    <pre id="content"></pre>
+
+</div>

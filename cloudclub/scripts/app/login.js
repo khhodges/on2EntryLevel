@@ -110,7 +110,7 @@ app.Login = (function () {
                               'channelName': 'PushChannelName' // channelName is required for Windows Phone devices
                           }, 
                           function successCallback(areEnabled) {
-                              app.showAlert(JSON.stringify(areEnabled));// check whether the notifications are enabled or not
+                              app.notify.showLongBottom(JSON.stringify(areEnabled));// check whether the notifications are enabled or not
                           } , function errorCallback(err) {
                               app.showAlert(JSON.stringify(err));// an error has occurred
                           });

@@ -118,19 +118,19 @@ var app = (function (win) {
         },
         enablePushNotifications: function () {
             // app name
-            cordova.getAppVersion.getAppName(function(value) { alert(value) });
+            cordova.getAppVersion.getAppName(function(value) { app.cdr.appName = value });
 
             // package name
-            cordova.getAppVersion.getPackageName(function(value) { alert(value) });
+            cordova.getAppVersion.getPackageName(function(value) { app.cdr.packageName = value });
 
             // version number
-            cordova.getAppVersion.getVersionNumber(function(value) { alert(value) });
+            cordova.getAppVersion.getVersionNumber(function(value) { app.cdr.versionNumber = value });
 
             // version code
-            cordova.getAppVersion.getVersionCode(function(value) { alert(value) });
+            cordova.getAppVersion.getVersionCode(function(value) { app.cdr.codeVersion = value });
             app.PushRegistrar.pushSettings.customParameters = {
                 "LastLoginDate": new Date(),
-                "CodeRelease": "CC Release 1.2.1 - 1/7/2017"
+                "CodeRelease": app.cdr.appName+' - '+app.cdr.codeVersion
             };
             app.notify.showShortTop("Initializing push notifications for " + device.platform + ', '
             + app.PushRegistrar.pushSettings.customParameters.CodeRelease);
@@ -167,7 +167,7 @@ var app = (function (win) {
             app.everlive.push.getRegistration(
                 function (obj) {
                     app.notifyStatus = obj.result;
-                    app.showAlert(JSON.stringify(obj))
+                    //app.showAlert(JSON.stringify(obj))
                     localStorage.setItem("PushToken", obj.result.PushToken);
                     if (app.notifyStatus.PushToken !== "fake_push_token") {
                         app.notify.showLongBottom("Notification service is ON.");// + JSON.stringify(obj.result));

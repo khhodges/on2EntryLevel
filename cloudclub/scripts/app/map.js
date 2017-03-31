@@ -595,6 +595,14 @@ app.Places = (function () {
                                    app.mobileApp.navigate("components/notifications/view.html");
                                });
                            }
+                           var calendar = document.getElementById("calendar");
+                           //app.showAlert("calendar");
+                           if (calendar) {
+                           //app.showAlert("calendar 2");
+                               calendar.addEventListener("click", function () {
+                                   app.Places.browse("https://calendar.google.com");
+                               });
+                           }
                            var goHome = document.getElementById("googleMaps");
                            if (goHome) {
                                goHome.addEventListener("click",
@@ -627,18 +635,18 @@ app.Places = (function () {
                                                                 }
                                    )
                            }
-                           var calendarLink = document.getElementById("calendar");
-                           if (calendarLink) {
-                               calendarLink.addEventListener("click",
-                                                             function () {
-                                                                 app.mobileApp.navigate("components/aboutView/view.html")
-                                                             }
-                                   )
-                           }
-                           var myGooglePlus = document.getElementById("googleplus+");
+                           //var calendarLink = document.getElementById("calendar");
+                           //if (calendarLink) {
+                           //    calendarLink.addEventListener("click",
+                           //                                  function () {
+                           //                                      app.mobileApp.navigate("components/aboutView/view.html")
+                           //                                  }
+                           //        )
+                           //}
+                           var myGooglePlus = document.getElementById("googleplus");
                            if (myGooglePlus) {
                                myGooglePlus.addEventListener('click', function () {
-                                   // app.showAlert("myGooglePlus")
+                                   //app.showAlert("myGooglePlus")
                                    app.Places.browse("http://plus.google.com")
                                })
                            }
