@@ -1097,7 +1097,7 @@ var appSettings = {
         "iSee": "<a id='iSee' data-role='button' class='butn' style='padding:5px'><img src='styles/images/iSee.png' alt='iSee' height='auto' width='20%'/></a>",
         "follow": "<a id='iSee' data-role='button' class='butn' style='padding:5px'><img src='styles/images/follow.png' alt='follow' height='auto' width='20%'/></a>",
         "camera": "<a id='camera' data-role='button' class='butn' style='padding:5px'> <img src='styles/images/camera.png' alt='cameraLink' height='auto' width='20%'></a>",        
-        "favorites": "<a id='favorites' data-role='button' class='butn' style='padding:5px'> <img src='styles/images/favorites.png' alt='favoritesLink' height='auto' width='20%'></a>",        
+        "favorites": "<a id='favorites' data-role='button' class='butn' style='padding:5px'> <img src='styles/images/favorites.png' alt='favoritesLink' height='auto' width='19%'></a>",        
         "schedule": "<a id='schedule' data-role='button' class='butn' style='padding:5px'> <img src='styles/images/confirm.png' alt='confirm' height='auto' width='20%'></a>",        
         "remind": "<a id='offer' data-role='button' class='butn' style='padding:5px'> <img src='styles/images/offer.png' alt='offer' height='auto' width='20%'></a>",        
         "notifications": "<a id='notifications' data-role='button' class='butn' style='padding:5px'><img src='styles/images/notifications.png' alt='notifications' height='auto' width='20%'/></a>",

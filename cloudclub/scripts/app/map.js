@@ -609,9 +609,9 @@ app.Places = (function () {
                                    app.Places.browse("http://www.sipantic.net/notifications/jsbin.html");
                                });
                            }
-                           var remind = document.getElementById("schedule");
-                           if (remind) {
-                               remind.addEventListener("click", function () {
+                           var offer = document.getElementById("offer");
+                           if (offer) {
+                               offer.addEventListener("click", function () {
                                    app.Places.browse("http://www.sipantic.net/notifications/calendar.html");
                                });
                            }
