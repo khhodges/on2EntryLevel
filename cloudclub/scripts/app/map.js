@@ -520,9 +520,11 @@ app.Places = (function () {
                        for (var i = 0; i < options.length; i++) {
                            if (options[i].selected === true) {
                                var name = options[i].name;
-                               if (!appSettings.infoContent[name])
+                               if (!appSettings.infoContent[name]) {
                                    app.showError("<" + name + "> is missing")
-                               infoContent = infoContent + appSettings.infoContent[name].replace("#:lat#",lat).replace("#:lng#",lng);
+                               }else {
+                                   infoContent = infoContent + appSettings.infoContent[name].replace("#:lat#", lat).replace("#:lng#", lng);
+                               }
                            }
                        }
 
@@ -593,6 +595,24 @@ app.Places = (function () {
                            if (feedRoute) {
                                feedRoute.addEventListener("click", function () {
                                    app.mobileApp.navigate("components/notifications/view.html");
+                               });
+                           }
+                           var favorites = document.getElementById("favorites");
+                           if (favorites) {
+                               favorites.addEventListener("click", function () {
+                                   app.mobileApp.navigate("components/favorites/view.html");
+                               });
+                           }
+                           var schedule = document.getElementById("schedule");
+                           if (schedule) {
+                               schedule.addEventListener("click", function () {
+                                   app.Places.browse("http://www.sipantic.net/notifications/jsbin.html");
+                               });
+                           }
+                           var remind = document.getElementById("schedule");
+                           if (remind) {
+                               remind.addEventListener("click", function () {
+                                   app.Places.browse("http://www.sipantic.net/notifications/calendar.html");
                                });
                            }
                            var calendar = document.getElementById("calendar");
@@ -1615,6 +1635,7 @@ app.Places = (function () {
                 this.setTripRow = function (place) {
                     partnerRow = place;
                     dataType = "Trip";
+                    if(!options) var options;//kjhh quick fix
                     options.zIndex = 12;                    
                     options.icon.url = 'styles/images/pin.png';
                     partnerRow.icon = options.icon.url;
