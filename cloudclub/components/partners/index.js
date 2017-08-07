@@ -11,7 +11,7 @@ app.home = kendo.observable({
 // END_CUSTOM_CODE_home
 (function (parent) {
     var dataProvider = app.data.defender,uid,
-		addGeopoint,
+		//addGeopoint,
 		fetchFilteredData = function (paramFilter, searchFilter) {
 		    var model = parent.get('homeModel'),
 				dataSource = model.get('dataSource');
@@ -210,7 +210,7 @@ app.home = kendo.observable({
                 var filter = new Everlive.Query();
                 filter.where().eq('Place', addFormData.place);
                 var x = addFormData.place;
-                var filter = new Everlive.Query();
+                //var filter = new Everlive.Query();
                 filter.where().eq('Place', x);
 
                 var data = app.everlive.data('Places');

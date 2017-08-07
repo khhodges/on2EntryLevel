@@ -3,7 +3,7 @@ function tableArray() {
     this.data = new Object();
 
     this.put = function (key, value) {
-        if (this.data[key] == null) {
+        if (this.data[key] === null) {
             this.keys.push(key);
         }
         this.data[key] = value;
@@ -19,7 +19,7 @@ function tableArray() {
     };
 
     this.each = function (fn) {
-        if (typeof fn != 'function') {
+        if (typeof fn !== 'function') {
             return;
         }
         var len = this.keys.length;
@@ -42,7 +42,7 @@ function tableArray() {
     };
 
     this.isEmpty = function () {
-        return this.keys.length == 0;
+        return this.keys.length === 0;
     };
 
     this.size = function () {

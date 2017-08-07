@@ -252,7 +252,8 @@ var app = (function (win) {
                             app.cdr.app = data.result[0];
                         },
                         function(error){
-                            alert(JSON.stringify(error));
+                            app.cdr.app = null;
+                            alert(appName +" Get Location "+JSON.stringify(error));
                         });        
             });
         },
@@ -1213,6 +1214,7 @@ var app = (function (win) {
                 setupBtn.style.display = "";
                 //app.cdr = crd;
                 localStorage.setItem("lastLocation", JSON.stringify(cdr))
+                //app.showAlert("Found location "+JSON.stringify(app.cdr));
                 callBack(app.cdr);
             };
 
@@ -1220,10 +1222,12 @@ var app = (function (win) {
                 if(localStorage.getItem('lastLocation')){
                    var xcrd = JSON.parse(localStorage.getItem('lastLocation'));
                     app.cdr = xcrd;
+                    //app.showAlert("Last location "+JSON.stringify(xcrd));
                     callBack(xcrd);
                 }else{
                     app.cdr = {"latitude":26.299801713039646,"longitude":-80.07814407348633,"accuracy":150,"altitude":100,"heading":null,"speed":0,"altitudeAccuracy":80,"lat":26.299801713039646,"lng":-80.07814407348633,"distance":12,"address":"1199 Hillsboro Mile, Pompano Beach, FL 33062, USA"};
-                    callBack(crd);
+                    //app.showAlert("Fixed location "+JSON.stringify(app.cdr));
+                    callBack(app.crd);
                 }
                 app.notify.showLongBottom('Using last known location '+ err);
             };

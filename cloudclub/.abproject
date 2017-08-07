@@ -38,7 +38,7 @@
   ],
   "iOSStatusBarStyle": "Default",
   "AndroidHardwareAcceleration": "true",
-  "FrameworkVersion": "4.0.0",
+  "FrameworkVersion": "6.4.0",
   "BundleVersion": "2.2.2",
   "iOSDisplayName": "",
   "iOSDeviceFamily": [
@@ -46,7 +46,7 @@
   ],
   "iOSBackgroundMode": [],
   "AndroidVersionCode": "30",
-  "DisplayName": "Berman Cloud Club",
+  "DisplayName": "On2See Cloud Club",
   "Author": "kjhh",
   "Description": "Notification App services for Dr Bauman",
   "WP8TileTitle": "",

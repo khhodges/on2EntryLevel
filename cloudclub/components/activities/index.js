@@ -43,24 +43,24 @@ app.activities = kendo.observable({
 
 			return img;
 		},
-		flattenLocationProperties = function (dataItem) {
-			var propName, propValue,
-				isLocation = function (value) {
-					return propValue && typeof propValue === 'object' &&
-						propValue.longitude && propValue.latitude;
-				};
+		//flattenLocationProperties = function (dataItem) {
+		//	var propName, propValue,
+		//		isLocation = function (value) {
+		//			return propValue && typeof propValue === 'object' &&
+		//				propValue.longitude && propValue.latitude;
+		//		};
 
-			for (propName in dataItem) {
-				if (dataItem.hasOwnProperty(propName)) {
-					propValue = dataItem[propName];
-					if (isLocation(propValue)) {
-						dataItem[propName] =
-							kendo.format('Latitude: {0}, Longitude: {1}',
-								propValue.latitude, propValue.longitude);
-					}
-				}
-			}
-		},
+		//	for (propName in dataItem) {
+		//		if (dataItem.hasOwnProperty(propName)) {
+		//			propValue = dataItem[propName];
+		//			if (isLocation(propValue)) {
+		//				dataItem[propName] =
+		//					kendo.format('Latitude: {0}, Longitude: {1}',
+		//						propValue.latitude, propValue.longitude);
+		//			}
+		//		}
+		//	}
+		//},
 		dataSourceOptions = {
 			type: 'everlive',
 			transport: {

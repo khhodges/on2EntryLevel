@@ -235,7 +235,8 @@ app.Places = (function () {
                            return app.helper.resolvePictureUrl(iconText);
                        }
                    },
-                    getBoundsZoomLevel: function(bounds) {
+                   getBoundsZoomLevel: function (bounds) {
+                       //app.showAlert(JSON.stringify(bounds))
                         var mapDim = {
                             height: $('#map-canvas').height(),
                             width: $('#map-canvas').width()
@@ -552,7 +553,7 @@ app.Places = (function () {
                                                                  });
                        homePosition = { lat: that._lastMarker.getPosition().lat(), lng: that._lastMarker.getPosition().lng() }; // update position display for local search
                        allBounds.extend(that._lastMarker.position);
-                       map.setZoom(app.Places.locationViewModel.getBoundsZoomLevel(allBounds));
+                       //map.setZoom(app.Places.locationViewModel.getBoundsZoomLevel(allBounds));
                        Selfie.address = that.getAddress(position, that._lastMarker);
                        Selfie.marker = that._lastMarker;
                        //Center InfoWindow PopUp
@@ -745,7 +746,7 @@ app.Places = (function () {
             },           
             initLocation: function () {
                 //common variables 
-                app.notify.showLongBottom(appSettings.messages.mapMessage);
+                //app.notify.showLongBottom(appSettings.messages.mapMessage);
                 if (typeof google === "undefined") {
                     return;
                 }
@@ -799,18 +800,21 @@ app.Places = (function () {
                 }
                 var partnerV = new app.Places.newPartner();
                 if (!app.cdr.app) {
-                    app.showAlert("Please try again...");
-                    app.mobileApp.navigate("views/mapView.html");
+                    //app.showAlert("Please try again...");
+                    //app.mobileApp.navigate("views/mapView.html");
                 }
                 else{
-                partnerV.setPartnerRow(app.cdr.app);  
-                app.Places.visiting = partnerV;
-                app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV); 
-                app.notify.showLongBottom("Loading CloudClub Partner. Click the star to research this Partner.")
+                        partnerV.setPartnerRow(app.cdr.app);  
+                        app.Places.visiting = partnerV;
+                        app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV); 
+                    }
+                //app.notify.showLongBottom("Loading CloudClub Partner. Click the star to research this Partner.")
                 app.Places.locationViewModel.onNavigateHome.apply(app.Places.locationViewModel, []);
                 streetView = map.getStreetView();
-            }},
+            },
             show: function () {
+                if(!map) app.showAlert("No map!!!");
+                if(infoWindow)infoWindow.close();
                 app.mobileApp.pane.loader.show();
                 if (app.Users.currentUser.data && app.Users.currentUser.data.jsonList.partner.rememberMe === true) {
                     localStorage.access_token = localStorage.access_token1
@@ -832,6 +836,7 @@ app.Places = (function () {
                 }
                 //resize the map in case the orientation has been changed while showing other tab
                 //google.maps.event.trigger(map, "resize");
+                
                 map.setZoom(app.Places.locationViewModel.getBoundsZoomLevel(allBounds));
             },
             hide: function () {
@@ -1375,7 +1380,7 @@ app.Places = (function () {
                         allBounds.extend(options.position);
                         //now fit the map to the newly inclusive bounds
                         //map.fitBounds(allBounds);
-                        var newZoom = app.Places.locationViewModel.getBoundsZoomLevel(allBounds);
+                        //var newZoom = app.Places.locationViewModel.getBoundsZoomLevel(allBounds);
                         google.maps.event.addListener(Mark, 'click', function () {
                             if (Mark.icon && Mark.icon.url === "styles/images/xstar.png") {
                                 app.showAlert("Star");
@@ -1683,10 +1688,10 @@ app.Places = (function () {
                 this.setPlaceRow = function (place) {
                     partnerRow = place;
                     dataType = "Place";
-                    options.zIndex = 4;
+                    options.zIndex = 6;
                     if (partnerRow.rating < 3.0) {
                         options.icon.url = 'styles/images/redcircle.png';
-                        options.zIndex = 6;
+                        options.zIndex = 4;
                         partnerRow.icon = options.icon.url;
                     }
                     if (partnerRow.rating > 4.2) {

@@ -13,7 +13,7 @@ app.favorites = kendo.observable({
 
 // END_CUSTOM_CODE_favorites
 (function (parent) {
-    var filterExpression = { "PlaceId": {} };
+    //var filterExpression = { "PlaceId": {} };
     var dataProvider = app.data.defender,
     /// start global model properties
     /// end global model properties
@@ -247,11 +247,30 @@ app.favorites = kendo.observable({
                                                   app.mobileApp.navigate('#components/favorites/details.html?uid=' + dataItem.uid);
                                               },
                                               detailsShow: function (e) {
-                                                  var uid = e.view.params.uid,
-                                                      dataSource = favoritesModel.get('dataSource'),
-                                                      itemModel = dataSource.getByUid(uid);
+			    var dataSource = favoritesModel.get('dataSource');
+				var itemModel;
+			    if (e.view.params.partner) {
+			        id = e.view.params.partner;
+			        itemModel = dataSource.getById(id);
+			    }else{
+			        var item = e.view.params.uid;					
+			        itemModel = dataSource.getByUid(item);
+                }
+				//itemModel.PictureUrl = processImage(itemModel.Picture);
 
-                                                  favoritesModel.setCurrentItemByUid(uid);
+				if (!itemModel.Text) {
+					itemModel.Text = String.fromCharCode(160);
+				}
+
+				activitiesModel.set('currentItem', null);
+				activitiesModel.set('currentItem', itemModel);
+				app.adMobService.viewModel.showBannerBottom();
+				app.showLoading(true);
+                                                  //var uid = e.view.params.uid,
+                                                  //    dataSource = favoritesModel.get('dataSource'),
+                                                  //    //itemModel = dataSource.getByUid(uid);
+
+                                                  //favoritesModel.setCurrentItemByUid(uid);
                                                   /// start detail form show
                                                   /// end detail form show
                                               },

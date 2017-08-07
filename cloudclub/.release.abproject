@@ -1,1 +1,25 @@
-{}
+{
+  "CorePlugins": [
+    "com.phonegap.plugins.PushPlugin@3.2.0",
+    "com.telerik.feedback@2.0.4",
+    "com.telerik.plugin.telerikanalytics@3.4.1",
+    "cordova-plugin-admobpro@2.9.9",
+    "cordova-plugin-camera",
+    "cordova-plugin-contacts",
+    "cordova-plugin-device",
+    "cordova-plugin-device-motion",
+    "cordova-plugin-device-orientation",
+    "cordova-plugin-dialogs",
+    "cordova-plugin-file",
+    "cordova-plugin-geolocation",
+    "cordova-plugin-globalization",
+    "cordova-plugin-inappbrowser",
+    "cordova-plugin-media-capture",
+    "cordova-plugin-splashscreen",
+    "cordova-plugin-whitelist",
+    "nl.x-services.plugins.actionsheet@2.3.1",
+    "nl.x-services.plugins.socialsharing@5.1.1",
+    "nl.x-services.plugins.toast@2.5.2",
+    "uk.co.whiteoctober.cordova.appversion@0.1.7"
+  ]
+}

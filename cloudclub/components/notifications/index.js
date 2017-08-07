@@ -128,34 +128,46 @@ app.notifications = kendo.observable({
 				}
 			},
 			schema: {
-				model: {
-						fields: {
-								'Title': {
-											field: 'EventDetails.Title',
-											defaultValue: 'xxxxx'
-										},
-								'Text': {
-											field: 'EventDetails.Text',
-											defaultValue: 'xxxxx'
-										},
-								'Id': {
-											field: 'Place',
-											defaultValue: 'xxxxx'
-										},
-								'Picture': {
-											field: 'EventDetails.Picture',
-											defaultValue: 'xxxxx'
-										},
-								'ActivityId': {
-											field: 'EventDetails.Id',
-											defaultValue: 'xxxxx'
-										},
-								'Date': {
-											field: 'CreatedAt',
-											defaultValue: 'xxxxx'
-										},
-							}
-					}
+			    model: {
+			        fields: {
+			            'Title': {
+			                field: 'EventDetails.Title',
+			                defaultValue: 'xxxxx'
+			            },
+			            'Text': {
+			                field: 'EventDetails.Text',
+			                defaultValue: 'xxxxx'
+			            },
+			            'Id': {
+			                field: 'Place',
+			                defaultValue: 'xxxxx'
+			            },
+			            'Picture': {
+			                field: 'EventDetails.Picture',
+			                defaultValue: 'xxxxx'
+			            },
+			            'ActivityId': {
+			                field: 'EventDetails.Id',
+			                defaultValue: 'xxxxx'
+			            },
+			            'Date': {
+			                field: 'CreatedAt',
+			                defaultValue: 'xxxxx'
+			            },
+			            'Status': {
+			                field: 'Status',
+			                defaultValue: 'xxxxx'
+			            },
+			            'jsonField': {
+			                field: 'jsonField',
+			                defaultValue: 'xxxxx'
+			            },
+			            'Public': {
+			                field: 'Public',
+			                defaultValue: 'xxxxx'
+			            }
+			        }
+			    }
 			},
 			serverFiltering: true,
 		},

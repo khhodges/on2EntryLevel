@@ -143,7 +143,7 @@ app.Activity = (function () {
             var partnerV = new app.Places.newPartner();
             partnerV.setActivityRow(item, function() {
                 // define as a specific Partner
-                app.Places.locationViewModel.trip.put(partnerV.vicinity(), partnerV);   
+                //app.Places.locationViewModel.trip.put(partnerV.vicinity(), partnerV);   
                 app.mobileApp.navigate("#views/mapView.html");
                 //app.favorites.directions();
             });

@@ -33,13 +33,15 @@
 
 	<!-- END_CUSTOM_CODE_notificationsModel -->
 	<script type="text/x-kendo-template" id="notificationsModelTemplate">
-		<div class="image-with-text">
+		<div class="image-with-text" visibility="#: data['Public'] # ">
 			<h3>#: data['Title'] #</h3>
 			<img src="#: data['PictureUrl'] #" width="30%" height="30%">
-			<p>#: data['Text'] #</p>
+			<p>#: data['Text'] #</p><div class="textBlock field__content">#= data['jsonField'] #</div>
 			<p>
-				<small>#: app.formatDate(data['Date']) #</small>
+				Sent: <small>#: app.formatDate(data['Date']) #</small>
 			</p>
+            <p>Status: #: data['Status'] #</p>
+            <p>Public: #: data['Public'] #</p>
 		</div>
 	</script>
 </div>

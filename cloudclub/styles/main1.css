@@ -555,7 +555,7 @@ input[type='week']
 	height: 119px;
 	margin: 1.5em auto;
 	text-indent: -9999px;
-	background: transparent url(images/BermanB.png) no-repeat 0 0;
+	background: transparent url(images/iconSee2.png) no-repeat 0 0;
 	overflow: hidden; 
 	background-size: contain;
 }
@@ -937,7 +937,7 @@ input[type='week']
 {
 	#friendsApp .app-name
 	{
-		background-image: url(images/BermanB.png);
+		background-image: url(images/iconSee2.png);
 		background-size: 120px 150px;
 		background-position: center;
 		background-size: contain;

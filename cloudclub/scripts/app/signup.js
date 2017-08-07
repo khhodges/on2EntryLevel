@@ -19,19 +19,19 @@ app.Signup = (function () {
         var dataSource;
         var validator;
         var avatarImage;
-        var registered = false;
-        var touchzone;
-        var imageObj;
-        var lastMove;
+        //var registered = false;
+        //var touchzone;
+        //var imageObj;
+        //var lastMove;
         var selected = "styles/images/avator.png";
         var imageId;
 
         // Register user after required fields (username and password) are validated in Backend Services
-        var signup = function () {
-        };
+        //var signup = function () {
+        //};
 
         var defaultAvatar = function () {
-            var picture = document.getElementById("avatarImage");
+            //var picture = document.getElementById("avatarImage");
             app.helper.convertToDataURL("styles/images/on2see-icon-120x120.png", function (base64Img) {
                 everlive.Files.create({
                     Filename: Math.random().toString(36).substring(2, 15) + ".jpg",
