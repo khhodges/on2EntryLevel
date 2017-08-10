@@ -29,7 +29,7 @@ var app = (function (win) {
     };
     var showReviews = function (message, title, callback) {
         navigator.notification.confirm(message, callback || function () {
-        }, title, ['Cancel', 'Delete', 'Highlight']);
+        }, title, ['Cancel', 'Delete', 'Favorite']);
     };
     var showOptions = function (message, title, callback, threeButtons) {
         navigator.notification.confirm(message, callback || function () {
@@ -252,8 +252,8 @@ var app = (function (win) {
                             app.cdr.app = data.result[0];
                         },
                         function(error){
-                            app.cdr.app = null;
-                            alert(appName +" Get Location "+JSON.stringify(error));
+                            //app.cdr.app = null;
+                            alert(appName +" Get Location "+JSON.stringify(app.cdr));
                         });        
             });
         },
