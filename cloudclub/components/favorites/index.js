@@ -361,17 +361,18 @@ app.favorites = kendo.observable({
 // START_CUSTOM_CODE_favoritesModel
 // Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
 app.favorites.directions = function () {
-    if(app.Places.locationViewModel.trip){
         var myLines = app.Places.locationViewModel.trip.array();
         var directions = "/" + app.cdr.address;
-        for (var i=0;i<myLines.length;i++){
+    if (myLines.length>0) {
+        for (var i = 0; i < myLines.length; i++) {
             directions = directions + "/" + myLines[i].vicinity;
         }
-        app.openLink("https://www.google.com/maps/dir" + directions.replace(' ','+'));
+        app.openLink("https://www.google.com/maps/dir" + directions.replace(' ', '+'));
         //https://www.google.com/maps/dir/1228+Hillsboro+Mile,+Hillsboro+Beach,+FL+33062/10301+Hagen+Ranch+Rd,+Boynton+Beach,+FL+33437/Morikami+Museum+and+Japanese+Gardens,+4000+Morikami+Park+Rd,+Delray+Beach,+FL+33446
-  }else{
-      app.notify.showLongBottom("First add some Places to your Trip.")
-  }}
+    } else {
+        app.notify.showLongBottom("First add some Places to your Trip.")
+    }
+}
     
 app.favorites.openListSheet = function (e) {
     if (!app.Places.locationViewModel.checkSimulator()) {
@@ -416,7 +417,9 @@ app.favorites.showListSheet = function (options) {
                             app.helper.openExternalInAppBrowser(app.Places.favoriteItem.Jsonlist.website);
                             break;
                         case 2:// Add to Trip
-                            app.Places.addToTrip(app.Places.favoriteItem.Jsonlist);
+                            var partnerV = new app.Places.newPartner();
+                            partnerV.setTripRow(JSON.parse(app.Places.favoriteItem.Jsonfield));// define as a specific Partner
+                            app.Places.addToTrip(partnerV);
                         	break;
                         case 3:// Directions to Trip
                             app.favorites.directions();

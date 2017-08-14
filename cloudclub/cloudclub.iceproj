@@ -83,6 +83,7 @@
     <Content Include="scripts\app\map.js" />
     <Content Include="scripts\app\mapSettings.js" />
     <Content Include="scripts\app\media.js" />
+    <Content Include="scripts\app\myGoogle.js" />
     <Content Include="scripts\app\settings.js" />
     <Content Include="scripts\app\signup.js" />
     <Content Include="scripts\app\social.js" />

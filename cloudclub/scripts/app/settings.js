@@ -947,7 +947,7 @@ var appSettings = {
         directions: "The destination and start are the same. Drag the inspector to some new location and try again!",
         following: "You have remembered this place",
         infoWindow: "This Social Media research window is customized for this place, click any icon to dig deeper!",
-        inspectorTitle: "Your Private Inspector",
+        inspectorTitle: "Search Options",
         inspectorHelp: "Click Avatar to log in/out. Drag Inspector or search using <i><u>City, State</u>.</i>",
         inspectorWindow: "This is your account inspector window providing personal research, custom area investigations with a private posting feed!",
         joinMessage: "You have joined this Loyalty Club!",
