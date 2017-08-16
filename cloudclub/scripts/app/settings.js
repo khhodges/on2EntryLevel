@@ -915,6 +915,7 @@ var appSettings = {
         welcome: "\n Controleer genieten van deze geavanceerde mobiele applicatie met de gemeenschap toegang tot geïntegreerde en op maat social media. \n Geen login nodig is om te zoeken in sociale media en vinden de lokale Hot Spots of vind maatschappelijke activiteiten \ Nfor detachering en geavanceerde functies, loyaliteit clubs lidmaatschap.. en directe meldingen die u nodig hebt aan te sluiten en meld u aan. Extra hulp is te vinden op http://www.on2see.com \n \n "
     },
     english: {
+        help:"\nNothing in your list....\n\nYou can do any of the following:\n 1. Return to map by clicking BACK and using the search box to find any of the following.\na) Text query search, 'Pizza' or 'Pizza near Nashville'.\nb) Place search usinga comma to include a Street,City,State and or a Country, like 'London, UK'.\nc) A WebSite using a normal format ending in .com or .net etc.",
         comfirm: "Are you sure?",
         title:"Confirm Delete",
         serviceL1:"Free Membership",

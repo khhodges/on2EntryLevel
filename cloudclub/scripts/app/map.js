@@ -7,7 +7,7 @@ var app = app || {};
 app.Places = (function () {
     'use strict'
     var infoWindow, markers, place, result, myCity, myState, newPlace, here, request, home, bw, lat1, lng1, allBounds, localBounds, theZoom = 15,
-        service, myAddress, Selfie, list = {}, homePosition, update = false, myEvent;
+        service, myAddress, Selfie, list = {}, homePosition, update = false, myEvent, iwOpen = false;
     var HEAD = appSettings.HEAD;
 
     /**
@@ -273,6 +273,7 @@ app.Places = (function () {
                 map.setZoom(newZoom);
                 map.setCenter(bounds.getCenter());
                 infoWindow.close();
+                iwOpen = false;
                 map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
                 //app.showAlert("Zoom "+newZoom);
                 return newZoom;
@@ -459,10 +460,31 @@ app.Places = (function () {
                 if (app.Places.locationViewModel.find && app.Places.locationViewModel.find.indexOf('.') > 0) {
                     app.openLink((app.Places.locationViewModel.find));
                 }
-                if (app.Places.locationViewModel.find && app.Places.locationViewModel.find.indexOf(',') < 0) {                           //Perform Address Search
-                    request = {
-                        location: locality,
-                        bounds: map.getBounds(),
+                if (app.Places.locationViewModel.find && app.Places.locationViewModel.find.indexOf(',') < 0) 
+                {                           //Perform Address Search
+                    request =
+                    //    {
+                    //    location: locality,
+                    //    radius: '5000',
+                    //    keyword: [app.Places.locationViewModel.find]
+                    //};
+                    //service.nearbySearch(request, function (results, status) {
+                    //    if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                    //        console.error(status);
+                    //        return false;
+                    //    } else {
+                    //        for (var i = 0; i < results.length; i++) {
+                    //            place = results[i];
+                    //            var partnerV = new app.Places.newPartner();
+                    //            partnerV.setPlaceRow(place);// define as a general Place
+                    //            app.Places.locationViewModel.list.put(partnerV.vicinity(), partnerV);
+                    //        }
+                    //    }})
+                
+                        {
+                            location: locality,
+                            radius: '5000',
+                        //bounds: map.getBounds(),
                         query: app.Places.locationViewModel.find
                     };
                     service.textSearch(request, function (results, status) {
@@ -482,14 +504,16 @@ app.Places = (function () {
                     //Search on find text with , in address
                     app.Places.locationViewModel.onSearchAddress();
                 }
-
+        
                 function toggleBounce() {
                     if (this.getAnimation() !== null) {
                         this.setAnimation(null);
                     } else {
                         this.setAnimation(google.maps.Animation.BOUNCE);
                     }
-                };
+                }
+                
+                ;
             },
             onSearchAddress: function () {
                 app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
@@ -857,7 +881,10 @@ app.Places = (function () {
             },
             show: function () {
                 if (!map) app.showAlert("No map!!!");
-                if (infoWindow) infoWindow.close();
+                if (infoWindow){ 
+                    infoWindow.close();
+                    iwOpen = false;
+                }
                 app.mobileApp.pane.loader.show();
                 if (app.Users.currentUser.data && app.Users.currentUser.data.jsonList.partner.rememberMe === true) {
                     localStorage.access_token = localStorage.access_token1
@@ -975,17 +1002,21 @@ app.Places = (function () {
                         //reopen list so dynamically rebuild the List from the markers store
                         var ps = new app.Places.List;
                         var psArray = app.Places.locationViewModel.list.array();
-                        for (var i = 0; i < psArray.length; i++) {
-                            var newPartner = psArray[i];
-                            newPartner = psArray[i]
-                            if (newPartner) {
-                                try {
-                                    ps.put(newPartner.vicinity(), newPartner);
-                                } catch (e) {
-                                    ps.put(newPartner.vicinity, app.Places.locationViewModel.list.get(newPartner.vicinity));
+                        if (psArray && psArray.length > 0) {
+                            for (var i = 0; i < psArray.length; i++) {
+                                var newPartner = psArray[i];
+                                newPartner = psArray[i]
+                                if (newPartner) {
+                                    try {
+                                        ps.put(newPartner.vicinity(), newPartner);
+                                    } catch (e) {
+                                        ps.put(newPartner.vicinity, app.Places.locationViewModel.list.get(newPartner.vicinity));
+                                    }
                                 }
+                                //ds.add(newPartner.vicinity(), newPartner.details());
                             }
-                            //ds.add(newPartner.vicinity(), newPartner.details());
+                        } else {
+                            document.getElementById("listText").innerText = appSettings.messages.help;
                         }
 
                         // da = ds.array();
@@ -1378,6 +1409,7 @@ app.Places = (function () {
                     }
                     //app.showAlert(htmlIw);
                     infoWindow.setContent(htmlIw);
+                    iwOpen = true;
                     map.setZoom(15)
                     infoWindow.open(map, Mark);
                     if (partnerRow.City) {
@@ -1447,8 +1479,14 @@ app.Places = (function () {
                             //    app.showAlert("Star");
                             //    checkInfoWindow(setInfoWindow);
                             //} else {
+                            if(!iwOpen){
                                 checkInfoWindow(setInfoWindow);
-                            //}
+                            } else {
+                                infoWindow.close();
+                                map.setZoom(13);
+                                iwOpen = false;
+                            
+                            }
                         })
                     }
                     return Mark;

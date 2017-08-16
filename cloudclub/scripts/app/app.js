@@ -102,6 +102,7 @@ var app = (function (win) {
         //}, 'Exit', ['OK', 'Cancel']);
     };
 
+
     //Register Notification
     var PushRegistrar = {
         pushSettings: {
@@ -117,38 +118,40 @@ var app = (function (win) {
             notificationCallbackIOS: on2SeeIosPushReceived
         },
         enablePushNotifications: function () {
-            // app name
-            cordova.getAppVersion.getAppName(function(value) { app.cdr.appName = value });
+            if (app.helper.checkSimulator()) {
+                // app name
+                cordova.getAppVersion.getAppName(function (value) { app.cdr.appName = value });
 
-            // package name
-            cordova.getAppVersion.getPackageName(function(value) { app.cdr.packageName = value });
+                // package name
+                cordova.getAppVersion.getPackageName(function (value) { app.cdr.packageName = value });
 
-            // version number
-            cordova.getAppVersion.getVersionNumber(function(value) { app.cdr.versionNumber = value });
+                // version number
+                cordova.getAppVersion.getVersionNumber(function (value) { app.cdr.versionNumber = value });
 
-            // version code
-            cordova.getAppVersion.getVersionCode(function(value) { app.cdr.codeVersion = value });
-            app.PushRegistrar.pushSettings.customParameters = {
-                "LastLoginDate": new Date(),
-                "CodeRelease": app.cdr.appName+' - '+app.cdr.codeVersion
-            };
-            app.notify.showShortTop("Initializing push notifications for " + device.platform + ', '
-            + app.PushRegistrar.pushSettings.customParameters.CodeRelease);
+                // version code
+                cordova.getAppVersion.getVersionCode(function (value) { app.cdr.codeVersion = value });
+                app.PushRegistrar.pushSettings.customParameters = {
+                    "LastLoginDate": new Date(),
+                    "CodeRelease": app.cdr.appName + ' - ' + app.cdr.codeVersion
+                };
+                app.notify.showShortTop("Initializing push notifications for " + device.platform + ', '
+                + app.PushRegistrar.pushSettings.customParameters.CodeRelease);
 
-            app.everlive.push.register(app.PushRegistrar.pushSettings)
-                .then(
-                function (initResult) {
-                    if (app.notifyStatus.PushToken === initResult.token) {
-                        app.notify.showLongBottom("Notification registered.");// + JSON.stringify(initResult) + "Your device is successfully registered in Backend Services. You can receive push notifications.");
-                    } else {
-                        app.notify.showLongBottom("Push Token updated.");// + app.notifyStatus.PushToken + " to " + initResult.token);
-                        app.notifyStatus.PushToken = initResult.token;
-                    }
-                },
-                function (err) {
-                    app.notify.showLongBottom("Notification Error on registration. ");// + JSON.stringify(err))
-                    //_onPushErrorOccurred(err.message);
-                });
+                app.everlive.push.register(app.PushRegistrar.pushSettings)
+                    .then(
+                    function (initResult) {
+                        if (app.notifyStatus.PushToken === initResult.token) {
+                            app.notify.showLongBottom("Notification registered.");// + JSON.stringify(initResult) + "Your device is successfully registered in Backend Services. You can receive push notifications.");
+                        } else {
+                            app.notify.showLongBottom("Push Token updated.");// + app.notifyStatus.PushToken + " to " + initResult.token);
+                            app.notifyStatus.PushToken = initResult.token;
+                        }
+                    },
+                    function (err) {
+                        app.notify.showLongBottom("Notification Error on registration. ");// + JSON.stringify(err))
+                        //_onPushErrorOccurred(err.message);
+                    });
+            }
         },
         updateRegistration: function () {
             //app.notify.showShortTop("Initializing update registration of notifications for " + device.platform + '...');
@@ -243,19 +246,21 @@ var app = (function (win) {
             app.cdr = crd;
             var zoom = 15;
             app.cdr.distance = (21 - zoom) * 2;
-           cordova.getAppVersion.getAppName(function (version) {               
-                    appName=version;
-                    var filter = {"Html":{"$regex":appName} };
+            if (!app.helper.checkSimulator()) {
+                cordova.getAppVersion.getAppName(function (version) {
+                    appName = version;
+                    var filter = { "Html": { "$regex": appName } };
                     var data = app.everlive.data('Places');
                     data.get(filter)
-                        .then(function(data){
+                        .then(function (data) {
                             app.cdr.app = data.result[0];
                         },
-                        function(error){
+                        function (error) {
                             //app.cdr.app = null;
-                            alert(appName +" Get Location "+JSON.stringify(app.cdr));
-                        });        
-            });
+                            alert("Get Location " + error);
+                        });
+                });
+            }
         },
             function (error) {
                 //app.notify.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
@@ -313,6 +318,7 @@ var app = (function (win) {
 
         //for notifications
         if (cordova.plugins) {
+        app.notifications.showLongBottom("Plugin")
             // set some global defaults for all local notifications
             cordova.plugins.notification.local.setDefaults({
                 ongoing: false, // see http://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setOngoing(boolean)

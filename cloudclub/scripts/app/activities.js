@@ -438,6 +438,21 @@ app.Activities = (function () {
 			$enterEvent.style.display = 'block';
 		}
 		var error = function () {
+		    cordova.plugins.photoLibrary.getLibrary(function (library) {
+		        // Here we have the library as array
+		        cordova.plugins.photoLibrary.getThumbnailUrl(library[0],
+                    function (thumbnailUrl) {
+                        app.showConfirm(thumbnailUrl);
+                        image.src = thumbnailUrl;
+                    },
+                    function (err) { console.log('Error occured'); },
+                    {
+                        thumbnailWidth: 512,
+                        thumbnailHeight: 384,
+                        quality: 0.8
+                    });
+		    });
+
 			app.notify.showLongBottom(appSettings.messages.tryAgain);
 			$enterEvent.style.display = 'none';
 			validator.hideMessages();
