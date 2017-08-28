@@ -79,6 +79,7 @@
     <Content Include="scripts\app\comments.js" />
     <Content Include="scripts\app\common.js" />
     <Content Include="scripts\app\identity-provider.js" />
+    <Content Include="scripts\app\imagePicker.js" />
     <Content Include="scripts\app\login.js" />
     <Content Include="scripts\app\map.js" />
     <Content Include="scripts\app\mapSettings.js" />
@@ -221,6 +222,7 @@
     <Content Include="views\activityView.html" />
     <Content Include="views\clubView.html" />
     <Content Include="views\eventsView.html" />
+    <Content Include="views\imagePicker.html" />
     <Content Include="views\listView.html" />
     <Content Include="views\mapView.html" />
     <Content Include="views\mediaView.html" />
