@@ -33,7 +33,7 @@ var app = (function (win) {
     };
     var showOptions = function (message, title, callback, threeButtons) {
         navigator.notification.confirm(message, callback || function () {
-        }, title,threeButtons);
+        }, title, threeButtons);
     };
 
     var showError = function (message) {
@@ -43,18 +43,18 @@ var app = (function (win) {
     //	 window.onerror = function (message, file, line) {
     //	     alert("Error: " + message + ", File: " + file + ", Line: " + line);
     //	 }
-    var openLink = function(url) {
+    var openLink = function (url) {
         if (url.substring(0, 4) === 'geo:' && device.platform === 'iOS') {
             url = 'http://maps.apple.com/?ll=' + url.substring(4, url.length);
         }
-        if(url.substring(0,4)!=='http' && url.substring(0,11)!=='http://.www.') url = 'http://.www.'+url;
+        if (url.substring(0, 4) !== 'http' && url.substring(0, 11) !== 'http://.www.') url = 'http://.www.' + url;
         window.open(url, '_system');
         if (window.event) {
             window.event.preventDefault && window.event.preventDefault();
             window.event.returnValue = false;
         }
     };
-    var cdr = {"latitude":26.299801713039646,"longitude":-80.07814407348633,"accuracy":150,"altitude":100,"heading":null,"speed":0,"altitudeAccuracy":80,"lat":26.299801713039646,"lng":-80.07814407348633,"distance":12,"address":"1199 Hillsboro Mile, Pompano Beach, FL 33062, USA","appName":"On2See"};
+    var cdr = { "latitude": 26.299801713039646, "longitude": -80.07814407348633, "accuracy": 150, "altitude": 100, "heading": null, "speed": 0, "altitudeAccuracy": 80, "lat": 26.299801713039646, "lng": -80.07814407348633, "distance": 12, "address": "1199 Hillsboro Mile, Pompano Beach, FL 33062, USA", "appName": "On2See" };
     var registerNotify, appName;
 
     win.addEventListener('error', function (e) {
@@ -118,7 +118,7 @@ var app = (function (win) {
             notificationCallbackIOS: on2SeeIosPushReceived
         },
         enablePushNotifications: function () {
-            if (app.helper.checkSimulator()) {
+            if (!app.helper.checkSimulator()) {
                 // app name
                 cordova.getAppVersion.getAppName(function (value) { app.cdr.appName = value });
 
@@ -135,7 +135,7 @@ var app = (function (win) {
                     "CodeRelease": app.cdr.appName + ' - ' + app.cdr.codeVersion
                 };
                 app.notify.showShortTop("Initializing push notifications for " + device.platform + ', '
-                + app.PushRegistrar.pushSettings.customParameters.CodeRelease);
+                    + app.PushRegistrar.pushSettings.customParameters.CodeRelease);
 
                 app.everlive.push.register(app.PushRegistrar.pushSettings)
                     .then(
@@ -241,26 +241,26 @@ var app = (function (win) {
         app.PushRegistrar.checkNotify();
         // Handle "backbutton" event
         document.addEventListener('backbutton', onBackKeyDown, false);
-            
+
         app.notify.getLocation(function (crd) {
             app.cdr = crd;
             var zoom = 15;
             app.cdr.distance = (21 - zoom) * 2;
-            if (!app.helper.checkSimulator()) {
-                cordova.getAppVersion.getAppName(function (version) {
-                    appName = version;
-                    var filter = { "Html": { "$regex": appName } };
-                    var data = app.everlive.data('Places');
-                    data.get(filter)
-                        .then(function (data) {
-                            app.cdr.app = data.result[0];
-                        },
-                        function (error) {
-                            //app.cdr.app = null;
-                            alert("Get Location " + error);
-                        });
+            // if (!app.helper.checkSimulator()) {
+            //     cordova.getAppVersion.getAppName(function (version) {
+            appName = app.cdr.appName;
+            var filter = { "Html": { "$regex": appName } };
+            var data = app.everlive.data('Places');
+            data.get(filter)
+                .then(function (data) {
+                    app.cdr.app = data.result[0];
+                },
+                function (error) {
+                    //app.cdr.app = null;
+                    alert("Get Location " + error);
                 });
-            }
+            //     });
+            // }
         },
             function (error) {
                 //app.notify.showShortTop("You can always select your location using the search box with a two part address including a comma, for example <i>London,England</i>.")
@@ -318,7 +318,7 @@ var app = (function (win) {
 
         //for notifications
         if (cordova.plugins) {
-        app.notifications.showLongBottom("Plugin")
+            app.notifications.showLongBottom("Plugin")
             // set some global defaults for all local notifications
             cordova.plugins.notification.local.setDefaults({
                 ongoing: false, // see http://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setOngoing(boolean)
@@ -374,8 +374,21 @@ var app = (function (win) {
     var name;
 
     var AppHelper = {
-        activityFilter: function(a, b) {
-            var param={};
+        addMarker: function (myObject) {
+            // mkList = [mark1, mark2, ...], existing marker container
+            var myLatLng = new google.maps.LatLng(Lat, Long);
+            // check if this position has already had a marker
+            for (var x = 0; x < mkList.length; x++) {
+                if (mkList[x].getPosition().equals(myLatLng)) {
+                    console.log('already exist');
+                    return;
+                }
+            }
+            var newMarker = new google.maps.Marker();
+            mkList.push(newMarker);
+        },
+        activityFilter: function (a, b) {
+            var param = {};
             if (app.isOnline()) {
                 if (a) {
                     app.mobileApp.navigate('views/activitiesView.html?ActivityText=' + a + '&Text=' + b);
@@ -389,34 +402,34 @@ var app = (function (win) {
                     param = {
                         logic: 'and',
                         filters: [{
-                                    "field": "CreatedAt",
-                                    "operator": "gt",
-                                    "value": d
-                                }, {
-                                    "field": "Title",
-                                    "operator": "startswith",
-                                    "value": a
-                                }
+                            "field": "CreatedAt",
+                            "operator": "gt",
+                            "value": d
+                        }, {
+                            "field": "Title",
+                            "operator": "startswith",
+                            "value": a
+                        }
                         ]
                     }
                 }
             }
             if (a && b) {
-                 param = {
+                param = {
                     logic: 'and',
                     filters: [{
-                                "field": "CreatedAt",
-                                "operator": "gt",
-                                "value": d
-                            }, {
-                                "field": "Title",
-                                "operator": "startswith",
-                                "value": a
-                            },{
-                                "field": 'Text',
-                                "operator": 'contains',
-                                "value": b
-                            }
+                        "field": "CreatedAt",
+                        "operator": "gt",
+                        "value": d
+                    }, {
+                        "field": "Title",
+                        "operator": "startswith",
+                        "value": a
+                    }, {
+                        "field": 'Text',
+                        "operator": 'contains',
+                        "value": b
+                    }
                     ]
                 }
                 return param;
@@ -572,7 +585,7 @@ var app = (function (win) {
                     logonB.style.display = "";
                 });
         },
-        listMembers: function(){
+        listMembers: function () {
             $("#club-listview").kendoMobileListView({
                 dataSource: clubList,
                 template: "#: DisplayName #",
@@ -582,7 +595,7 @@ var app = (function (win) {
                 }
             })
                 .data("kendoListView");
-            $("#places-listview").on("data-swipe", "li", app.Places.locationViewModel.openListSheet);            
+            $("#places-listview").on("data-swipe", "li", app.Places.locationViewModel.openListSheet);
         },
         getPartnerFollowers: function (name, note) {
             var clubList;
@@ -593,16 +606,16 @@ var app = (function (win) {
             partner.get(query).then(function (data) {
                 if (!data.result || data.result.length < 1) {
                     app.notify.showLongBottom("There are no followers to contact using the notification service!")
-                } else {                    
+                } else {
                     clubList = data.result[0].Members;
                     app.Places.visiting.clubList = clubList;
                     try {
                         var followers = new Array(data.result[0].Members.length)
                         for (var i = 0; i < clubList.length; i++) {
-                           var follower = data.result[0].Members[i];
-                            followers[i] = follower.Id ;
+                            var follower = data.result[0].Members[i];
+                            followers[i] = follower.Id;
                             console.log(follower.Email);
-                        }                        
+                        }
                         $("#club-listview").kendoMobileListView({
                             dataSource: clubList,
                             template: "#: DisplayName #",
@@ -611,18 +624,18 @@ var app = (function (win) {
                                 alert("Change event!")
                             }
                         });
-                    app.helper.sendNotification(followers);
+                        app.helper.sendNotification(followers);
                     } catch (e) {
                         app.showError(JSON.stringify(e))
                     }
                 }
-                
+
             },
                 function (error) {
                     app.showError("Followers error " + JSON.stringify(error))
                 });
-        }, 
-        sendNotification: function(followers) {
+        },
+        sendNotification: function (followers) {
             app.notify.showLongBottom(appSettings.messages.broadcast);
             try {
                 var notify = app.PushRegistrar.create(app.Activity.activity().Title, app.Activity.activity().Text, app.Activity.activity().Id, followers)
@@ -634,29 +647,29 @@ var app = (function (win) {
                         var data = el.data('Notifications');
                         var place = "Sent from " + app.Activity.activity().Title;
                         data.create({
-                                        'Place': place,
-                                        'Reference': app.Activity.activity().Id,
-                                        'Status': true,
-                                        'Location': {
+                            'Place': place,
+                            'Reference': app.Activity.activity().Id,
+                            'Status': true,
+                            'Location': {
                                 "latitude": app.cdr.lat,
                                 "longitude": app.cdr.lng
                             }
-                                    },
-                                    function (data) {
-                                        app.notify.showLongBottom(appSettings.messages.saved + data.result.Id);
-                                    },
-                                    function (error) {
-                                        app.notify.showLongBottom(appSettings.messages.tryAgain + error.message);
-                                    });
+                        },
+                            function (data) {
+                                app.notify.showLongBottom(appSettings.messages.saved + data.result.Id);
+                            },
+                            function (error) {
+                                app.notify.showLongBottom(appSettings.messages.tryAgain + error.message);
+                            });
                     },
                     function (error) {
                         app.showError(JSON.stringify(appSettings.messages.continueError + error.message));
                     })
-            }catch(e){
+            } catch (e) {
                 console.log(e.message);
             }
         },
-        
+
         activityRoute: function (e) {
             // app.notify.showShortTop(JSON.stringify(e))
             if (app.isOnline()) {
@@ -668,8 +681,8 @@ var app = (function (win) {
                 app.mobileApp.navigate('components/activities/view.html');
             }
         },
-        notOnline: function(){
-             if (app.isNullOrEmpty(app.Places.visiting)) {
+        notOnline: function () {
+            if (app.isNullOrEmpty(app.Places.visiting)) {
                 app.notify.showLongBottom(appSettings.messages.signIn)
                 app.mobileApp.navigate("#welcome");
             }
@@ -771,7 +784,7 @@ var app = (function (win) {
         // Return user profile picture url
         resolveProfilePictureUrl: function (id) {
             var result = id;
-            if (id && (id !== emptyGuid && id.substring(0,6) !== "styles" && id !== "styles/images/default-image.jpg.png")) {
+            if (id && (id !== emptyGuid && id.substring(0, 6) !== "styles" && id !== "styles/images/default-image.jpg.png")) {
                 return el.Files.getDownloadUrl(id);
             } else {
                 return id;
@@ -780,7 +793,7 @@ var app = (function (win) {
 
         // Return current activity picture url
         resolvePictureUrl: function (id) {
-            if (id && (id !== emptyGuid && id.substring(0,6) !== "styles" && id.substring(0, 4) !== "http")) {
+            if (id && (id !== emptyGuid && id.substring(0, 6) !== "styles" && id.substring(0, 4) !== "http")) {
                 return el.Files.getDownloadUrl(id);
             } else {
                 if (id.substring(0, 4) !== "http") {
@@ -896,15 +909,15 @@ var app = (function (win) {
         },
         fixPlaceId: function (placeId, placeJson) {
             // if not in Favorites list save favorite and add to list
-            
+
             var filter = {
-                'PlaceId': placeId, 'Owner':app.Users.currentUser.data.Id
+                'PlaceId': placeId, 'Owner': app.Users.currentUser.data.Id
             };
             var data = app.everlive.data('Jsonlists');
             data.get(filter)
                 .then(function (data) {
                     //alert(JSON.stringify(data));
-                    if (data.result && data.result[0] && data.result[0].PlaceId ===  placeId) {
+                    if (data.result && data.result[0] && data.result[0].PlaceId === placeId) {
                         app.notify.addUserFavourite(data.result[0].Id);
                     }
                     else {
@@ -1094,7 +1107,7 @@ var app = (function (win) {
 
         showLongBottom: function (m) {
             //app.adMobService.viewModel.prepareInterstitial();
-            if (m===undefined) {
+            if (m === undefined) {
                 app.notify.showShortTop(m)
             } else {
                 console.log("Start Toast Message - " + m);
@@ -1225,17 +1238,17 @@ var app = (function (win) {
             };
 
             function error(err) {
-                if(localStorage.getItem('lastLocation')){
-                   var xcrd = JSON.parse(localStorage.getItem('lastLocation'));
+                if (localStorage.getItem('lastLocation')) {
+                    var xcrd = JSON.parse(localStorage.getItem('lastLocation'));
                     app.cdr = xcrd;
                     //app.showAlert("Last location "+JSON.stringify(xcrd));
                     callBack(xcrd);
-                }else{
-                    app.cdr = {"latitude":26.299801713039646,"longitude":-80.07814407348633,"accuracy":150,"altitude":100,"heading":null,"speed":0,"altitudeAccuracy":80,"lat":26.299801713039646,"lng":-80.07814407348633,"distance":12,"address":"1199 Hillsboro Mile, Pompano Beach, FL 33062, USA"};
+                } else {
+                    app.cdr = { "latitude": 26.299801713039646, "longitude": -80.07814407348633, "accuracy": 150, "altitude": 100, "heading": null, "speed": 0, "altitudeAccuracy": 80, "lat": 26.299801713039646, "lng": -80.07814407348633, "distance": 12, "address": "1199 Hillsboro Mile, Pompano Beach, FL 33062, USA" };
                     //app.showAlert("Fixed location "+JSON.stringify(app.cdr));
                     callBack(app.crd);
                 }
-                app.notify.showLongBottom('Using last known location '+ err);
+                app.notify.showLongBottom('Using last known location ' + err);
             };
 
             navigator.geolocation.getCurrentPosition(success, error, options);
@@ -1407,7 +1420,7 @@ var app = (function (win) {
         showReviews: showReviews,
         showOptions: showOptions,
         openLink: openLink,
-        appName:function(){return appName;},
+        appName: function () { return appName; },
         cdr: cdr,
         registerNotify: registerNotify,
         showError: showError,
