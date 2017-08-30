@@ -1,69 +1,69 @@
 'use strict';
 
-(function() {
-	var scheme = 'https';
-		if(window.navigator.simulator) scheme = 'https';
-		var provider = app.data.defender = //app.everlive
-        new Everlive({
-            offlineStorage: true,
-            appId: '3t5oa8il0d0y02eq',
-            scheme: scheme,
-            authentication: {
-                persist: true
-            }
+(function () {
+    var scheme = 'https';
+    if (window.navigator.simulator) scheme = 'https';
+    var provider = app.data.defender = //app.everlive
+    new Everlive({
+        offlineStorage: true,
+        appId: '3t5oa8il0d0y02eq',
+        scheme: scheme,
+        authentication: {
+            persist: true
         }
-        )
-        ,
-        accessTokenCacheKey = 'defender_access_token',
-        providerAuthentication = provider.authentication,
-        providerLogin = provider.Users.login,
-        authentication = {
-            setCachedAccessToken: function setCachedAccessToken(token) {
-                if (localStorage) {
-                    localStorage.setItem(accessTokenCacheKey, JSON.stringify(token));
-                } else {
-                    app[accessTokenCacheKey] = token;
+    }
+    )
+    ,
+    accessTokenCacheKey = 'defender_access_token',
+    providerAuthentication = provider.authentication,
+    providerLogin = provider.Users.login,
+    authentication = {
+        setCachedAccessToken: function setCachedAccessToken(token) {
+            if (localStorage) {
+                localStorage.setItem(accessTokenCacheKey, JSON.stringify(token));
+            } else {
+                app[accessTokenCacheKey] = token;
+            }
+        },
+        getCachedAccessToken: function getCachedAccessToken() {
+            if (localStorage) {
+                return JSON.parse(localStorage.getItem(accessTokenCacheKey));
+            } else {
+                return app[accessTokenCacheKey];
+            }
+        },
+        getCacheAccessTokenFn: function getCacheAccessTokenFn(callback) {
+            return function cacheAccessToken(data) {
+                if (data && data.result) {
+                    authentication.setCachedAccessToken(data.result);
                 }
-            },
-            getCachedAccessToken: function getCachedAccessToken() {
-                if (localStorage) {
-                    return JSON.parse(localStorage.getItem(accessTokenCacheKey));
-                } else {
-                    return app[accessTokenCacheKey];
-                }
-            },
-            getCacheAccessTokenFn: function getCacheAccessTokenFn(callback) {
-                return function cacheAccessToken(data) {
-                    if (data && data.result) {
-                        authentication.setCachedAccessToken(data.result);
-                    }
 
-                    callback(data);
-                };
-            },
-            loadCachedAccessToken: function loadCachedAccessToken() {
-                var token = authentication.getCachedAccessToken();
+                callback(data);
+            };
+        },
+        loadCachedAccessToken: function loadCachedAccessToken() {
+            var token = authentication.getCachedAccessToken();
 
-                if (token) {
-                    providerAuthentication.setAuthorization(
-                        token.access_token,
-                        token.token_type,
-                        token.principal_id);
+            if (token) {
+                providerAuthentication.setAuthorization(
+                    token.access_token,
+                    token.token_type,
+                    token.principal_id);
 
-                    provider.Users.currentUser(function _currentUserSuccess(data) {
-                        if (data.result) {
-                            app.user = data.result;
-                        } else {
-                            authentication.setCachedAccessToken(null);
-                            providerAuthentication.clearAuthorization();
-                        }
-                    }, function _currentUserFailure(err) {
+                provider.Users.currentUser(function _currentUserSuccess(data) {
+                    if (data.result) {
+                        app.user = data.result;
+                    } else {
                         authentication.setCachedAccessToken(null);
                         providerAuthentication.clearAuthorization();
-                    });
-                }
+                    }
+                }, function _currentUserFailure(err) {
+                    authentication.setCachedAccessToken(null);
+                    providerAuthentication.clearAuthorization();
+                });
             }
-        };
+        }
+    };
 
     authentication.loadCachedAccessToken();
     provider.Users.login = function cacheAccessTokenLogin(
@@ -99,7 +99,6 @@
     });
 
     window.setTimeout(_readyTimeout, 2000);
-
 }());
 
 // START_CUSTOM_CODE_defender

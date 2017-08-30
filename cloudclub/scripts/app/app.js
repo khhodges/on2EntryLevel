@@ -18,7 +18,6 @@ function on2SeeIosPushReceived(e) {
     on2SeeprocessPushMessage(e.alert, e.dateCreated);
 };
 
-
 var app = (function (win) {
     'use strict';
 
@@ -101,7 +100,6 @@ var app = (function (win) {
         //	}
         //}, 'Exit', ['OK', 'Cancel']);
     };
-
 
     //Register Notification
     var PushRegistrar = {
@@ -344,8 +342,6 @@ var app = (function (win) {
                 });
             });
         }
-
-
     };
 
     // Handle "deviceready" event
@@ -367,7 +363,6 @@ var app = (function (win) {
         //    persist:true
         //}
     });
-
 
     var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
@@ -522,7 +517,7 @@ var app = (function (win) {
  * Detecting vertical squash in loaded image.
  * Fixes a bug which squash image vertically while drawing into canvas for some images.
  * This is a bug in iOS6 devices. This function from https://github.com/stomita/ios-imagefile-megapixel
- * 
+ *
  */
         detectVerticalSquash: function (img) {
             var iw = img.naturalWidth, ih = img.naturalHeight;
@@ -629,7 +624,6 @@ var app = (function (win) {
                         app.showError(JSON.stringify(e))
                     }
                 }
-
             },
                 function (error) {
                     app.showError("Followers error " + JSON.stringify(error))
@@ -827,8 +821,6 @@ var app = (function (win) {
             }
         },
 
-
-
         autoSizeTextarea: function () {
             var rows = $(this).val().split('\n');
             $(this).prop('rows', rows.length + 1);
@@ -855,7 +847,6 @@ var app = (function (win) {
     };
 
     var NotifyHelper = {
-
         dialogAlert: function () {
             navigator.notification.confirm(
                 'Continue without Authentication (no Post options) or Register to access essental community features when you Logon.', // message
@@ -957,7 +948,7 @@ var app = (function (win) {
                 })
         },
         memorize: function (Parameter) {
-            //Add to Favorites and Like button 
+            //Add to Favorites and Like button
             if (Parameter.length < "12345678-1234-1234-1234-123456789123xxxx".length) {
                 console.log("Start Like." + Parameter);
                 if (app.Users.currentUser.data) {
@@ -1014,7 +1005,7 @@ var app = (function (win) {
                     ],
                     'addCancelButtonWithLabel': 'Cancel',
                     'androidEnableCancelButton': true, // default false
-                    'winphoneEnableCancelButton': true, // default false          
+                    'winphoneEnableCancelButton': true, // default false
                 });
             } else { app.notify.broadcast; }
         },
@@ -1029,7 +1020,7 @@ var app = (function (win) {
                                 case 1:
                                     app.notify.broadcast;
                                     break; //'Send WW',
-                                case 2: //Send to Followers    
+                                case 2: //Send to Followers
                                     app.mobileApp.navigate("#components/followers/view.html?option=nearby");
                                     break;
                                 case 3:
@@ -1269,11 +1260,9 @@ var app = (function (win) {
                 return false;
             }
         }
-
     }
 
     var fileHelper = {
-
         uploadPhoto: function (imageURI, server) {
             var options = new FileUploadOptions();
             options.fileKey = "file";

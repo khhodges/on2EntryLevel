@@ -10,7 +10,7 @@ app.home = kendo.observable({
 
 // END_CUSTOM_CODE_home
 (function (parent) {
-    var dataProvider = app.data.defender,uid,
+    var dataProvider = app.data.defender, uid,
 		//addGeopoint,
 		fetchFilteredData = function (paramFilter, searchFilter) {
 		    var model = parent.get('homeModel'),
@@ -74,7 +74,7 @@ app.home = kendo.observable({
 		            dataItem['ImageUrl'] =
 						processImage(dataItem['Image']);
 		            //flattenLocationProperties(dataItem);
-                    if(data.length ===1)app.mobileApp.navigate("#components/partners/details.html?uid="+uid)
+		            if (data.length === 1) app.mobileApp.navigate("#components/partners/details.html?uid=" + uid)
 		        }
 		    },
 		    error: function (e) {
@@ -130,18 +130,18 @@ app.home = kendo.observable({
 		                    value: 'styles/images/avatar.png'
 		                },
                         {
-		                    logic: 'or',
-		                    filters: [{
-		                        field: 'Address',
-		                        operator: 'contains',
-		                        value: searchVal
-		                    },
+                            logic: 'or',
+                            filters: [{
+                                field: 'Address',
+                                operator: 'contains',
+                                value: searchVal
+                            },
                             {
                                 field: 'Place',
                                 operator: 'contains',
                                 value: searchVal
                             }]
-		                }]
+                        }]
 		            };
 		        }
 		        fetchFilteredData(homeModel.get('paramFilter'), searchFilter);
@@ -154,11 +154,11 @@ app.home = kendo.observable({
 		    },
 		    //kjhh
 		    likeClick: function () {
-				app.notify.showLongBottom(appSettings.messages.joinMessage);
+		        app.notify.showLongBottom(appSettings.messages.joinMessage);
 		        app.notify.memorize(dataSource.Id);
 		    },
 		    detailsShow: function (e) {
-				app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
+		        app.Places.locationViewModel.set("isGoogleMapsInitialized", false);
 		        var item = e.view.params.uid,
 					dataSource = homeModel.get('dataSource'),
 					itemModel = dataSource.getByUid(item);
@@ -206,7 +206,7 @@ app.home = kendo.observable({
             } else {
                 var addFormData = this.get('addFormData'),
 					dataSource = homeModel.get('dataSource');
-                //set up filter check 
+                //set up filter check
                 var filter = new Everlive.Query();
                 filter.where().eq('Place', addFormData.place);
                 var x = addFormData.place;
@@ -253,7 +253,6 @@ app.home = kendo.observable({
 						function (error) {
 						    alert(JSON.stringify(error));
 						});
-
             }
         }
     }));
@@ -267,7 +266,7 @@ app.home = kendo.observable({
     }
 
     parent.set('onShow', function (e) {
-		app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
+        app.Places.locationViewModel.set("isGoogleMapsInitialized", true);
         var param = e.view.params.filter ? JSON.parse(decodeURIComponent(e.view.params.filter)) : null;
         if (e.view.params.uid) {
             uid = e.view.params.uid;
@@ -276,12 +275,12 @@ app.home = kendo.observable({
                 "operator": "eq",
                 "value": uid
             }
-		}
-            fetchFilteredData(param);
-        });
-    })(app.home);
+        }
+        fetchFilteredData(param);
+    });
+})(app.home);
 
-    // START_CUSTOM_CODE_homeModel
-    // Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
+// START_CUSTOM_CODE_homeModel
+// Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
 
-    // END_CUSTOM_CODE_homeModel
+// END_CUSTOM_CODE_homeModel

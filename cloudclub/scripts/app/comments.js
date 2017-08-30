@@ -8,7 +8,6 @@ app.Comments = (function () {
     'use strict'
 
     var commentsViewModel = (function () {
-        
         var commentModel = {
             id: 'Id',
             fields: {
@@ -34,20 +33,19 @@ app.Comments = (function () {
                 }*/
             },
             User: function () {
-                
                 var userId = this.get('UserId');
 
                 var user = $.grep(app.Users.users(), function (e) {
                     return e.Id === userId;
                 })[0];
-                
-                return user ? { 
-                    DisplayName: user.DisplayName, 
+
+                return user ? {
+                    DisplayName: user.DisplayName,
                     PictureUrl: app.helper.resolveProfilePictureUrl(user.Picture),
 					UrlPictureUrl: app.helper.resolveBackgroundPictureUrl(user.Picture, 'bg')
-                } : { 
-                    DisplayName: 'Anonymous', 
-                    PictureUrl: app.helper.resolveProfilePictureUrl() 
+                } : {
+                    DisplayName: 'Anonymous',
+                    PictureUrl: app.helper.resolveProfilePictureUrl()
                 };
             }
         };
@@ -62,7 +60,6 @@ app.Comments = (function () {
             },
             serverFiltering: true,
             change: function (e) {
-
                 if (e.items && e.items.length > 0) {
                     $('#comments-listview').kendoMobileListView({
                         dataSource: e.items,
@@ -74,13 +71,11 @@ app.Comments = (function () {
             },
             sort: { field: 'CreatedAt', dir: 'desc' }
         });
-        
+
         return {
             comments: commentsDataSource
         };
-        
     }());
-    
-    return commentsViewModel;
 
+    return commentsViewModel;
 }());

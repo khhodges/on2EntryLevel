@@ -8,7 +8,6 @@ app.Login = (function () {
     'use strict';
 
     var loginViewModel = (function () {
-
         var isInMistSimulator = (location.host.indexOf('icenium.com') > -1);
 
         var $loginUsername;
@@ -68,7 +67,6 @@ app.Login = (function () {
 
         // Authenticate to use Backend Services as a particular user
         var login = function () {
-
             var username = $loginUsername.val();
             var password = $loginPassword.val();
 
@@ -104,7 +102,6 @@ app.Login = (function () {
                     return app.Users.load();
                 })
                 .then(function () {
-
                     if (!app.helper.checkSimulator()) {
                         app.PushRegistrar.enablePushNotifications();
                         app.everlive.push.areNotificationsEnabled({
@@ -128,7 +125,6 @@ app.Login = (function () {
 
         // Authenticate using Facebook credentials
         var loginWithFacebook = function () {
-
             if (!isFacebookLogin) {
                 return;
             }
@@ -175,7 +171,6 @@ app.Login = (function () {
         };
 
         var loginWithGoogle = function () {
-
             if (!isGoogleLogin) {
                 return;
             }
@@ -222,7 +217,6 @@ app.Login = (function () {
         };
 
         var loginWithLiveID = function () {
-
             if (!isLiveIdLogin) {
                 return;
             }
@@ -269,7 +263,6 @@ app.Login = (function () {
         };
 
         var loginWithADSF = function () {
-
             if (!isAdfsLogin) {
                 return;
             }
@@ -325,9 +318,7 @@ app.Login = (function () {
             loginWithLiveID: loginWithLiveID,
             loginWithADSF: loginWithADSF
         };
-
     } ());
 
     return loginViewModel;
-
 } ());

@@ -75,13 +75,13 @@ app.Activity = (function () {
 				appSettings.messages.removeActivityTitle,
 				function (confirmed) {
 					if (confirmed === true || confirmed === 1) {
-						app.notify.showLongBottom(appSettings.messages.removeMessage);						
+						app.notify.showLongBottom(appSettings.messages.removeMessage);
 						app.mobileApp.showLoading();
 						activities.remove(activity);
 						activities.one('sync', function () {
 							app.mobileApp.navigate('#:back');
 						});
-						activities.sync();												
+						activities.sync();
 						app.mobileApp.hideLoading();
 					}
 				}
@@ -132,7 +132,7 @@ app.Activity = (function () {
         };
         var callback = function() {
             // define as a specific Partner
-            app.Places.locationViewModel.trip.put(partnerV.vicinity(), partnerV);               
+            app.Places.locationViewModel.trip.put(partnerV.vicinity(), partnerV);
             app.favorites.directions();
         };
         var showDirections = function() {
@@ -143,7 +143,7 @@ app.Activity = (function () {
             var partnerV = new app.Places.newPartner();
             partnerV.setActivityRow(item, function() {
                 // define as a specific Partner
-                //app.Places.locationViewModel.trip.put(partnerV.vicinity(), partnerV);   
+                //app.Places.locationViewModel.trip.put(partnerV.vicinity(), partnerV);
                 app.mobileApp.navigate("#views/mapView.html");
                 //app.favorites.directions();
             });

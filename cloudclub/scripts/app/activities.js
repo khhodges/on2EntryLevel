@@ -67,7 +67,7 @@ app.Activities = (function () {
         $("#scroller").data("kendoMobileScroller").reset();
         if (e.view.params.ActivityText) {
             /*			app.Activities.activities._filter = filterOne;
-				3 cases: 
+				3 cases:
 				[2] all from one partner (thePartner), {field: "Title", operator: "startswith",value: e.view.params.ActivityText}
 				[1] one selected item (theText), {field: "Text", operator: "eq",value: e.view.params.Text}
 				[0] all from one user (online) {field:} {field: "UserId", operator: "eq", myId}
@@ -468,11 +468,11 @@ app.Activities = (function () {
                       }
                     );
                 }
-                //app.mobileApp.navigate('views/imagePicker.html');         
+                //app.mobileApp.navigate('views/imagePicker.html');
             }
             else {
-            $enterEvent.style.display = 'none';
-            app.notify.showLongBottom(appSettings.messages.tryAgain);
+                $enterEvent.style.display = 'none';
+                app.notify.showLongBottom(appSettings.messages.tryAgain);
             }
         };
         var takePicture = function () {

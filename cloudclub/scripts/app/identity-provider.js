@@ -16,7 +16,6 @@ var IdentityProvider = function (config) {
     var that = this;
 
     this.getAccessToken = function(callback) {
-
         // Begin Authorization
         var authorize_url;
 
@@ -35,7 +34,7 @@ var IdentityProvider = function (config) {
                             + '&scope=' + config.scope;
         }
 
-        // open the InAppBrowser with the link 
+        // open the InAppBrowser with the link
         ref = window.open(authorize_url, '_blank', 'location=no');
 
         ref.addEventListener('loadstop', function(event) {
@@ -45,9 +44,9 @@ var IdentityProvider = function (config) {
         ref.addEventListener('loaderror', function(event) {
             alert("Load error: " + event.message);
         });
-        
+
         // The following is required in iPhone as the loadstop event is never fired.
-        // The check for Google is required to parse the access token of the redirect Uri 
+        // The check for Google is required to parse the access token of the redirect Uri
         if (config.name === 'ADFS' || config.name === 'Google') {
             ref.addEventListener('loadstart', function(event) {
                 that.locationChanged(event.url, callback);

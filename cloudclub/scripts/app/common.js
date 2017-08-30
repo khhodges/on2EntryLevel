@@ -41,10 +41,9 @@
     //            //app.mobileApp.navigate('#welcome');
     //            //return;
     //        } else{
-
     //    navigator.notification.confirm('Are you sure?', function (buttonIndex) {
     //        if (buttonIndex === 1 || buttonIndex === true) {
-    //            app.everlive.Users.logout().then(function () 
+    //            app.everlive.Users.logout().then(function ()
     //            {
     //                app.Users.currentUser = null;
     //                app.Users.usersData = null;
@@ -57,8 +56,6 @@
     //                //    app.mobileApp.navigate('#welcome');
     //                //}
     //            }),
-            
-
 
     //                //app.navigateToView(app.config.views.init);
     //                //app.mobileApp.navigate('#welcome');
@@ -66,7 +63,7 @@
     //                //modalView.close();
     //                //modalView = document.getElementById("view-all-activities");
     //                //modalView.close();
-            
+
     //            function () {
     //                app.mobileApp.navigate('views/activitiesView.html');
     //                app.notify.showShortTop("User.Logout Un-Click");
@@ -74,8 +71,6 @@
     //        }
     //    }, "Logout", ["OK", "Cancel"]);
     //};
-
-
 
     app.getYear = function () {
         return new Date().getFullYear();

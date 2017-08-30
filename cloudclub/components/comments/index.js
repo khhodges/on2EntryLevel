@@ -92,9 +92,7 @@ app.comments = kendo.observable({
         commentsModel = kendo.observable({
             dataSource: dataSource,
             itemClick: function(e) {
-
                 app.mobileApp.navigate('#components/comments/details.html?uid=' + e.dataItem.uid);
-
             },
             addClick: function() {
                 app.mobileApp.navigate('#components/comments/add.html');

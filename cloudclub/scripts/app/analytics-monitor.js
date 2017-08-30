@@ -48,5 +48,4 @@
     analytics.Monitor = function() {
         return win.plugins.EqatecAnalytics.Monitor;
     };
-
 }(window));

@@ -25,7 +25,6 @@ if (/(android)/i.test(navigator.userAgent)) { // for android & amazon-fireos
         app = global.app = global.app || {};
 
     DemoViewModel = kendo.data.ObservableObject.extend({
-
         showBannerTop: function () {
             if (!this.checkSimulator()) {
 	            this.showBanner(AdMob.AD_POSITION.TOP_CENTER, AdMob.AD_SIZE.MEDIUM_RECTANGLE);
@@ -66,7 +65,6 @@ if (/(android)/i.test(navigator.userAgent)) { // for android & amazon-fireos
                   isTesting: false
             		},
                 function(msg) {//app.notify.showShortTop("Prepared, you can now show it");
-				
 				   app.adMobService.viewModel.showInterstitial();},
                 function(msg) {app.showError("prepareInterstitial failed: " + msg)}
             );
@@ -104,7 +102,7 @@ if (/(android)/i.test(navigator.userAgent)) { // for android & amazon-fireos
             } else {
                 return false;
             }
-        }        
+        }
     });
 
     app.adMobService = {

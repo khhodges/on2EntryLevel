@@ -18,9 +18,9 @@
 				</h3>
 				<p>
 					<b> Bill: $
-						<input type="number" style="background-color: azure;font-style: italic;width: 35%;" min="0"placeholder="Enter Charge" max="50000" style=""  id="bill" onchange="tipCalculate('slideval', 'bill')"> 
-                    <br/> Rate:&nbsp;
-						<input type="number" style="background-color: azure;font-style: italic;width: 20%;" border="0" value="15.0" min="0" max="50" id="slideval" onchange="tipCalculate(this.value, 'bill')">% <br/><br/>Tip: <span id="tipamount" class="tip-amount">$0.00</span>&nbsp;Total: <span id="fullamount" class="tip-amount">$0.00</span> <br/><span id="dateRef"></span> </b>
+						<input type="number" style="background-color: azure;font-style: italic;width: 35%;" min="0"placeholder="Enter Charge" max="50000" style=""  id="bill" onchange="tipCalculate('slideval', 'bill')">
+                    <br /> Rate:&nbsp;
+						<input type="number" style="background-color: azure;font-style: italic;width: 20%;" border="0" value="15.0" min="0" max="50" id="slideval" onchange="tipCalculate(this.value, 'bill')">% <br /><br />Tip: <span id="tipamount" class="tip-amount">$0.00</span>&nbsp;Total: <span id="fullamount" class="tip-amount">$0.00</span> <br /><span id="dateRef"></span> </b>
 				</p>
 			</div>
 
@@ -38,7 +38,6 @@
 				<pre id="output"></pre>
 			</div>
 		</div>
-
 	</div>
 	<script type="text/javascript">
 		// Your Client ID can be retrieved from your project in the Google
@@ -60,9 +59,9 @@
 			}else{
             }
 				//app.showShortTop("Calendar not available");
-		
+
 		}
-		
+
 		/**
 		 * Handle response from authorization server.
 		 *
@@ -80,7 +79,7 @@
 				authorizeDiv.style.display = 'inline';
 			}
 		}
-		
+
 		/**
 		 * Initiate auth flow in response to user clicking authorize button.
 		 *
@@ -92,7 +91,7 @@
 				handleAuthResult);
 			return false;
 		}
-		
+
 		/**
 		 * Load Google Calendar client library. List upcoming events
 		 * once client library is loaded.
@@ -100,7 +99,7 @@
 		function loadCalendarApi() {
 			gapi.client.load('calendar', 'v3', listUpcomingEvents);
 		}
-		
+
 		/**
 		 * Print the summary and start datetime/date of the next ten events in
 		 * the authorized user's calendar. If no events are found an
@@ -115,11 +114,11 @@
 															   'maxResults': 10,
 															   'orderBy': 'startTime'
 														   });
-		
+
 			request.execute(function(resp) {
 				var events = resp.items;
 				appendPre('Upcoming events:');
-		
+
 				if (events.length > 0) {
 					for (i = 0; i < events.length; i++) {
 						var event = events[i];
@@ -134,7 +133,7 @@
 				}
 			});
 		}
-		
+
 		/**
 		 * Append a pre element to the body containing the given message
 		 * as its text node.
@@ -146,7 +145,6 @@
 			var textContent = document.createTextNode(message + '\n');
 			pre.appendChild(textContent);
 		}
-		
 	</script>
 	<script src="https://apis.google.com/js/client.js?onload=checkAuth">
 	</script>
@@ -160,7 +158,7 @@
 			var prcnt = slideval * .01;
 			var d = new Date();
 			dateRef.innerHTML = 'On: ' + d.toString().replace(/GMT.*/g, "");
-		
+
 			if (bill === null || bill === '') {
 				tip.innerHTML = 'Please enter charged amount';
 				return false;

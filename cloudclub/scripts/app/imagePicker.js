@@ -3,7 +3,6 @@
         app = global.app = global.app || {};
 
     ImageViewModel = kendo.data.ObservableObject.extend({
-
         defaultSettings: function () {
             if (!this.checkSimulator()) {
                 imagePicker.getPictures(

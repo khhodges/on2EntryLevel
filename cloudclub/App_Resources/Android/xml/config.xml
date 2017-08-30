@@ -20,15 +20,13 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         version   = "2.0.0">
 
-    <content src="index.html" />
-
-    <!-- Whitelist docs: https://github.com/apache/cordova-plugin-whitelist -->
+    <content src="indexAll.com/apache/cordova-plugin-whitelist -->
 
     <!-- allow local pages -->
-    <!-- <access origin="http://127.0.0.1*"/> -->
+    <!-- <access origin="http://127.0.0.1*" /> -->
     <access origin="*" />
-	<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src: 'self' 'unsafe-inline' 'unsafe-eval'"/>
-	<allow-navigation href="http: //*/*" />												
+	<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src: 'self' 'unsafe-inline' 'unsafe-eval'" />
+	<allow-navigation href="http: //*/*" />
     <!-- Grant certain URLs the ability to launch external applications. This
          behaviour is set to match that of Cordova versions before 3.6.0, and
          should be reviewed before launching an application in production. It
@@ -42,11 +40,10 @@
     <allow-intent href="market:*" />
 
     <preference name="loglevel" value="DEBUG" />
-    
+
       <preference name="splashscreen" value="splash" />
       <preference name="backgroundColor" value="0xFFF" />
       <preference name="loadUrlTimeoutValue" value="20000" />
       <preference name="InAppBrowserStorageEnabled" value="true" />
       <preference name="disallowOverscroll" value="true" />
-    
 </widget>

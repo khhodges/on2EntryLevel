@@ -1,14 +1,13 @@
 <div data-role="view" data-title="Favorites" data-layout="main" data-model="app.favorites" data-show="app.favorites.onShow" data-after-show="app.favorites.afterShow" id="favoritesScreen" class="screen">
    <div data-role="header">
         <div data-role="navbar" class="header-text">
-            <span data-role="view-title" style="overflow: hidden; white-space: nowrap; 
+            <span data-role="view-title" style="overflow: hidden; white-space: nowrap;
                 text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;"></span>
             <a data-role="button" href="#views/mapView.html" data-align="left">Home</a>
 			<a data-role="button" data-align="right" onclick="app.Places.locationViewModel.openActionSheet()"  data-icon="more"></a>
                 <!-- app.openLink(&quot;https://www.google.com/maps/dir/1230+Hillsboro+Mile,+Hillsboro+Beach,+FL+33062,+USA/2315+N+Federal+Hwy,+Pompano+Beach,+FL+33062/1940+NE+49th+St,+Pompano+Beach,+FL+33064&quot;);">Directions</a -->
         </div>
     </div>
-
 
     <!-- START_CUSTOM_CODE_favorites -->
     <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
@@ -20,19 +19,18 @@
             <input type="search" placeholder="Search..." data-bind="events:{keyup: favoritesModel.searchChange}">
         </div>
     </form>
-    <ul id="myText" class="masterDetailView" data-role="listview" data-auto-bind="false" data-style="inset" 
+    <ul id="myText" class="masterDetailView" data-role="listview" data-auto-bind="false" data-style="inset"
          data-template="favoritesModelTemplate" data-bind="source: favoritesModel.dataSource, " data-pull-to-refresh="true" data-endless-scroll="false">
     </ul>
 
-
-    <!-- START_CUSTOM_CODE_favoritesModel events: {click: favoritesModel.itemClick}--> 
+    <!-- START_CUSTOM_CODE_favoritesModel events: {click: favoritesModel.itemClick}-->
     <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
 
     <!-- END_CUSTOM_CODE_favoritesModel -->
     <script type="text/x-kendo-template" id="favoritesModelTemplate">
-        
+
         <div class="image-with-text" data-role='touch' data-enable-swipe='true' data-swipe='app.favorites.openListSheet'>
-            <img src="styles/images/star_red.png" width="30%" height="30%" >
+            <img src="styles/images/star_red.png" width="30%" height="30%">
             # data = app.favorites.favoritesModel.fixHierarchicalData(data); #
             <a onclick="app.openLink(&quot;#: JSON.parse(data.Jsonfield).website #&quot;);" href="\\#" class="link"><h3>#: JSON.parse(data.Jsonfield).name #</h3></a>
         <!--h3>#: JSON.parse(data.Jsonfield).name #</h3-->
