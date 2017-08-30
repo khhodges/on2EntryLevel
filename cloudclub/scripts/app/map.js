@@ -305,11 +305,13 @@ app.Places = (function () {
             },
             openListSheet: function (e) {
                 if (!app.Places.locationViewModel.checkSimulator()) {
-                    var myTrip = app.Places.locationViewModel.trip.array();
-                    for (var i = 0; i < myTrip.length; i++) {
-                        if (myTrip[i].name === e.sender.events.currentTarget.innerText) {
-                            app.Places.favoriteItem = myTrip[i];
-                            break;
+                    if (app.Places.locationViewModel.trip) {
+                        var myTrip = app.Places.locationViewModel.trip.array();
+                        for (var i = 0; i < myTrip.length; i++) {
+                            if (myTrip[i].name === e.sender.events.currentTarget.innerText) {
+                                app.Places.favoriteItem = myTrip[i];
+                                break;
+                            }
                         }
                     }
                     var myList = app.Places.locationViewModel.list.array();
@@ -612,7 +614,7 @@ app.Places = (function () {
                     that._lastMarker = new google.maps.Marker({
                         map: map,
                         position: position,
-                        draggable: false,
+                        draggable: true,
                         zIndex: 100
                     });
                 } else {
@@ -631,7 +633,7 @@ app.Places = (function () {
                 google.maps.event.addListener(that._lastMarker, 'click', function () {
                     infoWindow.setContent(that.currentLocation(that._lastMarker));
                     map.setZoom(17);
-                    that._lastMarker.setDraggable(false);
+                    that._lastMarker.setDraggable(true);
                     map.setMapTypeId(google.maps.MapTypeId.HYBRID);
                     app.Places.visiting = Selfie;
                     infoWindow.open(map, that._lastMarker);
@@ -647,12 +649,16 @@ app.Places = (function () {
                 //    infoWindow.open(map, that.myMark);
                 //    that.myMark.setZIndex(100);
                 //});
-                //google.maps.event.addListener(that.myMark, 'dragend', function () {
-                //    newPlace = this.getPosition();
-                //    map.setCenter(newPlace); // Set map center to marker position
-                //    that.getAddress(newPlace, this);
-                //    homePosition = { lat: this.getPosition().lat(), lng: this.getPosition().lng() }; // update position display
-                //});
+                google.maps.event.addListener(that._lastMarker, 'dragend', function () {
+                    try{
+                        newPlace = this.getPosition();
+                        map.setCenter(newPlace); // Set map center to marker position
+                        that.getAddress(newPlace, this);
+                        homePosition = { lat: this.getPosition().lat(), lng: this.getPosition().lng() }; // update position display
+                    } catch (e) {
+                        app.showAlert(JSON.stringify(e));
+                    }
+                });
 
                 google.maps.event.addListener(infoWindow, 'closeclick', function () {
                     //map.fitBounds(allBounds);
@@ -666,7 +672,7 @@ app.Places = (function () {
                     if (addressStatus) {
                         addressStatus.addEventListener("click", function () {
                             if (app.isOnline()) {
-                                app.Places.locationViewModel.find = undefined;
+                                app.Places.locationViewModel.find = "Hotel";
                                 app.Places.locationViewModel.onPlaceSearch();
                             } else {
                                 app.mobileApp.navigate("#welcome")
@@ -947,11 +953,11 @@ app.Places = (function () {
             locationViewModel: new LocationViewModel(),
             listShow3: function (result) {
                 var thisPartner, Details;
+                thisPartner = app.Places.visiting;
                 if (result === 1) {//cancel
                     return
                 }
                 if (result === 2) {//remove
-                    thisPartner = app.Places.visiting;
                     Details = thisPartner.details();
                     //app.showAlert("Delete this item "+ Details.vicinity);
                     Details.clearMapMark();
@@ -960,13 +966,13 @@ app.Places = (function () {
                     if (!app.isOnline()) {
                         app.mobileApp.navigate("#welcome");
                     } else {
-                        pickAddressAction();
+                        app.Places.pickAddressAction(thisPartner);
                     }
                 }
             },
-            pickAddressAction() {
-                thisPartner = app.Places.visiting;
-                Details = thisPartner.details();
+            pickAddressAction(thisPartner) {
+                //thisPartner = app.Places.visiting;
+                var Details = thisPartner.details();
                 //app.showAlert("Delete this item "+ Details.vicinity);
                 Details.highlightMapMark();
                 app.showOptions(appSettings.messages.saveHighlight, appSettings.whatToDo, function (button) {
